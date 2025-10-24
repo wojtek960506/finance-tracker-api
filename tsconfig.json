@@ -18,8 +18,7 @@
       "@utils/*": ["utils/*"],
       "@models/*": ["models/*"],
       "@routes/*": ["routes/*"],
-
-      // "@/*": ["*"]
+      "@schemas/*": ["schemas/*"],
     }
   },
   "include": ["src"],
