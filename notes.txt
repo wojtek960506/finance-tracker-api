@@ -1,0 +1,11 @@
+I need to think about data structure now
+
+year month day (as a date together)
+description
+amount
+currency
+category
+type
+account
+
+some mechanism to connect expense and income in different currencies will be needed to calculate exchange rate

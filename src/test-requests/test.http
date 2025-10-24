@@ -1,0 +1,18 @@
+GET http://localhost:5000/api/transactions
+Accept: application/json
+
+###
+
+POST http://localhost:5000/api/transactions
+Content-Type: application/json
+
+{
+  "date": "2015-9-24",
+  "description": "ASEC W-wa Ratusz Ar/Warszawa",
+  "amount": 1.70,
+  "currency": "PLN",
+  "category": "transport",
+  "transactionType": "expense",
+  "paymentMethod": "card",
+  "account": "mBank"
+}
