@@ -1,9 +1,16 @@
-GET http://localhost:5000/api/transactions
+@baseUrl = http://localhost:5000/api
+@transactionId = 68fb8c1b546d152a8e03dad2
+
+### Get all transactions
+GET {{baseUrl}}/transactions
 Accept: application/json
 
-###
+### Get single transaction
+GET {{baseUrl}}/transactions/{{transactionId}}
+Accept: application/json
 
-POST http://localhost:5000/api/transactions
+### Create new transaction
+POST {{baseUrl}}/transactions
 Content-Type: application/json
 
 {
@@ -16,3 +23,29 @@ Content-Type: application/json
   "paymentMethod": "card",
   "account": "mBank"
 }
+
+### Update a transaction (PUT)
+PUT {{baseUrl}}/transactions/{{transactionId}}
+Content-Type: application/json
+
+{ 
+  "date": "2015-9-24",
+  "description": "ASEC W-wa Ratusz Ar/Warszawa some change",
+  "amount": 1.70,
+  "currency": "PLN",
+  "category": "transport",
+  "transactionType": "expense",
+  "paymentMethod": "card",
+  "account": "mBank"
+}
+
+### Partial update of transaction (PATCH)
+PATCH {{baseUrl}}/transactions/{{transactionId}}
+Content-Type: application/json
+
+{
+  "description": "ASEC W-wa Ratusz Ar/Warszawa another change"
+}
+
+### Delete a transaction
+DELETE {{baseUrl}}/transactions/68fbd9a408881cb90e2fbc54

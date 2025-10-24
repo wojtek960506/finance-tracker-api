@@ -1,6 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 
-export interface ITransaction extends Document {
+export interface TransactionAttributes {
   date: Date;
   description: string;
   amount: number;
@@ -12,6 +12,8 @@ export interface ITransaction extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ITransaction extends TransactionAttributes, Document {}
 
 const transactionSchema = new Schema<ITransaction>(
   {
