@@ -44,9 +44,8 @@ PATCH {{baseUrl}}/transactions/{{transactionId}}
 Content-Type: application/json
 
 {
-  "date": "2015-24-9",
-  "description1": "ASEC W-wa Ratusz Ar/Warszawa another change",
-  "amount": -6
+  "description": "ASEC W-wa Ratusz Ar/Warszawa another change",
+  "amount": 7.77
 }
 
 ### Delete a transaction

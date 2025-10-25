@@ -21,3 +21,16 @@ export const updateTransactionHelper = async (
     return res.code(404).send({ message: `Transaction with ID '${id}' not found` });
   return res.send({ message: `Transaction with ID '${id}' updated`, data: updated });
 }
+
+export const getUpdatedTransaction = async <T extends boolean>(
+  id: string,
+  body: T extends true ? TransactionUpdateDTO : TransactionPatchDTO,
+  isFullUpdate: T
+) => {
+
+  const updateBody = isFullUpdate ? body : { $set: body };
+
+  // `new: true` - return the updated document
+  return await Transaction.findByIdAndUpdate(id, updateBody, { new: true });
+  // return updated;
+}

@@ -9,7 +9,7 @@ import {
   TransactionUpdateSchema
 } from "@schemas/transaction";
 import { ParamsJustId } from "./types";
-import { updateTransactionHelper } from "@utils/routes";
+import { getUpdatedTransaction } from "@utils/routes";
 import { validateBody } from "@utils/validation";
 
 export async function transactionRoutes(app: FastifyInstance) {
@@ -38,13 +38,25 @@ export async function transactionRoutes(app: FastifyInstance) {
   app.put<{ Params: ParamsJustId ; Body: TransactionUpdateDTO }>(
     "/:id",
     { preHandler: validateBody(TransactionUpdateSchema) },
-    (req, res) => updateTransactionHelper(req, res, true)
+    async (req, res) => {
+      const { id } = req.params;
+      const updated = await getUpdatedTransaction(id, req.body, true);
+      if (!updated)
+        return res.code(404).send({ message: `Transaction with ID '${id}' not found` });
+      return res.send({ message: `Transaction with ID '${id}' updated`, data: updated });
+    }
   );
 
   app.patch<{ Params: ParamsJustId ; Body: TransactionPatchDTO }>(
     "/:id",
     { preHandler: validateBody(TransactionPatchSchema) },
-    (req, res) => updateTransactionHelper(req, res, true)
+    async (req, res) => {
+      const { id } = req.params;
+      const updated = await getUpdatedTransaction(id, req.body, false);
+      if (!updated)
+        return res.code(404).send({ message: `Transaction with ID '${id}' not found` });
+      return res.send({ message: `Transaction with ID '${id}' updated`, data: updated });
+    }
   );
 
   app.delete<{ Params: ParamsJustId }>("/:id", async (req, res) => {
