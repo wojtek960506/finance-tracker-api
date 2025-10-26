@@ -29,10 +29,9 @@ export async function transactionRoutes(app: FastifyInstance) {
   app.post<{ Body: TransactionCreateDTO }>(
     "/",
     { preHandler: validateBody(TransactionCreateSchema) },
-    async (req, res) => {
-      const transaction = new Transaction(req.body);
-      await transaction.save();
-      res.code(201).send(transaction);
+    async (req, res) => {    
+      const newTransaction = await Transaction.create(req.body)
+      res.code(201).send(newTransaction);
   });
 
   app.put<{ Params: ParamsJustId ; Body: TransactionUpdateDTO }>(

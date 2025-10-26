@@ -3,7 +3,7 @@
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { getUpdatedTransaction, updateTransactionHelper } from "@utils/routes";
 import { Transaction } from "@models/Transaction";
-import { FastifyRequest } from "fastify";
+import { generateFullTransaction, generatePartialTransaction } from "./__mocks__/transactionMock";
 
 vi.mock("@models/Transaction", () => ({
   Transaction: {
@@ -11,19 +11,9 @@ vi.mock("@models/Transaction", () => ({
   }
 }));
 
-
-const id = "1"
-const fullBody = {
-  "date": new Date("2025-01-01"),
-  "description": "some desc",
-  "amount": 1.11,
-  "currency": "PLN",
-  "category": "transport",
-  "transactionType": "expense" as any,
-  "paymentMethod": "card" as any,
-  "account": "someBank"
-}
-const partialBody = { amount: 7.77 }
+const id = "1";
+const fullBody = generateFullTransaction();
+const partialBody = generatePartialTransaction();
 
 describe("getUpdatedTransaction", () => {
 
@@ -59,10 +49,8 @@ describe("getUpdatedTransaction", () => {
     expect(Transaction.findByIdAndUpdate).toHaveBeenCalledWith(
       id, fullBody, { new: true }
     )
-  })
-  
+  })  
 })
-
 
 describe("updateTransactionHelper", () => {
   const req = { params: { id }, body: fullBody }
