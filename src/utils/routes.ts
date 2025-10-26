@@ -12,11 +12,7 @@ export const updateTransactionHelper = async (
   isFullUpdate: boolean
 ) => {
   const { id } = req.params;
-
-  const updateBody = isFullUpdate ? req.body : { $set: req.body};
-
-  // `new: true` - return the updated document
-  const updated = await Transaction.findByIdAndUpdate(id, updateBody, { new: true });
+  const updated = await getUpdatedTransaction(id, req.body, isFullUpdate)
   if (!updated)
     return res.code(404).send({ message: `Transaction with ID '${id}' not found` });
   return res.send({ message: `Transaction with ID '${id}' updated`, data: updated });
