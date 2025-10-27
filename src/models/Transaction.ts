@@ -13,7 +13,7 @@ export interface TransactionAttributes {
   updatedAt: Date;
 }
 
-export interface ITransaction extends TransactionAttributes, Document {}
+export interface ITransaction extends TransactionAttributes, Document<string> {}
 
 const transactionSchema = new Schema<ITransaction>(
   {

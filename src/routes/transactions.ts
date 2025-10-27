@@ -6,33 +6,43 @@ import {
   TransactionPatchDTO,
   TransactionPatchSchema,
   TransactionUpdateDTO,
-  TransactionUpdateSchema
+  TransactionUpdateSchema,
+  TransactionResponseDTO,
+  TransactionsResponseDTO,
 } from "@schemas/transaction";
 import { ParamsJustId } from "./types";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody } from "@utils/validation";
 
+
 export async function transactionRoutes(app: FastifyInstance) {
-  app.get("/", async () => {
-    return await Transaction.find().sort({ date: -1 });
-  });
+  app.get<{ Reply: TransactionsResponseDTO }>(
+    "/",
+    async () => {
+      return await Transaction.find().sort({ date: -1 });
+    }
+  );
 
-  app.get<{ Params: ParamsJustId }>("/:id", async (req, res) => {
-    const { id } = req.params;
-    const transaction = await Transaction.findById(id);
-    if (!transaction)
-      return res.code(404).send({ message: `Transaction with ID '${id}' not found`});
+  app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO | { message: string} }>(
+    "/:id",
+    async (req, res) => {
+      const { id } = req.params;
+      const transaction = await Transaction.findById(id);
+      if (!transaction)
+        return res.code(404).send({ message: `Transaction with ID '${id}' not found`});
 
-    return transaction;
-  })
+      return transaction;
+    }
+  )
 
-  app.post<{ Body: TransactionCreateDTO }>(
+  app.post<{ Body: TransactionCreateDTO; Reply: TransactionResponseDTO }>(
     "/",
     { preHandler: validateBody(TransactionCreateSchema) },
     async (req, res) => {    
       const newTransaction = await Transaction.create(req.body)
       res.code(201).send(newTransaction);
-  });
+    }
+  );
 
   app.put<{ Params: ParamsJustId ; Body: TransactionUpdateDTO }>(
     "/:id",

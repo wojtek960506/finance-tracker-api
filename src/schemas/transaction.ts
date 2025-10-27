@@ -27,9 +27,20 @@ export const TransactionUpdateSchema = TransactionCreateSchema;
  */
 export const TransactionPatchSchema = TransactionCreateSchema.partial();
 
+export const TransactionResponseSchema = TransactionCreateSchema.extend({
+  _id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  __v: z.number(),
+})
+
+export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
+
 /**
  * TypeScript types for convenience
  */
 export type TransactionCreateDTO = z.infer<typeof TransactionCreateSchema>;
 export type TransactionUpdateDTO = z.infer<typeof TransactionUpdateSchema>;
 export type TransactionPatchDTO = z.infer<typeof TransactionPatchSchema>;
+export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
+export type TransactionsResponseDTO = z.infer<typeof TransactionsResponseSchema>;
