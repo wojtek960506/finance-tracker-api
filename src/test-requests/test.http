@@ -1,6 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 68fb8c1b546d152a8e03dad2
 
+
 ### Get all transactions
 GET {{baseUrl}}/transactions
 Accept: application/json
@@ -49,4 +50,4 @@ Content-Type: application/json
 }
 
 ### Delete a transaction
-DELETE {{baseUrl}}/transactions/68fbd9a408881cb90e2fbc54
+DELETE {{baseUrl}}/transactions/68fd035f833394ce5712d3f3

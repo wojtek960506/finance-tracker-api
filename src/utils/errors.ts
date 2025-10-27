@@ -22,3 +22,9 @@ export class UnauthorizedError extends AppError {
     super(401, "Unauthorized");
   }
 }
+
+export class ValidationError extends AppError {
+  constructor(details?: unknown) {
+    super(400, "Validation error", details);
+  }
+}

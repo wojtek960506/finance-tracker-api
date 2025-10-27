@@ -27,14 +27,6 @@ export async function registerErrorHandler(app: FastifyInstance) {
         });
       }
 
-      // Fastify schema errors (if Zod not used somewhere)
-      if ((error as any).validation) {
-        return res.status(400).send({
-          message: "Invalid request parameters",
-          details: (error as any).validation,
-        });
-      }
-
       // Fallback: unknown error
       app.log.error(error);
       return res.status(500).send({ message: "Internal server error" });
