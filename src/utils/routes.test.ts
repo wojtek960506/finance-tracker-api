@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { getUpdatedTransaction, updateTransactionHelper } from "@utils/routes";
 import { Transaction } from "@models/Transaction";
 import { generateFullTransaction, generatePartialTransaction } from "./__mocks__/transactionMock";
+import { NotFoundError } from "./errors";
 
 vi.mock("@models/Transaction", () => ({
   Transaction: {
@@ -66,18 +67,24 @@ describe("updateTransactionHelper", () => {
 
     expect(res.code).not.toHaveBeenCalled();
     expect(send).toHaveBeenCalledTimes(1);
-    expect(send).toHaveBeenCalledWith({ message: expect.any(String), data: { ...fullBody } })
+    expect(send).toHaveBeenCalledWith({ ...fullBody })
   })
 
-  it ("when some problem with update it should set code to 404", async () => {
+  it ("when some problem with update it should throw an error", async () => {
     (Transaction.findByIdAndUpdate as Mock).mockResolvedValue(undefined);
     
-    await updateTransactionHelper(req as any, res as any, true);
+    await expect(updateTransactionHelper(req as any, res as any, true))
+      .rejects
+      .toThrow(NotFoundError);
 
-    expect(res.code).toHaveBeenCalledTimes(1);
-    expect(res.code).toHaveBeenCalledWith(404);
-    expect(send).toHaveBeenCalledTimes(1);
-    expect(send).toHaveBeenCalledWith({ message: expect.any(String) });
+    try {
+      await updateTransactionHelper(req as any, res as any, true);
+      throw new Error("Expected `updateTransactionHelper` to throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(NotFoundError);
+      expect((error as NotFoundError).statusCode).toBe(404);
+      expect(error).toHaveProperty("message");
+    }
   })
 
 })

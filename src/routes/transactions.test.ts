@@ -3,6 +3,7 @@ import Fastify from "fastify";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { transactionRoutes } from "./transactions";
 import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
+import { registerErrorHandler } from "@/plugins/errorHandler";
 
 vi.mock("@models/Transaction", () => ({
   Transaction: {
@@ -12,9 +13,11 @@ vi.mock("@models/Transaction", () => ({
   },
 }));
 
-describe("Transaction Routes (Fastify integration)", () => {
+describe("Transaction Routes (Fastify integration)", async () => {
   const app = Fastify();
   app.register(transactionRoutes);
+  await registerErrorHandler(app);
+
   const id = "123";
 
   beforeEach(() => { vi.clearAllMocks(); })

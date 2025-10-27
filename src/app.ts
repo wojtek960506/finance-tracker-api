@@ -2,16 +2,22 @@ import Fastify from "fastify";
 import dotenv from "dotenv";
 import { connectDB } from "@utils/db";
 import { transactionRoutes } from "@routes/transactions";
+import { registerErrorHandler } from "./plugins/errorHandler";
 
 dotenv.config();
-
-const app = Fastify({ logger: true });
 const PORT = Number(process.env.PORT) || 5000;
 
-app.register(transactionRoutes, { prefix: "/api/transactions" });
+const buildApp = async () => {
+  const app = Fastify({ logger: true });
+  app.register(transactionRoutes, { prefix: "/api/transactions" });
+  await registerErrorHandler(app);
+
+  return app;
+}
 
 const start = async () => {
   await connectDB();
+  const app = await buildApp();
   try {
     await app.listen({ port: PORT });
     console.log(`Server running at http://localhost:${PORT}`);

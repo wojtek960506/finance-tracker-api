@@ -1,21 +1,23 @@
 import { Transaction } from "@models/Transaction";
 import { ParamsJustId } from "@routes/types";
-import { TransactionPatchDTO, TransactionUpdateDTO } from "@schemas/transaction";
+import { TransactionPatchDTO, TransactionResponseDTO, TransactionUpdateDTO } from "@schemas/transaction";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { NotFoundError } from "./errors";
 
 export const updateTransactionHelper = async (
   req: FastifyRequest<{
     Params: ParamsJustId;
     Body: TransactionUpdateDTO | TransactionPatchDTO
   }>,
-  res: FastifyReply,
+  res: FastifyReply<{ Reply: TransactionResponseDTO }>,
   isFullUpdate: boolean
 ) => {
   const { id } = req.params;
   const updated = await getUpdatedTransaction(id, req.body, isFullUpdate)
   if (!updated)
-    return res.code(404).send({ message: `Transaction with ID '${id}' not found` });
-  return res.send({ message: `Transaction with ID '${id}' updated`, data: updated });
+    throw new NotFoundError(`Transaction with ID '${id}' not found`);
+
+  return res.send(updated);
 }
 
 export const getUpdatedTransaction = async <T extends boolean>(
@@ -28,5 +30,4 @@ export const getUpdatedTransaction = async <T extends boolean>(
 
   // `new: true` - return the updated document
   return await Transaction.findByIdAndUpdate(id, updateBody, { new: true });
-  // return updated;
 }
