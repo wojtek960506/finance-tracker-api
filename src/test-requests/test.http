@@ -1,5 +1,6 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 68fb8c1b546d152a8e03dad2
+@newTransactionId = i
 
 
 ### Get all transactions
@@ -11,11 +12,13 @@ GET {{baseUrl}}/transactions/{{transactionId}}
 Accept: application/json
 
 ### Create new transaction
+
+# @name createTransaction
 POST {{baseUrl}}/transactions
 Content-Type: application/json
 
 {
-  "date": "2015-9-24",
+  "date": "2015-09-24",
   "description": "ASEC W-wa Ratusz Ar/Warszawa",
   "amount": 1.70,
   "currency": "PLN",
@@ -50,4 +53,7 @@ Content-Type: application/json
 }
 
 ### Delete a transaction
-DELETE {{baseUrl}}/transactions/68fd035f833394ce5712d3f3
+
+@newTransactionId = {{createTransaction.response.body._id}}
+
+DELETE {{baseUrl}}/transactions/{{newTransactionId}}

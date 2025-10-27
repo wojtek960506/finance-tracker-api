@@ -29,7 +29,10 @@ export async function registerErrorHandler(app: FastifyInstance) {
 
       // Fallback: unknown error
       app.log.error(error);
-      return res.status(500).send({ message: "Internal server error" });
+      return res.status(500).send({ 
+        message: "Internal server error",
+        details: error
+      });
     }
   )
 }
