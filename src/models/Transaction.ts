@@ -11,6 +11,10 @@ export interface TransactionAttributes {
   account: string;
   createdAt: Date;
   updatedAt: Date;
+  idx?: number;
+  exchangeRate?: number;
+  currencies?: string;
+  calcRefIdx?: number;
 }
 
 export interface ITransaction extends TransactionAttributes, Document<string> {}
@@ -29,6 +33,10 @@ const transactionSchema = new Schema<ITransaction>(
       enum: ["cash", "card", "blik", "transfer", "atm"]
     },
     account: { type: String, required: true },
+    idx: { type: Number, required: false },
+    exchangeRate: { type: Number, required: false },
+    currencies: { type: String, required: false },
+    calcRefIdx: { type: Number, required: false },
   },
   { timestamps: true }
 );

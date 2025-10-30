@@ -25,7 +25,9 @@ Content-Type: application/json
   "category": "transport",
   "transactionType": "expense",
   "paymentMethod": "card",
-  "account": "mBank"
+  "account": "mBank",
+  "currencies": "PLN/CZK",
+  "exchangeRate": 1.5
 }
 
 ### Update a transaction (PUT)

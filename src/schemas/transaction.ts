@@ -10,9 +10,15 @@ export const TransactionCreateSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
   currency: z.string().length(3, "Currency should be a 3-letter code (e.g. 'PLN')"),
   category: z.string().min(1, "Category is required"),
-  transactionType: z.enum(["income", "expense"]),
   paymentMethod: z.enum(["cash", "card", "blik", "transfer", "atm"]),
   account: z.string().min(1, "Account is required"),
+  transactionType: z.enum(["income", "expense"]),
+  idx: z.number().positive("Idx must be positive").optional(),
+  exchangeRate: z.number().positive("Exchange rate must be positive").optional(),
+  currencies: z.string().length(
+    7, "Currencies should be 2 values of 3 letters codes separated with slash (e.g. 'EUR/PLN')"
+  ).optional(),
+  calcRefIdx: z.number().default(-1).optional(),
 });
 
 /**
