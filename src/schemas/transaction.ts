@@ -18,7 +18,7 @@ export const TransactionCreateSchema = z.object({
   currencies: z.string().length(
     7, "Currencies should be 2 values of 3 letters codes separated with slash (e.g. 'EUR/PLN')"
   ).optional(),
-  calcRefIdx: z.number().default(-1).optional(),
+  calcRefIdx: z.number().optional(),
 });
 
 /**

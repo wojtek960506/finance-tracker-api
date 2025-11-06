@@ -12,6 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@fastify/cors": "^11.1.0",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
     "mongoose": "^8.19.2",
