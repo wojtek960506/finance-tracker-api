@@ -1,4 +1,10 @@
-import { ACCOUNTS, CATEGORIES, CURRENCIES, PAYMENT_METHODS, TRANSACTION_TYPES } from "@utils/consts";
+import {
+  ACCOUNTS,
+  CATEGORIES,
+  CURRENCIES,
+  PAYMENT_METHODS,
+  TRANSACTION_TYPES
+} from "@utils/consts";
 import { z } from "zod";
 
 /**
