@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:5000/api
+@newUserId = i
+
+# Get all users
+# TODO - later add it only for admin
+GET {{baseUrl}}/users
+
+
+### Create new user
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Nat",
+  "lastName": "bat",
+  "email": "kurczak@ziemniak.pl",
+  "password": "dzik1234"
+}
+
+### Get user by id
+@newUserId = {{createUser.response.body._id}}
+
+GET {{baseUrl}}/users/{{newUserId}}
+
+### Delete new user by id
+
+@newUserId = {{createUser.response.body._id}}
+
+DELETE {{baseUrl}}/users/{{newUserId}}
