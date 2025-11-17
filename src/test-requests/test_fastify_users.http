@@ -33,16 +33,18 @@ Content-Type: application/json
 
 ###
 @accessToken = {{loginReq.response.body.accessToken}}
+@refreshToken=8f56d041-b541-437d-907a-0f07bac79e52.mi3gijg9
 
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer {{accessToken}}
+Cookie: refresh-token={{refreshToken}}
 
 ### Get user by id
 @newUserId = {{createUser.response.body._id}}
 @accessToken = {{loginReq.response.body.accessToken}}
 
 GET {{baseUrl}}/users/{{newUserId}}
-Authorization: Bearer {{accessToken}}
+# Authorization: Bearer {{accessToken}}
 
 ### Delete new user by id
 

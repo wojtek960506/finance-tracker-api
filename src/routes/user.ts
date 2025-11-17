@@ -21,21 +21,23 @@ export async function userRoutes(app: FastifyInstance) {
     "/:id",
     async (req, res) => {
 
-      // get authorization header
-      const authHeader = req.headers.authorization;
-      if (!authHeader?.startsWith("Bearer ")) {
-        throw new AppError(401, "Missing token");
-      }
+      // TODO - add some helper to check authentication
+      // rename authorization to authenticateion as I messed up with those words
+      // // get authorization header
+      // const authHeader = req.headers.authorization;
+      // if (!authHeader?.startsWith("Bearer ")) {
+      //   throw new AppError(401, "Missing token");
+      // }
 
-      const token = authHeader.split(" ")[1];
+      // const token = authHeader.split(" ")[1];
       
-      console.log('token', token)
+      // console.log('token', token)
 
-      try {
-        jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
-      } catch {
-        throw new AppError(401, "Invalid or expired token");
-      }
+      // try {
+      //   jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
+      // } catch {
+      //   throw new AppError(401, "Invalid or expired token");
+      // }
 
       const { id } = req.params;
       const user = await UserModel.findById(id);

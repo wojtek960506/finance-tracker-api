@@ -4,9 +4,16 @@ import { validateBody } from "@utils/validation";
 import { FastifyInstance } from "fastify";
 import argon2 from "argon2";
 import { createAccessToken, createRefreshToken } from "@/services/authTokens";
-import { AppError } from "@utils/errors";
+import { AppError, NotFoundError } from "@utils/errors";
 import jwt from "jsonwebtoken";
-import fastify from "fastify";
+
+
+async function findHash(hashes: { tokenHash: string, createdAt: Date}[], refreshToken: string) {
+  for (const { tokenHash } of hashes) {
+    if (await argon2.verify(tokenHash, refreshToken)) return tokenHash;
+  }
+  return null;          
+}
 
 export default async function authRoutes(app: FastifyInstance) {
   app.post(
@@ -44,7 +51,7 @@ export default async function authRoutes(app: FastifyInstance) {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        path: "/api/auth/refresh",
+        path: "/api/auth",
         maxAge: 60 * 60 * 24 * refreshExpiresDays,
       });
 
@@ -117,10 +124,28 @@ export default async function authRoutes(app: FastifyInstance) {
 
       const payload = app.jwt.verify(token);
       const userId = (payload as { userId: string }).userId;
-      console.log('payload', payload)
 
+      res.clearCookie("refresh-token", {
+        path: "/api/auth",
+      })
 
-      return res.send({ userId });
+      const refreshToken = req.cookies["refresh-token"];
+      if (!refreshToken) throw new AppError(401, "Refresh token not provided in cookies");
+      
+      // const user = UserModel.findById(userId);
+      const user = await UserModel.findOne({ _id: userId });
+      if (!user) throw new NotFoundError(`User with id: ${userId} not found`);
+
+      const matchingHash = await findHash(user.refreshTokenHashes ?? [], refreshToken);
+      console.log('matching hash:', matchingHash)
+      if (matchingHash) {
+        user.refreshTokenHashes = user.refreshTokenHashes!.filter(
+          h => h.tokenHash !== matchingHash
+        );
+        await user.save();
+      }
+
+      return res.send({ success: true });
     }
   )
 }
