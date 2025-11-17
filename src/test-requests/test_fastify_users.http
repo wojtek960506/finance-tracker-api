@@ -1,9 +1,12 @@
 @baseUrl = http://localhost:5000/api
 @newUserId = i
+@accessToken = i
 
 # Get all users
 # TODO - later add it only for admin
 GET {{baseUrl}}/users
+
+
 
 
 ### Create new user
@@ -18,10 +21,28 @@ Content-Type: application/json
   "password": "dzik1234"
 }
 
+### login
+# @name loginReq
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "kurczak@ziemniak.pl",
+  "password": "dzik1234"
+}
+
+###
+@accessToken = {{loginReq.response.body.accessToken}}
+
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken}}
+
 ### Get user by id
 @newUserId = {{createUser.response.body._id}}
+@accessToken = {{loginReq.response.body.accessToken}}
 
 GET {{baseUrl}}/users/{{newUserId}}
+Authorization: Bearer {{accessToken}}
 
 ### Delete new user by id
 

@@ -7,19 +7,25 @@ export interface UserAttributes {
   passwordHash: string;
   createdAt: Date;
   updatedAt: Date;
+  // store hashed refresh tokens to allow multiple devices/sessions
+  refreshTokenHashes?: { tokenHash: string, createdAt: Date }[];
 }
 
 export interface IUser extends UserAttributes, Document<string> {}
 
-const userSchema = new Schema<IUser>(
+const UserSchema = new Schema<IUser>(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true },
     passwordHash: { type: String, required: true },
+    refreshTokenHashes: [{
+      tokenHash: { type: String },
+      createdAt: { type: Date, default: () => new Date() }
+    }]
   }, {
     timestamps: true
   }
 );
 
-export const User = model<IUser>("User", userSchema);
+export const UserModel = model<IUser>("User", UserSchema);
