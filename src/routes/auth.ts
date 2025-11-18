@@ -87,11 +87,11 @@ export default async function authRoutes(app: FastifyInstance) {
     }
 
     // Rotate refresh token (security best practice)
-    const { token: newRefreshToken, tokenHash: newTokenHash } = await createRefreshToken();
+    const { token: newRefreshToken, tokenHash: newRefreshTokenHash } = await createRefreshToken();
     
     // remove old hash, add new one
     user.refreshTokenHashes = (user.refreshTokenHashes ?? []).filter(h => h.tokenHash !== matchingHash!);
-    user.refreshTokenHashes.push({ tokenHash: newTokenHash, createdAt: new Date() });
+    user.refreshTokenHashes.push({ tokenHash: newRefreshTokenHash, createdAt: new Date() });
     await user.save();
 
     // set new cookie
@@ -102,7 +102,10 @@ export default async function authRoutes(app: FastifyInstance) {
     })
 
     // issue new access token
-    const accessToken = createAccessToken({ userId: user._id });
+    const accessToken = createAccessToken({
+      userId: user._id.toString(),
+      email: user.email
+    });
     return res.send({ accessToken });
   })
 

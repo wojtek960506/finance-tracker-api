@@ -3,13 +3,11 @@ import { randomUUID } from "crypto";
 import argon2 from "argon2";
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
-const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES_IN || "15m";
-const REFRESH_EXPIRES_DAYS = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
+// const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES_IN || "15m";
+// const REFRESH_EXPIRES_DAYS = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
 
 // create JWT access token
 export function createAccessToken(payload: object) {
-  console.log('exires in:', ACCESS_EXPIRES)
-  console.log('---------------------')
   // return jwt.sign(payload, ACCESS_SECRET, { expiresIn: ACCESS_EXPIRES! });
   return jwt.sign(payload, ACCESS_SECRET, { expiresIn: "15m" });
 }

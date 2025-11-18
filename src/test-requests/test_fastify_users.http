@@ -6,9 +6,6 @@
 # TODO - later add it only for admin
 GET {{baseUrl}}/users
 
-
-
-
 ### Create new user
 # @name createUser
 POST {{baseUrl}}/users
@@ -21,7 +18,7 @@ Content-Type: application/json
   "password": "dzik1234"
 }
 
-### login
+### LOGIN
 # @name loginReq
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
@@ -31,19 +28,33 @@ Content-Type: application/json
   "password": "dzik1234"
 }
 
-###
-@accessToken = {{loginReq.response.body.accessToken}}
-@refreshToken=8f56d041-b541-437d-907a-0f07bac79e52.mi3gijg9
+
+
+
+### REFRESH ACCESS TOKEN
+GET {{baseUrl}}/auth/refresh
+Cookie: refresh-token=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
+
+
+### LOGOUT
+# @accessToken={{loginReq.response.body.accessToken}}
+# @refreshToken=8f56d041-b541-437d-907a-0f07bac79e52.mi3gijg9
+
+
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTFiNjQ0OGQ2MjE5MzUxMTI5ZDBkY2QiLCJlbWFpbCI6Imt1cmN6YWtAemllbW5pYWsucGwiLCJpYXQiOjE3NjM0NzYwMTksImV4cCI6MTc2MzQ3NjA3OX0.JIiI7YjuVoCLSmQ7I5KvRip0JwZmRdTdHKkpeIQ0abQ
+@refreshToken=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
+
 
 POST {{baseUrl}}/auth/logout
-Authorization: Bearer {{accessToken}}
-Cookie: refresh-token={{refreshToken}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTFiNjQ0OGQ2MjE5MzUxMTI5ZDBkY2QiLCJlbWFpbCI6Imt1cmN6YWtAemllbW5pYWsucGwiLCJpYXQiOjE3NjM0NzYwODcsImV4cCI6MTc2MzQ3NjE0N30.lRODz2pJMu_r-eRnoFVeqxdCLidDMl6fxp3gjj86Q5I
+Cookie: refresh-token=be667747-2361-41ee-924c-56d04ca4e2ca.mi4o4pkl
 
 ### Get user by id
 @newUserId = {{createUser.response.body._id}}
 @accessToken = {{loginReq.response.body.accessToken}}
 
-GET {{baseUrl}}/users/{{newUserId}}
+GET {{baseUrl}}/users/691b6448d6219351129d0dcd
+# {{newUserId}}
 # Authorization: Bearer {{accessToken}}
 
 ### Delete new user by id
