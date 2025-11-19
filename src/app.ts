@@ -34,7 +34,8 @@ const buildApp = async () => {
   // Register CORS
   await app.register(cors, {
     origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
   });
 
   return app;

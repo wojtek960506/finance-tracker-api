@@ -51,9 +51,9 @@ export default async function authRoutes(app: FastifyInstance) {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        path: "/api/auth",
+        path: "/",
         maxAge: 60 * 60 * 24 * refreshExpiresDays,
-      });
+      })
 
       return res.send({ accessToken });
     }
