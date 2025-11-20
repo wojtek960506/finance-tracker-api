@@ -39,7 +39,7 @@ Authorization: Bearer {{accessToken}}
 
 ### REFRESH ACCESS TOKEN
 GET {{baseUrl}}/auth/refresh
-Cookie: refresh-token=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
+Cookie: refreshToken=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
 
 
 ### LOGOUT
@@ -48,7 +48,7 @@ Cookie: refresh-token=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
 
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer {{accessToken}}
-Cookie: refresh-token=be667747-2361-41ee-924c-56d04ca4e2ca.mi4o4pkl
+Cookie: refreshToken=be667747-2361-41ee-924c-56d04ca4e2ca.mi4o4pkl
 
 
 ### GET USER BY ID

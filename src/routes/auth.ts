@@ -64,7 +64,7 @@ export default async function authRoutes(app: FastifyInstance) {
   )
 
   app.get("/refresh", async (req, res) => {
-    const refreshToken = req.cookies["refresh-token"];
+    const refreshToken = req.cookies["refreshToken"];
     if (!refreshToken) {
       return res.code(401).send({ "message": "Missing refresh token" });
     }
@@ -99,7 +99,7 @@ export default async function authRoutes(app: FastifyInstance) {
     await user.save();
 
     // set new cookie
-    res.setCookie("refresh-token", newRefreshToken, {
+    res.setCookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: true,
       path: "api/auth/"
@@ -132,11 +132,11 @@ export default async function authRoutes(app: FastifyInstance) {
       const payload = app.jwt.verify(token);
       const userId = (payload as { userId: string }).userId;
 
-      res.clearCookie("refresh-token", {
-        path: "/api/auth",
+      res.clearCookie("refreshToken", {
+        path: "/",
       })
 
-      const refreshToken = req.cookies["refresh-token"];
+      const refreshToken = req.cookies["refreshToken"];
       if (!refreshToken) throw new AppError(401, "Refresh token not provided in cookies");
       
       // const user = UserModel.findById(userId);
