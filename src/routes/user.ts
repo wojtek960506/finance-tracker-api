@@ -5,7 +5,6 @@ import { UserModel } from "@models/User";
 import { AppError, NotFoundError } from "@utils/errors";
 import { validateBody } from "@utils/validation";
 import argon2 from "argon2";
-import jwt from "jsonwebtoken";
 import { getNotSensitiveUser } from "@utils/get-not-sensitive-user";
 import { authorizeAccessToken } from "@utils/authorization";
 

@@ -1,4 +1,3 @@
-import { IUser } from "@models/User"
 import { UserResponseDTO, UserSensitiveResponseDTO } from "@schemas/user"
 
 export const getNotSensitiveUser = (user: UserSensitiveResponseDTO): UserResponseDTO => {
