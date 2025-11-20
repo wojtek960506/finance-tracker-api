@@ -102,7 +102,7 @@ export default async function authRoutes(app: FastifyInstance) {
     res.setCookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: true,
-      path: "api/auth/"
+      path: "/"
     })
 
     // issue new access token
