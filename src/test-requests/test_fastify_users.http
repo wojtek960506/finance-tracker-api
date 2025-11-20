@@ -2,11 +2,11 @@
 @newUserId = i
 @accessToken = i
 
-# Get all users
-# TODO - later add it only for admin
+# GET ALL USERS
 GET {{baseUrl}}/users
 
-### Create new user
+
+### CREATE NEW USER
 # @name createUser
 POST {{baseUrl}}/users
 Content-Type: application/json
@@ -17,6 +17,7 @@ Content-Type: application/json
   "email": "kurczak@ziemniak.pl",
   "password": "dzik1234"
 }
+
 
 ### LOGIN
 # @name loginReq
@@ -29,6 +30,11 @@ Content-Type: application/json
 }
 
 
+### GET USER BY ACCESS TOKEN
+@accessToken = {{loginReq.response.body.accessToken}}
+
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{accessToken}}
 
 
 ### REFRESH ACCESS TOKEN
@@ -37,28 +43,29 @@ Cookie: refresh-token=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
 
 
 ### LOGOUT
-# @accessToken={{loginReq.response.body.accessToken}}
-# @refreshToken=8f56d041-b541-437d-907a-0f07bac79e52.mi3gijg9
-
-
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTFiNjQ0OGQ2MjE5MzUxMTI5ZDBkY2QiLCJlbWFpbCI6Imt1cmN6YWtAemllbW5pYWsucGwiLCJpYXQiOjE3NjM0NzYwMTksImV4cCI6MTc2MzQ3NjA3OX0.JIiI7YjuVoCLSmQ7I5KvRip0JwZmRdTdHKkpeIQ0abQ
-@refreshToken=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
-
+@accessToken={{loginReq.response.body.accessToken}}
+@refreshToken=8f56d041-b541-437d-907a-0f07bac79e52.mi3gijg9
 
 POST {{baseUrl}}/auth/logout
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTFiNjQ0OGQ2MjE5MzUxMTI5ZDBkY2QiLCJlbWFpbCI6Imt1cmN6YWtAemllbW5pYWsucGwiLCJpYXQiOjE3NjM0NzYwODcsImV4cCI6MTc2MzQ3NjE0N30.lRODz2pJMu_r-eRnoFVeqxdCLidDMl6fxp3gjj86Q5I
+Authorization: Bearer {{accessToken}}
 Cookie: refresh-token=be667747-2361-41ee-924c-56d04ca4e2ca.mi4o4pkl
 
-### Get user by id
+
+### GET USER BY ID
 @newUserId = {{createUser.response.body._id}}
 @accessToken = {{loginReq.response.body.accessToken}}
 
-GET {{baseUrl}}/users/691b6448d6219351129d0dcd
+GET {{baseUrl}}/users/691f1e90b1e751ec54cb352b
 # {{newUserId}}
-# Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{accessToken}}
 
 ### Delete new user by id
 
 @newUserId = {{createUser.response.body._id}}
 
 DELETE {{baseUrl}}/users/{{newUserId}}
+
+### DELETE ALL USERS
+# !!! BE CAREFUL !!!
+
+DELETE {{baseUrl}}/users

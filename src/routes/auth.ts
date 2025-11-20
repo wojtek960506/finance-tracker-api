@@ -1,11 +1,15 @@
 import { IUser, UserModel } from "@models/User";
 import { LoginSchema } from "@schemas/auth";
 import { validateBody } from "@utils/validation";
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyRequest } from "fastify";
 import argon2 from "argon2";
 import { createAccessToken, createRefreshToken } from "@/services/authTokens";
 import { AppError, NotFoundError } from "@utils/errors";
 import jwt from "jsonwebtoken";
+import { authorizeAccessToken } from "@utils/authorization";
+import { UserResponseDTO } from "@schemas/user";
+import { getNotSensitiveUser } from "@utils/get-not-sensitive-user";
+import { AuthenticatedRequest } from "./types";
 
 
 async function findHash(hashes: { tokenHash: string, createdAt: Date}[], refreshToken: string) {
@@ -149,6 +153,18 @@ export default async function authRoutes(app: FastifyInstance) {
       }
 
       return res.send({ success: true });
+    }
+  )
+
+  app.get<{ Reply: UserResponseDTO }>(
+    '/me',
+    { preHandler: authorizeAccessToken() },
+    async (req, res) => {
+      const userId = (req as AuthenticatedRequest).userId;
+      const user = await UserModel.findById(userId);
+      if (!user)
+        throw new NotFoundError(`User with ID '${userId}' not found`);   
+      return res.send(getNotSensitiveUser(user));
     }
   )
 }

@@ -29,7 +29,6 @@ export const UserPatchSchema = UserCreateSchema.partial();
 
 export const UserResponseSchema = UserCommonSchema.extend({
   _id: z.string(),
-  passwordHash: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   __v: z.number(),
@@ -42,3 +41,8 @@ export type UserUpdateDTO = z.infer<typeof UserUpdateSchema>;
 export type UserPatchDTO = z.infer<typeof UserPatchSchema>;
 export type UserResponseDTO = z.infer<typeof UserResponseSchema>;
 export type UsersResponseDTO = z.infer<typeof UsersResponseSchema>;
+
+export type UserSensitiveResponseDTO = UserResponseDTO & {
+  passwordHash: string;
+  refreshTokenHashes?: { tokenHash: string, createdAt: Date }[];
+}

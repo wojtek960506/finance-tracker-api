@@ -1,11 +1,13 @@
 import { UserCreateDTO, UserCreateSchema, UserResponseDTO, UsersResponseDTO } from "@schemas/user";
 import { FastifyInstance } from "fastify";
-import { ParamsJustId } from "./types";
+import { AuthenticatedRequest, ParamsJustId } from "./types";
 import { UserModel } from "@models/User";
 import { AppError, NotFoundError } from "@utils/errors";
 import { validateBody } from "@utils/validation";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import { getNotSensitiveUser } from "@utils/get-not-sensitive-user";
+import { authorizeAccessToken } from "@utils/authorization";
 
 
 export async function userRoutes(app: FastifyInstance) {
@@ -13,38 +15,26 @@ export async function userRoutes(app: FastifyInstance) {
   app.get<{ Params: ParamsJustId, Reply: UsersResponseDTO }>(
     "/",
     async () => {
-      return await UserModel.find().sort({ lastName: 1 });
+      const users = await UserModel.find().sort({ lastName: 1 });
+      return users.map(u => getNotSensitiveUser(u))
     }
   )
 
   app.get<{ Params: ParamsJustId, Reply: UserResponseDTO }>(
     "/:id",
+    { preHandler: authorizeAccessToken() },
     async (req, res) => {
-
-      // TODO - add some helper to check authentication
-      // rename authorization to authenticateion as I messed up with those words
-      // // get authorization header
-      // const authHeader = req.headers.authorization;
-      // if (!authHeader?.startsWith("Bearer ")) {
-      //   throw new AppError(401, "Missing token");
-      // }
-
-      // const token = authHeader.split(" ")[1];
-      
-      // console.log('token', token)
-
-      // try {
-      //   jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
-      // } catch {
-      //   throw new AppError(401, "Invalid or expired token");
-      // }
-
+      const userId = (req as AuthenticatedRequest).userId;
       const { id } = req.params;
+      if (userId !== id) {
+        throw new AppError(401, "Cannot get info about different user.")
+      }
+
       const user = await UserModel.findById(id);
       if (!user)
         throw new NotFoundError(`User with ID '${id}' not found`);
 
-      return user;
+      return res.send(getNotSensitiveUser(user));
     }
   )
 
@@ -53,12 +43,12 @@ export async function userRoutes(app: FastifyInstance) {
     { preHandler: validateBody(UserCreateSchema) },
     async (req, res) => {
       const { password, ...rest } = req.body;
-      const passwordHash = await argon2.hash(password);
+      const passwordHash1 = await argon2.hash(password);
       const newUser = await UserModel.create({
         ...rest,
-        passwordHash
+        passwordHash: passwordHash1,
       });
-      res.code(201).send(newUser);
+      res.code(201).send(getNotSensitiveUser(newUser));
     }
   )
 
@@ -69,7 +59,15 @@ export async function userRoutes(app: FastifyInstance) {
       const deleted = await UserModel.findByIdAndDelete(id);
       if (!deleted)
         throw new NotFoundError(`User with ID '${id}' not found`);
-      return res.send(deleted);
+      return res.send(getNotSensitiveUser(deleted));
+    }
+  )
+
+  app.delete<{ Reply:{ acknowledged: boolean, deletedCount: number } }>(
+    "/",
+    async (req, res) => {
+      const tmp = await UserModel.deleteMany();
+      return res.send(tmp);
     }
   )
 }
