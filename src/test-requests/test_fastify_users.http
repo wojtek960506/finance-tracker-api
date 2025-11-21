@@ -52,7 +52,7 @@ Cookie: refreshToken=be667747-2361-41ee-924c-56d04ca4e2ca.mi4o4pkl
 
 
 ### GET USER BY ID
-@newUserId = {{createUser.response.body._id}}
+@newUserId = {{createUser.response.body.id}}
 @accessToken = {{loginReq.response.body.accessToken}}
 
 GET {{baseUrl}}/users/691f1e90b1e751ec54cb352b
@@ -61,7 +61,7 @@ Authorization: Bearer {{accessToken}}
 
 ### Delete new user by id
 
-@newUserId = {{createUser.response.body._id}}
+@newUserId = {{createUser.response.body.id}}
 
 DELETE {{baseUrl}}/users/{{newUserId}}
 
