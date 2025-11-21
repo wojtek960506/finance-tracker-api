@@ -1,6 +1,6 @@
 import { UserCreateDTO, UserCreateSchema, UserResponseDTO, UsersResponseDTO } from "@schemas/user";
 import { FastifyInstance } from "fastify";
-import { AuthenticatedRequest, ParamsJustId } from "./types";
+import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types";
 import { UserModel } from "@models/User";
 import { AppError, NotFoundError } from "@utils/errors";
 import { validateBody } from "@utils/validation";
@@ -62,11 +62,8 @@ export async function userRoutes(app: FastifyInstance) {
     }
   )
 
-  app.delete<{ Reply:{ acknowledged: boolean, deletedCount: number } }>(
-    "/",
-    async (req, res) => {
-      const tmp = await UserModel.deleteMany();
-      return res.send(tmp);
-    }
-  )
+  app.delete<{ Reply: DeleteManyReply }>("/", async (req, res) => {
+    const tmp = await UserModel.deleteMany();
+    return res.send(tmp);
+  })
 }

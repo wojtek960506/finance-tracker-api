@@ -29,7 +29,7 @@ describe("validateBody", () => {
       throw new Error("Expected `validateFunc` to throw");
     } catch (error) {
       expect(error).toBeInstanceOf(ValidationError);
-      expect((error as ValidationError).statusCode).toBe(400);
+      expect((error as ValidationError).statusCode).toBe(422);
       expect((error as ValidationError).details).not.toBeUndefined();
     }
   })

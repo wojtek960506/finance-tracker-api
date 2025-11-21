@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { Transaction } from "@models/Transaction";
+import { TransactionModel } from "@models/Transaction";
 import { 
   TransactionCreateDTO,
   TransactionCreateSchema,
@@ -10,7 +10,7 @@ import {
   TransactionResponseDTO,
   TransactionsResponseDTO,
 } from "@schemas/transaction";
-import { ParamsJustId } from "./types";
+import { DeleteManyReply, ParamsJustId } from "./types";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody } from "@utils/validation";
 import { NotFoundError } from "@utils/errors";
@@ -20,7 +20,7 @@ export async function transactionRoutes(app: FastifyInstance) {
   app.get<{ Reply: TransactionsResponseDTO }>(
     "/",
     async () => {
-      return await Transaction.find().sort({ date: -1 });
+      return await TransactionModel.find().sort({ date: -1 });
     }
   );
 
@@ -28,7 +28,7 @@ export async function transactionRoutes(app: FastifyInstance) {
     "/:id",
     async (req, res) => {
       const { id } = req.params;
-      const transaction = await Transaction.findById(id);
+      const transaction = await TransactionModel.findById(id);
       if (!transaction)
         throw new NotFoundError(`Transaction with ID '${id}' not found`);
 
@@ -40,7 +40,7 @@ export async function transactionRoutes(app: FastifyInstance) {
     "/",
     { preHandler: validateBody(TransactionCreateSchema) },
     async (req, res) => {    
-      const newTransaction = await Transaction.create(req.body)
+      const newTransaction = await TransactionModel.create(req.body)
       res.code(201).send(newTransaction);
     }
   );
@@ -72,11 +72,16 @@ export async function transactionRoutes(app: FastifyInstance) {
     "/:id",
     async (req, res) => {
       const { id } = req.params;
-      const deleted = await Transaction.findByIdAndDelete(id, { new: true });
+      const deleted = await TransactionModel.findByIdAndDelete(id, { new: true });
       if (!deleted)
         throw new NotFoundError(`Transaction with ID '${id}' not found`);
       
       return res.send(deleted);
     }
   )
+
+  app.delete<{ Reply: DeleteManyReply }>("/", async (req, res) => {
+    const tmp = await TransactionModel.deleteMany();
+    return res.send(tmp);
+  })
 }

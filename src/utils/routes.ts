@@ -1,4 +1,4 @@
-import { Transaction } from "@models/Transaction";
+import { TransactionModel } from "@models/Transaction";
 import { ParamsJustId } from "@routes/types";
 import { TransactionPatchDTO, TransactionResponseDTO, TransactionUpdateDTO } from "@schemas/transaction";
 import { FastifyReply, FastifyRequest } from "fastify";
@@ -29,5 +29,5 @@ export const getUpdatedTransaction = async <T extends boolean>(
   const updateBody = isFullUpdate ? body : { $set: body };
 
   // `new: true` - return the updated document
-  return await Transaction.findByIdAndUpdate(id, updateBody, { new: true });
+  return await TransactionModel.findByIdAndUpdate(id, updateBody, { new: true });
 }

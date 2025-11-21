@@ -59,3 +59,9 @@ Content-Type: application/json
 @newTransactionId = {{createTransaction.response.body._id}}
 
 DELETE {{baseUrl}}/transactions/{{newTransactionId}}
+
+
+### DELETE ALL TRANSACTIONS
+# !!! BE CAREFUL !!!
+
+DELETE {{baseUrl}}/transactions
