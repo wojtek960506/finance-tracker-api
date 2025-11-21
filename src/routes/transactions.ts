@@ -10,11 +10,12 @@ import {
   TransactionResponseDTO,
   TransactionsResponseDTO,
 } from "@schemas/transaction";
-import { DeleteManyReply, ParamsJustId } from "./types";
+import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody } from "@utils/validation";
-import { NotFoundError } from "@utils/errors";
+import { AppError, NotFoundError } from "@utils/errors";
 import { serializeTransaction } from "@schemas/serialize-transaction";
+import { authorizeAccessToken } from "@utils/authorization";
 
 
 export async function transactionRoutes(app: FastifyInstance) {
@@ -40,9 +41,15 @@ export async function transactionRoutes(app: FastifyInstance) {
 
   app.post<{ Body: TransactionCreateDTO; Reply: TransactionResponseDTO }>(
     "/",
-    { preHandler: validateBody(TransactionCreateSchema) },
-    async (req, res) => {    
-      const newTransaction = await TransactionModel.create(req.body)
+    { preHandler: [
+      validateBody(TransactionCreateSchema),
+      authorizeAccessToken(),
+    ]},
+    async (req, res) => {
+      const newTransaction = await TransactionModel.create({
+        ...req.body,
+        ownerId: (req as AuthenticatedRequest).userId
+      })
       res.code(201).send(serializeTransaction(newTransaction));
     }
   );

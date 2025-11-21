@@ -8,7 +8,6 @@ import {
 import { Schema, model, Document, Types } from "mongoose";
 
 export interface TransactionAttributes {
-  // ownerId: Types.ObjectId;
   date: Date;
   description: string;
   amount: number;
@@ -26,12 +25,13 @@ export interface TransactionAttributes {
 }
 
 export interface ITransaction extends TransactionAttributes, Document {
-  _id: Types.ObjectId
+  _id: Types.ObjectId,
+  ownerId: Types.ObjectId;
 }
 
 const transactionSchema = new Schema<ITransaction>(
   {
-    // ownerId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    ownerId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     date: { type: Date, required: true },
     description: { type: String, required: true },
     amount: { type: Number, required: true },

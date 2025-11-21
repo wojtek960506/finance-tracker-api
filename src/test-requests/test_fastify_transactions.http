@@ -1,6 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
+@accessToken = i
 
 
 ### Get all transactions
@@ -16,8 +17,10 @@ Accept: application/json
 # @name createTransaction
 POST {{baseUrl}}/transactions
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
+  "ownerId": "692071ec942967c3272e9682",
   "date": "2015-09-24",
   "description": "ASEC W-wa Ratusz Ar/Warszawa",
   "amount": 1.70,

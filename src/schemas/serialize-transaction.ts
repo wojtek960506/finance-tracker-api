@@ -3,9 +3,10 @@ import { TransactionResponseDTO } from "./transaction";
 
 
 export const serializeTransaction = (transaction: ITransaction): TransactionResponseDTO => {
-  const { _id, __v, ...rest } = transaction.toObject();
+  const { _id, __v, ownerId, ...rest } = transaction.toObject();
   return {
     ...rest,
-    id: _id.toString()
+    id: _id.toString(),
+    ownerId: ownerId.toString(),
   }
 }

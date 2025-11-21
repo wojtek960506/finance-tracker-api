@@ -42,6 +42,7 @@ export const TransactionPatchSchema = TransactionCreateSchema.partial();
 
 export const TransactionResponseSchema = TransactionCreateSchema.extend({
   id: z.string(),
+  ownerId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `ownerId`"),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
