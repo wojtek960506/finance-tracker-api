@@ -1,8 +1,9 @@
-import { TransactionModel } from "@models/Transaction";
+import { TransactionModel } from "@models/transaction-model";
 import { ParamsJustId } from "@routes/types";
 import { TransactionPatchDTO, TransactionResponseDTO, TransactionUpdateDTO } from "@schemas/transaction";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { NotFoundError } from "./errors";
+import { serializeTransaction } from "@schemas/serialize-transaction";
 
 export const updateTransactionHelper = async (
   req: FastifyRequest<{
@@ -17,7 +18,7 @@ export const updateTransactionHelper = async (
   if (!updated)
     throw new NotFoundError(`Transaction with ID '${id}' not found`);
 
-  return res.send(updated);
+  return res.send(serializeTransaction(updated));
 }
 
 export const getUpdatedTransaction = async <T extends boolean>(

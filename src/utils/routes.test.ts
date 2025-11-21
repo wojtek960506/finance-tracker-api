@@ -2,14 +2,19 @@
 
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { getUpdatedTransaction, updateTransactionHelper } from "@utils/routes";
-import { TransactionModel } from "@models/Transaction";
+import { TransactionModel } from "@models/transaction-model";
 import { generateFullTransaction, generatePartialTransaction } from "./__mocks__/transactionMock";
 import { NotFoundError } from "./errors";
+import { serializeTransaction } from "@schemas/serialize-transaction";
 
-vi.mock("@models/Transaction", () => ({
+vi.mock("@models/transaction-model", () => ({
   TransactionModel: {
     findByIdAndUpdate: vi.fn()
   }
+}));
+
+vi.mock("@schemas/serialize-transaction", () => ({
+  serializeTransaction: vi.fn()
 }));
 
 const id = "1";
@@ -61,7 +66,8 @@ describe("updateTransactionHelper", () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it("when properly updated it shoud send updated data", async () => {
-    (TransactionModel.findByIdAndUpdate as Mock).mockResolvedValue({ ...fullBody })
+    (TransactionModel.findByIdAndUpdate as Mock).mockResolvedValue({ ...fullBody });
+    (serializeTransaction as Mock).mockReturnValue({ ...fullBody });
 
     await updateTransactionHelper(req as any, res as any, true);
 

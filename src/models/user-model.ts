@@ -1,4 +1,4 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 
 export interface UserAttributes {
   firstName: string;
@@ -11,7 +11,9 @@ export interface UserAttributes {
   refreshTokenHashes?: { tokenHash: string, createdAt: Date }[];
 }
 
-export interface IUser extends UserAttributes, Document<string> {}
+export interface IUser extends UserAttributes, Document {
+  _id: Types.ObjectId
+}
 
 const UserSchema = new Schema<IUser>(
   {

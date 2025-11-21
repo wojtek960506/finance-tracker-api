@@ -1,14 +1,21 @@
-import { ACCOUNTS, CATEGORIES, CURRENCIES, PAYMENT_METHODS, TRANSACTION_TYPES } from "@utils/consts";
-import { Schema, model, Document } from "mongoose";
+import {
+  ACCOUNTS,
+  CATEGORIES,
+  CURRENCIES,
+  PAYMENT_METHODS,
+  TRANSACTION_TYPES
+} from "@utils/consts";
+import { Schema, model, Document, Types } from "mongoose";
 
 export interface TransactionAttributes {
+  // ownerId: Types.ObjectId;
   date: Date;
   description: string;
   amount: number;
   currency: string;
   category: string;
   transactionType: "income" | "expense";
-  paymentMethod: "cash" | "card" | "blik" | "transfer" | "atm";
+  paymentMethod: string;
   account: string;
   createdAt: Date;
   updatedAt: Date;
@@ -18,10 +25,13 @@ export interface TransactionAttributes {
   calcRefIdx?: number;
 }
 
-export interface ITransaction extends TransactionAttributes, Document<string> {}
+export interface ITransaction extends TransactionAttributes, Document {
+  _id: Types.ObjectId
+}
 
 const transactionSchema = new Schema<ITransaction>(
   {
+    // ownerId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     date: { type: Date, required: true },
     description: { type: String, required: true },
     amount: { type: Number, required: true },

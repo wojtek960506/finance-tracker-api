@@ -1,4 +1,4 @@
-import { IUser, UserModel } from "@models/User";
+import { IUser, UserModel } from "@models/user-model";
 import { LoginSchema } from "@schemas/auth";
 import { validateBody } from "@utils/validation";
 import { FastifyInstance, FastifyRequest } from "fastify";
@@ -8,7 +8,7 @@ import { AppError, NotFoundError } from "@utils/errors";
 import jwt from "jsonwebtoken";
 import { authorizeAccessToken } from "@utils/authorization";
 import { UserResponseDTO } from "@schemas/user";
-import { getNotSensitiveUser } from "@utils/get-not-sensitive-user";
+import { serializeUser } from "@schemas/serialize-user";
 import { AuthenticatedRequest } from "./types";
 
 
@@ -164,7 +164,7 @@ export default async function authRoutes(app: FastifyInstance) {
       const user = await UserModel.findById(userId);
       if (!user)
         throw new NotFoundError(`User with ID '${userId}' not found`);   
-      return res.send(getNotSensitiveUser(user));
+      return res.send(serializeUser(user));
     }
   )
 }

@@ -1,16 +1,20 @@
-import { TransactionModel } from "@models/Transaction";
+import { TransactionModel } from "@models/transaction-model";
 import Fastify from "fastify";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { transactionRoutes } from "./transactions";
 import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
 import { registerErrorHandler } from "@/plugins/errorHandler";
+import { serializeTransaction } from "@schemas/serialize-transaction";
 
-vi.mock("@models/Transaction", () => ({
+vi.mock("@models/transaction-model", () => ({
   TransactionModel: {
     findByIdAndUpdate: vi.fn(),
     create: vi.fn(),
     findById: vi.fn()
   },
+}));
+vi.mock("@schemas/serialize-transaction", () => ({
+  serializeTransaction: vi.fn()
 }));
 
 describe("Transaction Routes (Fastify integration)", async () => {
@@ -23,8 +27,9 @@ describe("Transaction Routes (Fastify integration)", async () => {
   beforeEach(() => { vi.clearAllMocks(); })
 
   it("should return single transaction via GET when found", async () => {
-    const transaction = { _id: id, ...generateFullTransaction() };
+    const transaction = { id, ...generateFullTransaction() };
     (TransactionModel.findById as Mock).mockResolvedValue(transaction);
+    (serializeTransaction as Mock).mockResolvedValue(transaction);
 
     const response = await app.inject({
       method: "GET",
@@ -52,8 +57,9 @@ describe("Transaction Routes (Fastify integration)", async () => {
 
   it("should create transaction via POST", async () => {
     const body = generateFullTransaction();
-    const newTransaction = { _id: id, ...body };
+    const newTransaction = { id, ...body };
     (TransactionModel.create as Mock).mockResolvedValue(newTransaction);
+    (serializeTransaction as Mock).mockReturnValue(newTransaction);
 
     const response = await app.inject({
       method: "POST",

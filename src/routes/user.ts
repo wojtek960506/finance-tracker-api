@@ -1,11 +1,11 @@
 import { UserCreateDTO, UserCreateSchema, UserResponseDTO, UsersResponseDTO } from "@schemas/user";
 import { FastifyInstance } from "fastify";
 import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types";
-import { UserModel } from "@models/User";
+import { UserModel } from "@models/user-model";
 import { AppError, NotFoundError } from "@utils/errors";
 import { validateBody } from "@utils/validation";
 import argon2 from "argon2";
-import { getNotSensitiveUser } from "@utils/get-not-sensitive-user";
+import { serializeUser } from "@schemas/serialize-user";
 import { authorizeAccessToken } from "@utils/authorization";
 
 
@@ -15,7 +15,7 @@ export async function userRoutes(app: FastifyInstance) {
     "/",
     async () => {
       const users = await UserModel.find().sort({ lastName: 1 });
-      return users.map(u => getNotSensitiveUser(u))
+      return users.map(u => serializeUser(u))
     }
   )
 
@@ -33,7 +33,7 @@ export async function userRoutes(app: FastifyInstance) {
       if (!user)
         throw new NotFoundError(`User with ID '${id}' not found`);
 
-      return res.send(getNotSensitiveUser(user));
+      return res.send(serializeUser(user));
     }
   )
 
@@ -47,7 +47,7 @@ export async function userRoutes(app: FastifyInstance) {
         ...rest,
         passwordHash: passwordHash1,
       });
-      res.code(201).send(getNotSensitiveUser(newUser));
+      res.code(201).send(serializeUser(newUser));
     }
   )
 
@@ -58,7 +58,7 @@ export async function userRoutes(app: FastifyInstance) {
       const deleted = await UserModel.findByIdAndDelete(id);
       if (!deleted)
         throw new NotFoundError(`User with ID '${id}' not found`);
-      return res.send(getNotSensitiveUser(deleted));
+      return res.send(serializeUser(deleted));
     }
   )
 

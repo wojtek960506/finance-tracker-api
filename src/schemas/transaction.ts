@@ -41,10 +41,9 @@ export const TransactionUpdateSchema = TransactionCreateSchema;
 export const TransactionPatchSchema = TransactionCreateSchema.partial();
 
 export const TransactionResponseSchema = TransactionCreateSchema.extend({
-  _id: z.string(),
+  id: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  __v: z.number(),
 })
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);

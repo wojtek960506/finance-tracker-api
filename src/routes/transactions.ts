@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { TransactionModel } from "@models/Transaction";
+import { TransactionModel } from "@models/transaction-model";
 import { 
   TransactionCreateDTO,
   TransactionCreateSchema,
@@ -14,13 +14,15 @@ import { DeleteManyReply, ParamsJustId } from "./types";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody } from "@utils/validation";
 import { NotFoundError } from "@utils/errors";
+import { serializeTransaction } from "@schemas/serialize-transaction";
 
 
 export async function transactionRoutes(app: FastifyInstance) {
   app.get<{ Reply: TransactionsResponseDTO }>(
     "/",
     async () => {
-      return await TransactionModel.find().sort({ date: -1 });
+      const transactions = await TransactionModel.find().sort({ date: -1 });
+      return transactions.map(transaction => serializeTransaction(transaction))
     }
   );
 
@@ -32,7 +34,7 @@ export async function transactionRoutes(app: FastifyInstance) {
       if (!transaction)
         throw new NotFoundError(`Transaction with ID '${id}' not found`);
 
-      return transaction;
+      return serializeTransaction(transaction);
     }
   )
 
@@ -41,7 +43,7 @@ export async function transactionRoutes(app: FastifyInstance) {
     { preHandler: validateBody(TransactionCreateSchema) },
     async (req, res) => {    
       const newTransaction = await TransactionModel.create(req.body)
-      res.code(201).send(newTransaction);
+      res.code(201).send(serializeTransaction(newTransaction));
     }
   );
 
@@ -76,7 +78,7 @@ export async function transactionRoutes(app: FastifyInstance) {
       if (!deleted)
         throw new NotFoundError(`Transaction with ID '${id}' not found`);
       
-      return res.send(deleted);
+      return res.send(serializeTransaction(deleted));
     }
   )
 
