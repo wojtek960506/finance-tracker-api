@@ -43,11 +43,19 @@ export async function userRoutes(app: FastifyInstance) {
     async (req, res) => {
       const { password, ...rest } = req.body;
       const passwordHash1 = await argon2.hash(password);
-      const newUser = await UserModel.create({
-        ...rest,
-        passwordHash: passwordHash1,
-      });
-      res.code(201).send(serializeUser(newUser));
+      
+      try {
+        const newUser = await UserModel.create({
+          ...rest,
+          passwordHash: passwordHash1,
+        });
+        res.code(201).send(serializeUser(newUser));
+      } catch (err) {
+        if ((err as { code: number }).code === 11000)
+          throw new AppError(409, "User with given email already exists");
+        else
+          throw new AppError(400, (err as { message: string }).message);
+      }
     }
   )
 

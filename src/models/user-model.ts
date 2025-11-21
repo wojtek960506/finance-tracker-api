@@ -19,14 +19,15 @@ const UserSchema = new Schema<IUser>(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     refreshTokenHashes: [{
       tokenHash: { type: String },
       createdAt: { type: Date, default: () => new Date() }
     }]
   }, {
-    timestamps: true
+    timestamps: true,
+    autoIndex: true,
   }
 );
 
