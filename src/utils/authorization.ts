@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 export function authorizeAccessToken() {
   return async (req: FastifyRequest, _reply: FastifyReply) => {
-    console.log('mama')
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith("Bearer ")) {
       throw new AppError(401, "Missing token");

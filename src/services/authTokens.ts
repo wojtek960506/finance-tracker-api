@@ -9,7 +9,7 @@ const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
 // create JWT access token
 export function createAccessToken(payload: object) {
   // return jwt.sign(payload, ACCESS_SECRET, { expiresIn: ACCESS_EXPIRES! });
-  return jwt.sign(payload, ACCESS_SECRET, { expiresIn: "2s" });
+  return jwt.sign(payload, ACCESS_SECRET, { expiresIn: "3s" });
 }
 
 // create secure random refresh token (opaque) and return both token and its hashed form

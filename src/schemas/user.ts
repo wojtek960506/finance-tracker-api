@@ -11,7 +11,7 @@ const UserCommonSchema = z.object({
  * used for POST /users
  */
 export const UserCreateSchema = UserCommonSchema.extend({
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(3, "Password must be at least 3 characters"),
 })
 
 

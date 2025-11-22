@@ -12,10 +12,10 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "firstName": "Nat",
-  "lastName": "bat",
-  "email": "kurczak@ziemniak.pl",
-  "password": "dzik1234"
+  "firstName": "Woj",
+  "lastName": "Zie",
+  "email": "w@z.pl",
+  "password": "123"
 }
 
 
@@ -25,9 +25,14 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "kurczak@ziemniak.pl",
-  "password": "dzik1234"
+  "email": "w@z.pl",
+  "password": "123"
 }
+
+# {
+#   "email": "kurczak@ziemniak.pl",
+#   "password": "dzik1234"
+# }
 
 
 ### GET USER BY ACCESS TOKEN

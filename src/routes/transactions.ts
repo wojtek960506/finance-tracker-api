@@ -21,8 +21,11 @@ import { authorizeAccessToken } from "@utils/authorization";
 export async function transactionRoutes(app: FastifyInstance) {
   app.get<{ Reply: TransactionsResponseDTO }>(
     "/",
-    async () => {
-      const transactions = await TransactionModel.find().sort({ date: -1 });
+    { preHandler: authorizeAccessToken() },
+    async (req) => {
+      const transactions = await TransactionModel.find(
+        { ownerId: (req as AuthenticatedRequest).userId }
+      ).sort({ date: -1 });
       return transactions.map(transaction => serializeTransaction(transaction))
     }
   );
