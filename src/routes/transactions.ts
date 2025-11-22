@@ -13,7 +13,7 @@ import {
 import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody } from "@utils/validation";
-import { AppError, NotFoundError } from "@utils/errors";
+import { NotFoundError } from "@utils/errors";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { authorizeAccessToken } from "@utils/authorization";
 
