@@ -1,34 +1,29 @@
 import { TransactionModel } from "@models/transaction-model";
-import { ParamsJustId } from "@routes/types";
-import { TransactionPatchDTO, TransactionResponseDTO, TransactionUpdateDTO } from "@schemas/transaction";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { NotFoundError } from "./errors";
+import { AuthenticatedRequest, ParamsJustId } from "@routes/types";
+import { TransactionPatchDTO, TransactionUpdateDTO } from "@schemas/transaction";
+import { FastifyRequest } from "fastify";
+import { AppError, NotFoundError } from "./errors";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 
 export const updateTransactionHelper = async (
   req: FastifyRequest<{
     Params: ParamsJustId;
     Body: TransactionUpdateDTO | TransactionPatchDTO
-  }>,
-  res: FastifyReply<{ Reply: TransactionResponseDTO }>,
-  isFullUpdate: boolean
+  }>
 ) => {
   const { id } = req.params;
-  const updated = await getUpdatedTransaction(id, req.body, isFullUpdate)
-  if (!updated)
+  const userId = (req as AuthenticatedRequest).userId;
+
+  const transaction = await TransactionModel.findById(id);
+
+  if (!transaction)
     throw new NotFoundError(`Transaction with ID '${id}' not found`);
 
-  return res.send(serializeTransaction(updated));
-}
+  if (transaction.ownerId.toString() !== userId)
+    throw new AppError(403, "Cannot update transaction which you are now owning");
 
-export const getUpdatedTransaction = async <T extends boolean>(
-  id: string,
-  body: T extends true ? TransactionUpdateDTO : TransactionPatchDTO,
-  isFullUpdate: T
-) => {
+  Object.assign(transaction, req.body);
+  await transaction.save();
 
-  const updateBody = isFullUpdate ? body : { $set: body };
-
-  // `new: true` - return the updated document
-  return await TransactionModel.findByIdAndUpdate(id, updateBody, { new: true });
+  return serializeTransaction(transaction);
 }

@@ -44,10 +44,12 @@ export async function transactionRoutes(app: FastifyInstance) {
 
   app.post<{ Body: TransactionCreateDTO; Reply: TransactionResponseDTO }>(
     "/",
-    { preHandler: [
-      validateBody(TransactionCreateSchema),
-      authorizeAccessToken(),
-    ]},
+    { 
+      preHandler: [
+        validateBody(TransactionCreateSchema),
+        authorizeAccessToken(),
+      ]
+    },
     async (req, res) => {
       const newTransaction = await TransactionModel.create({
         ...req.body,
@@ -63,8 +65,13 @@ export async function transactionRoutes(app: FastifyInstance) {
     Reply: TransactionResponseDTO
   }>(
     "/:id",
-    { preHandler: validateBody(TransactionUpdateSchema) },
-    (req, res) => updateTransactionHelper(req, res, true)
+    {
+      preHandler: [
+        validateBody(TransactionUpdateSchema),
+        authorizeAccessToken(),
+      ]
+    },
+    (req) => updateTransactionHelper(req)
   );
 
   app.patch<{
@@ -73,8 +80,13 @@ export async function transactionRoutes(app: FastifyInstance) {
     Reply: TransactionResponseDTO
   }>(
     "/:id",
-    { preHandler: validateBody(TransactionPatchSchema) },
-    (req, res) => updateTransactionHelper(req, res, false)
+    { 
+      preHandler: [
+        validateBody(TransactionPatchSchema),
+        authorizeAccessToken()
+      ]
+    },
+    (req) => updateTransactionHelper(req)
   );
 
   app.delete<{
