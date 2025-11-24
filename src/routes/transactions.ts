@@ -13,9 +13,9 @@ import {
 import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody } from "@utils/validation";
-import { NotFoundError } from "@utils/errors";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { authorizeAccessToken } from "@utils/authorization";
+import { checkOwner, findTransaction } from "./utils-routes";
 
 
 export async function transactionRoutes(app: FastifyInstance) {
@@ -32,12 +32,8 @@ export async function transactionRoutes(app: FastifyInstance) {
 
   app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
     "/:id",
-    async (req, res) => {
-      const { id } = req.params;
-      const transaction = await TransactionModel.findById(id);
-      if (!transaction)
-        throw new NotFoundError(`Transaction with ID '${id}' not found`);
-
+    async (req) => {
+      const transaction = await findTransaction(req.params.id);
       return serializeTransaction(transaction);
     }
   )
@@ -94,17 +90,19 @@ export async function transactionRoutes(app: FastifyInstance) {
     Reply: TransactionResponseDTO
   }>(
     "/:id",
-    async (req, res) => {
+    { preHandler: authorizeAccessToken() },
+    async (req) => {
       const { id } = req.params;
-      const deleted = await TransactionModel.findByIdAndDelete(id, { new: true });
-      if (!deleted)
-        throw new NotFoundError(`Transaction with ID '${id}' not found`);
-      
-      return res.send(serializeTransaction(deleted));
+      const transaction = await findTransaction(id);
+  
+      checkOwner((req as AuthenticatedRequest).userId, transaction, "delete");
+
+      await transaction.deleteOne();
+      return serializeTransaction(transaction);
     }
   )
 
-  app.delete<{ Reply: DeleteManyReply }>("/", async (req, res) => {
+  app.delete<{ Reply: DeleteManyReply }>("/", async (_req, res) => {
     const tmp = await TransactionModel.deleteMany();
     return res.send(tmp);
   })
