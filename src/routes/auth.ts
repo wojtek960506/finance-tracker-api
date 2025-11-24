@@ -26,14 +26,12 @@ export default async function authRoutes(app: FastifyInstance) {
     async (req, res) => {
       const { email, password } = req.body as { email: string, password: string };
       const user = await UserModel.findOne({ email }).exec();
-      if (!user) return res.status(401).send(
-        { error: `User with email '${email}' not found`}
-      );
+      if (!user) 
+        throw new AppError(401, `User with email '${email}' not found`);
 
       const valid = await argon2.verify(user.passwordHash, password);
-      if (!valid) return res.status(401).send(
-        { error: "Invalid credentials" }
-      );
+      if (!valid)
+        throw new AppError(401, `Invalid credentials`);
 
       // create access token (include minimal claims)
       const accessToken = createAccessToken({
