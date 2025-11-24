@@ -1,8 +1,8 @@
 import z from "zod";
 
 const UserCommonSchema = z.object({
-  firstName: z.string().min(3, "First name must have at least 3 characters."),
-  lastName: z.string().min(3, "Last name must have at least 3 characters."),
+  firstName: z.string().min(2, "First name must have at least 2 characters."),
+  lastName: z.string().min(2, "Last name must have at least 2 characters."),
   email: z.email(),
 })
 
