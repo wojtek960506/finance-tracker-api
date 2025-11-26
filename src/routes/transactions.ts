@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { TransactionModel } from "@models/transaction-model";
 import { 
   TransactionCreateDTO,
@@ -10,23 +10,46 @@ import {
   TransactionResponseDTO,
   TransactionsResponseDTO,
 } from "@schemas/transaction";
-import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types";
+import { AuthenticatedRequest, DeleteManyReply, FilteredResponse, ParamsJustId } from "./types";
 import { updateTransactionHelper } from "@utils/routes";
-import { validateBody } from "@utils/validation";
+import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { authorizeAccessToken } from "@utils/authorization";
+import { authorizeAccessToken } from "@/services/authorization";
 import { checkOwner, findTransaction } from "./utils-routes";
+import { transactionQuerySchema } from "@schemas/transaction-query";
+import { buildTransactionQuery } from "@/services/build-transaction-query";
 
+export async function transactionRoutes(
+  app: FastifyInstance & { withTypeProvider: <T>() => any }
+) {
 
-export async function transactionRoutes(app: FastifyInstance) {
-  app.get<{ Reply: TransactionsResponseDTO }>(
+  app.get<{ Reply: FilteredResponse<TransactionsResponseDTO> }>(
     "/",
     { preHandler: authorizeAccessToken() },
-    async (req) => {
-      const transactions = await TransactionModel.find(
-        { ownerId: (req as AuthenticatedRequest).userId }
-      ).sort({ date: -1 });
-      return transactions.map(transaction => serializeTransaction(transaction))
+    async (req, res) => {
+      const q = validateSchema(transactionQuerySchema, req.query);
+
+      const filter = buildTransactionQuery(q, (req as AuthenticatedRequest).userId);
+      const skip = (q.page - 1) * q.limit;
+
+      const [transactions, total] = await Promise.all([
+        TransactionModel
+          .find(filter)
+          .sort({ [q.sortBy]: q.sortOrder === "asc" ? 1 : -1 })
+          .skip(skip)
+          .limit(q.limit),
+        TransactionModel.countDocuments(filter)
+      ]);
+
+      const totalPages = Math.ceil(total / q.limit);
+
+      return res.send({
+        page: q.page,
+        limit: q.limit,
+        total,
+        totalPages,
+        items: transactions.map(transaction => serializeTransaction(transaction))
+      })
     }
   );
 

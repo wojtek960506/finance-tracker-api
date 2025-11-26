@@ -6,7 +6,7 @@ import { AppError, NotFoundError } from "@utils/errors";
 import { validateBody } from "@utils/validation";
 import argon2 from "argon2";
 import { serializeUser } from "@schemas/serialize-user";
-import { authorizeAccessToken } from "@utils/authorization";
+import { authorizeAccessToken } from "@/services/authorization";
 
 
 export async function userRoutes(app: FastifyInstance) {

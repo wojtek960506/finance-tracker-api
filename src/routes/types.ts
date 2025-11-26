@@ -12,3 +12,11 @@ export interface DeleteManyReply {
 export type AuthenticatedRequest = FastifyRequest & {
   userId: string
 }
+
+export type FilteredResponse<T> = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  items: T
+}

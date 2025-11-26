@@ -6,7 +6,7 @@ import argon2 from "argon2";
 import { createAccessToken, createRefreshToken } from "@/services/authTokens";
 import { AppError, NotFoundError } from "@utils/errors";
 import jwt from "jsonwebtoken";
-import { authorizeAccessToken } from "@utils/authorization";
+import { authorizeAccessToken } from "@/services/authorization";
 import { UserResponseDTO } from "@schemas/user";
 import { serializeUser } from "@schemas/serialize-user";
 import { AuthenticatedRequest } from "./types";

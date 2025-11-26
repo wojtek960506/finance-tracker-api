@@ -8,12 +8,13 @@ import cookie from "@fastify/cookie";
 import { userRoutes } from "@routes/user";
 import authRoutes from "@routes/auth";
 import fastifyJwt from "@fastify/jwt";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 dotenv.config();
 const PORT = Number(process.env.PORT) || 5000;
 
 const buildApp = async () => {
-  const app = Fastify({ logger: true });
+  const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
   
   // register cookie
   await app.register(cookie, {
