@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyPluginAsync } from "fastify";
+import { FastifyInstance } from "fastify";
 import { TransactionModel } from "@models/transaction-model";
 import { 
   TransactionCreateDTO,
