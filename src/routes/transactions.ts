@@ -56,7 +56,7 @@ export async function transactionRoutes(
 
 
   app.get< { Reply: { totalAmount: number, totalItems: number }} >(
-    "/anylysis",
+    "/analysis",
     { preHandler: authorizeAccessToken() },
     async (req, _res) => {
       const q = validateSchema(transactionAnalysisQuerySchema, req.query);

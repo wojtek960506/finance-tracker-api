@@ -28,7 +28,7 @@ Authorization: Bearer {{accessToken}}
 
 ### Get sum of amounts of filtered transactions
 
-GET {{baseUrl}}/transactions/anylysis?{{PLN}}&{{date2}}&{{type}}
+GET {{baseUrl}}/transactions/analysis?{{PLN}}&{{date2}}&{{type}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
