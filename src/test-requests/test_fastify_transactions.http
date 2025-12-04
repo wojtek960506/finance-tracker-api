@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NDg0NjI0NiwiZXhwIjoxNzY0ODQ2ODQ2fQ.8VKPUaUzHg-vGAdk7-fLSWSpUfx2pJbEaCD7d33LPPI
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NDg2OTk4NiwiZXhwIjoxNzY0ODcxNzg2fQ.W1W3RtDZ_VLIFltoTq2R0qFztt_15iJtvpsxxipCuek
 
 # woj zie
 # eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2Mzk4MTE1NywiZXhwIjoxNzYzOTgxNzU3fQ.-sgPvEP3Eg4qvGuLRhOF28QS4qjhWCT_OpuPS7Ku9i0
@@ -18,7 +18,7 @@
 @date2 = startDate=2016/01/01&endDate=2017/01/01
 @sorting = sortBy=date&sortOrder=asc
 @pagination = limit=10&page=3
-@type = transactionType=income
+@type = transactionType=expense
 
 ### Get transactions with pagination, filters and sorting
 
@@ -29,6 +29,11 @@ Authorization: Bearer {{accessToken}}
 ### Get sum of amounts of filtered transactions
 
 GET {{baseUrl}}/transactions/analysis?{{PLN}}&{{date2}}&{{type}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### GET STATISTICS ABOUT TRANSACTIONS
+GET {{baseUrl}}/transactions/statistics?{{type}}&{{PLN}}&month=12&year=2020
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 

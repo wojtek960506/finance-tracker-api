@@ -16,9 +16,15 @@ import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { authorizeAccessToken } from "@/services/authorization";
 import { checkOwner, findTransaction } from "./utils-routes";
-import { transactionAnalysisQuerySchema, transactionQuerySchema } from "@schemas/transaction-query";
+import { 
+  transactionAnalysisQuerySchema,
+  transactionQuerySchema,
+  transactionStatisticsQuerySchema
+} from "@schemas/transaction-query";
 import { buildTransactionQuery } from "@/services/build-transaction-query";
 import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
+import { FilterQuery, PipelineStage, Types } from "mongoose";
+import { ValidationError } from "@utils/errors";
 
 export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
@@ -54,7 +60,6 @@ export async function transactionRoutes(
     }
   );
 
-
   app.get< { Reply: { totalAmount: number, totalItems: number }} >(
     "/analysis",
     { preHandler: authorizeAccessToken() },
@@ -75,6 +80,126 @@ export async function transactionRoutes(
       }
     }
   )
+
+
+  // it is possible to group by
+  // - just month (then we get all time statistics for month and grouped by a year)
+  // - just year (then we get all statistics from given year and grouped by month in a given year)
+  // - year and month - then we get all statistics from a given month of the given year
+
+  // additionally we can filter it by category or payment method or account
+
+  app.get(
+    "/statistics",
+    { preHandler: authorizeAccessToken() },
+    async (req, _res) => {
+      const q = validateSchema(transactionStatisticsQuerySchema, req.query);
+
+      if (!q.year && !q.month) {
+        throw new ValidationError(
+          "At least one of 'year' or 'month' has to be specified to get statistics"
+        )
+      }
+
+      const matching: FilterQuery<unknown> = {};
+      if (q.year && !q.month) {
+        matching.date = {
+          $gte: new Date(`${q.year}/01/01`),
+          $lt: new Date(`${q.year + 1}/01/01`)
+        };
+      }
+      if (q.month && !q.year) matching.$expr = { $eq: [{ $month: "$date" }, q.month]};
+      if (q.month && q.year) {
+        matching.date = {
+          $gte: new Date(`${q.year}/${String(q.month).padStart(2, "0")}/01`),
+          $lt: new Date(
+            `${q.month === 12 ? q.year + 1 : q.year}/` + 
+            `${String(q.month === 12 ? 1 : q.month + 1).padStart(2, "0")}/01`
+          )
+        }
+      }
+      
+      matching.ownerId = new Types.ObjectId((req as AuthenticatedRequest).userId);
+      matching.transactionType = q.transactionType;
+      matching.currency = q.currency;
+
+      if (q.category) matching.category = q.category;
+      if (q.paymentMethod) matching.paymentMethod = q.paymentMethod;
+      if (q.account) matching.account = q.account;
+
+      let grouping = {};
+
+      // grouping by year and month (then we get all statistics
+      // from a given month of the given year)
+      if (q.year && q.month) {
+        grouping = {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: "$amount" },
+            totalItems: { $sum: 1 },
+          }
+        }
+      }
+
+      // grouping just by year (then we get all statistics
+      // from given year and grouped by month in a given year)
+      if (q.year && !q.month) {
+        grouping = {
+          $facet: {
+            allTimeByYear: [{
+              $group: {
+                _id: null,
+                totalAmount: { $sum: "$amount" },
+                totalItems: { $sum: 1 },
+              }
+            }],
+            monthly: [{
+              $group: {
+                _id: { month: { $month: "$date" } },
+                totalAmount: { $sum: "$amount" },
+                totalItems: { $sum: 1 },
+              }
+            }, {
+              $sort: { "_id.month": 1 } // ascending numbers of months
+            }]
+          }
+        }
+      }
+
+      // grouping just by a month (then we get all time statistics
+      // for month and grouped by a year)
+      if (q.month && !q.year) {
+        grouping = {
+          $facet: {
+            allTimeByMonth: [{
+              $group: {
+                _id: null,
+                totalAmount: { $sum: "$amount"},
+                totalItems: { $sum: 1 },
+              }
+            }],
+            yearly: [{
+              $group: {
+                _id: { year: { $year: "$date" } },
+                totalAmount: { $sum: "$amount" },
+                totalItems: { $sum: 1 },
+              }
+            }, {
+              $sort: { "_id.year": 1 } // ascending numbers of years
+            }]
+          }
+        }
+      }
+
+      const result = await TransactionModel.aggregate([
+        { $match: matching } as PipelineStage,
+        grouping as PipelineStage
+      ])
+
+      return result
+    }
+  )
+
 
   app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
     "/:id",

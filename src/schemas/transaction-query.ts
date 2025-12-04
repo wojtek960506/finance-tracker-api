@@ -39,4 +39,17 @@ export const transactionAnalysisQuerySchema = z.object({
   account: z.enum([...ACCOUNTS]).optional(),
 })
 
-export type TransactionAnalysisQuery = z.infer<typeof transactionAnalysisQuerySchema>
+export type TransactionAnalysisQuery = z.infer<typeof transactionAnalysisQuerySchema>;
+
+export const transactionStatisticsQuerySchema = z.object({
+  year: z.coerce.number().min(0).optional(),
+  month: z.coerce.number().min(1).max(12).optional(),
+  transactionType: z.enum([...TRANSACTION_TYPES]),
+  currency: z.enum([...CURRENCIES]),
+
+  category: z.enum([...CATEGORIES]).optional(),
+  paymentMethod: z.enum([...PAYMENT_METHODS]).optional(),
+  account: z.enum([...ACCOUNTS]).optional(),
+})
+
+export type TransactionStatisticsQuery = z.infer<typeof transactionStatisticsQuerySchema>;
