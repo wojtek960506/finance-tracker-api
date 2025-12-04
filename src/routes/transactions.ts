@@ -16,8 +16,9 @@ import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { authorizeAccessToken } from "@/services/authorization";
 import { checkOwner, findTransaction } from "./utils-routes";
-import { transactionQuerySchema } from "@schemas/transaction-query";
+import { transactionAnalysisQuerySchema, transactionQuerySchema } from "@schemas/transaction-query";
 import { buildTransactionQuery } from "@/services/build-transaction-query";
+import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
 
 export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
@@ -52,6 +53,28 @@ export async function transactionRoutes(
       })
     }
   );
+
+
+  app.get< { Reply: { totalAmount: number, totalItems: number }} >(
+    "/anylysis",
+    { preHandler: authorizeAccessToken() },
+    async (req, _res) => {
+      const q = validateSchema(transactionAnalysisQuerySchema, req.query);
+      const filter = buildTransactionAnalysisQuery(q, (req as AuthenticatedRequest).userId);
+      const result = await TransactionModel.aggregate([
+        { $match: filter },
+        { $group: {
+          _id: null,
+          totalAmount: { $sum: "$amount" },
+          totalItems: { $sum: 1 },
+        }}
+      ])
+      return {
+        totalAmount: result[0]!.totalAmount,
+        totalItems: result[0]!.totalItems,
+      }
+    }
+  )
 
   app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
     "/:id",

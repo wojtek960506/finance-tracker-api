@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NDE1NDg3NiwiZXhwIjoxNzY0MTU1NDc2fQ.XQUDzJZ-e_Y4WLgrcr8hu2lnU8ZOGDC9r2FdZgDbBNs
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NDg0NjI0NiwiZXhwIjoxNzY0ODQ2ODQ2fQ.8VKPUaUzHg-vGAdk7-fLSWSpUfx2pJbEaCD7d33LPPI
 
 # woj zie
 # eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2Mzk4MTE1NywiZXhwIjoxNzYzOTgxNzU3fQ.-sgPvEP3Eg4qvGuLRhOF28QS4qjhWCT_OpuPS7Ku9i0
@@ -11,17 +11,24 @@
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
-
-### Get transactions with pagination, filters and sorting
-
 @amount = minAmount=100.01&maxAmount=500
 @PLN = currency=PLN
 @category = category=food
 @date = startDate=2022/11/17&endDate=2023/10/30
+@date2 = startDate=2016/01/01&endDate=2017/01/01
 @sorting = sortBy=date&sortOrder=asc
 @pagination = limit=10&page=3
+@type = transactionType=income
 
-GET {{baseUrl}}/transactions?{{PLN}}&{{category}}&{{amount}}&{{date}}&{{sorting}}&{{pagination}}
+### Get transactions with pagination, filters and sorting
+
+GET {{baseUrl}}/transactions?{{PLN}}&{{category}}&{{date}}&{{amount}}&{{sorting}}&{{pagination}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Get sum of amounts of filtered transactions
+
+GET {{baseUrl}}/transactions/anylysis?{{PLN}}&{{date2}}&{{type}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
