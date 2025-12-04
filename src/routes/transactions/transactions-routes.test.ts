@@ -1,7 +1,7 @@
 import { TransactionModel } from "@models/transaction-model";
 import Fastify from "fastify";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { transactionRoutes } from "./transactions";
+import { transactionRoutes } from "./transactions-routes";
 import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
 import { registerErrorHandler } from "@/plugins/errorHandler";
 import { serializeTransaction } from "@schemas/serialize-transaction";
