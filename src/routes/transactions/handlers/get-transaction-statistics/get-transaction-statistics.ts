@@ -6,6 +6,7 @@ import { validateSchema } from "@utils/validation";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getStatisticsGrouping } from "./get-statistics-grouping";
 import { getStatisticsMatching } from "./get-statistics-matching";
+import { parseStatisticsResult } from "./parse-result";
 
 export async function getTransactionStatisticsHandler(
   req: FastifyRequest, _res: FastifyReply
@@ -23,5 +24,5 @@ export async function getTransactionStatisticsHandler(
     getStatisticsGrouping(q)
   ])
 
-  return result
+  return parseStatisticsResult(result, q)
 }

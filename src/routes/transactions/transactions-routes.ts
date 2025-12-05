@@ -23,6 +23,11 @@ import {
 import { buildTransactionQuery } from "@/services/build-transaction-query";
 import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
 import { getTransactionStatisticsHandler } from "./handlers/get-transaction-statistics";
+import {
+  MonthYearResult,
+  MonthResult,
+  YearResult,
+} from "./handlers/get-transaction-statistics/parse-result";
 
 export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
@@ -85,7 +90,7 @@ export async function transactionRoutes(
   // - just year (then we get all statistics from given year and grouped by month in a given year)
   // - year and month - then we get all statistics from a given month of the given year
   // additionally we can filter it by category or payment method or account
-  app.get(
+  app.get<{ Reply: MonthYearResult | MonthResult | YearResult }>(
     "/statistics",
     { preHandler: authorizeAccessToken() },
     getTransactionStatisticsHandler
