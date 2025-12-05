@@ -25,6 +25,7 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
   matching.currency = q.currency;
 
   if (q.category) matching.category = q.category;
+  if (q.omitCategory && !q.category) matching.category = { $nin: q.omitCategory }
   if (q.paymentMethod) matching.paymentMethod = q.paymentMethod;
   if (q.account) matching.account = q.account;
 

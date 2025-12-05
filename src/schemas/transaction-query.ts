@@ -48,6 +48,11 @@ export const transactionStatisticsQuerySchema = z.object({
   currency: z.enum([...CURRENCIES]),
 
   category: z.enum([...CATEGORIES]).optional(),
+  
+  omitCategory: z
+    .union([z.enum([...CATEGORIES]), z.array(z.enum([...CATEGORIES]))])
+    .transform(value => (Array.isArray(value) ? value : [value]))
+    .optional(),
   paymentMethod: z.enum([...PAYMENT_METHODS]).optional(),
   account: z.enum([...ACCOUNTS]).optional(),
 })
