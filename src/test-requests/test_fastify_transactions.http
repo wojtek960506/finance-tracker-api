@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NDg2OTk4NiwiZXhwIjoxNzY0ODcxNzg2fQ.W1W3RtDZ_VLIFltoTq2R0qFztt_15iJtvpsxxipCuek
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NDkzNDkxMywiZXhwIjoxNzY0OTM4NTEzfQ.MP85TUboq0L6aS45E7hYC5M6qrvgA_s67QGasmjCkFo
 
 # woj zie
 # eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2Mzk4MTE1NywiZXhwIjoxNzYzOTgxNzU3fQ.-sgPvEP3Eg4qvGuLRhOF28QS4qjhWCT_OpuPS7Ku9i0
@@ -33,7 +33,10 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 ### GET STATISTICS ABOUT TRANSACTIONS
-GET {{baseUrl}}/transactions/statistics?{{type}}&{{PLN}}&month=12&year=2020
+@omitCategory = omitCategory=myAccount&omitCategory=investments
+@yearAndMonth = year=2023
+
+GET {{baseUrl}}/transactions/statistics?{{type}}&{{PLN}}&{{yearAndMonth}}&{{omitCategory}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
