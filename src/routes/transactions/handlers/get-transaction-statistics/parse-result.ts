@@ -33,27 +33,31 @@ export type MonthResult = {
   yearly: YearlyResult;
 }
 
-const getTotalAmountAndItems = (resultItem: TotalAmountAndItems) => ({
-  totalAmount: resultItem.totalAmount,
-  totalItems: resultItem.totalItems,
-});
+const getTotalAmountAndItems = (resultItem: TotalAmountAndItems | undefined) => {
+  if (!resultItem) return { totalAmount: 0, totalItems: 0 };
+  return {
+    totalAmount: resultItem.totalAmount,
+    totalItems: resultItem.totalItems,
+  }
+};
 
 export const parseStatisticsResult = (
   result : any[],
   q: TransactionStatisticsQuery
 ): MonthYearResult | YearResult | MonthResult => {
+
+  if (!result || result.length === 0) return { totalAmount: 0, totalItems: 0 }; 
+  
+
   if (q.year && q.month) {
     const data = result![0];
 
-    return {
-      totalAmount: data.totalAmount,
-      totalItems: data.totalItems,
-    }
+    return getTotalAmountAndItems(data);
   } else if (q.year) {
     const data = result![0];
     const returnData = {} as YearResult;
 
-    returnData.allTimeByYear = getTotalAmountAndItems(data.allTimeByYear![0]);
+    returnData.allTimeByYear = getTotalAmountAndItems(data.allTimeByYear?.[0]);
 
     const monthlyData = [] as MonthlyResult;
     data.monthly.forEach((resultItem: MonthlyResultItemServer) => {
@@ -71,7 +75,7 @@ export const parseStatisticsResult = (
 
     console.log(data.allTimeByMonth);
 
-    returnData.allTimeByMonth = getTotalAmountAndItems(data.allTimeByMonth![0]);
+    returnData.allTimeByMonth = getTotalAmountAndItems(data.allTimeByMonth?.[0]);
 
     const yearlyData = [] as YearlyResult;
     data.yearly.forEach((resultItem: YearlyResultItemServer) => {
