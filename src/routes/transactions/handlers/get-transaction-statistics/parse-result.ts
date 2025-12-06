@@ -7,30 +7,28 @@ type TotalAmountAndItems = {
 
 export type MonthYearResult = TotalAmountAndItems;
 
+type TotalAmountAndItemsObj = Record<number, TotalAmountAndItems>;
+
+export type YearResult = {
+  allTimeByYear: TotalAmountAndItems;
+  monthly: TotalAmountAndItemsObj;
+}
+
+export type MonthResult = {
+  allTimeByMonth: TotalAmountAndItems;
+  yearly: TotalAmountAndItemsObj;
+}
+
 type MonthlyResultItemServer = TotalAmountAndItems & {
   _id: {
     month: number,
   },
 }
 
-type MonthlyResult = (TotalAmountAndItems & { month: number })[];
-
-export type YearResult = {
-  allTimeByYear: TotalAmountAndItems;
-  monthly: MonthlyResult;
-}
-
 type YearlyResultItemServer = TotalAmountAndItems & {
   _id: {
     year: number,
   },
-}
-
-type YearlyResult = (TotalAmountAndItems & { year: number })[];
-
-export type MonthResult = {
-  allTimeByMonth: TotalAmountAndItems;
-  yearly: YearlyResult;
 }
 
 const getTotalAmountAndItems = (resultItem: TotalAmountAndItems | undefined) => {
@@ -59,12 +57,9 @@ export const parseStatisticsResult = (
 
     returnData.allTimeByYear = getTotalAmountAndItems(data.allTimeByYear?.[0]);
 
-    const monthlyData = [] as MonthlyResult;
+    const monthlyData = {} as TotalAmountAndItemsObj;
     data.monthly.forEach((resultItem: MonthlyResultItemServer) => {
-      monthlyData.push({
-        ...getTotalAmountAndItems(resultItem),
-        month: resultItem._id.month,
-      })
+      monthlyData[resultItem._id.month] = getTotalAmountAndItems(resultItem);
     });
     returnData.monthly = monthlyData;
 
@@ -77,12 +72,9 @@ export const parseStatisticsResult = (
 
     returnData.allTimeByMonth = getTotalAmountAndItems(data.allTimeByMonth?.[0]);
 
-    const yearlyData = [] as YearlyResult;
+    const yearlyData = {} as TotalAmountAndItemsObj;
     data.yearly.forEach((resultItem: YearlyResultItemServer) => {
-      yearlyData.push({
-        ...getTotalAmountAndItems(resultItem),
-        year: resultItem._id.year,
-      })
+      yearlyData[resultItem._id.year] = getTotalAmountAndItems(resultItem);
     });
     returnData.yearly = yearlyData;
 
