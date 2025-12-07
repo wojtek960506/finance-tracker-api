@@ -19,6 +19,12 @@ export type MonthResult = {
   yearly: TotalAmountAndItemsObj;
 }
 
+// TODO in other main types change to `allTime`
+export type NoMonthNoYearResult = {
+  allTime: TotalAmountAndItems;
+  yearly: TotalAmountAndItemsObj;
+}
+
 type MonthlyResultItemServer = TotalAmountAndItems & {
   _id: {
     month: number,
@@ -42,10 +48,24 @@ const getTotalAmountAndItems = (resultItem: TotalAmountAndItems | undefined) => 
 export const parseStatisticsResult = (
   result : any[],
   q: TransactionStatisticsQuery
-): MonthYearResult | YearResult | MonthResult => {
+): MonthYearResult | YearResult | MonthResult | NoMonthNoYearResult => {
 
   if (!result || result.length === 0) return { totalAmount: 0, totalItems: 0 }; 
   
+  if (!q.year && !q.month) {
+    const data = result![0];
+    const returnData = {} as NoMonthNoYearResult;
+
+    returnData.allTime = getTotalAmountAndItems(data.allTime?.[0]);
+
+    const yearlyData = {} as TotalAmountAndItemsObj;
+    data.yearly.forEach((resultItem: YearlyResultItemServer) => {
+      yearlyData[resultItem._id.year] = getTotalAmountAndItems(resultItem);
+    });
+    returnData.yearly = yearlyData;
+
+    return returnData;
+  }
 
   if (q.year && q.month) {
     const data = result![0];

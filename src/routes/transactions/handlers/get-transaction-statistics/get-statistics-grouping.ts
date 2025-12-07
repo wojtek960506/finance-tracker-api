@@ -4,6 +4,31 @@ import { PipelineStage } from "mongoose";
 export const getStatisticsGrouping = (q: TransactionStatisticsQuery) => {
   let grouping = {};
 
+  // we got all transactions overall and we group them by year
+  if (!q.year && !q.month) {
+    grouping = {
+      $facet: {
+        allTime: [{
+          $group: {
+            _id: null,
+            totalAmount: { $sum: "$amount" },
+            totalItems: { $sum: 1 },
+          }
+        }],
+        yearly: [{
+          $group: {
+            _id: { year: { $year: "$date" } },
+            totalAmount: { $sum: "$amount" },
+            totalItems: { $sum: 1 },
+          }
+        }, {
+          $sort: { "_id.year": 1 } // ascending numbers of years
+        }]
+      }
+    }
+  }
+
+
   // grouping by year and month (then we get all statistics
   // from a given month of the given year)
   if (q.year && q.month) {
