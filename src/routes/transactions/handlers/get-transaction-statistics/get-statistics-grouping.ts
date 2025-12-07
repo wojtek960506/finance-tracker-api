@@ -1,89 +1,51 @@
 import { TransactionStatisticsQuery } from "@schemas/transaction-query";
 import { PipelineStage } from "mongoose";
 
+const groupingByYear = { year: { $year: "$date" } } as const;
+type TGroupingByYear = typeof groupingByYear;
+
+const groupingByMonth = { month: { $month: "$date" } } as const;
+type TGroupingByMonth = typeof groupingByMonth;
+
+
+export const getAmountAndItemsGrouping = (
+  _id: TGroupingByYear | TGroupingByMonth | null
+) => ({
+  _id,
+  totalAmount: { $sum: "$amount" },
+  totalItems: { $sum: 1 } 
+} as const);
+
 export const getStatisticsGrouping = (q: TransactionStatisticsQuery) => {
   let grouping = {};
 
-  // we got all transactions overall and we group them by year
-  if (!q.year && !q.month) {
+  if (q.year) {
+    if (q.month) {
+      grouping = {
+        $group: getAmountAndItemsGrouping(null)
+      }
+    } else {
+      grouping = {
+        $facet: {
+          allTime: [{
+            $group: getAmountAndItemsGrouping(null)
+          }],
+          monthly: [{
+            $group: getAmountAndItemsGrouping(groupingByMonth)
+          }, {
+            $sort: { "_id.month": 1 } // ascending numbers of months
+          }]
+        }
+      }
+    }
+  } else {
     grouping = {
       $facet: {
         allTime: [{
-          $group: {
-            _id: null,
-            totalAmount: { $sum: "$amount" },
-            totalItems: { $sum: 1 },
-          }
+          $group: getAmountAndItemsGrouping(null)
         }],
         yearly: [{
-          $group: {
-            _id: { year: { $year: "$date" } },
-            totalAmount: { $sum: "$amount" },
-            totalItems: { $sum: 1 },
-          }
-        }, {
-          $sort: { "_id.year": 1 } // ascending numbers of years
-        }]
-      }
-    }
-  }
-
-
-  // grouping by year and month (then we get all statistics
-  // from a given month of the given year)
-  if (q.year && q.month) {
-    grouping = {
-      $group: {
-        _id: null,
-        totalAmount: { $sum: "$amount" },
-        totalItems: { $sum: 1 },
-      }
-    }
-  }
-
-  // grouping just by year (then we get all statistics
-  // from given year and grouped by month in a given year)
-  if (q.year && !q.month) {
-    grouping = {
-      $facet: {
-        allTimeByYear: [{
-          $group: {
-            _id: null,
-            totalAmount: { $sum: "$amount" },
-            totalItems: { $sum: 1 },
-          }
-        }],
-        monthly: [{
-          $group: {
-            _id: { month: { $month: "$date" } },
-            totalAmount: { $sum: "$amount" },
-            totalItems: { $sum: 1 },
-          }
-        }, {
-          $sort: { "_id.month": 1 } // ascending numbers of months
-        }]
-      }
-    }
-  }
-
-  // grouping just by a month (then we get all time statistics
-  // for month and grouped by a year)
-  if (q.month && !q.year) {
-    grouping = {
-      $facet: {
-        allTimeByMonth: [{
-          $group: {
-            _id: null,
-            totalAmount: { $sum: "$amount"},
-            totalItems: { $sum: 1 },
-          }
-        }],
-        yearly: [{
-          $group: {
-            _id: { year: { $year: "$date" } },
-            totalAmount: { $sum: "$amount" },
-            totalItems: { $sum: 1 },
-          }
+          $group: getAmountAndItemsGrouping(groupingByYear)
         }, {
           $sort: { "_id.year": 1 } // ascending numbers of years
         }]

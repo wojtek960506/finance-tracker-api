@@ -25,8 +25,8 @@ import { buildTransactionAnalysisQuery } from "@/services/build-transaction-anal
 import { getTransactionStatisticsHandler } from "./handlers/get-transaction-statistics";
 import {
   MonthYearResult,
-  MonthResult,
   YearResult,
+  NoYearResult,
 } from "./handlers/get-transaction-statistics/parse-result";
 
 export async function transactionRoutes(
@@ -90,7 +90,7 @@ export async function transactionRoutes(
   // - just year (then we get all statistics from given year and grouped by month in a given year)
   // - year and month - then we get all statistics from a given month of the given year
   // additionally we can filter it by category or payment method or account
-  app.get<{ Reply: MonthYearResult | MonthResult | YearResult }>(
+  app.get<{ Reply: MonthYearResult | YearResult | NoYearResult }>(
     "/statistics",
     { preHandler: authorizeAccessToken() },
     getTransactionStatisticsHandler
