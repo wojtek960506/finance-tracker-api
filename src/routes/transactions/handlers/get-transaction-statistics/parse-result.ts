@@ -19,6 +19,8 @@ export type NoYearResult = {
   yearly: TotalAmountAndItemsObj;
 }
 
+export type TransactionStatisticsResponse = MonthYearResult | YearResult | NoYearResult;
+
 type MonthlyResultItemServer = TotalAmountAndItems & { _id: { month: number } }
 
 type YearlyResultItemServer = TotalAmountAndItems & { _id: { year: number } }

@@ -10,7 +10,12 @@ import {
   TransactionResponseDTO,
   TransactionsResponseDTO,
 } from "@schemas/transaction";
-import { AuthenticatedRequest, DeleteManyReply, FilteredResponse, ParamsJustId } from "../types";
+import {
+  AuthenticatedRequest,
+  DeleteManyReply,
+  FilteredResponse,
+  ParamsJustId
+} from "@/routes/types";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
@@ -19,36 +24,14 @@ import { checkOwner, findTransaction } from "../utils-routes";
 import { 
   transactionAnalysisQuerySchema,
   transactionQuerySchema,
-  transactionTotalsQuerySchema,
 } from "@schemas/transaction-query";
 import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
 import { getTransactionStatisticsHandler } from "./handlers/get-transaction-statistics";
-import {
-  MonthYearResult,
-  YearResult,
-  NoYearResult,
-} from "./handlers/get-transaction-statistics/parse-result";
+import { TransactionStatisticsResponse } from "./handlers/get-transaction-statistics/parse-result";
 import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
+import { getTransactionTotalsHandler } from "./handlers/get-transaction-totals";
+import { TransactionTotalsResponse } from "./handlers/get-transaction-totals/parse-totals-result";
 
-type TransactionSubcategoryTotals = {
-  totalAmount: number;
-  totalItems: number;
-  averageAmount: number;
-  maxAmount: number;
-  minAmount: number;
-}
-
-type TransactionTotals = {
-  expense: TransactionSubcategoryTotals;
-  income: TransactionSubcategoryTotals;
-}
-
-type TransactionTotalsObjServer = TransactionSubcategoryTotals & {
-  _id: {
-    currency: string,
-    transactionType: string,
-  }
-}
 
 export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
@@ -84,58 +67,13 @@ export async function transactionRoutes(
     }
   );
 
-  app.get(
+  app.get<{ Reply: TransactionTotalsResponse }>(
     "/totals",
     { preHandler: authorizeAccessToken() },
-    async (req, _res) => {
-      const q = validateSchema(transactionTotalsQuerySchema, req.query);
-
-      const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
-
-      if (q.category) filter.category = q.category;
-      if (q.omitCategory && !q.category) filter.category = { $nin: q.omitCategory }
-
-      const transactions = await TransactionModel.aggregate([
-        { $match: filter },
-        { $group: { 
-          _id: {
-            currency: "$currency",
-            transactionType: "$transactionType"
-          },
-          totalAmount: { $sum: "$amount" },
-          totalItems: { $sum: 1 },
-          averageAmount: { $avg: "$amount" },
-          maxAmount: { $max: "$amount" },
-          minAmount: { $min: "$amount" },
-        }},
-        { $sort: { "_id.currency": 1, "_id.transactionType": 1 } }
-      ]);
-
-      const totalsByCurrencies: Record<string, TransactionTotals> = {};
-      transactions.forEach(({ _id, ...data }: TransactionTotalsObjServer) => {
-        const defaultSubcategoryTotals = {
-          totalAmount: 0,
-          totalItems: 0,
-          averageAmount: 0,
-          maxAmount: 0,
-          minAmount: 0,
-        }
-        const { currency, transactionType } = _id;
-        if (!totalsByCurrencies[currency]) {
-          totalsByCurrencies[currency] = {
-            expense: defaultSubcategoryTotals,
-            income: defaultSubcategoryTotals,
-          }
-        }
-        totalsByCurrencies[currency][transactionType as "expense" | "income"] =
-          data as TransactionSubcategoryTotals;
-      });
-    
-      return totalsByCurrencies;
-    }
+    getTransactionTotalsHandler
   )
 
-  app.get< { Reply: { totalAmount: number, totalItems: number }} >(
+  app.get<{ Reply: { totalAmount: number, totalItems: number } }>(
     "/analysis",
     { preHandler: authorizeAccessToken() },
     async (req, _res) => {
@@ -162,7 +100,7 @@ export async function transactionRoutes(
   // - just year (then we get all statistics from given year and grouped by month in a given year)
   // - year and month - then we get all statistics from a given month of the given year
   // additionally we can filter it by category or payment method or account
-  app.get<{ Reply: MonthYearResult | YearResult | NoYearResult }>(
+  app.get<{ Reply: TransactionStatisticsResponse }>(
     "/statistics",
     { preHandler: authorizeAccessToken() },
     getTransactionStatisticsHandler
