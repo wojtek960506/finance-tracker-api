@@ -30,6 +30,26 @@ import {
 } from "./handlers/get-transaction-statistics/parse-result";
 import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
 
+type TransactionSubcategoryTotals = {
+  totalAmount: number;
+  totalItems: number;
+  averageAmount: number;
+  maxAmount: number;
+  minAmount: number;
+}
+
+type TransactionTotals = {
+  expense: TransactionSubcategoryTotals;
+  income: TransactionSubcategoryTotals;
+}
+
+type TransactionTotalsObjServer = TransactionSubcategoryTotals & {
+  _id: {
+    currency: string,
+    transactionType: string,
+  }
+}
+
 export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
 ) {
@@ -72,21 +92,46 @@ export async function transactionRoutes(
 
       const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
 
+      if (q.category) filter.category = q.category;
+      if (q.omitCategory && !q.category) filter.category = { $nin: q.omitCategory }
+
       const transactions = await TransactionModel.aggregate([
         { $match: filter },
         { $group: { 
           _id: {
-            currency: "$currency"
+            currency: "$currency",
+            transactionType: "$transactionType"
           },
           totalAmount: { $sum: "$amount" },
           totalItems: { $sum: 1 },
           averageAmount: { $avg: "$amount" },
           maxAmount: { $max: "$amount" },
           minAmount: { $min: "$amount" },
-        }}
+        }},
+        { $sort: { "_id.currency": 1, "_id.transactionType": 1 } }
       ]);
 
-      return transactions;
+      const totalsByCurrencies: Record<string, TransactionTotals> = {};
+      transactions.forEach(({ _id, ...data }: TransactionTotalsObjServer) => {
+        const defaultSubcategoryTotals = {
+          totalAmount: 0,
+          totalItems: 0,
+          averageAmount: 0,
+          maxAmount: 0,
+          minAmount: 0,
+        }
+        const { currency, transactionType } = _id;
+        if (!totalsByCurrencies[currency]) {
+          totalsByCurrencies[currency] = {
+            expense: defaultSubcategoryTotals,
+            income: defaultSubcategoryTotals,
+          }
+        }
+        totalsByCurrencies[currency][transactionType as "expense" | "income"] =
+          data as TransactionSubcategoryTotals;
+      });
+    
+      return totalsByCurrencies;
     }
   )
 

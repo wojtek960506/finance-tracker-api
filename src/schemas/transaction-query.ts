@@ -34,7 +34,12 @@ export const transactionQuerySchema = transacionFiltersQuerySchema.extend({
 
 export type TransactionQuery = z.infer<typeof transactionQuerySchema>;
 
-export const transactionTotalsQuerySchema = transacionFiltersQuerySchema;
+export const transactionTotalsQuerySchema = transacionFiltersQuerySchema.extend({
+  omitCategory: z
+    .union([z.enum([...CATEGORIES]), z.array(z.enum([...CATEGORIES]))])
+    .transform(value => (Array.isArray(value) ? value : [value]))
+    .optional(),
+});
 
 export type TransactionTotalsQuery = z.infer<typeof transactionTotalsQuerySchema>;
 
