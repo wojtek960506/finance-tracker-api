@@ -1,11 +1,10 @@
 import { FastifyInstance } from "fastify";
+import { validateBody } from "@utils/validation";
 import { TransactionModel } from "@models/transaction-model";
 import { checkOwner, findTransaction } from "../utils-routes";
 import { authorizeAccessToken } from "@/services/authorization";
-import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
-import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
 import {
   getTransactionsHandler,
   updateTransactionHandler,
@@ -28,9 +27,6 @@ import {
   FilteredResponse,
   ParamsJustId
 } from "@routes/types-routes";
-import {
-  transactionAnalysisQuerySchema,
-} from "@schemas/transaction-query";
 
 
 export async function transactionRoutes(
@@ -49,28 +45,6 @@ export async function transactionRoutes(
     getTransactionTotalsHandler
   )
 
-  app.get<{ Reply: { totalAmount: number, totalItems: number } }>(
-    "/analysis",
-    { preHandler: authorizeAccessToken() },
-    async (req, _res) => {
-      const q = validateSchema(transactionAnalysisQuerySchema, req.query);
-      const filter = buildTransactionAnalysisQuery(q, (req as AuthenticatedRequest).userId);
-      const result = await TransactionModel.aggregate([
-        { $match: filter },
-        { $group: {
-          _id: null,
-          totalAmount: { $sum: "$amount" },
-          totalItems: { $sum: 1 },
-        }}
-      ])
-      return {
-        totalAmount: result[0]!.totalAmount,
-        totalItems: result[0]!.totalItems,
-      }
-    }
-  )
-
-
   // it is possible to group by
   // - just month (then we get all time statistics for month and grouped by a year)
   // - just year (then we get all statistics from given year and grouped by month in a given year)
@@ -81,7 +55,6 @@ export async function transactionRoutes(
     { preHandler: authorizeAccessToken() },
     getTransactionStatisticsHandler
   )
-
 
   app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
     "/:id",
