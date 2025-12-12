@@ -2,7 +2,7 @@ import {
   TransactionTotalsResponse,
   TransactionTotalsObjServer,
   TransactionSubcategoryTotals,
-} from "@routes/transactions/types";
+} from "@routes/transaction/types";
 
 
 export const parseTotalsResult = (transactions: TransactionTotalsObjServer[]) => {
