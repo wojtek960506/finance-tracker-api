@@ -4,13 +4,13 @@ import { checkOwner, findTransaction } from "../utils-routes";
 import { authorizeAccessToken } from "@/services/authorization";
 import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
 import {
+  getTransactionsHandler,
   updateTransactionHandler,
   getTransactionTotalsHandler,
-  getTransactionStatisticsHandler
+  getTransactionStatisticsHandler,
 } from "./handlers";
 import { 
   TransactionCreateDTO,
@@ -30,7 +30,6 @@ import {
 } from "@routes/types-routes";
 import {
   transactionAnalysisQuerySchema,
-  transactionQuerySchema,
 } from "@schemas/transaction-query";
 
 
@@ -41,31 +40,7 @@ export async function transactionRoutes(
   app.get<{ Reply: FilteredResponse<TransactionsResponseDTO> }>(
     "/",
     { preHandler: authorizeAccessToken() },
-    async (req, res) => {
-      const q = validateSchema(transactionQuerySchema, req.query);
-
-      const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
-      const skip = (q.page - 1) * q.limit;
-
-      const [transactions, total] = await Promise.all([
-        TransactionModel
-          .find(filter)
-          .sort({ [q.sortBy]: q.sortOrder === "asc" ? 1 : -1 })
-          .skip(skip)
-          .limit(q.limit),
-        TransactionModel.countDocuments(filter)
-      ]);
-
-      const totalPages = Math.ceil(total / q.limit);
-
-      return res.send({
-        page: q.page,
-        limit: q.limit,
-        total,
-        totalPages,
-        items: transactions.map(transaction => serializeTransaction(transaction))
-      })
-    }
+    getTransactionsHandler
   );
 
   app.get<{ Reply: TransactionTotalsResponse }>(
