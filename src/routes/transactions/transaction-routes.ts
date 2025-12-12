@@ -16,7 +16,6 @@ import {
   FilteredResponse,
   ParamsJustId
 } from "@routes/types-routes";
-import { updateTransactionHelper } from "@utils/routes";
 import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { authorizeAccessToken } from "@/services/authorization";
@@ -31,6 +30,8 @@ import { TransactionStatisticsResponse } from "./handlers/get-transaction-statis
 import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
 import { getTransactionTotalsHandler } from "./handlers/get-transaction-totals";
 import { TransactionTotalsResponse } from "./handlers/get-transaction-totals/parse-totals-result";
+import { updateTransactionHandler } from "./handlers/update-transaction";
+
 
 
 export async function transactionRoutes(
@@ -144,7 +145,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    (req) => updateTransactionHelper(req)
+    updateTransactionHandler
   );
 
   app.patch<{
@@ -159,7 +160,7 @@ export async function transactionRoutes(
         authorizeAccessToken()
       ]
     },
-    (req) => updateTransactionHelper(req)
+    updateTransactionHandler
   );
 
   app.delete<{

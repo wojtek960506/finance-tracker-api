@@ -5,7 +5,7 @@ import { AuthenticatedRequest, ParamsJustId } from "@routes/types-routes";
 import { TransactionPatchDTO, TransactionUpdateDTO } from "@schemas/transaction";
 
 
-export const updateTransactionHelper = async (
+export const updateTransactionHandler = async (
   req: FastifyRequest<{
     Params: ParamsJustId;
     Body: TransactionUpdateDTO | TransactionPatchDTO

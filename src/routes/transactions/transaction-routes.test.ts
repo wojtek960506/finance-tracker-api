@@ -1,10 +1,10 @@
-import { TransactionModel } from "@models/transaction-model";
 import Fastify from "fastify";
-import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { transactionRoutes } from "./transactions-routes";
-import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
+import { transactionRoutes } from "./transaction-routes";
+import { TransactionModel } from "@models/transaction-model";
 import { registerErrorHandler } from "@/plugins/errorHandler";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { serializeTransaction } from "@schemas/serialize-transaction";
+import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
 
 vi.mock("@models/transaction-model", () => ({
   TransactionModel: {
