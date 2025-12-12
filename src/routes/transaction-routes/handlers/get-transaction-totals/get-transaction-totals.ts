@@ -1,7 +1,7 @@
 import { validateSchema } from "@utils/validation";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { parseTotalsResult } from "./parse-totals-result";
-import { AuthenticatedRequest } from "@routes/types-routes";
+import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
 import { transactionTotalsQuerySchema } from "@schemas/transaction-query";
 import { buildTransactionFilterQuery } from "@/services/build-transaction-query";

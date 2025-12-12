@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { validateBody } from "@utils/validation";
 import { TransactionModel } from "@models/transaction-model";
-import { checkOwner, findTransaction } from "../utils-routes";
+import { checkOwner, findTransaction } from "../routes-utils";
 import { authorizeAccessToken } from "@/services/authorization";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
@@ -26,7 +26,7 @@ import {
   DeleteManyReply,
   FilteredResponse,
   ParamsJustId
-} from "@routes/types-routes";
+} from "@routes/routes-types";
 
 
 export async function transactionRoutes(

@@ -5,7 +5,7 @@ import { LoginSchema } from "@schemas/auth";
 import { UserResponseDTO } from "@schemas/user";
 import { validateBody } from "@utils/validation";
 import { IUser, UserModel } from "@models/user-model";
-import { AuthenticatedRequest } from "./types-routes";
+import { AuthenticatedRequest } from "./routes-types";
 import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
 import { authorizeAccessToken } from "@/services/authorization";

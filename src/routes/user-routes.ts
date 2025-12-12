@@ -5,7 +5,7 @@ import { validateBody } from "@utils/validation";
 import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
 import { authorizeAccessToken } from "@/services/authorization";
-import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types-routes";
+import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./routes-types";
 import {
   UserCreateDTO,
   UserCreateSchema,

@@ -1,7 +1,7 @@
 import { FastifyRequest } from "fastify";
-import { checkOwner, findTransaction } from "@routes/utils-routes";
+import { checkOwner, findTransaction } from "@routes/routes-utils";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { AuthenticatedRequest, ParamsJustId } from "@routes/types-routes";
+import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
 import { TransactionPatchDTO, TransactionUpdateDTO } from "@schemas/transaction";
 
 

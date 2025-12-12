@@ -1,6 +1,6 @@
 import { validateSchema } from "@utils/validation";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@routes/types-routes";
+import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
 import { transactionQuerySchema } from "@schemas/transaction-query";
 import { serializeTransaction } from "@schemas/serialize-transaction";
