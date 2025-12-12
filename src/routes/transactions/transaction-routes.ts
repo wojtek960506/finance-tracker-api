@@ -1,5 +1,17 @@
 import { FastifyInstance } from "fastify";
 import { TransactionModel } from "@models/transaction-model";
+import { checkOwner, findTransaction } from "../utils-routes";
+import { authorizeAccessToken } from "@/services/authorization";
+import { validateBody, validateSchema } from "@utils/validation";
+import { serializeTransaction } from "@schemas/serialize-transaction";
+import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
+import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
+import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
+import {
+  updateTransactionHandler,
+  getTransactionTotalsHandler,
+  getTransactionStatisticsHandler
+} from "./handlers";
 import { 
   TransactionCreateDTO,
   TransactionCreateSchema,
@@ -16,22 +28,10 @@ import {
   FilteredResponse,
   ParamsJustId
 } from "@routes/types-routes";
-import { validateBody, validateSchema } from "@utils/validation";
-import { serializeTransaction } from "@schemas/serialize-transaction";
-import { authorizeAccessToken } from "@/services/authorization";
-import { checkOwner, findTransaction } from "../utils-routes";
-import { 
+import {
   transactionAnalysisQuerySchema,
   transactionQuerySchema,
 } from "@schemas/transaction-query";
-import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
-import { getTransactionStatisticsHandler } from "./handlers/get-transaction-statistics";
-import { TransactionStatisticsResponse } from "./handlers/get-transaction-statistics/parse-result";
-import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
-import { getTransactionTotalsHandler } from "./handlers/get-transaction-totals";
-import { TransactionTotalsResponse } from "./handlers/get-transaction-totals/parse-totals-result";
-import { updateTransactionHandler } from "./handlers/update-transaction";
-
 
 
 export async function transactionRoutes(

@@ -1,29 +1,14 @@
 import { TransactionStatisticsQuery } from "@schemas/transaction-query";
+import {
+  YearResult,
+  NoYearResult,
+  TotalAmountAndItems,
+  TotalAmountAndItemsObj,
+  YearlyResultItemServer,
+  MonthlyResultItemServer,
+  TransactionStatisticsResponse,
+} from "@routes/transactions/types";
 
-type TotalAmountAndItems = {
-  totalAmount: number;
-  totalItems: number;
-}
-
-type TotalAmountAndItemsObj = Record<number, TotalAmountAndItems>;
-
-export type MonthYearResult = TotalAmountAndItems;
-
-export type YearResult = {
-  allTime: TotalAmountAndItems;
-  monthly: TotalAmountAndItemsObj;
-}
-
-export type NoYearResult = {
-  allTime: TotalAmountAndItems;
-  yearly: TotalAmountAndItemsObj;
-}
-
-export type TransactionStatisticsResponse = MonthYearResult | YearResult | NoYearResult;
-
-type MonthlyResultItemServer = TotalAmountAndItems & { _id: { month: number } }
-
-type YearlyResultItemServer = TotalAmountAndItems & { _id: { year: number } }
 
 const getTotalAmountAndItems = (
   resultItem: TotalAmountAndItems | undefined
@@ -38,7 +23,7 @@ const getTotalAmountAndItems = (
 export const parseStatisticsResult = (
   result : any[],
   q: TransactionStatisticsQuery
-): MonthYearResult | YearResult | NoYearResult => {
+): TransactionStatisticsResponse => {
 
   if (!result || result.length === 0) return { totalAmount: 0, totalItems: 0 };
 

@@ -7,7 +7,6 @@ type TGroupingByYear = typeof groupingByYear;
 const groupingByMonth = { month: { $month: "$date" } } as const;
 type TGroupingByMonth = typeof groupingByMonth;
 
-
 export const getAmountAndItemsGrouping = (
   _id: TGroupingByYear | TGroupingByMonth | null
 ) => ({
