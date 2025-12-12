@@ -1,11 +1,11 @@
-import { TransactionModel } from "@models/transaction-model";
-import { AuthenticatedRequest } from "@routes/types";
-import { transactionStatisticsQuerySchema } from "@schemas/transaction-query";
 import { validateSchema } from "@utils/validation";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { parseStatisticsResult } from "./parse-result";
+import { TransactionModel } from "@models/transaction-model";
+import { AuthenticatedRequest } from "@routes/types-routes";
 import { getStatisticsGrouping } from "./get-statistics-grouping";
 import { getStatisticsMatching } from "./get-statistics-matching";
-import { parseStatisticsResult } from "./parse-result";
+import { transactionStatisticsQuerySchema } from "@schemas/transaction-query";
 
 export async function getTransactionStatisticsHandler(
   req: FastifyRequest, _res: FastifyReply

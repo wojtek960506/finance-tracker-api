@@ -1,16 +1,15 @@
-import { IUser, UserModel } from "@models/user-model";
-import { LoginSchema } from "@schemas/auth";
-import { validateBody } from "@utils/validation";
-import { FastifyInstance, FastifyRequest } from "fastify";
 import argon2 from "argon2";
-import { createAccessToken, createRefreshToken } from "@/services/authTokens";
-import { AppError, NotFoundError } from "@utils/errors";
 import jwt from "jsonwebtoken";
-import { authorizeAccessToken } from "@/services/authorization";
+import { FastifyInstance } from "fastify";
+import { LoginSchema } from "@schemas/auth";
 import { UserResponseDTO } from "@schemas/user";
+import { validateBody } from "@utils/validation";
+import { IUser, UserModel } from "@models/user-model";
+import { AuthenticatedRequest } from "./types-routes";
+import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
-import { AuthenticatedRequest } from "./types";
-
+import { authorizeAccessToken } from "@/services/authorization";
+import { createAccessToken, createRefreshToken } from "@/services/authTokens";
 
 async function findHash(hashes: { tokenHash: string, createdAt: Date}[], refreshToken: string) {
   for (const { tokenHash } of hashes) {
@@ -19,7 +18,7 @@ async function findHash(hashes: { tokenHash: string, createdAt: Date}[], refresh
   return null;          
 }
 
-export default async function authRoutes(app: FastifyInstance) {
+export async function authRoutes(app: FastifyInstance) {
   app.post(
     "/login", 
     { preHandler: validateBody(LoginSchema) },

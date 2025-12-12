@@ -1,14 +1,15 @@
-import Fastify from "fastify";
 import dotenv from "dotenv";
-import { connectDB } from "@utils/db";
-import { transactionRoutes } from "@routes/transactions";
-import { registerErrorHandler } from "./plugins/errorHandler";
+import Fastify from "fastify";
 import cors from "@fastify/cors"
 import cookie from "@fastify/cookie";
-import { userRoutes } from "@routes/user";
-import authRoutes from "@routes/auth";
 import fastifyJwt from "@fastify/jwt";
+import { connectDB } from "@utils/db";
+import { userRoutes } from "@routes/user-routes";
+import { authRoutes } from "@routes/auth-routes";
+import { transactionRoutes } from "@routes/transactions";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
+import { registerErrorHandler } from "./plugins/errorHandler";
+
 
 dotenv.config();
 const PORT = Number(process.env.PORT) || 5000;

@@ -1,12 +1,17 @@
-import { UserCreateDTO, UserCreateSchema, UserResponseDTO, UsersResponseDTO } from "@schemas/user";
-import { FastifyInstance } from "fastify";
-import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types";
-import { UserModel } from "@models/user-model";
-import { AppError, NotFoundError } from "@utils/errors";
-import { validateBody } from "@utils/validation";
 import argon2 from "argon2";
+import { FastifyInstance } from "fastify";
+import { UserModel } from "@models/user-model";
+import { validateBody } from "@utils/validation";
+import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
 import { authorizeAccessToken } from "@/services/authorization";
+import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./types-routes";
+import {
+  UserCreateDTO,
+  UserCreateSchema,
+  UserResponseDTO,
+  UsersResponseDTO
+} from "@schemas/user";
 
 
 export async function userRoutes(app: FastifyInstance) {

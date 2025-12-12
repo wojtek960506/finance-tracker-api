@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTU1OTcxOSwiZXhwIjoxNzY1NTYzMzE5fQ.Q-TMPvQc8hrvfeZFrUtl6Uc47qCvVDmm6V66Xymqgjg
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTU3MTI0MiwiZXhwIjoxNzY1NTc0ODQyfQ.PUEj6qAldzWlyaWffS2u-1ZS5EGHthKl7jqTsOkXnw8
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 

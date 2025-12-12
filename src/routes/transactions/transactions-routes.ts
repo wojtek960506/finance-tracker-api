@@ -15,7 +15,7 @@ import {
   DeleteManyReply,
   FilteredResponse,
   ParamsJustId
-} from "@/routes/types";
+} from "@routes/types-routes";
 import { updateTransactionHelper } from "@utils/routes";
 import { validateBody, validateSchema } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
