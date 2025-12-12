@@ -7,7 +7,7 @@ import {
   YearlyResultItemServer,
   MonthlyResultItemServer,
   TransactionStatisticsResponse,
-} from "@routes/transaction/types";
+} from "@routes/transaction-routes/types";
 
 
 const getTotalAmountAndItems = (
