@@ -32,6 +32,7 @@ export const ACCOUNTS = new Set([
   "cardByCliq",
   "alior",
   "cash",
+  "creditAgricole"
 ])
 
 export const CATEGORIES = new Set([
