@@ -13,6 +13,19 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
 
 
+//############################################################################################
+// TODOS                                                                                     #
+// * write unit tests because there is very big lack of unit tests here                      #
+// * revisit `user-routes` logic because maybe it is too complicated for now                 #
+//   and sometimes I do not understand why I am logged out due to problem with tokens        #
+// * write some logic to update all transactions in other currencies with exchange rate      #
+//   from the day of given transaction - from server perspective I need to write some        #
+//   script to do it on the whole old data from spreadsheets                                 #
+// * when adding old transactions from CSV file I need to update the exchange                #
+//   transactions to have real IDs as references (FastAPI)                                   #
+//############################################################################################
+
+
 dotenv.config();
 const PORT = Number(process.env.PORT) || 5000;
 
