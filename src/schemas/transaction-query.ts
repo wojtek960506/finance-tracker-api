@@ -7,13 +7,7 @@ import {
 } from "@utils/consts";
 import { z } from "zod";
 
-export const transactionQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-
-  sortBy: z.enum(["date", "amount"]).optional().default("date"),
-  sortOrder: z.enum(["asc", "desc"]).default("desc"),
-
+const transacionFiltersQuerySchema = z.object({
   // fitlering options
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
@@ -24,10 +18,25 @@ export const transactionQuerySchema = z.object({
   category: z.enum([...CATEGORIES]).optional(),
   paymentMethod: z.enum([...PAYMENT_METHODS]).optional(),
   account: z.enum([...ACCOUNTS]).optional(),
+})
+
+export type TransactionFiltersQuery = z.infer<typeof transacionFiltersQuerySchema>;
+
+export const transactionQuerySchema = transacionFiltersQuerySchema.extend({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+
+  sortBy: z.enum(["date", "amount"]).optional().default("date"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
+
+
 
 export type TransactionQuery = z.infer<typeof transactionQuerySchema>;
 
+export const transactionTotalsQuerySchema = transacionFiltersQuerySchema;
+
+export type TransactionTotalsQuery = z.infer<typeof transactionTotalsQuerySchema>;
 
 export const transactionAnalysisQuerySchema = z.object({
   startDate: z.coerce.date(),

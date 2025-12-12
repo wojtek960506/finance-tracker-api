@@ -1,9 +1,9 @@
-import { TransactionQuery } from "@schemas/transaction-query"
-import { FilterQuery } from "mongoose"
+import { TransactionFiltersQuery } from "@schemas/transaction-query"
+import { FilterQuery, Types } from "mongoose"
 import { ITransaction } from "@models/transaction-model"
 
-export const buildTransactionQuery = (
-  q: TransactionQuery, ownerId: string
+export const buildTransactionFilterQuery = (
+  q: TransactionFiltersQuery, ownerId: string
 ): FilterQuery<ITransaction> => {
   const query: FilterQuery<ITransaction> = {};
 
@@ -26,7 +26,7 @@ export const buildTransactionQuery = (
   }
 
   // always fitler transactions by query id
-  query.ownerId = ownerId;
+  query.ownerId = new Types.ObjectId(ownerId)
 
   return query;
 }

@@ -19,8 +19,8 @@ import { checkOwner, findTransaction } from "../utils-routes";
 import { 
   transactionAnalysisQuerySchema,
   transactionQuerySchema,
+  transactionTotalsQuerySchema,
 } from "@schemas/transaction-query";
-import { buildTransactionQuery } from "@/services/build-transaction-query";
 import { buildTransactionAnalysisQuery } from "@/services/build-transaction-analysis-query";
 import { getTransactionStatisticsHandler } from "./handlers/get-transaction-statistics";
 import {
@@ -28,6 +28,7 @@ import {
   YearResult,
   NoYearResult,
 } from "./handlers/get-transaction-statistics/parse-result";
+import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
 
 export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
@@ -39,7 +40,7 @@ export async function transactionRoutes(
     async (req, res) => {
       const q = validateSchema(transactionQuerySchema, req.query);
 
-      const filter = buildTransactionQuery(q, (req as AuthenticatedRequest).userId);
+      const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
       const skip = (q.page - 1) * q.limit;
 
       const [transactions, total] = await Promise.all([
@@ -62,6 +63,32 @@ export async function transactionRoutes(
       })
     }
   );
+
+  app.get(
+    "/totals",
+    { preHandler: authorizeAccessToken() },
+    async (req, _res) => {
+      const q = validateSchema(transactionTotalsQuerySchema, req.query);
+
+      const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
+
+      const transactions = await TransactionModel.aggregate([
+        { $match: filter },
+        { $group: { 
+          _id: {
+            currency: "$currency"
+          },
+          totalAmount: { $sum: "$amount" },
+          totalItems: { $sum: 1 },
+          averageAmount: { $avg: "$amount" },
+          maxAmount: { $max: "$amount" },
+          minAmount: { $min: "$amount" },
+        }}
+      ]);
+
+      return transactions;
+    }
+  )
 
   app.get< { Reply: { totalAmount: number, totalItems: number }} >(
     "/analysis",
