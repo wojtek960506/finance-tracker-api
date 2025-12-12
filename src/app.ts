@@ -4,9 +4,11 @@ import cors from "@fastify/cors"
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
 import { connectDB } from "@utils/db";
-import { userRoutes } from "@routes/user-routes";
-import { authRoutes } from "@routes/auth-routes";
-import { transactionRoutes } from "@routes/transaction-routes";
+import {
+  authRoutes,
+  userRoutes,
+  transactionRoutes,
+} from "@/routes";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
 
