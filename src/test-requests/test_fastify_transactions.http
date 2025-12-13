@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTU3NTAyMiwiZXhwIjoxNzY1NTc4NjIyfQ.z98FJ-6wvS_DocpBhrEzh6b04khTFzQZ1f3F9RtAuuw
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTYzMjA5NywiZXhwIjoxNzY1NjM1Njk3fQ.7qTh4h_LWPIloc-IJHeP7Lm-OQnEqbDWPJgfxECC1TI
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -36,6 +36,13 @@ Authorization: Bearer {{accessToken}}
 GET {{baseUrl}}/transactions/totals?{{omitCategory}}&startDate=2024-12-01&endDate=2024-12-31
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+### EXPORT TRANSACTIONS AS CSV STREAM
+
+# code commented as it returns all transactions in CSV format,
+# so there is a lot of them and thus VSC gets clogged
+# GET {{baseUrl}}/transactions/export
+# Authorization: Bearer {{accessToken}}
 
 
 ### Get all transactions (still default pagination is applied)

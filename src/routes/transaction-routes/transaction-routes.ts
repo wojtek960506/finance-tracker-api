@@ -8,6 +8,7 @@ import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./type
 import {
   getTransactionsHandler,
   updateTransactionHandler,
+  exportTransacionsHandler,
   getTransactionTotalsHandler,
   getTransactionStatisticsHandler,
 } from "./handlers";
@@ -43,6 +44,12 @@ export async function transactionRoutes(
     "/totals",
     { preHandler: authorizeAccessToken() },
     getTransactionTotalsHandler
+  )
+
+  app.get(
+    "/export",
+    { preHandler: authorizeAccessToken() },
+    exportTransacionsHandler
   )
 
   // it is possible to group by

@@ -16,6 +16,8 @@
     "@fastify/cors": "^11.1.0",
     "@fastify/jwt": "^10.0.0",
     "argon2": "^0.44.0",
+    "csv": "^6.4.1",
+    "csv-stringify": "^6.6.0",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
     "fastify-type-provider-zod": "^6.1.0",
