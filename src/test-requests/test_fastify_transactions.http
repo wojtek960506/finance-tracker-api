@@ -1,13 +1,16 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTYzMjA5NywiZXhwIjoxNzY1NjM1Njk3fQ.7qTh4h_LWPIloc-IJHeP7Lm-OQnEqbDWPJgfxECC1TI
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTcyMjU4NywiZXhwIjoxNzY1NzI2MTg3fQ.fgGGow6ysgGAYXF4yz8HwfCc_F7msL5PJCJQimL_7Co
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
 @amount = minAmount=100.01&maxAmount=500
 @PLN = currency=PLN
+@EUR = currency=EUR
+@CZK = currency=CZK
 @category = category=food
+@exchange = category=exchange
 # when format of `endDate` is f.e. `2023/10/30` then it is actually transformed for filters
 # to `2023-12-29T23:00:00` so 'less or equal' actually behaves as 'less'
 # when format of `endDate` is f.e. `2023-10-30` then it is transformed for filters
@@ -15,12 +18,12 @@
 @date = startDate=2022-11-17&endDate=2023-10-30
 @date2 = startDate=2016-01-01&endDate=2017-01-01
 @sorting = sortBy=date&sortOrder=asc
-@pagination = limit=10&page=3
+@pagination = limit=100&page=1
 @type = transactionType=expense
 
 ### Get transactions with pagination, filters and sorting
 
-GET {{baseUrl}}/transactions?{{PLN}}&{{category}}&{{date}}&{{amount}}&{{sorting}}&{{pagination}}
+GET {{baseUrl}}/transactions?{{PLN}}&{{category}}&{{sorting}}&{{pagination}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 

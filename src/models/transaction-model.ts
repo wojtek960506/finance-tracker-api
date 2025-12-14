@@ -18,10 +18,16 @@ export interface TransactionAttributes {
   account: string;
   createdAt: Date;
   updatedAt: Date;
+  // TODO - change it to required while enchancing create logic with realIdx
+  // or maybe even delete it while parsing csv and keep only realIdx
+  // maybe also rename it to something more meaningful to say that we use it to recreate
+  // bounding after exporting data
   idx?: number;
   exchangeRate?: number;
   currencies?: string;
   calcRefIdx?: number;
+  realIdx?: number;
+  realIdxRef?: number;
 }
 
 export interface ITransaction extends TransactionAttributes, Document {
