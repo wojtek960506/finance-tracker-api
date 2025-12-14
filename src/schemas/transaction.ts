@@ -48,6 +48,9 @@ export const TransactionResponseSchema = TransactionCreateSchema.extend({
   // TODO - probably move it to create schema later while enhancing logic for adding transaction
   realIdx: z.number().optional(),
   realIdxRef: z.number().optional(),
+  exchangeRefId: z.string().regex(
+    /^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `exchangeRefId`"
+  ).optional(),
 })
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);

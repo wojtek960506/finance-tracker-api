@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTcyMjU4NywiZXhwIjoxNzY1NzI2MTg3fQ.fgGGow6ysgGAYXF4yz8HwfCc_F7msL5PJCJQimL_7Co
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTc1MjIxMiwiZXhwIjoxNzY1NzU1ODEyfQ.DUvbMZXtdBOEV9asQj5bPPvenI9k49J8zHfqAkq6NWE
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -23,7 +23,7 @@
 
 ### Get transactions with pagination, filters and sorting
 
-GET {{baseUrl}}/transactions?{{PLN}}&{{category}}&{{sorting}}&{{pagination}}
+GET {{baseUrl}}/transactions?{{exchange}}&{{sorting}}&{{pagination}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 

@@ -33,6 +33,7 @@ export interface TransactionAttributes {
 export interface ITransaction extends TransactionAttributes, Document {
   _id: Types.ObjectId,
   ownerId: Types.ObjectId;
+  exchangeRefId: Types.ObjectId;
 }
 
 const transactionSchema = new Schema<ITransaction>(
@@ -57,6 +58,14 @@ const transactionSchema = new Schema<ITransaction>(
     exchangeRate: { type: Number, required: false },
     currencies: { type: String, required: false },
     calcRefIdx: { type: Number, required: false },
+    realIdx: { type: Number, required: false },
+    realIdxRef: { type: Number, required: false },
+    exchangeRefId: { 
+      type: Schema.Types.ObjectId,
+      ref: "Transaction",
+      required: false,
+      index: true
+    },
   },
   { timestamps: true }
 );
