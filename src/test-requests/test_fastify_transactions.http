@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTc1MjIxMiwiZXhwIjoxNzY1NzU1ODEyfQ.DUvbMZXtdBOEV9asQj5bPPvenI9k49J8zHfqAkq6NWE
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTg5MTA3NiwiZXhwIjoxNzY1ODk0Njc2fQ.dg88ObMIhBX26d7DzbWKtbzkgCiE_xdoRhObkquSmvU
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -65,16 +65,14 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2015-09-24",
-  "description": "ASEC W-wa Ratusz Ar/Warszawa",
+  "date": "2025-12-16",
+  "description": "VERY NEW TRANSACTION",
   "amount": 1.70,
   "currency": "PLN",
   "category": "transport",
   "transactionType": "expense",
   "paymentMethod": "card",
   "account": "mBank",
-  "currencies": "PLN/CZK",
-  "exchangeRate": 1.5
 }
 
 ### Update a transaction (PUT)

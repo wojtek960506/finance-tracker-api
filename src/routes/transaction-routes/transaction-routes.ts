@@ -7,6 +7,7 @@ import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
   getTransactionsHandler,
+  createTransactionHandler,
   updateTransactionHandler,
   exportTransacionsHandler,
   getTransactionTotalsHandler,
@@ -79,13 +80,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    async (req, res) => {
-      const newTransaction = await TransactionModel.create({
-        ...req.body,
-        ownerId: (req as AuthenticatedRequest).userId
-      })
-      res.code(201).send(serializeTransaction(newTransaction));
-    }
+    createTransactionHandler
   );
 
   app.put<{ 

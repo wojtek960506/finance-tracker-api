@@ -18,7 +18,10 @@ export async function getTransactionsHandler (
   const [transactions, total] = await Promise.all([
     TransactionModel
       .find(filter)
-      .sort({ [q.sortBy]: q.sortOrder === "asc" ? 1 : -1 })
+      .sort({
+        [q.sortBy]: q.sortOrder === "asc" ? 1 : -1,
+        sourceIndex: q.sortOrder === "asc" ? 1 : -1,
+      })
       .skip(skip)
       .limit(q.limit),
     TransactionModel.countDocuments(filter)
