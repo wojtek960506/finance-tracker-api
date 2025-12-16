@@ -20,12 +20,10 @@ export const TransactionCreateSchema = z.object({
   paymentMethod: z.enum([...PAYMENT_METHODS]),
   account: z.enum([...ACCOUNTS]),
   transactionType: z.enum([...TRANSACTION_TYPES]),
-  idx: z.number().positive("Idx must be positive").optional(),
   exchangeRate: z.number().positive("Exchange rate must be positive").optional(),
   currencies: z.string().length(
     7, "Currencies should be 2 values of 3 letters codes separated with slash (e.g. 'EUR/PLN')"
   ).optional(),
-  calcRefIdx: z.number().optional(),
 });
 
 /**
@@ -46,10 +44,10 @@ export const TransactionResponseSchema = TransactionCreateSchema.extend({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   // TODO - probably move it to create schema later while enhancing logic for adding transaction
-  realIdx: z.number().optional(),
-  realIdxRef: z.number().optional(),
-  exchangeRefId: z.string().regex(
-    /^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `exchangeRefId`"
+  sourceIndex: z.number(),
+  sourceRefIndex: z.number().optional(),
+  refId: z.string().regex(
+    /^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `refId`"
   ).optional(),
 })
 

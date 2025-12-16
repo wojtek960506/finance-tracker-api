@@ -18,22 +18,16 @@ export interface TransactionAttributes {
   account: string;
   createdAt: Date;
   updatedAt: Date;
-  // TODO - change it to required while enchancing create logic with realIdx
-  // or maybe even delete it while parsing csv and keep only realIdx
-  // maybe also rename it to something more meaningful to say that we use it to recreate
-  // bounding after exporting data
-  idx?: number;
   exchangeRate?: number;
   currencies?: string;
-  calcRefIdx?: number;
-  realIdx?: number;
-  realIdxRef?: number;
+  sourceIndex: number;
+  sourceRefIndex?: number;
 }
 
 export interface ITransaction extends TransactionAttributes, Document {
   _id: Types.ObjectId,
   ownerId: Types.ObjectId;
-  exchangeRefId: Types.ObjectId;
+  refId: Types.ObjectId;
 }
 
 const transactionSchema = new Schema<ITransaction>(
@@ -54,13 +48,11 @@ const transactionSchema = new Schema<ITransaction>(
     transactionType: { type: String, required: true, enum: [...TRANSACTION_TYPES] },
     paymentMethod: { type: String, required: true, enum: [...PAYMENT_METHODS] },
     account: { type: String, required: true, enum: [...ACCOUNTS] },
-    idx: { type: Number, required: false },
     exchangeRate: { type: Number, required: false },
     currencies: { type: String, required: false },
-    calcRefIdx: { type: Number, required: false },
-    realIdx: { type: Number, required: false },
-    realIdxRef: { type: Number, required: false },
-    exchangeRefId: { 
+    sourceIndex: { type: Number, required: true },
+    sourceRefIndex: { type: Number, required: false },
+    refId: { 
       type: Schema.Types.ObjectId,
       ref: "Transaction",
       required: false,
