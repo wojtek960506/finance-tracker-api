@@ -20,11 +20,18 @@ export const TransactionCreateSchema = z.object({
   paymentMethod: z.enum([...PAYMENT_METHODS]),
   account: z.enum([...ACCOUNTS]),
   transactionType: z.enum([...TRANSACTION_TYPES]),
-  exchangeRate: z.number().positive("Exchange rate must be positive").optional(),
-  currencies: z.string().length(
-    7, "Currencies should be 2 values of 3 letters codes separated with slash (e.g. 'EUR/PLN')"
-  ).optional(),
 });
+
+export const TransactionCreateExchageSchema = z.object({
+  date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
+  additionalDescription: z.string().min(1, "Additional description cannot be empty").optional(),
+  amountExpense: z.number().positive("Amount of expense in exchange must be positive"),
+  amountIncome: z.number().positive("Amount of income in exchange must be positive"),
+  currencyExpense: z.enum([...CURRENCIES]),
+  currencyIncome: z.enum([...CURRENCIES]),
+  account: z.enum([...ACCOUNTS]),
+  paymentMethod: z.enum(["bankTransfer", "cash"]),
+})
 
 /**
  * Full Update Schema (PUT)
@@ -57,6 +64,7 @@ export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
  * TypeScript types for convenience
  */
 export type TransactionCreateDTO = z.infer<typeof TransactionCreateSchema>;
+export type TransactionCreateExchangeDTO = z.infer<typeof TransactionCreateExchageSchema>;
 export type TransactionUpdateDTO = z.infer<typeof TransactionUpdateSchema>;
 export type TransactionPatchDTO = z.infer<typeof TransactionPatchSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;

@@ -7,11 +7,12 @@ import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
   getTransactionsHandler,
-  createTransactionHandler,
+  createStandardTransactionHandler,
   updateTransactionHandler,
   exportTransacionsHandler,
   getTransactionTotalsHandler,
   getTransactionStatisticsHandler,
+  createExchangeTransactionHandler,
 } from "./handlers";
 import { 
   TransactionCreateDTO,
@@ -22,6 +23,8 @@ import {
   TransactionUpdateSchema,
   TransactionResponseDTO,
   TransactionsResponseDTO,
+  TransactionCreateExchageSchema,
+  TransactionCreateExchangeDTO,
 } from "@schemas/transaction";
 import {
   AuthenticatedRequest,
@@ -72,16 +75,34 @@ export async function transactionRoutes(
     }
   )
 
+  // create one standard transaction
   app.post<{ Body: TransactionCreateDTO; Reply: TransactionResponseDTO }>(
     "/",
-    { 
+    {
       preHandler: [
         validateBody(TransactionCreateSchema),
         authorizeAccessToken(),
       ]
     },
-    createTransactionHandler
+    createStandardTransactionHandler
   );
+
+  // create exchange transactions - one expense and one income
+  app.post<{
+    Body: TransactionCreateExchangeDTO,
+    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+  }>(
+    "/exchange",
+    {
+      preHandler: [
+        validateBody(TransactionCreateExchageSchema),
+        authorizeAccessToken(),
+      ]
+    },
+    createExchangeTransactionHandler
+  )
+
+
 
   app.put<{ 
     Params: ParamsJustId;

@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NTg5MTA3NiwiZXhwIjoxNzY1ODk0Njc2fQ.dg88ObMIhBX26d7DzbWKtbzkgCiE_xdoRhObkquSmvU
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NjAxMTE1MywiZXhwIjoxNzY2MDE0NzUzfQ.-E9tu6m2dWHA8i3VfkTKpPMJj8IJ1nEWFZGRuKu0geo
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -57,7 +57,7 @@ Authorization: Bearer {{accessToken}}
 GET {{baseUrl}}/transactions/{{transactionId}}
 Accept: application/json
 
-### Create new transaction
+### Create new standard transaction
 
 # @name createTransaction
 POST {{baseUrl}}/transactions
@@ -73,6 +73,22 @@ Authorization: Bearer {{accessToken}}
   "transactionType": "expense",
   "paymentMethod": "card",
   "account": "mBank",
+}
+
+### CREATE NEW EXCHANGE TRANSACTIONS
+POST {{baseUrl}}/transactions/exchange
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "date": "2025-12-17",
+  "additionalDescription": "some additional desc",  
+  "amountExpense": 20,
+  "amountIncome": 84.23,
+  "currencyExpense": "EUR",
+  "currencyIncome": "PLN",
+  "account": "revolut",
+  "paymentMethod": "bankTransfer"
 }
 
 ### Update a transaction (PUT)
