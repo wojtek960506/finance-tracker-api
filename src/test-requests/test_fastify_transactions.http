@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NjAxMTE1MywiZXhwIjoxNzY2MDE0NzUzfQ.-E9tu6m2dWHA8i3VfkTKpPMJj8IJ1nEWFZGRuKu0geo
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NjA1MDIxMCwiZXhwIjoxNzY2MDUzODEwfQ.Xg615EuAWBQdA0PbbWQ_vH37VDsK6lZR4FHyXADPzRA
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -121,7 +121,8 @@ Authorization: Bearer {{accessToken}}
 
 @newTransactionId = {{createTransaction.response.body.id}}
 
-DELETE {{baseUrl}}/transactions/{{newTransactionId}}
+DELETE {{baseUrl}}/transactions/694331f209d01dec2f8e0a07
+Authorization: Bearer {{accessToken}}
 
 
 ### DELETE ALL TRANSACTIONS

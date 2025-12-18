@@ -1,20 +1,21 @@
 import { FastifyInstance } from "fastify";
 import { validateBody } from "@utils/validation";
 import { TransactionModel } from "@models/transaction-model";
-import { checkOwner, findTransaction } from "../routes-utils";
+import { findTransaction } from "../routes-utils";
 import { authorizeAccessToken } from "@/services/authorization";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
   getTransactionsHandler,
-  createStandardTransactionHandler,
   updateTransactionHandler,
+  deleteTransactionHandler,
   exportTransacionsHandler,
   getTransactionTotalsHandler,
   getTransactionStatisticsHandler,
   createExchangeTransactionHandler,
+  createStandardTransactionHandler,
 } from "./handlers";
-import { 
+import {
   TransactionCreateDTO,
   TransactionCreateSchema,
   TransactionPatchDTO,
@@ -27,7 +28,6 @@ import {
   TransactionCreateExchangeDTO,
 } from "@schemas/transaction";
 import {
-  AuthenticatedRequest,
   DeleteManyReply,
   FilteredResponse,
   ParamsJustId
@@ -102,8 +102,6 @@ export async function transactionRoutes(
     createExchangeTransactionHandler
   )
 
-
-
   app.put<{ 
     Params: ParamsJustId;
     Body: TransactionUpdateDTO;
@@ -136,19 +134,11 @@ export async function transactionRoutes(
 
   app.delete<{
     Params: ParamsJustId,
-    Reply: TransactionResponseDTO
+    Reply: DeleteManyReply
   }>(
     "/:id",
     { preHandler: authorizeAccessToken() },
-    async (req) => {
-      const { id } = req.params;
-      const transaction = await findTransaction(id);
-  
-      checkOwner((req as AuthenticatedRequest).userId, transaction, "delete");
-
-      await transaction.deleteOne();
-      return serializeTransaction(transaction);
-    }
+    deleteTransactionHandler
   )
 
   app.delete<{ Reply: DeleteManyReply }>("/", async (_req, res) => {
