@@ -3,16 +3,19 @@ import {
   CATEGORIES,
   CURRENCIES,
   PAYMENT_METHODS,
-  TRANSACTION_TYPES
+  TRANSACTION_TYPES,
 } from "@utils/consts";
 import { z } from "zod";
+
+const TransactionCreateCommonSchema = z.object({
+  date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
+}) 
 
 /**
  * Create Transaction Schema
  * Used for POST /transactions
  */
-export const TransactionCreateSchema = z.object({
-  date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
+export const TransactionCreateSchema = TransactionCreateCommonSchema.extend({
   description: z.string().min(1, "Description is required"),
   amount: z.number().positive("Amount must be positive"),
   currency: z.enum([...CURRENCIES]),
@@ -22,8 +25,7 @@ export const TransactionCreateSchema = z.object({
   transactionType: z.enum([...TRANSACTION_TYPES]),
 });
 
-export const TransactionCreateExchageSchema = z.object({
-  date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
+export const TransactionCreateExchageSchema = TransactionCreateCommonSchema.extend({
   additionalDescription: z.string().min(1, "Additional description cannot be empty").optional(),
   amountExpense: z.number().positive("Amount of expense in exchange must be positive"),
   amountIncome: z.number().positive("Amount of income in exchange must be positive"),
