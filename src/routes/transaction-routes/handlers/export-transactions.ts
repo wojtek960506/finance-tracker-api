@@ -20,7 +20,7 @@ export async function exportTransacionsHandler (
   const csvStream = stringify({
     header: true,
     columns: [
-      { key: 'idx', header: 'idx' },
+      { key: 'sourceIndex', header: 'sourceIndex' },
       { key: 'date', header: 'date' },
       { key: 'description', header: 'description' },
       { key: 'amount', header: 'amount' },
@@ -30,8 +30,8 @@ export async function exportTransacionsHandler (
       { key: 'account', header: 'account' },
       { key: 'exchangeRate', header: 'exchangeRate' },
       { key: 'currencies', header: 'currencies' },
-      { key: 'calcRefIdx', header: 'calcRefIdx' },
       { key: 'transactionType', header: 'transactionType' },
+      { key: 'sourceRefIndex', header: 'sourceRefIndex' },
     ]
   })
 
@@ -40,12 +40,12 @@ export async function exportTransacionsHandler (
 
   // 4. Stream DB records into CSV
   const cursor = TransactionModel.find({ ownerId: (req as AuthenticatedRequest).userId })
-    .sort({ date: 1 })
+    .sort({ sourceIndex: 1 })
     .cursor();
 
   for await (const tx of cursor) {
     csvStream.write({
-      idx: tx.idx,
+      sourceIndex: tx.sourceIndex,
       date: tx.date.toISOString().slice(0,10),
       description: tx.description,
       amount: tx.amount,
@@ -55,8 +55,8 @@ export async function exportTransacionsHandler (
       account: tx.account,
       exchangeRate: tx.exchangeRate,
       currencies: tx.currencies,
-      calcRefIdx: tx.calcRefIdx,
       transactionType: tx.transactionType,
+      sourceRefIndex: tx.sourceRefIndex
     });
   }
 
