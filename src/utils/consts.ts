@@ -3,13 +3,13 @@
 
 export const PAYMENT_METHODS = new Set([
   "atm",
-  "bankTransfer",
+  "card",
   "cash",
   "blik",
-  "payment",
   "credit",
+  "payment",
+  "bankTransfer",
   "cashDepositMachine",
-  "card",
 ])
 
 export const CURRENCIES = new Set([
@@ -23,40 +23,39 @@ export const CURRENCIES = new Set([
 ])
 
 export const ACCOUNTS = new Set([
+  "cash",
   "pekao",
+  "mBank",
+  "revolut",
   "veloBank",
   "nestBank",
   "aliorBank",
-  "revolut",
-  "mBank",
   "cardByCliq",
-  "alior",
-  "cash",
-  "creditAgricole"
+  "creditAgricole",
 ])
 
 export const CATEGORIES = new Set([
+  "atm",
   "food",
-  "investments",
-  "exchange",
-  "myAccount",
-  "transport",
-  "refund",
-  "clothing",
-  "cashDepositMachine",
-  "accommodation",
-  "donation",
-  "furniture",
-  "entertainment",
-  "health",
   "work",
   "sport",
   "other",
-  "education",
-  "electronics",
-  "atm",
+  "refund",
+  "health",
   "allegro",
+  "exchange",
+  "donation",
+  "clothing",
+  "myAccount",
+  "education",
+  "transport",
+  "furniture",
   "utilities",
+  "investments",
+  "electronics",
+  "entertainment",
+  "accommodation",  
+  "cashDepositMachine",
 ])
 
 export const TRANSACTION_TYPES = new Set([
