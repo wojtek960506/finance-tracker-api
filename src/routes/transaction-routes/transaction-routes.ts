@@ -14,6 +14,7 @@ import {
   getTransactionStatisticsHandler,
   createExchangeTransactionHandler,
   createStandardTransactionHandler,
+  createTransferTransactionHandler,
 } from "./handlers";
 import {
   TransactionCreateDTO,
@@ -26,6 +27,8 @@ import {
   TransactionsResponseDTO,
   TransactionCreateExchageSchema,
   TransactionCreateExchangeDTO,
+  TransactionCreateTransferSchema,
+  TransactionCreateTransferDTO,
 } from "@schemas/transaction";
 import {
   DeleteManyReply,
@@ -100,7 +103,22 @@ export async function transactionRoutes(
       ]
     },
     createExchangeTransactionHandler
-  )
+  );
+
+  // create transfer transactions - one expense and one income
+  app.post<{
+    Body: TransactionCreateTransferDTO,
+    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+  }>(
+    "/transfer",
+    {
+      preHandler: [
+        validateBody(TransactionCreateTransferSchema),
+        authorizeAccessToken(),
+      ]
+    },
+    createTransferTransactionHandler
+  );
 
   app.put<{ 
     Params: ParamsJustId;

@@ -6,3 +6,4 @@ export * from "./get-transaction-totals";
 export * from "./get-transaction-statistics";
 export * from "./create-exchange-transaction";
 export * from "./create-standard-transaction";
+export * from "./create-transfer-transaction";

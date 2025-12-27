@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NjA1MDIxMCwiZXhwIjoxNzY2MDUzODEwfQ.Xg615EuAWBQdA0PbbWQ_vH37VDsK6lZR4FHyXADPzRA
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2Njg0ODcwOSwiZXhwIjoxNzY2ODUyMzA5fQ.LmgwAg2lz9sItpEHFxv3VjGlUsPwPncdmtucEESXBeo
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -88,6 +88,21 @@ Authorization: Bearer {{accessToken}}
   "currencyExpense": "EUR",
   "currencyIncome": "PLN",
   "account": "revolut",
+  "paymentMethod": "bankTransfer"
+}
+
+### CREATE NEW TRANSFER TRANSACTIONS
+POST {{baseUrl}}/transactions/transfer
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "date": "2025-12-27",
+  "additionalDescription": "z oszczędnościowego na zwykłe",  
+  "amount": 12345.67,
+  "currency": "PLN",
+  "accountFrom": "mBank",
+  "accountTo": "aliorBank",
   "paymentMethod": "bankTransfer"
 }
 
