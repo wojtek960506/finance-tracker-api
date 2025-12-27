@@ -1,10 +1,10 @@
-import { getNextSourceIndex } from "@/services/get-next-source-index";
-import { TransactionModel } from "@models/transaction-model";
-import { AuthenticatedRequest } from "@routes/routes-types";
-import { serializeTransaction } from "@schemas/serialize-transaction";
-import { TransactionCreateDTO, TransactionCreateTransferDTO } from "@schemas/transaction";
-import { FastifyReply, FastifyRequest } from "fastify";
 import { startSession } from "mongoose";
+import { FastifyReply, FastifyRequest } from "fastify";
+import { AuthenticatedRequest } from "@routes/routes-types";
+import { TransactionModel } from "@models/transaction-model";
+import { serializeTransaction } from "@schemas/serialize-transaction";
+import { getNextSourceIndex } from "@/services/get-next-source-index";
+import { TransactionCreateDTO, TransactionCreateTransferDTO } from "@schemas/transaction";
 
 export async function createTransferTransactionHandler(
   req: FastifyRequest<{ Body: TransactionCreateTransferDTO }>,
@@ -16,6 +16,8 @@ export async function createTransferTransactionHandler(
   const fromIndexExpense = await getNextSourceIndex(userId);
   const toIndexExpense = await getNextSourceIndex(userId);
 
+  // TODO for now `accountFrom` and `accountTo` are not translated in the body so
+  // decide how to handle it
   let description = `${body.accountFrom} --> ${body.accountTo}`;
   if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
