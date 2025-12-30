@@ -13,7 +13,7 @@ export async function getTransactionTotalsHandler(
   const q = validateSchema(transactionTotalsQuerySchema, req.query);
   
   const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
-  if (q.omitCategory && !q.category) filter.category = { $nin: q.omitCategory }
+  if (q.excludeCategories && !q.category) filter.category = { $nin: q.excludeCategories }
 
   const transactions = await TransactionModel.aggregate([
     { $match: filter },

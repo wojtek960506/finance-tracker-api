@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2Njg0ODcwOSwiZXhwIjoxNzY2ODUyMzA5fQ.LmgwAg2lz9sItpEHFxv3VjGlUsPwPncdmtucEESXBeo
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NzA5NzE0MSwiZXhwIjoxNzY3MTAwNzQxfQ.MlbF0vteI9cGVQMzFi9iz2_WHF8_P5fTrtWuFMVeXw0
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -28,15 +28,15 @@ Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 ### GET STATISTICS ABOUT TRANSACTIONS
-@omitCategory = omitCategory=myAccount&omitCategory=investments
+@excludeCategories = excludeCategories=myAccount,investments
 @yearAndMonth = year=2023
 
-GET {{baseUrl}}/transactions/statistics?{{type}}&{{PLN}}&{{yearAndMonth}}&{{omitCategory}}
+GET {{baseUrl}}/transactions/statistics?{{PLN}}&{{type}}&{{yearAndMonth}}&{{excludeCategories}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 ### GET TOTALS FOR TRANSACTIONS
-GET {{baseUrl}}/transactions/totals?{{omitCategory}}&startDate=2024-12-01&endDate=2024-12-31
+GET {{baseUrl}}/transactions/totals?{{excludeCategories}}&startDate=2024-12-01&endDate=2024-12-31
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 

@@ -35,9 +35,13 @@ export const transactionQuerySchema = transacionFiltersQuerySchema.extend({
 export type TransactionQuery = z.infer<typeof transactionQuerySchema>;
 
 export const transactionTotalsQuerySchema = transacionFiltersQuerySchema.extend({
-  omitCategory: z
-    .union([z.enum([...CATEGORIES]), z.array(z.enum([...CATEGORIES]))])
-    .transform(value => (Array.isArray(value) ? value : [value]))
+  excludeCategories: z
+    .string()
+    .transform(value => value.split(","))
+    .refine(
+      v => v.every(value => [...CATEGORIES].includes(value))
+      , "everyExcludedCategoryOneOfEnums"
+    )
     .optional(),
 });
 
@@ -48,12 +52,14 @@ export const transactionStatisticsQuerySchema = z.object({
   month: z.coerce.number().min(1).max(12).optional(),
   transactionType: z.enum([...TRANSACTION_TYPES]),
   currency: z.enum([...CURRENCIES]),
-
   category: z.enum([...CATEGORIES]).optional(),
-  
-  omitCategory: z
-    .union([z.enum([...CATEGORIES]), z.array(z.enum([...CATEGORIES]))])
-    .transform(value => (Array.isArray(value) ? value : [value]))
+  excludeCategories: z
+    .string()
+    .transform(value => value.split(","))
+    .refine(
+      v => v.every(value => [...CATEGORIES].includes(value))
+      , "everyExcludedCategoryOneOfEnums"
+    )
     .optional(),
   paymentMethod: z.enum([...PAYMENT_METHODS]).optional(),
   account: z.enum([...ACCOUNTS]).optional(),
