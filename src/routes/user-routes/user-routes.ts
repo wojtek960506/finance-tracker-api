@@ -1,18 +1,20 @@
-import argon2 from "argon2";
 import { FastifyInstance } from "fastify";
 import { UserModel } from "@models/user-model";
 import { validateBody } from "@utils/validation";
 import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
+import { createUserHandler } from "./handlers/create-user";
 import { authorizeAccessToken } from "@/services/authorization";
-import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "./routes-types";
+import { createRandomTransactions } from "./handlers/create-random-transactions";
+import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "../routes-types";
 import {
+  TestUserCreateSchema,
+  TestUserCreateDTO,
   UserCreateDTO,
   UserCreateSchema,
   UserResponseDTO,
   UsersResponseDTO
 } from "@schemas/user";
-
 
 export async function userRoutes(app: FastifyInstance) {
   
@@ -46,21 +48,33 @@ export async function userRoutes(app: FastifyInstance) {
     "/",
     { preHandler: validateBody(UserCreateSchema) },
     async (req, res) => {
-      const { password, ...rest } = req.body;
-      const passwordHash1 = await argon2.hash(password);
-      
-      try {
-        const newUser = await UserModel.create({
-          ...rest,
-          passwordHash: passwordHash1,
-        });
-        res.code(201).send(serializeUser(newUser));
-      } catch (err) {
-        if ((err as { code: number }).code === 11000)
-          throw new AppError(409, "User with given email already exists");
-        else
-          throw new AppError(400, (err as { message: string }).message);
+      const newUser = await createUserHandler(req, res);
+      return res.code(201).send(newUser);
+    }
+  )
+
+  app.post<{
+    Body: TestUserCreateDTO,
+    Reply: { userId: string, email: string, insertedTransactionsCount: number }
+  }>(
+    "/test",
+    { preHandler: validateBody(TestUserCreateSchema) },
+    async (req, res) => {
+      const { username, totalTransactions } = req.body;
+      const newBody = {
+        firstName: username,
+        lastName: username,
+        email: `${username}@test.com`,
+        password: '123',
       }
+      const { id: userId, email } = await createUserHandler({ ...req, body: newBody }, res);
+
+      const insertedTransactionsCount = await createRandomTransactions(userId, totalTransactions);
+      res.code(201).send({
+        userId,
+        email,
+        insertedTransactionsCount
+      });
     }
   )
 
@@ -68,6 +82,7 @@ export async function userRoutes(app: FastifyInstance) {
     "/:id",
     async (req, res) => {
       const { id } = req.params;
+      // TODO - before deleting user, delete all of its transactions
       const deleted = await UserModel.findByIdAndDelete(id);
       if (!deleted)
         throw new NotFoundError(`User with ID '${id}' not found`);

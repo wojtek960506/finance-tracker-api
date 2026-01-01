@@ -68,7 +68,21 @@ Authorization: Bearer {{accessToken}}
 
 @newUserId = {{createUser.response.body.id}}
 
+# 6956eda1c618f569aefc7dee - delete user with this id - wrong email
+# 6956ef1de1e1c28869b6d0ba - correct test user with 1000 transactions (test1)
+# 6956f021e1e1c28869b6d4b2 - correct test user with 20000 transactions (test2)
+
 DELETE {{baseUrl}}/users/{{newUserId}}
+
+### CREATE TEST USER WITH RANDOM TRANSACTIONS
+
+POST {{baseUrl}}/users/test
+Content-Type: application/json
+
+{
+  "username": "test2",
+  "totalTransactions": 20000
+}
 
 ### DELETE ALL USERS
 # !!! BE CAREFUL !!!

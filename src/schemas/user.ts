@@ -45,9 +45,17 @@ export const UserSensitiveResponseSchema = UserResponseSchema.extend({
 
 export const UsersResponseSchema = z.array(UserResponseSchema);
 
+export const TestUserCreateSchema = z.object({
+  username: z.string().regex(/^[a-zA-Z0-9_]+$/, {
+    message: "Only letters, digits and _ (uderscore) are allowed",
+  }),
+  totalTransactions: z.number().min(1000).max(20000),
+})
+
 export type UserCreateDTO = z.infer<typeof UserCreateSchema>;
 export type UserUpdateDTO = z.infer<typeof UserUpdateSchema>;
 export type UserPatchDTO = z.infer<typeof UserPatchSchema>;
 export type UserResponseDTO = z.infer<typeof UserResponseSchema>;
 export type UsersResponseDTO = z.infer<typeof UsersResponseSchema>;
 export type UserSensitiveResponseDTO = z.infer<typeof UserSensitiveResponseSchema>;
+export type TestUserCreateDTO = z.infer<typeof TestUserCreateSchema>;
