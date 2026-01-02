@@ -9,13 +9,13 @@ import {
 } from "@utils/consts";
 
 type RandomStandardTransaction = TransactionCreateDTO & { ownerId: string; sourceIndex: number };
-// type RandomTransferTransaction = { sourceRefIndex: number; }
-// type RandomTransferTransactionPair = [RandomTransferTransaction, RandomTransferTransaction];
-// type RandomExchangeTransaction = RandomTransferTransaction & {
-//   currencies: string;
-//   exchangeRate: number;
-// };
-// type RandomExchangeTransactionPair = [RandomExchangeTransaction, RandomExchangeTransaction];
+type RandomTransferTransaction = { sourceRefIndex: number; }
+type RandomTransferTransactionPair = [RandomTransferTransaction, RandomTransferTransaction];
+type RandomExchangeTransaction = RandomTransferTransaction & {
+  currencies: string;
+  exchangeRate: number;
+};
+type RandomExchangeTransactionPair = [RandomExchangeTransaction, RandomExchangeTransaction];
 
 
 const randomDate = (from: Date, to: Date): Date => {
@@ -91,11 +91,45 @@ const prepareRandomStandardTransaction = (
 
 // }
 
-// const prepareRandomTransferTransactions = (
-//   ownerId: string, date: Date, category: string, index: number,
-// ): RandomTransferTransactionPair => {
+const prepareRandomTransferTransactions = (
+  ownerId: string, date: Date, index: number,
+): RandomTransferTransactionPair => {
+  const amount = randomNumber(10, 10000);
+  const currency = randomFromSet(CURRENCIES);
+  const accountFrom = randomFromSet(ACCOUNTS);
+  const accountTo = randomFromSet(ACCOUNTS);
+  const category = "myAccount";
 
-// }
+  // TODO - when some rules for corelation between payment method and account will be added
+  // then this have to be updated
+  const paymentMethod = randomFromSet(new Set(["bankTransfer", "cash", "card"]));
+  const description = `Money Transfer: ${accountFrom} --> ${accountTo}`;
+
+  const commonProps = {
+    amount,
+    currency,
+    category,
+    paymentMethod,
+    description,
+    ownerId,
+    date,
+  }
+  const from = {
+    ...commonProps,
+    transactionType: "expense",
+    account: accountFrom,
+    sourceIndex: index,
+    sourceRefIndex: index + 1,
+  }
+  const to = {
+    ...commonProps,
+    transactionType: "income",
+    account: accountTo,
+    sourceIndex: index + 1,
+    sourceRefIndex: index,
+  }
+  return [from, to];
+}
 
 export async function createRandomTransactions(
   ownerId: string,
@@ -128,8 +162,9 @@ export async function createRandomTransactions(
     const category = randomFromSet(CATEGORIES);
 
     if (category === "myAccount") {
-      // randomTransactions.push(prepareRandomTransferTransactions(ownerId, date, category, i));
-      // i += 2;
+      const [from, to] = prepareRandomTransferTransactions(ownerId, date, i);
+      randomTransactions.push(from, to);
+      i += 2;
       continue;
     } else if (category === "exchange") {
       // randomTransactions.push(prepareRandomExchangeTransacitons(ownerId, date, category, i));
@@ -141,6 +176,10 @@ export async function createRandomTransactions(
     }
   }
 
+
   const result = await TransactionModel.insertMany(randomTransactions, { rawResult: true });
+
+  // TODO add refId in transactions which have sourceRefIndex
+
   return result.insertedCount;
 }

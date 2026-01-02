@@ -67,6 +67,10 @@ export async function userRoutes(app: FastifyInstance) {
         email: `${username}@test.com`,
         password: '123',
       }
+
+      // TODO probably those 2 operations should be in one session to avoid situation when
+      // user is created but there is some error when adding transactions
+
       const { id: userId, email } = await createUserHandler({ ...req, body: newBody }, res);
 
       const insertedTransactionsCount = await createRandomTransactions(userId, totalTransactions);
