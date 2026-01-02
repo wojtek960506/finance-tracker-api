@@ -72,7 +72,7 @@ POST {{baseUrl}}/users/test
 Content-Type: application/json
 
 {
-  "username": "test6",
+  "username": "test1",
   "totalTransactions": 20000
 }
 
