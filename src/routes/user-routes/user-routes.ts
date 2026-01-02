@@ -1,9 +1,11 @@
+import { startSession } from "mongoose";
 import { FastifyInstance } from "fastify";
 import { UserModel } from "@models/user-model";
 import { validateBody } from "@utils/validation";
 import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
 import { createUserHandler } from "./handlers/create-user";
+import { TransactionModel } from "@models/transaction-model";
 import { authorizeAccessToken } from "@/services/authorization";
 import { createRandomTransactions } from "./handlers/create-random-transactions";
 import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "../routes-types";
@@ -15,6 +17,7 @@ import {
   UserResponseDTO,
   UsersResponseDTO
 } from "@schemas/user";
+
 
 export async function userRoutes(app: FastifyInstance) {
   
@@ -48,7 +51,7 @@ export async function userRoutes(app: FastifyInstance) {
     "/",
     { preHandler: validateBody(UserCreateSchema) },
     async (req, res) => {
-      const newUser = await createUserHandler(req, res);
+      const newUser = await createUserHandler(req);
       return res.code(201).send(newUser);
     }
   )
@@ -68,17 +71,29 @@ export async function userRoutes(app: FastifyInstance) {
         password: '123',
       }
 
-      // TODO probably those 2 operations should be in one session to avoid situation when
-      // user is created but there is some error when adding transactions
+      const session = await startSession();
+      try {
+        await session.withTransaction(async () => {
+          const { id: userId, email } = await createUserHandler(
+            { ...req, body: newBody },
+            session
+          );
 
-      const { id: userId, email } = await createUserHandler({ ...req, body: newBody }, res);
+          const insertedTransactionsCount = await createRandomTransactions(
+            userId,
+            totalTransactions,
+            session,
+          );
 
-      const insertedTransactionsCount = await createRandomTransactions(userId, totalTransactions);
-      res.code(201).send({
-        userId,
-        email,
-        insertedTransactionsCount
-      });
+          res.code(201).send({
+            userId,
+            email,
+            insertedTransactionsCount
+          });
+        })
+      } finally {
+        session.endSession();
+      }
     }
   )
 
@@ -86,11 +101,27 @@ export async function userRoutes(app: FastifyInstance) {
     "/:id",
     async (req, res) => {
       const { id } = req.params;
-      // TODO - before deleting user, delete all of its transactions
-      const deleted = await UserModel.findByIdAndDelete(id);
-      if (!deleted)
-        throw new NotFoundError(`User with ID '${id}' not found`);
-      return res.send(serializeUser(deleted));
+      const errorMessage = `User with ID '${id}' not found`;
+
+      const user = await UserModel.findById(id);
+      if (!user)
+        throw new NotFoundError(errorMessage);
+
+      const session = await startSession();
+
+      try {
+        await session.withTransaction(async () => {
+          await TransactionModel.deleteMany({ ownerId: id }, { session });
+
+          const { deletedCount } = await UserModel.deleteOne({ _id: id }, { session });
+          if (deletedCount !== 1)
+            throw new NotFoundError(errorMessage);
+        })
+      } finally {
+        session.endSession();
+      }
+
+      return res.send(serializeUser(user));
     }
   )
 

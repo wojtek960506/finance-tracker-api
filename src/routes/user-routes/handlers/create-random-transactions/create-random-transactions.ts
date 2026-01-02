@@ -1,3 +1,4 @@
+import { ClientSession } from "mongoose";
 import { CATEGORIES } from "@utils/consts";
 import { randomDate, randomFromSet } from "@utils/random";
 import { TransactionModel } from "@models/transaction-model";
@@ -9,6 +10,7 @@ import { prepareRandomTransferTransactionPair } from "./prepare-random-transfer-
 export async function createRandomTransactions(
   ownerId: string,
   totalTransactions: number,
+  session?: ClientSession,
 ): Promise<number> {
 
   const startDate = new Date("2015-01-01");
@@ -34,7 +36,10 @@ export async function createRandomTransactions(
     }
   }
 
-  const result = await TransactionModel.insertMany(randomTransactions, { rawResult: true });
+  const result = await TransactionModel.insertMany(
+    randomTransactions,
+    { rawResult: true, session }
+  );
 
   // TODO add refId in transactions which have sourceRefIndex
 

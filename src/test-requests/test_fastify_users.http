@@ -29,11 +29,6 @@ Content-Type: application/json
   "password": "123"
 }
 
-# {
-#   "email": "kurczak@ziemniak.pl",
-#   "password": "dzik1234"
-# }
-
 
 ### GET USER BY ACCESS TOKEN
 @accessToken = {{loginReq.response.body.accessToken}}
@@ -64,14 +59,10 @@ GET {{baseUrl}}/users/691f1e90b1e751ec54cb352b
 # {{newUserId}}
 Authorization: Bearer {{accessToken}}
 
-### Delete new user by id
+### Delete user by id
 
 @newUserId = {{createUser.response.body.id}}
 
-# 6956eda1c618f569aefc7dee - delete user with this id - wrong email
-# 6956ef1de1e1c28869b6d0ba - correct test user with 1000 transactions (test1)
-# 6956f021e1e1c28869b6d4b2 - correct test user with 20000 transactions (test2)
-# 6957a68f17ad7b3dc76fa550 - there are also transfer transactions (test4)
 
 DELETE {{baseUrl}}/users/{{newUserId}}
 
