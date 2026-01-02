@@ -81,11 +81,11 @@ POST {{baseUrl}}/users/test
 Content-Type: application/json
 
 {
-  "username": "test4",
+  "username": "test6",
   "totalTransactions": 20000
 }
 
 ### DELETE ALL USERS
 # !!! BE CAREFUL !!!
 
-DELETE {{baseUrl}}/users
+# DELETE {{baseUrl}}/users

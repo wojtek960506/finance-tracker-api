@@ -85,11 +85,56 @@ const prepareRandomStandardTransaction = (
   }
 }
 
-// const prepareRandomExchangeTransacitons = (
-//   ownerId: string, date: Date, category: string, index: number,
-// ): RandomExchangeTransactionPair => {
+const prepareRandomExchangeTransactions = (
+  ownerId: string, date: Date, index: number,
+): RandomExchangeTransactionPair => {
+  const amountDebit = randomNumber(10,10000);
+  const currencyDebit = randomFromSet(CURRENCIES);
+  const amountCredit = randomNumber(10,10000);
+  const currencyCredit = randomFromSet(CURRENCIES);
+  const account = randomFromSet(ACCOUNTS);
+  const paymentMethod = randomFromSet(new Set(["cash", "bankTransfer"]));
 
-// }
+  let currencies;
+  let exchangeRate;
+  if (amountDebit > amountCredit) {
+    exchangeRate = amountDebit / amountCredit;
+    currencies = `${currencyCredit}/${currencyDebit}`;
+  } else {
+    exchangeRate = amountDebit / amountCredit;
+    currencies = `${currencyCredit}/${currencyDebit}`;
+  }
+  const description = `${currencyDebit} -> ${currencyCredit}`;
+
+  const commonProps = {
+    category: "exchange",
+    ownerId,
+    date,
+    account,
+    paymentMethod,
+    description,
+    currencies,
+    exchangeRate,
+  }
+  const debit = {
+    ...commonProps,
+    transactionType: "expense",
+    amount: amountDebit,
+    currency: currencyDebit,
+    sourceIndex: index,
+    sourceRefIndex: index + 1,
+  }
+  const credit = {
+    ...commonProps,
+    transactionType: "income",
+    amount: amountCredit,
+    currency: currencyCredit,
+    sourceIndex: index + 1,
+    sourceRefIndex: index,
+  }
+  return [debit, credit];
+}
+
 
 const prepareRandomTransferTransactions = (
   ownerId: string, date: Date, index: number,
@@ -139,23 +184,6 @@ export async function createRandomTransactions(
   const startDate = new Date("2015-01-01");
   const endDate = new Date("2025-12-31");
 
-  // date: string,
-  // description: string,
-  // amount: number,
-  // currency: string,
-  // category: string,
-  // transactionType: "income" | "expense",
-  // paymentMethod: string,
-  // account: string,
-  // createdAt: Date,
-  // updatedAt: Date,
-  // exchangeRate?: number,
-  // currencies?: string,
-  // sourceIndex: number,
-  // sourceRefIndex?: number,
-  // ownerId: Types.ObjectId,
-  // refId: Types.ObjectId,
-
   const randomTransactions = [];
   for (let i = 0; i < totalTransactions;) {
     const date = randomDate(startDate, endDate);
@@ -165,17 +193,15 @@ export async function createRandomTransactions(
       const [from, to] = prepareRandomTransferTransactions(ownerId, date, i);
       randomTransactions.push(from, to);
       i += 2;
-      continue;
     } else if (category === "exchange") {
-      // randomTransactions.push(prepareRandomExchangeTransacitons(ownerId, date, category, i));
-      // i += 2;
-      continue;
+      const [debit, credit] = prepareRandomExchangeTransactions(ownerId, date, i);
+      randomTransactions.push(debit, credit);
+      i += 2;
     } else {
       randomTransactions.push(prepareRandomStandardTransaction(ownerId, date, category, i));
       i += 1;
     }
   }
-
 
   const result = await TransactionModel.insertMany(randomTransactions, { rawResult: true });
 
