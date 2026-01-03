@@ -6,16 +6,30 @@ export type TransactionSubcategoryTotals = {
   minAmount: number;
 }
 
-export type TransactionTotals = {
+export type TransactionTotalsByCurrency = {
+  totalItems: number,
   expense: TransactionSubcategoryTotals;
   income: TransactionSubcategoryTotals;
 }
 
-export type TransactionTotalsObjServer = TransactionSubcategoryTotals & {
+export type TransactionTotalsByCurrencyObjDb = TransactionSubcategoryTotals & {
   _id: {
     currency: string,
     transactionType: string,
   }
 }
 
-export type TransactionTotalsResponse = Record<string, TransactionTotals>
+export type TransactionTotalsOverallObjDb = { totalItems: number } & {
+  _id: { transactionType: string }
+}
+
+export type TransactionTotalsOverall = {
+  totalItems: number,
+  expense: { totalItems: number },
+  income: { totalItems: number },
+}
+
+export type TransactionTotalsResponse = {
+  byCurrency: Record<string, TransactionTotalsByCurrency>,
+  overall: TransactionTotalsOverall,
+}
