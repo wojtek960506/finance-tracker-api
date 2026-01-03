@@ -43,7 +43,11 @@ export const parseTotalsByCurrencyResult = (
 export const parseTotalsOverallResult = (
   transactions: TransactionTotalsOverallObjDb[]
 ) => {
-  const totalsOverall = {} as TransactionTotalsOverall;
+  const totalsOverall = {
+    totalItems: 0,
+    expense: { totalItems: 0 },
+    income: { totalItems: 0 },
+  } as TransactionTotalsOverall;
 
   let total = 0;
   transactions.forEach(({ _id, totalItems }: TransactionTotalsOverallObjDb) => {
