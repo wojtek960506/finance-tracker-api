@@ -4,7 +4,10 @@ import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { getNextSourceIndex } from "@/services/get-next-source-index";
-import { TransactionCreateDTO, TransactionCreateTransferDTO } from "@schemas/transaction";
+import {
+  TransactionCreateStandardDTO,
+  TransactionCreateTransferDTO,
+} from "@schemas/transaction";
 
 export async function createTransferTransactionHandler(
   req: FastifyRequest<{ Body: TransactionCreateTransferDTO }>,
@@ -31,7 +34,7 @@ export async function createTransferTransactionHandler(
     description,
   }
 
-  type TransferTransactionProps = TransactionCreateDTO & {
+  type TransferTransactionProps = TransactionCreateStandardDTO & {
     sourceIndex: number,
     sourceRefIndex: number,
   };

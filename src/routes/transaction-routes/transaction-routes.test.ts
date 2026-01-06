@@ -1,10 +1,26 @@
-import Fastify from "fastify";
+import Fastify, { FastifyReply } from "fastify";
 import { transactionRoutes } from "./transaction-routes";
 import { TransactionModel } from "@models/transaction-model";
 import { registerErrorHandler } from "@/plugins/errorHandler";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
+// import * as authModule from "@/services/authorization";
+import { FastifyRequest } from "fastify/types/request";
+// import { getNextSourceIndex } from "@/services/get-next-source-index";
+
+
+vi.mock("@/services/authorization", () => ({
+  authorizeAccessToken: vi.fn(() => {
+    return async (req: FastifyRequest, _reply: FastifyReply) => {
+      (req as any).userId = '123';
+    }
+  }),
+}))
+
+vi.mock("@/services/get-next-source-index", () => ({
+  getNextSourceIndex: vi.fn().mockResolvedValue('1'),
+}))
 
 vi.mock("@models/transaction-model", () => ({
   TransactionModel: {
@@ -57,15 +73,23 @@ describe("Transaction Routes (Fastify integration)", async () => {
 
   it("should create transaction via POST", async () => {
     const body = generateFullTransaction();
-    const newTransaction = { id, ...body };
+    const newTransaction = {
+      ...body,
+      id,
+      ownerId: "123",
+      sourceIndex: "1",
+    };
     (TransactionModel.create as Mock).mockResolvedValue(newTransaction);
     (serializeTransaction as Mock).mockReturnValue(newTransaction);
+    // vi.spyOn(authModule, 'authorizeAccessToken');
 
     const response = await app.inject({
       method: "POST",
       url: `/`,
       payload: body
     });
+
+    // expect(authModule.authorizeAccessToken).toHaveBeenCalledTimes(1);
 
     expect(response.statusCode).toBe(201);
     expect(response.json()).toMatchObject({

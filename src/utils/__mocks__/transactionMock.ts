@@ -18,7 +18,6 @@ export const generateFullTransaction = (): TransactionUpdateDTO => ({
   transactionType: faker.helpers.arrayElement([...TRANSACTION_TYPES]),
   paymentMethod: faker.helpers.arrayElement([...PAYMENT_METHODS]),
   account: faker.helpers.arrayElement([...ACCOUNTS]),
-  calcRefIdx: -1,
 });
 
 // Generate a partial transaction (for patch update)

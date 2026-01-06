@@ -3,8 +3,12 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { TransactionModel } from "@models/transaction-model";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { getNextSourceIndex } from "@/services/get-next-source-index";
-import { TransactionCreateDTO, TransactionCreateExchangeDTO } from "@schemas/transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
+import {
+  TransactionCreateStandardDTO,
+  TransactionCreateExchangeDTO,
+} from "@schemas/transaction";
+
 
 
 export async function createExchangeTransactionHandler(
@@ -41,7 +45,7 @@ export async function createExchangeTransactionHandler(
     exchangeRate,
   }
 
-  type ExchangeTransactionProps = TransactionCreateDTO & {
+  type ExchangeTransactionProps = TransactionCreateStandardDTO & {
     sourceIndex: number,
     sourceRefIndex: number
   };

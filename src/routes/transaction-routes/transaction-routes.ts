@@ -17,23 +17,23 @@ import {
   createTransferTransactionHandler,
 } from "./handlers";
 import {
-  TransactionCreateDTO,
-  TransactionCreateSchema,
   TransactionPatchDTO,
-  TransactionPatchSchema,
   TransactionUpdateDTO,
-  TransactionUpdateSchema,
+  TransactionPatchSchema,
   TransactionResponseDTO,
+  TransactionUpdateSchema,
   TransactionsResponseDTO,
-  TransactionCreateExchageSchema,
+  TransactionCreateStandardDTO,
   TransactionCreateExchangeDTO,
-  TransactionCreateTransferSchema,
   TransactionCreateTransferDTO,
+  TransactionCreateStandardSchema,
+  TransactionCreateExchangeSchema,
+  TransactionCreateTransferSchema,
 } from "@schemas/transaction";
 import {
+  ParamsJustId,
   DeleteManyReply,
   FilteredResponse,
-  ParamsJustId
 } from "@routes/routes-types";
 
 
@@ -79,11 +79,11 @@ export async function transactionRoutes(
   )
 
   // create one standard transaction
-  app.post<{ Body: TransactionCreateDTO; Reply: TransactionResponseDTO }>(
+  app.post<{ Body: TransactionCreateStandardDTO; Reply: TransactionResponseDTO }>(
     "/",
     {
       preHandler: [
-        validateBody(TransactionCreateSchema),
+        validateBody(TransactionCreateStandardSchema),
         authorizeAccessToken(),
       ]
     },
@@ -98,7 +98,7 @@ export async function transactionRoutes(
     "/exchange",
     {
       preHandler: [
-        validateBody(TransactionCreateExchageSchema),
+        validateBody(TransactionCreateExchangeSchema),
         authorizeAccessToken(),
       ]
     },

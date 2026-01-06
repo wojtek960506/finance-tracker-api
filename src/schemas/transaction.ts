@@ -15,7 +15,7 @@ const TransactionCreateCommonSchema = z.object({
  * Create Transaction Schema
  * Used for POST /transactions
  */
-export const TransactionCreateSchema = TransactionCreateCommonSchema.extend({
+export const TransactionCreateStandardSchema = TransactionCreateCommonSchema.extend({
   description: z.string().min(1, "Description is required"),
   amount: z.number().positive("Amount must be positive"),
   currency: z.enum([...CURRENCIES]),
@@ -25,7 +25,7 @@ export const TransactionCreateSchema = TransactionCreateCommonSchema.extend({
   transactionType: z.enum([...TRANSACTION_TYPES]),
 });
 
-export const TransactionCreateExchageSchema = TransactionCreateCommonSchema.extend({
+export const TransactionCreateExchangeSchema = TransactionCreateCommonSchema.extend({
   additionalDescription: z.string().min(1, "Additional description cannot be empty").optional(),
   amountExpense: z.number().positive("Amount of expense in exchange must be positive"),
   amountIncome: z.number().positive("Amount of income in exchange must be positive"),
@@ -48,15 +48,15 @@ export const TransactionCreateTransferSchema = TransactionCreateCommonSchema.ext
  * Full Update Schema (PUT)
  * Requires all fields (same as create)
  */
-export const TransactionUpdateSchema = TransactionCreateSchema;
+export const TransactionUpdateSchema = TransactionCreateStandardSchema;
 
 /**
  * Partial Update Schema (PATCH)
  * All fields optional
  */
-export const TransactionPatchSchema = TransactionCreateSchema.partial();
+export const TransactionPatchSchema = TransactionCreateStandardSchema.partial();
 
-export const TransactionResponseSchema = TransactionCreateSchema.extend({
+export const TransactionResponseSchema = TransactionCreateStandardSchema.extend({
   id: z.string(),
   ownerId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `ownerId`"),
   createdAt: z.coerce.date(),
@@ -67,6 +67,10 @@ export const TransactionResponseSchema = TransactionCreateSchema.extend({
   refId: z.string().regex(
     /^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `refId`"
   ).optional(),
+  currencies: z.string()
+  .min(7, "'currencies' must be in format 'XXX/XXX'")
+  .max(7, "'currencies' must be in format 'XXX/XXX'").optional(),
+  exchangeRate: z.number().optional(),
 })
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
@@ -74,8 +78,8 @@ export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
 /**
  * TypeScript types for convenience
  */
-export type TransactionCreateDTO = z.infer<typeof TransactionCreateSchema>;
-export type TransactionCreateExchangeDTO = z.infer<typeof TransactionCreateExchageSchema>;
+export type TransactionCreateStandardDTO = z.infer<typeof TransactionCreateStandardSchema>;
+export type TransactionCreateExchangeDTO = z.infer<typeof TransactionCreateExchangeSchema>;
 export type TransactionCreateTransferDTO = z.infer<typeof TransactionCreateTransferSchema>;
 export type TransactionUpdateDTO = z.infer<typeof TransactionUpdateSchema>;
 export type TransactionPatchDTO = z.infer<typeof TransactionPatchSchema>;

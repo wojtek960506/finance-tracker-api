@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { validateBody } from "./validation";
-import { TransactionCreateSchema } from "@schemas/transaction";
-import { generateFullTransaction, generatePartialTransaction } from "./__mocks__/transactionMock";
 import { FastifyRequest } from "fastify";
 import { ValidationError } from "./errors";
+import { validateBody } from "./validation";
+import { describe, expect, it } from "vitest";
+import { TransactionCreateStandardSchema } from "@schemas/transaction";
+import {
+  generateFullTransaction,
+  generatePartialTransaction,
+} from "./__mocks__/transactionMock";
 
 
 describe("validateBody", () => {
@@ -12,7 +15,7 @@ describe("validateBody", () => {
     const fullBody = generateFullTransaction();
     const req = { body: { ...fullBody } };
 
-    const validateFunc = validateBody(TransactionCreateSchema);
+    const validateFunc = validateBody(TransactionCreateStandardSchema);
     
     await validateFunc(req as FastifyRequest, {} as any);
     expect(req.body).toEqual(fullBody);
@@ -22,7 +25,7 @@ describe("validateBody", () => {
     const partialBody = generatePartialTransaction()
     const req = { body: { ...partialBody } };
 
-    const validateFunc = validateBody(TransactionCreateSchema);
+    const validateFunc = validateBody(TransactionCreateStandardSchema);
     
     try {
       await validateFunc(req as FastifyRequest, {} as any);
