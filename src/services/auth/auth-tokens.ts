@@ -1,6 +1,7 @@
+import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { randomUUID } from "crypto";
-import argon2 from "argon2";
+
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
 // const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES_IN || "15m";

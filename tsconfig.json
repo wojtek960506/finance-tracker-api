@@ -18,7 +18,9 @@
       "@utils/*": ["utils/*"],
       "@models/*": ["models/*"],
       "@routes/*": ["routes/*"],
+      "@plugins/*": ["plugins/*"],
       "@schemas/*": ["schemas/*"],
+      "@services/*": ["services/*"],
       "@/*": ["*"]
     },
     "types": ["node", "vitest"]

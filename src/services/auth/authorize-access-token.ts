@@ -1,6 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AppError } from "../utils/errors";
 import jwt from "jsonwebtoken";
+import { AppError } from "@utils/errors";
+import { FastifyReply, FastifyRequest } from "fastify";
+
 
 export function authorizeAccessToken() {
   return async (req: FastifyRequest, _reply: FastifyReply) => {

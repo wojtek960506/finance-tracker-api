@@ -2,9 +2,12 @@ import { validateSchema } from "@utils/validation";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
+import { buildTransactionFilterQuery } from "@/services/transactions";
 import { transactionTotalsQuerySchema } from "@schemas/transaction-query";
-import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
-import { parseTotalsByCurrencyResult, parseTotalsOverallResult } from "./parse-totals-result";
+import {
+  parseTotalsByCurrencyResult,
+  parseTotalsOverallResult
+} from "./parse-totals-result";
 
 
 export async function getTransactionTotalsHandler(

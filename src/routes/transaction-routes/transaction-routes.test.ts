@@ -1,26 +1,27 @@
-import Fastify, { FastifyReply } from "fastify";
+import Fastify from "fastify";
 import { transactionRoutes } from "./transaction-routes";
+import { getNextSourceIndex } from "@services/transactions";
 import { TransactionModel } from "@models/transaction-model";
 import { registerErrorHandler } from "@/plugins/errorHandler";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
-// import * as authModule from "@/services/authorization";
-import { FastifyRequest } from "fastify/types/request";
-// import { getNextSourceIndex } from "@/services/get-next-source-index";
 
 
-vi.mock("@/services/authorization", () => ({
-  authorizeAccessToken: vi.fn(() => {
-    return async (req: FastifyRequest, _reply: FastifyReply) => {
-      (req as any).userId = '123';
-    }
-  }),
-}))
+const USER_ID = '123';
+const TRANSACTION_ID = '234';
 
-vi.mock("@/services/get-next-source-index", () => ({
+const mockPreHandler = vi.fn(async (req, _reply) => {
+  (req as any).userId = USER_ID;
+})
+
+vi.mock("@services/auth/authorize-access-token", () => ({
+  authorizeAccessToken: vi.fn(() => mockPreHandler),
+}));
+
+vi.mock("@services/transactions/get-next-source-index", () => ({
   getNextSourceIndex: vi.fn().mockResolvedValue('1'),
-}))
+}));
 
 vi.mock("@models/transaction-model", () => ({
   TransactionModel: {
@@ -29,6 +30,7 @@ vi.mock("@models/transaction-model", () => ({
     findById: vi.fn()
   },
 }));
+
 vi.mock("@schemas/serialize-transaction", () => ({
   serializeTransaction: vi.fn()
 }));
@@ -38,7 +40,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
   app.register(transactionRoutes);
   await registerErrorHandler(app);
 
-  const id = "123";
+  const id = TRANSACTION_ID;
 
   beforeEach(() => { vi.clearAllMocks(); })
 
@@ -76,12 +78,11 @@ describe("Transaction Routes (Fastify integration)", async () => {
     const newTransaction = {
       ...body,
       id,
-      ownerId: "123",
+      ownerId: USER_ID,
       sourceIndex: "1",
     };
     (TransactionModel.create as Mock).mockResolvedValue(newTransaction);
     (serializeTransaction as Mock).mockReturnValue(newTransaction);
-    // vi.spyOn(authModule, 'authorizeAccessToken');
 
     const response = await app.inject({
       method: "POST",
@@ -89,14 +90,14 @@ describe("Transaction Routes (Fastify integration)", async () => {
       payload: body
     });
 
-    // expect(authModule.authorizeAccessToken).toHaveBeenCalledTimes(1);
-
+    expect(mockPreHandler).toHaveBeenCalledTimes(1);
+    expect(getNextSourceIndex).toHaveBeenCalledTimes(1);
+    expect(getNextSourceIndex).toHaveBeenCalledWith(USER_ID);
+    
     expect(response.statusCode).toBe(201);
     expect(response.json()).toMatchObject({
       ...newTransaction,
       date: newTransaction.date.toISOString(),
     });
-  })
-
-  
+  });
 })

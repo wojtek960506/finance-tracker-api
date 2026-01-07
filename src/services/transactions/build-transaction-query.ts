@@ -1,6 +1,7 @@
-import { TransactionFiltersQuery } from "@schemas/transaction-query"
-import { FilterQuery, Types } from "mongoose"
-import { ITransaction } from "@models/transaction-model"
+import { FilterQuery, Types } from "mongoose";
+import { ITransaction } from "@models/transaction-model";
+import { TransactionFiltersQuery } from "@schemas/transaction-query";
+
 
 export const buildTransactionFilterQuery = (
   q: TransactionFiltersQuery, ownerId: string

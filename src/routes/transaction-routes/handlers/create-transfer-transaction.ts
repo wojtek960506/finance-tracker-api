@@ -2,8 +2,8 @@ import { startSession } from "mongoose";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
+import { getNextSourceIndex } from "@/services/transactions";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { getNextSourceIndex } from "@/services/get-next-source-index";
 import {
   TransactionCreateStandardDTO,
   TransactionCreateTransferDTO,

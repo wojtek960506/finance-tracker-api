@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
+import { getNextSourceIndex } from "@services/transactions";
 import { TransactionModel } from "@models/transaction-model";
 import { TransactionCreateStandardDTO } from "@schemas/transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { getNextSourceIndex } from "@/services/get-next-source-index";
 
 
 export async function createStandardTransactionHandler(

@@ -3,8 +3,9 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
 import { transactionQuerySchema } from "@schemas/transaction-query";
+import { buildTransactionFilterQuery } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { buildTransactionFilterQuery } from "@/services/build-transaction-query";
+
 
 
 export async function getTransactionsHandler (

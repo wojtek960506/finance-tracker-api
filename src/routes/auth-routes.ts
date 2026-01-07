@@ -8,8 +8,12 @@ import { IUser, UserModel } from "@models/user-model";
 import { AuthenticatedRequest } from "./routes-types";
 import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
-import { authorizeAccessToken } from "@/services/authorization";
-import { createAccessToken, createRefreshToken } from "@/services/authTokens";
+import {
+  createAccessToken,
+  createRefreshToken,
+  authorizeAccessToken,
+} from "@services/auth";
+
 
 async function findHash(hashes: { tokenHash: string, createdAt: Date}[], refreshToken: string) {
   for (const { tokenHash } of hashes) {

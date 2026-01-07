@@ -1,14 +1,13 @@
 import { startSession } from "mongoose";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { TransactionModel } from "@models/transaction-model";
 import { AuthenticatedRequest } from "@routes/routes-types";
-import { getNextSourceIndex } from "@/services/get-next-source-index";
+import { TransactionModel } from "@models/transaction-model";
+import { getNextSourceIndex } from "@/services/transactions";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import {
   TransactionCreateStandardDTO,
   TransactionCreateExchangeDTO,
 } from "@schemas/transaction";
-
 
 
 export async function createExchangeTransactionHandler(
