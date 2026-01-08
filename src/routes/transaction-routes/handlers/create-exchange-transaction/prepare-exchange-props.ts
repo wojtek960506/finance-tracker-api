@@ -4,19 +4,19 @@ import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props"
 
 
 export const prepareExchangeProps = (
-  body: TransactionCreateExchangeDTO,
+  dto: TransactionCreateExchangeDTO,
   ownerId: string,
   sourceIndexExpense: number,
   sourceIndexIncome: number,
 ) => {
-  const { description, currencies, exchangeRate } = prepareExchangeSpecificProps(body);
+  const { description, currencies, exchangeRate } = prepareExchangeSpecificProps(dto);
 
   const commonTransactionProps = {
     category: "exchange",
     ownerId,
-    date: body.date,
-    account: body.account,
-    paymentMethod: body.paymentMethod,
+    date: dto.date,
+    account: dto.account,
+    paymentMethod: dto.paymentMethod,
     description,
     currencies,
     exchangeRate,
@@ -25,8 +25,8 @@ export const prepareExchangeProps = (
   const expenseTransactionProps: ExchangeTransactionProps = {
     ...commonTransactionProps,
     transactionType: "expense",
-    amount: body.amountExpense,
-    currency: body.currencyExpense,
+    amount: dto.amountExpense,
+    currency: dto.currencyExpense,
     sourceIndex: sourceIndexExpense,
     sourceRefIndex: sourceIndexIncome,
   }
@@ -34,8 +34,8 @@ export const prepareExchangeProps = (
   const incomeTransactionProps: ExchangeTransactionProps = {
     ...commonTransactionProps,
     transactionType: "income",
-    amount: body.amountIncome,
-    currency: body.currencyIncome,
+    amount: dto.amountIncome,
+    currency: dto.currencyIncome,
     sourceIndex: sourceIndexIncome,
     sourceRefIndex: sourceIndexExpense,
   }

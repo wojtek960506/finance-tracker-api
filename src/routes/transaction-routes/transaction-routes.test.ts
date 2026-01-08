@@ -1,14 +1,19 @@
 import Fastify from "fastify";
+import { randomObjectIdString } from "@utils/random";
 import { transactionRoutes } from "./transaction-routes";
-import { getNextSourceIndex } from "@services/transactions";
 import { TransactionModel } from "@models/transaction-model";
 import { registerErrorHandler } from "@/plugins/errorHandler";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { generateFullStandardTransaction } from "@utils/__mocks__/transactionMock";
+import { getNextSourceIndex, createExchangeTransaction } from "@services/transactions";
+import {
+  getExchangeTransactionProps,
+  getTransactionCreateExchangeDTO
+} from "@utils/__mocks__/transactions/create-exchange";
 
 
-const USER_ID = '123';
+const USER_ID = randomObjectIdString();
 const TRANSACTION_ID = '234';
 
 const mockPreHandler = vi.fn(async (req, _reply) => {
@@ -20,7 +25,11 @@ vi.mock("@services/auth/authorize-access-token", () => ({
 }));
 
 vi.mock("@services/transactions/get-next-source-index", () => ({
-  getNextSourceIndex: vi.fn().mockResolvedValue('1'),
+  getNextSourceIndex: vi.fn(),
+}));
+
+vi.mock("@services/transactions/create-exchange-transaction", () => ({
+  createExchangeTransaction: vi.fn(),
 }));
 
 vi.mock("@models/transaction-model", () => ({
@@ -73,16 +82,18 @@ describe("Transaction Routes (Fastify integration)", async () => {
     expect(response.json()).toMatchObject({ message: expect.any(String) });
   })
 
-  it("should create transaction via POST", async () => {
+  it("should create standard transaction via POST", async () => {
     const body = generateFullStandardTransaction();
+    const sourceIndex = 1;
     const newTransaction = {
       ...body,
       id,
       ownerId: USER_ID,
-      sourceIndex: "1",
+      sourceIndex,
     };
     (TransactionModel.create as Mock).mockResolvedValue(newTransaction);
     (serializeTransaction as Mock).mockReturnValue(newTransaction);
+    (getNextSourceIndex as Mock).mockResolvedValue(sourceIndex);
 
     const response = await app.inject({
       method: "POST",
@@ -100,4 +111,46 @@ describe("Transaction Routes (Fastify integration)", async () => {
       date: newTransaction.date.toISOString(),
     });
   });
+
+  it ("should create exchange transaction(s) via POST", async () => {
+    const sourceIndexExpense = 1;
+    const sourceIndexIncome = 2;
+    const idExpense = randomObjectIdString();
+    const idIncome = randomObjectIdString();
+    const dto = getTransactionCreateExchangeDTO();
+    const { incomeProps, expenseProps } = getExchangeTransactionProps(
+      USER_ID, sourceIndexExpense, sourceIndexIncome
+    );
+    const expenseTransaction = { 
+      ...expenseProps,
+      id: idExpense,
+      refId: idIncome,
+      date: expenseProps.date.toISOString(),
+    };
+    const incomeTransaction = {
+      ...incomeProps,
+      id: idIncome,
+      refId: idExpense,
+      date: expenseProps.date.toISOString(),
+    };
+
+    (createExchangeTransaction as Mock).mockResolvedValue(
+      [expenseTransaction, incomeTransaction]
+    );
+    (getNextSourceIndex as Mock)
+      .mockResolvedValueOnce(sourceIndexExpense)
+      .mockResolvedValueOnce(sourceIndexIncome);
+    
+    const response = await app.inject({
+      method: "POST",
+      url: `/exchange`,
+      payload: dto
+    });
+
+    expect(createExchangeTransaction).toHaveBeenCalledOnce();
+    expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
+    expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID);
+    expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID);
+    expect(response.json()).toEqual([expenseTransaction, incomeTransaction]);
+  })
 })
