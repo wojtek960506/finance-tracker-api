@@ -31,19 +31,16 @@ describe("createStandardTransaction", async () => {
     const ownerId = randomObjectIdString();
     const sourceIndex = "1";
     const createDTO = generateFullStandardTransaction();
-    const newTransaction = {
-      ...createDTO,
-      sourceIndex,
-      ownerId,
-      id,
-    };
+    const createBody = { ...createDTO, sourceIndex, ownerId };
+    const newTransaction = { ...createBody, id };
     (TransactionModel.create as Mock).mockResolvedValue(newTransaction);
     (CounterModel.findOneAndUpdate as Mock).mockResolvedValue({ seq: sourceIndex });
-    (serializeTransaction as Mock).mockReturnValue(newTransaction)
+    (serializeTransaction as Mock).mockReturnValue(newTransaction);
 
     const result = await createStandardTransaction(createDTO, ownerId);
     
     expect(TransactionModel.create).toHaveBeenCalledTimes(1);
+    expect(TransactionModel.create).toHaveBeenCalledWith(createBody);
     expect(CounterModel.findOneAndUpdate).toHaveBeenCalledTimes(1);
     expect(result).toEqual(newTransaction);
   });

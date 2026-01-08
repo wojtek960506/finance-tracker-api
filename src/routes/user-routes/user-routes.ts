@@ -6,7 +6,7 @@ import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
 import { createUserHandler } from "./handlers/create-user";
 import { TransactionModel } from "@models/transaction-model";
-import { authorizeAccessToken } from "@/services/authorization";
+import { authorizeAccessToken } from "@services/auth";
 import { createRandomTransactions } from "./handlers/create-random-transactions";
 import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "../routes-types";
 import {
