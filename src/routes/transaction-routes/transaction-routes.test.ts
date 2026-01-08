@@ -5,7 +5,7 @@ import { TransactionModel } from "@models/transaction-model";
 import { registerErrorHandler } from "@/plugins/errorHandler";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { generateFullTransaction } from "@utils/__mocks__/transactionMock";
+import { generateFullStandardTransaction } from "@utils/__mocks__/transactionMock";
 
 
 const USER_ID = '123';
@@ -45,7 +45,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
   beforeEach(() => { vi.clearAllMocks(); })
 
   it("should return single transaction via GET when found", async () => {
-    const transaction = { id, ...generateFullTransaction() };
+    const transaction = { id, ...generateFullStandardTransaction() };
     (TransactionModel.findById as Mock).mockResolvedValue(transaction);
     (serializeTransaction as Mock).mockResolvedValue(transaction);
 
@@ -74,7 +74,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
   })
 
   it("should create transaction via POST", async () => {
-    const body = generateFullTransaction();
+    const body = generateFullStandardTransaction();
     const newTransaction = {
       ...body,
       id,

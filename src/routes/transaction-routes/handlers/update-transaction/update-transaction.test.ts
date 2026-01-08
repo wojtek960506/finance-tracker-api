@@ -4,8 +4,8 @@ import { updateTransactionHandler } from "./update-transaction";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import {
-  generateFullTransaction,
-  generatePartialTransaction
+  generatePartialTransaction,
+  generateFullStandardTransaction,
 } from "@utils/__mocks__/transactionMock";
 
 
@@ -21,7 +21,7 @@ vi.mock("@schemas/serialize-transaction", () => ({
 }));
 
 const id = "1";
-const fullBody = generateFullTransaction();
+const fullBody = generateFullStandardTransaction();
 const partialBody = generatePartialTransaction();
 
 

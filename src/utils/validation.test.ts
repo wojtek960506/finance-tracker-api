@@ -4,15 +4,15 @@ import { validateBody } from "./validation";
 import { describe, expect, it } from "vitest";
 import { TransactionCreateStandardSchema } from "@schemas/transaction";
 import {
-  generateFullTransaction,
   generatePartialTransaction,
+  generateFullStandardTransaction,
 } from "./__mocks__/transactionMock";
 
 
 describe("validateBody", () => {
 
   it("when data is proper then no errors", async () => {
-    const fullBody = generateFullTransaction();
+    const fullBody = generateFullStandardTransaction();
     const req = { body: { ...fullBody } };
 
     const validateFunc = validateBody(TransactionCreateStandardSchema);

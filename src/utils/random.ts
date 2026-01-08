@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export const randomDate = (from: Date, to: Date): Date => {
   const fromTime = from.getTime();
   const toTime = to.getTime();
@@ -32,3 +34,5 @@ export function weightedRandomFromSet<T extends string | number>(
 
   throw new Error("invalid weights");
 }
+
+export const randomObjectIdString = () => new Types.ObjectId().toHexString();
