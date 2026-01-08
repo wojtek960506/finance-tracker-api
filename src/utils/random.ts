@@ -12,7 +12,7 @@ export const randomNumber = (from: number, to: number) => {
 
 export function randomFromSet<T>(set: Set<T>): T {
   const values = Array.from(set);
-  const index = Math.floor(Math.random() * values.length);
+  const index = Math.floor(Math.random() * (values.length - 1));
   return values[index];
 }
 
