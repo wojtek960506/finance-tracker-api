@@ -3,13 +3,13 @@ import { describe, expect, it } from "vitest";
 import { prepareTransferProps } from "./prepare-transfer-props";
 import {
   getTransferTransactionProps,
-  getTransactionCreateTransactionDTO,
+  getTransactionCreateTransferDTO,
 } from "@utils/__mocks__/transactions/create-transfer";
 
 
 describe("prepareTransferProps", () => {
   it("prepareProps", () => {
-    const dto = getTransactionCreateTransactionDTO();
+    const dto = getTransactionCreateTransferDTO();
     const OWNER_ID = randomObjectIdString();
     const EXPENSE_IDX = 1;
     const INCOME_IDX = 2;

@@ -1,5 +1,6 @@
-import { TransferTransactionProps } from "@services/transactions";
 import { TransactionCreateTransferDTO } from "@schemas/transaction";
+import { TransferTransactionProps } from "@db/transactions/persist-transaction";
+
 
 const date = new Date("2026-01-09");
 const amount = 77;
@@ -9,7 +10,7 @@ const accountIncome = "veloBank";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "savings";
 
-export const getTransactionCreateTransactionDTO = () => ({
+export const getTransactionCreateTransferDTO = () => ({
   date,
   amount,
   currency,

@@ -1,5 +1,5 @@
-import { ExchangeTransactionProps } from "@services/transactions";
 import { TransactionCreateExchangeDTO } from "@schemas/transaction";
+import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
 
 
 const date = new Date("2026-01-08");
