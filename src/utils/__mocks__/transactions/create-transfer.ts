@@ -1,11 +1,11 @@
-import { TransactionCreateTransferDTO } from "@schemas/transaction";
 import { TransferTransactionProps } from "@services/transactions";
+import { TransactionCreateTransferDTO } from "@schemas/transaction";
 
 const date = new Date("2026-01-09");
 const amount = 77;
 const currency = "PLN";
-const accountFrom = "mBank";
-const accountTo = "veloBank";
+const accountExpense = "mBank";
+const accountIncome = "veloBank";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "savings";
 
@@ -13,16 +13,16 @@ export const getTransactionCreateTransactionDTO = () => ({
   date,
   amount,
   currency,
-  accountFrom,
-  accountTo,
+  accountExpense,
+  accountIncome,
   paymentMethod,
   additionalDescription,
 } as TransactionCreateTransferDTO);
 
 export const getTransferTransactionProps = (
   ownerId: string,
-  fromIdx: number,
-  toIdx: number,
+  expenseIdx: number,
+  incomeIdx: number,
 ) => {
   const commonProps = {
     category: "myAccount",
@@ -31,24 +31,24 @@ export const getTransferTransactionProps = (
     amount,
     currency,
     paymentMethod,
-    description: `${accountFrom} --> ${accountTo} (${additionalDescription})`,
+    description: `${accountExpense} --> ${accountIncome} (${additionalDescription})`,
   }
 
-  const fromProps: TransferTransactionProps = {
+  const expenseProps: TransferTransactionProps = {
     ...commonProps,
     transactionType: "expense",
-    account: accountFrom,
-    sourceIndex: fromIdx,
-    sourceRefIndex: toIdx
+    account: accountExpense,
+    sourceIndex: expenseIdx,
+    sourceRefIndex: incomeIdx
   }
 
-  const toProps: TransferTransactionProps = {
+  const incomeProps: TransferTransactionProps = {
     ...commonProps,
     transactionType: "income",
-    account: accountTo,
-    sourceIndex: toIdx,
-    sourceRefIndex: fromIdx,
+    account: accountIncome,
+    sourceIndex: incomeIdx,
+    sourceRefIndex: expenseIdx,
   }
 
-  return { fromProps, toProps };
+  return { expenseProps, incomeProps };
 }

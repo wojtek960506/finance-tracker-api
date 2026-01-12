@@ -1,16 +1,16 @@
+import { TransferTransactionProps } from "@services/transactions";
 import { TransactionCreateTransferDTO } from "@schemas/transaction";
-import { TransferTransactionProps } from "@services/transactions/create-transfer-transaction/create-transfer-transaction";
 
 export const prepareTransferProps = (
   body: TransactionCreateTransferDTO,
   ownerId: string,
-  fromIndexExpense: number,
-  toIndexExpense: number,
+  sourceIndexExpense: number,
+  sourceIndexIncome: number,
 ) => {
 
-  // TODO for now `accountFrom` and `accountTo` are not translated in the body so
-  // decide how to handle it
-  let description = `${body.accountFrom} --> ${body.accountTo}`;
+  // TODO for now `accountExpense` and `accountIncome` are not translated in the body,
+  // so decide how to handle it
+  let description = `${body.accountExpense} --> ${body.accountIncome}`;
   if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
 
@@ -24,21 +24,21 @@ export const prepareTransferProps = (
       description,
     }
   
-  const fromTransactionProps: TransferTransactionProps = {
+  const expenseTransactionProps: TransferTransactionProps = {
     ...commonTransactionProps,
     transactionType: "expense",
-    account: body.accountFrom,
-    sourceIndex: fromIndexExpense,
-    sourceRefIndex: toIndexExpense,
+    account: body.accountExpense,
+    sourceIndex: sourceIndexExpense,
+    sourceRefIndex: sourceIndexIncome,
   };
 
-  const toTransactionProps: TransferTransactionProps = {
+  const incomeTransactionProps: TransferTransactionProps = {
     ...commonTransactionProps,
     transactionType: "income",
-    account: body.accountTo,
-    sourceIndex: toIndexExpense,
-    sourceRefIndex: fromIndexExpense,
+    account: body.accountIncome,
+    sourceIndex: sourceIndexIncome,
+    sourceRefIndex: sourceIndexExpense,
   };
 
-  return { fromTransactionProps, toTransactionProps };
+  return { expenseTransactionProps, incomeTransactionProps };
 }

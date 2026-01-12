@@ -11,11 +11,11 @@ export type TransferTransactionProps = TransactionCreateStandardDTO & {
 };
 
 export async function createTransferTransaction (
-  fromTransactionProps: TransferTransactionProps,
-  toTransactionProps: TransferTransactionProps,
+  expenseTransactionProps: TransferTransactionProps,
+  incomeTransactionProps: TransferTransactionProps,
 ) {
-  let fromTransaction;
-  let toTransaction;
+  let expenseTransaction;
+  let incomeTransaction;
 
   // TODO create helper method for such creation within session
   // as it appears also in `create-exchange-transaction-handler`
@@ -25,21 +25,21 @@ export async function createTransferTransaction (
   try {
     await session.withTransaction(async () => {
       const [
-        { _id: fromTransactionId },
-        { _id: toTransactionId },
+        { _id: expenseTransactionId },
+        { _id: incomeTransactionId },
       ] = await TransactionModel.create(
-        [fromTransactionProps, toTransactionProps],
+        [expenseTransactionProps, incomeTransactionProps],
         { session, ordered: true }
       );
 
-      fromTransaction = await TransactionModel.findOneAndUpdate(
-        { _id: fromTransactionId },
-        { refId: toTransactionId },
+      expenseTransaction = await TransactionModel.findOneAndUpdate(
+        { _id: expenseTransactionId },
+        { refId: incomeTransactionId },
         { session, new: true },
       );
-      toTransaction = await TransactionModel.findOneAndUpdate(
-        { _id: toTransactionId },
-        { refId: fromTransactionId },
+      incomeTransaction = await TransactionModel.findOneAndUpdate(
+        { _id: incomeTransactionId },
+        { refId: expenseTransactionId },
         { session, new: true },
       );
     })
@@ -48,7 +48,7 @@ export async function createTransferTransaction (
   }
 
   return [
-    serializeTransaction(fromTransaction!),
-    serializeTransaction(toTransaction!),
+    serializeTransaction(expenseTransaction!),
+    serializeTransaction(incomeTransaction!),
   ]
 }

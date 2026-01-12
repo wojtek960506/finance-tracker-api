@@ -34,17 +34,17 @@ vi.mock("@schemas/serialize-transaction", () => ({
 }))
 
 describe("createTransferTransaction", async () => {
-  const FROM_ID = randomObjectIdString();
-  const TO_ID = randomObjectIdString();
+  const EXPENSE_ID = randomObjectIdString();
+  const INCOME_ID = randomObjectIdString();
   const OWNER_ID = randomObjectIdString();
-  const FROM_SOURCE_IDX = 1;
-  const TO_SOURCE_IDX = 2;
+  const EXPENSE_SOURCE_IDX = 1;
+  const INCOME_SOURCE_IDX = 2;
   const {
-    fromProps,
-    toProps,
-  } = getTransferTransactionProps(OWNER_ID, FROM_SOURCE_IDX, TO_SOURCE_IDX);
-  const fromTransaction = { ...fromProps, id: FROM_ID, refId: TO_ID };
-  const toTransaction = { ...toProps, id: TO_ID, refId: FROM_ID };
+    expenseProps,
+    incomeProps,
+  } = getTransferTransactionProps(OWNER_ID, EXPENSE_SOURCE_IDX, INCOME_SOURCE_IDX);
+  const expenseTransaction = { ...expenseProps, id: EXPENSE_ID, refId: INCOME_ID };
+  const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
 
   afterEach(() => { vi.clearAllMocks() });
 
@@ -53,17 +53,17 @@ describe("createTransferTransaction", async () => {
       await fn(); //simulate transaction body execution
     });
     (TransactionModel.create as Mock).mockResolvedValue([
-      { _id: FROM_ID },
-      { _id: TO_ID },
+      { _id: EXPENSE_ID },
+      { _id: INCOME_ID },
     ]);
     (TransactionModel.findOneAndUpdate as Mock)
-      .mockResolvedValueOnce(fromTransaction)
-      .mockResolvedValueOnce(toTransaction);
+      .mockResolvedValueOnce(expenseTransaction)
+      .mockResolvedValueOnce(incomeTransaction);
     (serializeTransaction as Mock)
-      .mockReturnValueOnce(fromTransaction)
-      .mockReturnValueOnce(toTransaction);
+      .mockReturnValueOnce(expenseTransaction)
+      .mockReturnValueOnce(incomeTransaction);
 
-    const result = await createTransferTransaction(fromProps, toProps);
+    const result = await createTransferTransaction(expenseProps, incomeProps);
 
     expect(startSession).toHaveBeenCalled();
     expect(withTransactionMock).toHaveBeenCalledOnce();
@@ -71,7 +71,7 @@ describe("createTransferTransaction", async () => {
     expect(TransactionModel.create).toHaveBeenCalledOnce();
     expect(TransactionModel.findOneAndUpdate).toHaveBeenCalledTimes(2);
     expect(TransactionModel.create).toHaveBeenCalledWith(
-      [fromProps, toProps],
+      [expenseProps, incomeProps],
       { 
         session: { endSession: endSessionMock, withTransaction: withTransactionMock},
         ordered: true
@@ -79,8 +79,8 @@ describe("createTransferTransaction", async () => {
     );
     expect(TransactionModel.findOneAndUpdate).toHaveBeenNthCalledWith(
       1,
-      { _id: FROM_ID },
-      { refId: TO_ID },
+      { _id: EXPENSE_ID },
+      { refId: INCOME_ID },
       { 
         session: { endSession: endSessionMock, withTransaction: withTransactionMock},
         new: true
@@ -88,14 +88,14 @@ describe("createTransferTransaction", async () => {
     );
     expect(TransactionModel.findOneAndUpdate).toHaveBeenNthCalledWith(
       2,
-      { _id: TO_ID },
-      { refId: FROM_ID },
+      { _id: INCOME_ID },
+      { refId: EXPENSE_ID },
       { 
         session: { endSession: endSessionMock, withTransaction: withTransactionMock},
         new: true
       }
     );
-    expect(result).toEqual([fromTransaction, toTransaction]);
+    expect(result).toEqual([expenseTransaction, incomeTransaction]);
   })
 
   it("end session even when the error is thrown within `withTransaction`", async () => {
@@ -103,7 +103,7 @@ describe("createTransferTransaction", async () => {
       throw new Error("fails");
     });
 
-    await expect(createTransferTransaction(fromProps, toProps)).rejects.toThrow();
+    await expect(createTransferTransaction(expenseProps, incomeProps)).rejects.toThrow();
 
     expect(endSessionMock).toHaveBeenCalledOnce();
     expect(withTransactionMock).toHaveBeenCalledOnce();

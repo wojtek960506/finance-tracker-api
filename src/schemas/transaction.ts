@@ -39,8 +39,8 @@ export const TransactionCreateTransferSchema = TransactionCreateCommonSchema.ext
   additionalDescription: z.string().min(1, "Additional description cannot be empty").optional(),
   amount: z.number().positive("Amount must be positive"),
   currency: z.enum([...CURRENCIES]),
-  accountFrom: z.enum([...ACCOUNTS]),
-  accountTo: z.enum([...ACCOUNTS]),
+  accountExpense: z.enum([...ACCOUNTS]),
+  accountIncome: z.enum([...ACCOUNTS]),
   paymentMethod: z.enum(["bankTransfer", "cash", "card"]),
 })
 

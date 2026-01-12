@@ -12,18 +12,18 @@ export async function createTransferTransactionHandler(
   const userId = (req as AuthenticatedRequest).userId;
   const body = req.body;
 
-  const sourceIndexFrom = await getNextSourceIndex(userId);
-  const sourceIndexTo = await getNextSourceIndex(userId);
+  const sourceIndexExpense = await getNextSourceIndex(userId);
+  const sourceIndexIncome = await getNextSourceIndex(userId);
 
   const {
-    fromTransactionProps,
-    toTransactionProps,
-  } = prepareTransferProps(body, userId, sourceIndexFrom, sourceIndexTo);
+    expenseTransactionProps,
+    incomeTransactionProps,
+  } = prepareTransferProps(body, userId, sourceIndexExpense, sourceIndexIncome);
 
   const [
     fromTransaction,
     toTransaction,
-  ] = await createTransferTransaction(fromTransactionProps, toTransactionProps);
+  ] = await createTransferTransaction(expenseTransactionProps, incomeTransactionProps);
 
   return res.code(201).send([fromTransaction, toTransaction]);
 }
