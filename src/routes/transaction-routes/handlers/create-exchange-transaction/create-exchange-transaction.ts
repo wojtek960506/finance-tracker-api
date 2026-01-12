@@ -11,7 +11,6 @@ export async function createExchangeTransactionHandler(
   res: FastifyReply
 ) {
   const userId = (req as AuthenticatedRequest).userId;
-  const body = req.body;
 
   const sourceIndexExpense = await getNextSourceIndex(userId);
   const sourceIndexIncome = await getNextSourceIndex(userId);
@@ -19,7 +18,7 @@ export async function createExchangeTransactionHandler(
   const {
     expenseTransactionProps,
     incomeTransactionProps
-  } = prepareExchangeProps(body, userId, sourceIndexExpense, sourceIndexIncome);
+  } = prepareExchangeProps(req.body, userId, sourceIndexExpense, sourceIndexIncome);
 
   const [
     expenseTransaction,

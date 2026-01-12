@@ -1,4 +1,3 @@
-import { CounterModel } from "@models/counter-model";
 import { randomObjectIdString } from "@utils/random";
 import { TransactionModel } from "@models/transaction-model";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
@@ -13,11 +12,6 @@ vi.mock("@models/transaction-model", () => ({
   }
 }));
 
-vi.mock("@models/counter-model", () => ({
-  CounterModel: {
-    findOneAndUpdate: vi.fn(),
-  } 
-}));
 
 vi.mock("@schemas/serialize-transaction", () => ({
   serializeTransaction: vi.fn()
@@ -27,21 +21,19 @@ describe("createStandardTransaction", async () => {
   beforeEach(() => { vi.clearAllMocks(); });
 
   it("creates standard transactions", async () => {
-    const id = randomObjectIdString();
-    const ownerId = randomObjectIdString();
-    const sourceIndex = "1";
+    const ID = randomObjectIdString();
+    const OWNER_ID = randomObjectIdString();
+    const SOURCE_INDEX = 1;
     const createDTO = generateFullStandardTransaction();
-    const createBody = { ...createDTO, sourceIndex, ownerId };
-    const newTransaction = { ...createBody, id };
+    const createBody = { ...createDTO, sourceIndex: SOURCE_INDEX, ownerId: OWNER_ID };
+    const newTransaction = { ...createBody, id: ID };
     (TransactionModel.create as Mock).mockResolvedValue(newTransaction);
-    (CounterModel.findOneAndUpdate as Mock).mockResolvedValue({ seq: sourceIndex });
     (serializeTransaction as Mock).mockReturnValue(newTransaction);
 
-    const result = await createStandardTransaction(createDTO, ownerId);
+    const result = await createStandardTransaction(createDTO, OWNER_ID, SOURCE_INDEX);
     
     expect(TransactionModel.create).toHaveBeenCalledTimes(1);
     expect(TransactionModel.create).toHaveBeenCalledWith(createBody);
-    expect(CounterModel.findOneAndUpdate).toHaveBeenCalledTimes(1);
     expect(result).toEqual(newTransaction);
   });
 })
