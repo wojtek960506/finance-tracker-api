@@ -1,4 +1,4 @@
-import { createTransactionPair } from "../create-transaction-pair";
+import { createTransactionPair } from "@/services/transactions";
 import { TransactionCreateStandardDTO } from "@schemas/transaction";
 
 

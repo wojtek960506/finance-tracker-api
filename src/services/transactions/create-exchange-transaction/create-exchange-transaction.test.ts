@@ -1,112 +1,31 @@
-import { TransactionModel } from "@models/transaction-model";
-import { serializeTransaction } from "@schemas/serialize-transaction";
-import { getExchangeTransactionProps } from "@utils/__mocks__/transactions/create-exchange";
 import { randomObjectIdString } from "@utils/random";
-import { afterEach, describe, expect, it, Mock, vi } from "vitest"
+import { describe, expect, it, Mock, vi } from "vitest"
+import { createTransactionPair } from "../create-transaction-pair";
 import { createExchangeTransaction } from "./create-exchange-transaction";
-import { startSession } from "mongoose";
+import { getExchangeTransactionProps } from "@utils/__mocks__/transactions/create-exchange";
 
-const withTransactionMock = vi.fn();
-const endSessionMock = vi.fn();
 
-vi.mock("mongoose", async () => {
-  const actual = await vi.importActual<typeof import("mongoose")>("mongoose");
-
-  return {
-    ...actual,
-    startSession: vi.fn(async () => ({
-      withTransaction: withTransactionMock,
-      endSession: endSessionMock,
-    }))
-  }
-});
-
-vi.mock("@models/transaction-model", () => ({
-  TransactionModel: {
-    create: vi.fn(),
-    findOneAndUpdate: vi.fn(),
-  },
-}));
-
-vi.mock("@schemas/serialize-transaction", () => ({
-  serializeTransaction: vi.fn(),
+vi.mock("@services/transactions/create-transaction-pair", () => ({
+  createTransactionPair: vi.fn(),
 }))
 
 describe("createExchangeTransaction", async () => {
-
   const EXPENSE_ID = randomObjectIdString();
   const INCOME_ID = randomObjectIdString();
-  const OWNER_ID = randomObjectIdString();
-  const EXPENSE_SOURCE_IDX = 1;
-  const INCOME_SOURCE_IDX = 2;
   const {
     expenseProps,
     incomeProps,
-  } = getExchangeTransactionProps(OWNER_ID, EXPENSE_SOURCE_IDX, INCOME_SOURCE_IDX);
+  } = getExchangeTransactionProps(randomObjectIdString(), 1, 2);
   const expenseTransaction = { ...expenseProps, id: EXPENSE_ID, refId: INCOME_ID };
   const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
 
-  afterEach(() => { vi.clearAllMocks() });
-
-  it("2 transactions are created and updated when no errors", async () => {
-    withTransactionMock.mockImplementation(async (fn) => {
-      await fn(); // simulate transaction body execution
-    });
-    (TransactionModel.create as Mock).mockResolvedValue([
-      { _id: EXPENSE_ID },
-      { _id: INCOME_ID },
-    ]);
-    (TransactionModel.findOneAndUpdate as Mock)
-      .mockResolvedValueOnce(expenseTransaction)
-      .mockResolvedValueOnce(incomeTransaction);
-    (serializeTransaction as Mock)
-      .mockReturnValueOnce(expenseTransaction)
-      .mockReturnValueOnce(incomeTransaction);
+  it("create pair for exchange transaction", async () => {
+    (createTransactionPair as Mock).mockResolvedValue([expenseTransaction, incomeTransaction]);
 
     const result = await createExchangeTransaction(expenseProps, incomeProps);
 
-    expect(startSession).toHaveBeenCalled();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
-    expect(endSessionMock).toHaveBeenCalledOnce();
-    expect(TransactionModel.create).toHaveBeenCalledOnce();
-    expect(TransactionModel.findOneAndUpdate).toHaveBeenCalledTimes(2);
-    expect(TransactionModel.create).toHaveBeenCalledWith(
-      [expenseProps, incomeProps],
-      { 
-        session: { endSession: endSessionMock, withTransaction: withTransactionMock},
-        ordered: true
-      }
-    );
-    expect(TransactionModel.findOneAndUpdate).toHaveBeenNthCalledWith(
-      1,
-      { _id: EXPENSE_ID },
-      { refId: INCOME_ID },
-      { 
-        session: { endSession: endSessionMock, withTransaction: withTransactionMock},
-        new: true
-      }
-    );
-    expect(TransactionModel.findOneAndUpdate).toHaveBeenNthCalledWith(
-      2,
-      { _id: INCOME_ID },
-      { refId: EXPENSE_ID },
-      { 
-        session: { endSession: endSessionMock, withTransaction: withTransactionMock},
-        new: true
-      }
-    );
-    expect(result).toEqual([expenseTransaction, incomeTransaction]);
-  });
-
-  it("end session even when the error is thrown within `withTransaction`", async () => {
-    withTransactionMock.mockImplementationOnce(async () => {
-      throw new Error("fails");
-    });
-
-    await expect(createExchangeTransaction(expenseProps, incomeProps)).rejects.toThrow();
-
-    expect(endSessionMock).toHaveBeenCalledOnce();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
-    expect(TransactionModel.create).not.toHaveBeenCalled();
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual(expenseTransaction);
+    expect(result[1]).toEqual(incomeTransaction);
   })
 })
