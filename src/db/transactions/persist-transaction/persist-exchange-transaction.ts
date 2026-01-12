@@ -1,10 +1,8 @@
-import {
-  persistTransactionPair,
-  ExchangeTransactionProps,
-} from "@db/transactions/persist-transaction";
+import { ExchangeTransactionProps } from "./types";
+import { persistTransactionPair } from "./persist-transaction-pair";
 
 
-export async function createExchangeTransaction (
+export async function persistExchangeTransaction (
   expenseTransactionProps: ExchangeTransactionProps,
   incomeTransactionProps: ExchangeTransactionProps,
 ) {

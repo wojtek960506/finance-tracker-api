@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
+import { getNextSourceIndex } from "@/services/transactions";
 import { prepareExchangeProps } from "./prepare-exchange-props";
 import { TransactionCreateExchangeDTO } from "@schemas/transaction";
-import { createExchangeTransaction, getNextSourceIndex } from "@/services/transactions";
+import { persistExchangeTransaction } from "@db/transactions/persist-transaction";
 
 
 export async function createExchangeTransactionHandler(
@@ -23,7 +24,7 @@ export async function createExchangeTransactionHandler(
   const [
     expenseTransaction,
     incomeTransaction
-  ] = await createExchangeTransaction(expenseTransactionProps, incomeTransactionProps);
+  ] = await persistExchangeTransaction(expenseTransactionProps, incomeTransactionProps);
 
   return res.code(201).send([expenseTransaction, incomeTransaction]);
 }

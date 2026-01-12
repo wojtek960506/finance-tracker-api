@@ -1,12 +1,13 @@
 import Fastify from "fastify";
 import { randomObjectIdString } from "@utils/random";
 import { transactionRoutes } from "./transaction-routes";
+import { getNextSourceIndex } from "@services/transactions";
 import { TransactionModel } from "@models/transaction-model";
 import { registerErrorHandler } from "@/plugins/errorHandler";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { serializeTransaction } from "@schemas/serialize-transaction";
+import { persistExchangeTransaction } from "@db/transactions/persist-transaction";
 import { generateFullStandardTransaction } from "@utils/__mocks__/transactionMock";
-import { getNextSourceIndex, createExchangeTransaction } from "@services/transactions";
 import {
   getExchangeTransactionProps,
   getTransactionCreateExchangeDTO
@@ -28,8 +29,8 @@ vi.mock("@services/transactions/get-next-source-index", () => ({
   getNextSourceIndex: vi.fn(),
 }));
 
-vi.mock("@services/transactions/create-exchange-transaction", () => ({
-  createExchangeTransaction: vi.fn(),
+vi.mock("@db/transactions/persist-transaction/persist-exchange-transaction", () => ({
+  persistExchangeTransaction: vi.fn(),
 }));
 
 vi.mock("@models/transaction-model", () => ({
@@ -134,7 +135,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
       date: expenseProps.date.toISOString(),
     };
 
-    (createExchangeTransaction as Mock).mockResolvedValue(
+    (persistExchangeTransaction as Mock).mockResolvedValue(
       [expenseTransaction, incomeTransaction]
     );
     (getNextSourceIndex as Mock)
@@ -147,7 +148,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
       payload: dto
     });
 
-    expect(createExchangeTransaction).toHaveBeenCalledOnce();
+    expect(persistExchangeTransaction).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID);
