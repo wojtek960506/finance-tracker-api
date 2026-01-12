@@ -15,6 +15,7 @@
     "noEmit": true,
     "baseUrl": "./src",
     "paths": {
+      "@db/*": ["db/*"],
       "@utils/*": ["utils/*"],
       "@models/*": ["models/*"],
       "@routes/*": ["routes/*"],

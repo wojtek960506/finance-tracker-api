@@ -2,8 +2,8 @@ import { startSession } from "mongoose";
 import { randomObjectIdString } from "@utils/random";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import { persistTransactionPair } from "./persist-transaction-pair";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { createTransferTransaction } from "./create-transfer-transaction";
 import { getTransferTransactionProps } from "@utils/__mocks__/transactions/create-transfer";
 
 
@@ -63,7 +63,7 @@ describe("createTransactionPair", async () => {
       .mockReturnValueOnce(expenseTransaction)
       .mockReturnValueOnce(incomeTransaction);
 
-    const result = await createTransferTransaction(expenseProps, incomeProps);
+    const result = await persistTransactionPair(expenseProps, incomeProps);
 
     expect(startSession).toHaveBeenCalled();
     expect(withTransactionMock).toHaveBeenCalledOnce();
@@ -103,7 +103,7 @@ describe("createTransactionPair", async () => {
       throw new Error("fails");
     });
 
-    await expect(createTransferTransaction(expenseProps, incomeProps)).rejects.toThrow();
+    await expect(persistTransactionPair(expenseProps, incomeProps)).rejects.toThrow();
 
     expect(endSessionMock).toHaveBeenCalledOnce();
     expect(withTransactionMock).toHaveBeenCalledOnce();

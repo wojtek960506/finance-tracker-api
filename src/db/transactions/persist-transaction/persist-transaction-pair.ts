@@ -1,11 +1,10 @@
 import { startSession } from "mongoose";
 import { TransactionModel } from "@models/transaction-model";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { ExchangeTransactionProps } from "./create-exchange-transaction";
-import { TransferTransactionProps } from "./create-transfer-transaction";
+import { ExchangeTransactionProps, TransferTransactionProps } from "./types";
 
 
-export async function createTransactionPair<
+export async function persistTransactionPair<
   T extends ExchangeTransactionProps | TransferTransactionProps
 >(
   expenseTransactionProps: T,

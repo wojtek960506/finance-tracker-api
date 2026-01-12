@@ -1,15 +1,14 @@
 import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
-import { createTransactionPair } from "../create-transaction-pair";
-import { createTransferTransaction } from "./create-transfer-transaction";
+import { persistTransactionPair } from "./persist-transaction-pair";
 import { getTransferTransactionProps } from "@utils/__mocks__/transactions/create-transfer";
 
 
-vi.mock("@services/transactions/create-transaction-pair", () => ({
-  createTransactionPair: vi.fn(),
+vi.mock("@db/transactions/persist-transaction/persist-transaction-pair", () => ({
+  persistTransactionPair: vi.fn(),
 }));
 
-describe("createTransferTransaction", async () => {
+describe("persistTransferTransaction", async () => {
   const EXPENSE_ID = randomObjectIdString();
   const INCOME_ID = randomObjectIdString();
   const {
@@ -19,10 +18,10 @@ describe("createTransferTransaction", async () => {
   const expenseTransaction = { ...expenseProps, id: EXPENSE_ID, refId: INCOME_ID };
   const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
   
-  it("create pair for transfer transaction", async () => {
-    (createTransactionPair as Mock).mockResolvedValue([expenseTransaction, incomeTransaction]);
+  it("persist pair for transfer transaction", async () => {
+    (persistTransactionPair as Mock).mockResolvedValue([expenseTransaction, incomeTransaction]);
 
-    const result = await createTransferTransaction(expenseProps, incomeProps);
+    const result = await persistTransactionPair(expenseProps, incomeProps);
 
     expect(result).toHaveLength(2);
     expect(result[0]).toEqual(expenseTransaction);

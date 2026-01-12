@@ -1,12 +1,12 @@
 import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest"
-import { createTransactionPair } from "../create-transaction-pair";
 import { createExchangeTransaction } from "./create-exchange-transaction";
+import { persistTransactionPair } from "@db/transactions/persist-transaction";
 import { getExchangeTransactionProps } from "@utils/__mocks__/transactions/create-exchange";
 
 
-vi.mock("@services/transactions/create-transaction-pair", () => ({
-  createTransactionPair: vi.fn(),
+vi.mock("@db/transactions/persist-transaction/persist-transaction-pair", () => ({
+  persistTransactionPair: vi.fn(),
 }))
 
 describe("createExchangeTransaction", async () => {
@@ -20,7 +20,7 @@ describe("createExchangeTransaction", async () => {
   const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
 
   it("create pair for exchange transaction", async () => {
-    (createTransactionPair as Mock).mockResolvedValue([expenseTransaction, incomeTransaction]);
+    (persistTransactionPair as Mock).mockResolvedValue([expenseTransaction, incomeTransaction]);
 
     const result = await createExchangeTransaction(expenseProps, incomeProps);
 

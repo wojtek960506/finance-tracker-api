@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
+import { getNextSourceIndex } from "@/services/transactions";
 import { prepareTransferProps } from "./prepare-transfer-props";
 import { TransactionCreateTransferDTO } from "@schemas/transaction";
-import { createTransferTransaction, getNextSourceIndex } from "@/services/transactions";
+import { persistTransferTransaction } from "@db/transactions/persist-transaction";
 
 
 export async function createTransferTransactionHandler(
@@ -23,7 +24,7 @@ export async function createTransferTransactionHandler(
   const [
     fromTransaction,
     toTransaction,
-  ] = await createTransferTransaction(expenseTransactionProps, incomeTransactionProps);
+  ] = await persistTransferTransaction(expenseTransactionProps, incomeTransactionProps);
 
   return res.code(201).send([fromTransaction, toTransaction]);
 }
