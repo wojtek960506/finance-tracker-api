@@ -151,6 +151,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID);
+    expect(response.statusCode).toBe(201);
     expect(response.json()).toEqual([expenseTransaction, incomeTransaction]);
   })
 })

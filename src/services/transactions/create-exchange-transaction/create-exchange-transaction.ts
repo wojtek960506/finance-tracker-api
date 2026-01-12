@@ -5,6 +5,9 @@ import { serializeTransaction } from "@schemas/serialize-transaction";
 
 
 export type ExchangeTransactionProps = TransactionCreateStandardDTO & {
+  ownerId: string,
+  currencies: string,
+  exchangeRate: number,
   sourceIndex: number,
   sourceRefIndex: number
 };

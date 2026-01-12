@@ -15,13 +15,15 @@ export async function createExchangeTransactionHandler(
   const sourceIndexExpense = await getNextSourceIndex(userId);
   const sourceIndexIncome = await getNextSourceIndex(userId);
 
-  const { expenseTransactionProps, incomeTransactionProps } = prepareExchangeProps(
-    body, userId, sourceIndexExpense, sourceIndexIncome
-  );
+  const {
+    expenseTransactionProps,
+    incomeTransactionProps
+  } = prepareExchangeProps(body, userId, sourceIndexExpense, sourceIndexIncome);
 
-  const [ expenseTransaction, incomeTransaction ] = await createExchangeTransaction(
-    expenseTransactionProps, incomeTransactionProps
-  );
+  const [
+    expenseTransaction,
+    incomeTransaction
+  ] = await createExchangeTransaction(expenseTransactionProps, incomeTransactionProps);
 
   return res.code(201).send([expenseTransaction, incomeTransaction]);
 }
