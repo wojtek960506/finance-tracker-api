@@ -1,5 +1,7 @@
-import { TransferTransactionProps } from "@services/transactions";
+
 import { TransactionCreateTransferDTO } from "@schemas/transaction";
+import { TransferTransactionProps } from "@db/transactions/persist-transaction";
+
 
 export const prepareTransferProps = (
   body: TransactionCreateTransferDTO,

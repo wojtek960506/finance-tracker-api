@@ -4,7 +4,7 @@ import { prepareExchangeProps } from "./prepare-exchange-props";
 import {
   getExchangeTransactionProps,
   getTransactionCreateExchangeDTO
-} from "@utils/__mocks__/transactions/create-exchange";
+} from "@/test-utils/mocks/transactions";
 
 
 describe("prepareExchangeProps", () => {

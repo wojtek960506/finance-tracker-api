@@ -58,3 +58,28 @@ export const getExchangeTransactionProps = (
 
   return { expenseProps, incomeProps };
 }
+
+export const getExchangeTransactionResultJSON = (
+  ownerId: string,
+  expenseSourceIndex: number,
+  incomeSourceIndex: number,
+  expenseId: string,
+  incomeId: string,
+) => {
+  const { expenseProps, incomeProps } = getExchangeTransactionProps(
+    ownerId, expenseSourceIndex, incomeSourceIndex
+  );
+  const expenseTransaction = { 
+    ...expenseProps,
+    id: expenseId,
+    refId: incomeId,
+    date: expenseProps.date.toISOString(),
+  };
+  const incomeTransaction = {
+    ...incomeProps,
+    id: incomeId,
+    refId: expenseId,
+    date: expenseProps.date.toISOString(),
+  };
+  return [expenseTransaction, incomeTransaction];
+}

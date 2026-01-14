@@ -6,7 +6,7 @@ import { TransactionCreateStandardSchema } from "@schemas/transaction";
 import {
   generatePartialTransaction,
   generateFullStandardTransaction,
-} from "./__mocks__/transactionMock";
+} from "../test-utils/mocks/transactionMock";
 
 
 describe("validateBody", () => {

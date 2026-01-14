@@ -1,10 +1,10 @@
-import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it } from "vitest";
+import { randomObjectIdString } from "@utils/random";
 import { prepareTransferProps } from "./prepare-transfer-props";
 import {
   getTransferTransactionProps,
   getTransactionCreateTransferDTO,
-} from "@utils/__mocks__/transactions/create-transfer";
+} from "@/test-utils/mocks/transactions";
 
 
 describe("prepareTransferProps", () => {

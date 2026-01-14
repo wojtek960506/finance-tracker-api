@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
 
+
 describe("prepareExchangeSpecificProps", () => {
   it("expense's amount is higher than income's amount", () => {
     const props = {

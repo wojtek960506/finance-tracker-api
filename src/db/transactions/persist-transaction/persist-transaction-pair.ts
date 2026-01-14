@@ -1,5 +1,6 @@
 import { startSession } from "mongoose";
 import { TransactionModel } from "@models/transaction-model";
+import { TransactionResponseDTO } from "@schemas/transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { ExchangeTransactionProps, TransferTransactionProps } from "./types";
 
@@ -9,7 +10,7 @@ export async function persistTransactionPair<
 >(
   expenseTransactionProps: T,
   incomeTransactionProps: T,
-) {
+): Promise<[TransactionResponseDTO, TransactionResponseDTO]> {
   let expenseTransaction;
   let incomeTransaction;
   const session = await startSession();

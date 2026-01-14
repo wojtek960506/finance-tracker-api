@@ -1,5 +1,5 @@
-import { ExchangeTransactionProps } from "@services/transactions";
 import { TransactionCreateExchangeDTO } from "@schemas/transaction";
+import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
 import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
 
 

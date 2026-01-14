@@ -2,11 +2,11 @@ import { NotFoundError } from "@utils/errors";
 import { TransactionModel } from "@models/transaction-model";
 import { updateTransactionHandler } from "./update-transaction";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { serializeTransaction } from "@schemas/serialize-transaction";
+// import { serializeTransaction } from "@schemas/serialize-transaction";
 import {
   generatePartialTransaction,
   generateFullStandardTransaction,
-} from "@utils/__mocks__/transactionMock";
+} from "@/test-utils/mocks/transactionMock";
 
 
 vi.mock("@models/transaction-model", () => ({

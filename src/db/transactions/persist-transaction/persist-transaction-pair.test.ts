@@ -4,7 +4,7 @@ import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { persistTransactionPair } from "./persist-transaction-pair";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { getTransferTransactionProps } from "@utils/__mocks__/transactions/create-transfer";
+import { getTransferTransactionProps } from "@/test-utils/mocks/transactions";
 
 
 const withTransactionMock = vi.fn();
