@@ -8,14 +8,14 @@ export const prepareRandomTransferTransactionPair = (
 ): RandomTransferTransactionPair => {
   const amount = randomNumber(10, 10000);
   const currency = randomFromSet(CURRENCIES);
-  const accountFrom = randomFromSet(ACCOUNTS);
-  const accountTo = randomFromSet(ACCOUNTS);
+  const accountExpense = randomFromSet(ACCOUNTS);
+  const accountIncome = randomFromSet(ACCOUNTS);
   const category = "myAccount";
 
   // TODO - when some rules for corelation between payment method and account will be added
   // then this have to be updated
   const paymentMethod = randomFromSet(new Set(["bankTransfer", "cash", "card"]));
-  const description = `Money Transfer: ${accountFrom} --> ${accountTo}`;
+  const description = `Money Transfer: ${accountExpense} --> ${accountIncome}`;
 
   const commonProps = {
     amount,
@@ -29,14 +29,14 @@ export const prepareRandomTransferTransactionPair = (
   const from = {
     ...commonProps,
     transactionType: "expense",
-    account: accountFrom,
+    account: accountExpense,
     sourceIndex: index,
     sourceRefIndex: index + 1,
   }
   const to = {
     ...commonProps,
     transactionType: "income",
-    account: accountTo,
+    account: accountIncome,
     sourceIndex: index + 1,
     sourceRefIndex: index,
   }

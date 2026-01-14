@@ -101,8 +101,8 @@ Authorization: Bearer {{accessToken}}
   "additionalDescription": "z oszczędnościowego na zwykłe",  
   "amount": 12345.67,
   "currency": "PLN",
-  "accountFrom": "mBank",
-  "accountTo": "aliorBank",
+  "accountExpense": "mBank",
+  "accountIncome": "aliorBank",
   "paymentMethod": "bankTransfer"
 }
 
