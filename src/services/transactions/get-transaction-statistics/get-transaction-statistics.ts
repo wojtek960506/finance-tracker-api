@@ -10,7 +10,7 @@ export const getTransactionStatistics = async (
   userId: string,
 ) => {
   const result = await TransactionModel.aggregate([
-    getStatisticsMatching(q, userId),
+    { $match: getStatisticsMatching(q, userId) },
     getStatisticsGrouping(q)
   ]);
 

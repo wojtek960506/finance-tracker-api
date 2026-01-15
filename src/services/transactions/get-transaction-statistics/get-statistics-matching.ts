@@ -1,8 +1,16 @@
-import { FilterQuery, PipelineStage, Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
+import { ValidationError } from "@utils/errors";
 import { TransactionStatisticsQuery } from "@schemas/transaction-query";
 
 
+
 export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: string) => {
+  if (q.category && q.excludeCategories) {
+    throw new ValidationError(
+      `'category' and 'excludeCategories' cannot be provided together in query`
+    );
+  }
+  
   const matching: FilterQuery<unknown> = {};
   if (q.year && !q.month) {
     matching.date = {
@@ -26,9 +34,9 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
   matching.currency = q.currency;
 
   if (q.category) matching.category = q.category;
-  if (q.excludeCategories && !q.category) matching.category = { $nin: q.excludeCategories }
+  if (q.excludeCategories) matching.category = { $nin: q.excludeCategories }
   if (q.paymentMethod) matching.paymentMethod = q.paymentMethod;
   if (q.account) matching.account = q.account;
 
-  return { $match: matching } as PipelineStage;
+  return matching;
 }

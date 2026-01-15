@@ -1,34 +1,45 @@
-import { FastifyRequest } from "fastify";
 import { ValidationError } from "./errors";
-import { validateBody } from "./validation";
 import { describe, expect, it } from "vitest";
+import { validateBody, validateQuery } from "./validation";
 import { TransactionCreateStandardSchema } from "@schemas/transaction";
+import { TransactionStatisticsQuerySchema } from "@schemas/transaction-query";
 import {
   generatePartialTransaction,
   generateFullStandardTransaction,
 } from "../test-utils/mocks/transactionMock";
 
 
-describe("validateBody", () => {
+describe("validation", () => {
+  const validBody = generateFullStandardTransaction();
+  const validQuery = { transactionType: "expense", currency: "PLN" };
+  const notValidBody = generatePartialTransaction();
+  const notValidQuery = { transactionType: "expense" };
 
-  it("when data is proper then no errors", async () => {
-    const fullBody = generateFullStandardTransaction();
-    const req = { body: { ...fullBody } };
+  it.each([
+    ["validateBody", validateBody, "body", validBody, TransactionCreateStandardSchema],
+    ["validateQuery", validateQuery, "query", validQuery, TransactionStatisticsQuerySchema]
+  ])("%s - when data is proper then no errors", async (
+    _funcName, func, reqKey, reqValue, schema
+  ) => {
+    const req = { [reqKey as "body" | "query"]: reqValue };
+    const validateFunc = func(schema);
 
-    const validateFunc = validateBody(TransactionCreateStandardSchema);
-    
-    await validateFunc(req as FastifyRequest, {} as any);
-    expect(req.body).toEqual(fullBody);
+    await validateFunc(req as any, {} as any);
+
+    expect(req[reqKey]).toEqual(reqValue);
   })
 
-  it("when data is proper then no errors", async () => {
-    const partialBody = generatePartialTransaction()
-    const req = { body: { ...partialBody } };
+  it.each([
+    ["validateBody", validateBody, "body", notValidBody, TransactionCreateStandardSchema],
+    ["validateQuery", validateQuery, "query", notValidQuery, TransactionStatisticsQuerySchema]
+  ])("%s - when data is not proper then error is thrown", async (
+    _funcName, func, reqKey, reqValue, schema
+  ) => {
+    const req = { [reqKey]: reqValue };
+    const validateFunc = func(schema);
 
-    const validateFunc = validateBody(TransactionCreateStandardSchema);
-    
     try {
-      await validateFunc(req as FastifyRequest, {} as any);
+      await validateFunc(req as any, {} as any);
       throw new Error("Expected `validateFunc` to throw");
     } catch (error) {
       expect(error).toBeInstanceOf(ValidationError);
@@ -36,5 +47,4 @@ describe("validateBody", () => {
       expect((error as ValidationError).details).not.toBeUndefined();
     }
   })
-
 })
