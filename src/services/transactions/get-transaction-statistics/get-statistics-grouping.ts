@@ -16,7 +16,7 @@ export const getAmountAndItemsGrouping = (
   totalItems: { $sum: 1 } 
 } as const);
 
-export const getStatisticsGrouping = (q: TransactionStatisticsQuery) => {
+export const getStatisticsGrouping = (q: Pick<TransactionStatisticsQuery, "year" | "month">) => {
   let grouping = {};
 
   if (q.year) {
