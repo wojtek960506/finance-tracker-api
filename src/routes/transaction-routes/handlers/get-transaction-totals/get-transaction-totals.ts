@@ -3,7 +3,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
 import { buildTransactionFilterQuery } from "@/services/transactions";
-import { transactionTotalsQuerySchema } from "@schemas/transaction-query";
+import { TransactionTotalsQuerySchema } from "@schemas/transaction-query";
 import {
   parseTotalsByCurrencyResult,
   parseTotalsOverallResult
@@ -13,7 +13,7 @@ import {
 export async function getTransactionTotalsHandler(
   req: FastifyRequest, _res: FastifyReply
 ) {
-  const q = validateSchema(transactionTotalsQuerySchema, req.query);
+  const q = validateSchema(TransactionTotalsQuerySchema, req.query);
   
   const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
   if (q.excludeCategories && !q.category) filter.category = { $nin: q.excludeCategories }
