@@ -1,10 +1,9 @@
 import { FastifyInstance } from "fastify";
-import { validateBody } from "@utils/validation";
 import { authorizeAccessToken } from "@services/auth";
 import { findTransaction } from "@routes/routes-utils";
 import { TransactionModel } from "@models/transaction-model";
+import { validateBody, validateQuery } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { TransactionStatisticsQuery } from "@schemas/transaction-query";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
   getTransactionsHandler,
@@ -36,6 +35,10 @@ import {
   DeleteManyReply,
   FilteredResponse,
 } from "@routes/routes-types";
+import {
+  TransactionStatisticsQuery,
+  TransactionStatisticsQuerySchema,
+} from "@schemas/transaction-query";
 
 
 export async function transactionRoutes(
@@ -67,10 +70,15 @@ export async function transactionRoutes(
   // additionally we can filter it by category or payment method or account
   app.get<{
     Querystring: TransactionStatisticsQuery,
-    Reply: TransactionStatisticsResponse
+    Reply: TransactionStatisticsResponse,
   }>(
     "/statistics",
-    { preHandler: authorizeAccessToken() },
+    { 
+      preHandler: [
+        validateQuery(TransactionStatisticsQuerySchema),
+        authorizeAccessToken(),
+      ]
+    },
     getTransactionStatisticsHandler
   )
 

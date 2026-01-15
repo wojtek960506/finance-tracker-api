@@ -47,7 +47,7 @@ export const transactionTotalsQuerySchema = transacionFiltersQuerySchema.extend(
 
 export type TransactionTotalsQuery = z.infer<typeof transactionTotalsQuerySchema>;
 
-export const transactionStatisticsQuerySchema = z.object({
+export const TransactionStatisticsQuerySchema = z.object({
   year: z.coerce.number().min(0).optional(),
   month: z.coerce.number().min(1).max(12).optional(),
   transactionType: z.enum([...TRANSACTION_TYPES]),
@@ -65,4 +65,4 @@ export const transactionStatisticsQuerySchema = z.object({
   account: z.enum([...ACCOUNTS]).optional(),
 })
 
-export type TransactionStatisticsQuery = z.infer<typeof transactionStatisticsQuerySchema>;
+export type TransactionStatisticsQuery = z.infer<typeof TransactionStatisticsQuerySchema>;
