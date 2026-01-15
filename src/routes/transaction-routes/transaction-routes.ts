@@ -4,6 +4,7 @@ import { authorizeAccessToken } from "@services/auth";
 import { findTransaction } from "@routes/routes-utils";
 import { TransactionModel } from "@models/transaction-model";
 import { serializeTransaction } from "@schemas/serialize-transaction";
+import { TransactionStatisticsQuery } from "@schemas/transaction-query";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
   getTransactionsHandler,
@@ -64,7 +65,10 @@ export async function transactionRoutes(
   // - just year (then we get all statistics from given year and grouped by month in a given year)
   // - year and month - then we get all statistics from a given month of the given year
   // additionally we can filter it by category or payment method or account
-  app.get<{ Reply: TransactionStatisticsResponse }>(
+  app.get<{
+    Querystring: TransactionStatisticsQuery,
+    Reply: TransactionStatisticsResponse
+  }>(
     "/statistics",
     { preHandler: authorizeAccessToken() },
     getTransactionStatisticsHandler
