@@ -66,15 +66,23 @@ export async function authRoutes(app: FastifyInstance) {
   )
 
   app.get("/refresh", async (req, res) => {
+    
+    console.log('a');
+
     const refreshToken = req.cookies["refreshToken"];
     if (!refreshToken) {
       return res.code(401).send({ "message": "Missing refresh token" });
     }
 
+    console.log('b');
+
     // find user who has some refresh tokens
     const candidates = await UserModel.find({
       refreshTokenHashes: { $exists: true, $ne: [] }
     });
+
+    console.log('c');
+
     let user: IUser | null = null;
     let matchingHash: string | null = null;
     for (const candidate of candidates) {
@@ -87,19 +95,27 @@ export async function authRoutes(app: FastifyInstance) {
       }
       if (user) break;
     }
+
+    console.log('d');
     
     if (!user) {
       return res.code(401).send({ message: "Invalid refresh token" });
     }
 
+    console.log('e');
+
     // Rotate refresh token (security best practice)
     const { token: newRefreshToken, tokenHash: newRefreshTokenHash } = await createRefreshToken();
     
+    console.log('f');
+
     // remove old hash, add new one
     user.refreshTokenHashes = (user.refreshTokenHashes ?? []).filter(h => h.tokenHash !== matchingHash!);
     user.refreshTokenHashes.push({ tokenHash: newRefreshTokenHash, createdAt: new Date() });
     await user.save();
 
+    console.log('g');
+    
 
     // set new cookie
     const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
@@ -112,11 +128,16 @@ export async function authRoutes(app: FastifyInstance) {
       maxAge: 60 * 60 * 24 * refreshExpiresDays,
     })
 
+    console.log('h');
+
     // issue new access token
     const accessToken = createAccessToken({
       userId: user._id.toString(),
       email: user.email
     });
+
+    console.log('i');
+
     return res.send({ accessToken });
   })
 
