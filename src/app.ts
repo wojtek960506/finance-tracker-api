@@ -64,8 +64,9 @@ const start = async () => {
   await connectDB();
   const app = await buildApp();
   try {
-    await app.listen({ port: PORT });
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log('port from environment variables:', process.env.PORT);
+    await app.listen({ port: PORT, host: "0.0.0.0" });
+    console.log(`Server running on port ${PORT}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);
