@@ -100,11 +100,16 @@ export async function authRoutes(app: FastifyInstance) {
     user.refreshTokenHashes.push({ tokenHash: newRefreshTokenHash, createdAt: new Date() });
     await user.save();
 
+
     // set new cookie
+    const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
+    const isProductionEnv = process.env.NODE_ENV === "production";
     res.setCookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: true,
-      path: "/"
+      secure: isProductionEnv,
+      sameSite: isProductionEnv ? "none" : "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * refreshExpiresDays,
     })
 
     // issue new access token
