@@ -11,6 +11,7 @@ import {
 } from "@/routes";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
+import { mainRoute } from "@routes/main-route";
 
 
 //############################################################################################
@@ -42,6 +43,7 @@ const buildApp = async () => {
     secret: process.env.JWT_ACCESS_SECRET!
   });
   
+  app.register(mainRoute, { prefix: "" });
   app.register(authRoutes, { prefix: "/api/auth" });  
   app.register(userRoutes, { prefix: "/api/users" });
   app.register(transactionRoutes, { prefix: "/api/transactions" });
