@@ -2,25 +2,27 @@ import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { FastifyInstance } from "fastify";
 import { LoginSchema } from "@schemas/auth";
+import { UserModel } from "@models/user-model";
 import { UserResponseDTO } from "@schemas/user";
 import { validateBody } from "@utils/validation";
-import { IUser, UserModel } from "@models/user-model";
 import { AuthenticatedRequest } from "./routes-types";
 import { AppError, NotFoundError } from "@utils/errors";
 import { serializeUser } from "@schemas/serialize-user";
 import {
+  getTokenHash,
   createAccessToken,
   createRefreshToken,
   authorizeAccessToken,
 } from "@services/auth";
 
 
-async function findHash(hashes: { tokenHash: string, createdAt: Date}[], refreshToken: string) {
-  for (const { tokenHash } of hashes) {
-    if (await argon2.verify(tokenHash, refreshToken)) return tokenHash;
-  }
-  return null;          
-}
+const isProductionEnv = process.env.NODE_ENV === "production";
+const refreshCookieOptions = {
+  httpOnly: true,
+  secure: isProductionEnv,
+  sameSite: isProductionEnv ? "none" : "lax",
+  path: "/",
+} as const;
 
 export async function authRoutes(app: FastifyInstance) {
   app.post(
@@ -43,21 +45,16 @@ export async function authRoutes(app: FastifyInstance) {
       });
 
       // create refresh token and store hashed version
-      const { token: refreshToken, tokenHash } = await createRefreshToken();
+      const { token: refreshToken, tokenHash } = createRefreshToken();
 
       // append the refresh token hash to the user (rotate strategy)
-      user.refreshTokenHashes = user.refreshTokenHashes ?? [];
-      user.refreshTokenHashes.push({ tokenHash, createdAt: new Date() });
+      user.refreshTokenHash = { tokenHash, createdAt: new Date() };
       await user.save();
 
       // set refresh token cookie (HttpOnly, Secure)
       const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
-      const isProductionEnv = process.env.NODE_ENV === "production";
       res.setCookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: isProductionEnv,
-        sameSite: isProductionEnv ? "none" : "lax",
-        path: "/",
+        ...refreshCookieOptions,
         maxAge: 60 * 60 * 24 * refreshExpiresDays,
       })
 
@@ -74,57 +71,42 @@ export async function authRoutes(app: FastifyInstance) {
       return res.code(401).send({ "message": "Missing refresh token" });
     }
 
+    const refreshTokenHash = getTokenHash(refreshToken);
+
     console.log('b');
 
-    // find user who has some refresh tokens
-    const candidates = await UserModel.find({
-      refreshTokenHashes: { $exists: true, $ne: [] }
+    // find user by refresh token hash
+    const user = await UserModel.findOne({
+      "refreshTokenHash.tokenHash": refreshTokenHash
     });
 
     console.log('c');
-
-    let user: IUser | null = null;
-    let matchingHash: string | null = null;
-    for (const candidate of candidates) {
-      for (const { tokenHash } of candidate.refreshTokenHashes ?? []) {
-        if (await argon2.verify(tokenHash, refreshToken)) {
-          user = candidate;
-          matchingHash = tokenHash;
-          break;
-        }
-      }
-      if (user) break;
-    }
-
     console.log('d');
     
-    if (!user) {
-      return res.code(401).send({ message: "Invalid refresh token" });
-    }
+    if (!user) throw new AppError(401, `Invalid refresh token`);
 
     console.log('e');
 
     // Rotate refresh token (security best practice)
-    const { token: newRefreshToken, tokenHash: newRefreshTokenHash } = await createRefreshToken();
+    const { token: newRefreshToken, tokenHash: newRefreshTokenHash } = createRefreshToken();
     
     console.log('f');
 
     // remove old hash, add new one
-    user.refreshTokenHashes = (user.refreshTokenHashes ?? []).filter(h => h.tokenHash !== matchingHash!);
-    user.refreshTokenHashes.push({ tokenHash: newRefreshTokenHash, createdAt: new Date() });
+    user.refreshTokenHash = { tokenHash: newRefreshTokenHash, createdAt: new Date() };
     await user.save();
 
     console.log('g');
-    
 
     // set new cookie
     const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
     const isProductionEnv = process.env.NODE_ENV === "production";
     res.setCookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
-      secure: isProductionEnv,
-      sameSite: isProductionEnv ? "none" : "lax",
-      path: "/",
+      // httpOnly: true,
+      // secure: isProductionEnv,
+      // sameSite: isProductionEnv ? "none" : "lax",
+      // path: "/",
+      ...refreshCookieOptions,
       maxAge: 60 * 60 * 24 * refreshExpiresDays,
     })
 
@@ -144,43 +126,31 @@ export async function authRoutes(app: FastifyInstance) {
   app.post(
     "/logout",
     async (req, res) => {
-      // get authorization header
-      const authHeader = req.headers.authorization;
-      if (!authHeader?.startsWith("Bearer ")) {
-        throw new AppError(401, "Missing token");
-      }
+      // 1. first clear refresh token
+      // There is no refresh mechanism for logout. In case of present access token we remove
+      // hash of refresh token for the given user from DB.
+      res.clearCookie("refreshToken", { ...refreshCookieOptions, maxAge: 0 });
 
+      // 2. check if access token is correct
+      const authHeader = req.headers.authorization;
+      if (!authHeader?.startsWith("Bearer ")) return res.code(204).send();
       const token = authHeader.split(" ")[1];
       try {
         jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
       } catch {
-        throw new AppError(401, "Invalid or expired token");
+        return res.code(204).send();
       }
 
+      // 3. check if user can be found by access token
       const payload = app.jwt.verify(token);
       const userId = (payload as { userId: string }).userId;
-
-      res.clearCookie("refreshToken", {
-        path: "/",
-      })
-
-      const refreshToken = req.cookies["refreshToken"];
-      if (!refreshToken) throw new AppError(401, "Refresh token not provided in cookies");
-      
-      // const user = UserModel.findById(userId);
       const user = await UserModel.findOne({ _id: userId });
-      if (!user) throw new NotFoundError(`User with id: ${userId} not found`);
+      if (!user) return res.code(204).send();
 
-      const matchingHash = await findHash(user.refreshTokenHashes ?? [], refreshToken);
-      console.log('matching hash:', matchingHash)
-      if (matchingHash) {
-        user.refreshTokenHashes = user.refreshTokenHashes!.filter(
-          h => h.tokenHash !== matchingHash
-        );
-        await user.save();
-      }
-
-      return res.send({ success: true });
+      // 4. clear refresh token hash in DB
+      user.refreshTokenHash = undefined; 
+      await user.save();
+      return res.code(204).send();
     }
   )
 

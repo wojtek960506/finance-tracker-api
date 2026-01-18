@@ -7,8 +7,7 @@ export interface UserAttributes {
   passwordHash: string;
   createdAt: Date;
   updatedAt: Date;
-  // store hashed refresh tokens to allow multiple devices/sessions
-  refreshTokenHashes?: { tokenHash: string, createdAt: Date }[];
+  refreshTokenHash?: { tokenHash: string, createdAt: Date };
 }
 
 export interface IUser extends UserAttributes, Document {
@@ -21,10 +20,10 @@ const UserSchema = new Schema<IUser>(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
-    refreshTokenHashes: [{
-      tokenHash: { type: String },
+    refreshTokenHash: {
+      tokenHash: { type: String, index: true },
       createdAt: { type: Date, default: () => new Date() }
-    }]
+    }
   }, {
     timestamps: true,
     autoIndex: true,
