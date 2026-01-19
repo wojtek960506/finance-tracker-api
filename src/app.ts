@@ -54,6 +54,7 @@ const buildApp = async () => {
   await app.register(cors, {
     origin: [
       "http://localhost:3000",
+      "http://192.168.0.244:3000",
       "https://finance-tracker-web-three.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

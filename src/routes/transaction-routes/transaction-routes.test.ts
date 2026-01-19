@@ -100,7 +100,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
     );
     (createStandardTransaction as Mock).mockResolvedValue(resultJSON);
     
-    const response = await app.inject({ method: "POST", url: `/`, payload: dto });
+    const response = await app.inject({ method: "POST", url: `/standard`, payload: dto });
 
     expect(createStandardTransaction).toHaveBeenCalledOnce();
     expect(createStandardTransaction).toHaveBeenCalledWith(dto, USER_ID);

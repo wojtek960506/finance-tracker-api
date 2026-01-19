@@ -80,7 +80,7 @@ export async function transactionRoutes(
 
   // create one standard transaction
   app.post<{ Body: TransactionCreateStandardDTO; Reply: TransactionResponseDTO }>(
-    "/",
+    "/standard",
     {
       preHandler: [
         validateBody(TransactionCreateStandardSchema),

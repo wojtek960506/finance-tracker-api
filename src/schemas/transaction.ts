@@ -1,3 +1,5 @@
+import { z } from "zod";
+import { excludeFromSet } from "@utils/set";
 import {
   ACCOUNTS,
   CATEGORIES,
@@ -5,7 +7,7 @@ import {
   PAYMENT_METHODS,
   TRANSACTION_TYPES,
 } from "@utils/consts";
-import { z } from "zod";
+
 
 const TransactionCreateCommonSchema = z.object({
   date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
@@ -19,7 +21,7 @@ export const TransactionCreateStandardSchema = TransactionCreateCommonSchema.ext
   description: z.string().min(1, "Description is required"),
   amount: z.number().positive("Amount must be positive"),
   currency: z.enum([...CURRENCIES]),
-  category: z.enum([...CATEGORIES]),
+  category: z.enum([...excludeFromSet(CATEGORIES, ["myAccount", "exchange"])]),
   paymentMethod: z.enum([...PAYMENT_METHODS]),
   account: z.enum([...ACCOUNTS]),
   transactionType: z.enum([...TRANSACTION_TYPES]),
