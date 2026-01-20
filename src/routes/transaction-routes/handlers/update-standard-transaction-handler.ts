@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { TransactionUpdateDTO } from "@schemas/transaction";
 import { updateStandardTransaction } from "@services/transactions";
+import { TransactionUpdateStandardDTO } from "@schemas/transaction";
 import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
 import {
   AppError,
@@ -11,7 +11,7 @@ import {
 
 
 export const updateStandardTransactionHandler = async (
-  req: FastifyRequest<{ Params: ParamsJustId, Body: TransactionUpdateDTO }>,
+  req: FastifyRequest<{ Params: ParamsJustId, Body: TransactionUpdateStandardDTO }>,
   res: FastifyReply,
 ) => {
   try {

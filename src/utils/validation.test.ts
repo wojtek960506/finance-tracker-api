@@ -3,10 +3,7 @@ import { ValidationError } from "./errors";
 import { validateBody } from "./validation";
 import { describe, expect, it } from "vitest";
 import { TransactionCreateStandardSchema } from "@schemas/transaction";
-import {
-  generatePartialTransaction,
-  generateFullStandardTransaction,
-} from "../test-utils/mocks/transactionMock";
+import { generateFullStandardTransaction } from "../test-utils/mocks/transactionMock";
 
 
 describe("validateBody", () => {
@@ -21,8 +18,8 @@ describe("validateBody", () => {
     expect(req.body).toEqual(fullBody);
   })
 
-  it("when data is proper then no errors", async () => {
-    const partialBody = generatePartialTransaction()
+  it("when data is not proper then there are errors", async () => {
+    const { date, ...partialBody } = generateFullStandardTransaction()
     const req = { body: { ...partialBody } };
 
     const validateFunc = validateBody(TransactionCreateStandardSchema);

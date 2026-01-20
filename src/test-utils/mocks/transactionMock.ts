@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { excludeFromSet } from "@utils/set";
-import { TransactionCreateStandardDTO, TransactionPatchDTO } from "@schemas/transaction";
+import { TransactionCreateStandardDTO } from "@schemas/transaction";
 import { 
   ACCOUNTS,
   CATEGORIES,
@@ -21,15 +21,3 @@ export const generateFullStandardTransaction = (): TransactionCreateStandardDTO 
   paymentMethod: faker.helpers.arrayElement([...PAYMENT_METHODS]),
   account: faker.helpers.arrayElement([...ACCOUNTS]),
 });
-
-// Generate a partial transaction (for patch update)
-export const generatePartialTransaction = (): TransactionPatchDTO => {
-  // Pick a few random fields
-  const patch: TransactionPatchDTO = {};
-  if (faker.datatype.boolean())
-    patch.amount = faker.number.float({ min: 10, max: 500, multipleOf: 0.01 });
-  if (faker.datatype.boolean()) patch.description = faker.commerce.productDescription();
-  if (faker.datatype.boolean()) 
-    patch.category = faker.helpers.arrayElement([...CATEGORIES]);
-  return patch;
-}

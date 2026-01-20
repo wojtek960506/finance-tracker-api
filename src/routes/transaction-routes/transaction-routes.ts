@@ -7,7 +7,6 @@ import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
   getTransactionsHandler,
-  updateTransactionHandler,
   deleteTransactionHandler,
   exportTransacionsHandler,
   getTransactionTotalsHandler,
@@ -18,18 +17,16 @@ import {
   updateStandardTransactionHandler,
 } from "./handlers";
 import {
-  TransactionPatchDTO,
-  TransactionUpdateDTO,
-  TransactionPatchSchema,
   TransactionResponseDTO,
-  TransactionUpdateSchema,
   TransactionsResponseDTO,
   TransactionCreateStandardDTO,
   TransactionCreateExchangeDTO,
   TransactionCreateTransferDTO,
+  TransactionUpdateStandardDTO,
   TransactionCreateStandardSchema,
   TransactionCreateExchangeSchema,
   TransactionCreateTransferSchema,
+  TransactionUpdateStandardSchema,
 } from "@schemas/transaction";
 import {
   ParamsJustId,
@@ -123,32 +120,17 @@ export async function transactionRoutes(
 
   app.put<{ 
     Params: ParamsJustId;
-    Body: TransactionUpdateDTO;
+    Body: TransactionUpdateStandardDTO;
     Reply: TransactionResponseDTO
   }>(
     "/standard/:id",
     {
       preHandler: [
-        validateBody(TransactionUpdateSchema),
+        validateBody(TransactionUpdateStandardSchema),
         authorizeAccessToken(),
       ]
     },
     updateStandardTransactionHandler
-  );
-
-  app.patch<{
-    Params: ParamsJustId;
-    Body: TransactionPatchDTO;
-    Reply: TransactionResponseDTO
-  }>(
-    "/:id",
-    { 
-      preHandler: [
-        validateBody(TransactionPatchSchema),
-        authorizeAccessToken()
-      ]
-    },
-    updateTransactionHandler
   );
 
   app.delete<{

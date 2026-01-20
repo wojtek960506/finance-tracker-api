@@ -46,17 +46,7 @@ export const TransactionCreateTransferSchema = TransactionCreateCommonSchema.ext
   paymentMethod: z.enum(["bankTransfer", "cash", "card"]),
 })
 
-/**
- * Full Update Schema (PUT)
- * Requires all fields (same as create)
- */
-export const TransactionUpdateSchema = TransactionCreateStandardSchema;
-
-/**
- * Partial Update Schema (PATCH)
- * All fields optional
- */
-export const TransactionPatchSchema = TransactionCreateStandardSchema.partial();
+export const TransactionUpdateStandardSchema = TransactionCreateStandardSchema;
 
 export const TransactionResponseSchema = TransactionCreateStandardSchema.extend({
   id: z.string(),
@@ -83,7 +73,6 @@ export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
 export type TransactionCreateStandardDTO = z.infer<typeof TransactionCreateStandardSchema>;
 export type TransactionCreateExchangeDTO = z.infer<typeof TransactionCreateExchangeSchema>;
 export type TransactionCreateTransferDTO = z.infer<typeof TransactionCreateTransferSchema>;
-export type TransactionUpdateDTO = z.infer<typeof TransactionUpdateSchema>;
-export type TransactionPatchDTO = z.infer<typeof TransactionPatchSchema>;
+export type TransactionUpdateStandardDTO = z.infer<typeof TransactionUpdateStandardSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionsResponseDTO = z.infer<typeof TransactionsResponseSchema>;
