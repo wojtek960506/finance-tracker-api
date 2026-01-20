@@ -8,6 +8,10 @@ import {
   TransferTransactionProps,
 } from "./types";
 
+// TODO naming convention (service -> db operation)
+// createStandardTransaction -> peresistStandardTransaction
+// updateStandardTransaction -> saveStandardTransactionChanges
+// deleteStandardTransaction -> removeStandardTransaction
 
 export async function persistStandardTransaction(props: StandardTransactionProps) {
   const newTransaction = await TransactionModel.create(props);

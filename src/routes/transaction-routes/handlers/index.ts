@@ -7,3 +7,4 @@ export * from "./get-transaction-statistics";
 export * from "./create-transfer-transaction-handler";
 export * from "./create-standard-transaction-handler";
 export * from "./create-exchange-transaction-handler";
+export * from "./update-standard-transaction-handler";

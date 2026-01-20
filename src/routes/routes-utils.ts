@@ -8,7 +8,7 @@ export const findTransaction = async (id: string) => {
   return transaction;
 }
 
-export const checkOwner = (
+export const checkOwnerOld = (
   userId: string,
   transaction: ITransaction,
   action: "update" | "delete"

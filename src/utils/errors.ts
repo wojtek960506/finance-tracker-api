@@ -28,3 +28,23 @@ export class ValidationError extends AppError {
     super(422, "Validation error", details);
   }
 }
+
+export class TransactionNotFoundError extends Error {
+  readonly code = 'TRANSACTION_NOT_FOUND'
+
+  constructor(readonly transactionId: string) {
+    super("Transaction not found");
+  }
+}
+
+export class TransactionOwnershipError extends Error {
+  readonly code = 'TRANSACTION_OWNERSHIP_VIOLATION'
+
+  constructor(
+    readonly wrongUserId: string,
+    readonly transactionId: string,
+    readonly transactionOwnerId: string,
+  ) {
+    super('Transaction does not belong to the current user')
+  }
+}

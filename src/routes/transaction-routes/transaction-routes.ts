@@ -15,6 +15,7 @@ import {
   createExchangeTransactionHandler,
   createStandardTransactionHandler,
   createTransferTransactionHandler,
+  updateStandardTransactionHandler,
 } from "./handlers";
 import {
   TransactionPatchDTO,
@@ -125,14 +126,14 @@ export async function transactionRoutes(
     Body: TransactionUpdateDTO;
     Reply: TransactionResponseDTO
   }>(
-    "/:id",
+    "/standard/:id",
     {
       preHandler: [
         validateBody(TransactionUpdateSchema),
         authorizeAccessToken(),
       ]
     },
-    updateTransactionHandler
+    updateStandardTransactionHandler
   );
 
   app.patch<{
