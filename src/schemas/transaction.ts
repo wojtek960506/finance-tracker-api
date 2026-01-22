@@ -48,6 +48,8 @@ export const TransactionCreateTransferSchema = TransactionCreateCommonSchema.ext
 
 export const TransactionUpdateStandardSchema = TransactionCreateStandardSchema;
 
+export const TransactionUpdateTransferSchema = TransactionCreateTransferSchema;
+
 export const TransactionResponseSchema = TransactionCreateStandardSchema.extend({
   id: z.string(),
   ownerId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `ownerId`"),
@@ -74,5 +76,6 @@ export type TransactionCreateStandardDTO = z.infer<typeof TransactionCreateStand
 export type TransactionCreateExchangeDTO = z.infer<typeof TransactionCreateExchangeSchema>;
 export type TransactionCreateTransferDTO = z.infer<typeof TransactionCreateTransferSchema>;
 export type TransactionUpdateStandardDTO = z.infer<typeof TransactionUpdateStandardSchema>;
+export type TransactionUpdateTransferDTO = z.infer<typeof TransactionUpdateTransferSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionsResponseDTO = z.infer<typeof TransactionsResponseSchema>;

@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NzA5NzE0MSwiZXhwIjoxNzY3MTAwNzQxfQ.MlbF0vteI9cGVQMzFi9iz2_WHF8_P5fTrtWuFMVeXw0
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzY5MTE3OTk5LCJleHAiOjE3NjkxMTk3OTl9.dfhuK0Q9FTOJfU0dsT_gh2yXrCI9SMuN4QmZJjesbs4
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -107,7 +107,7 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Update a transaction (PUT)
-PUT {{baseUrl}}/transactions/{{wzTransactionId}}
+PUT {{baseUrl}}/transactions/standard/{{wzTransactionId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -120,6 +120,21 @@ Authorization: Bearer {{accessToken}}
   "transactionType": "expense",
   "paymentMethod": "card",
   "account": "mBank"
+}
+
+### Update a TRANSFER transaction (PUT)
+PUT {{baseUrl}}/transactions/transfer/696fba2f1ac0b9c525f39f77
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{ 
+  "date": "2015-9-24",
+  "additionalDescription": "abcdef",
+  "amount": 1.70,
+  "currency": "PLN",
+  "paymentMethod": "card",
+  "accountExpense": "mBank",
+  "accountIncome": "veloBank"
 }
 
 ### Partial update of transaction (PATCH)

@@ -1,6 +1,6 @@
 import { TransactionCreateTransferDTO } from "@schemas/transaction";
 import { getNextSourceIndex } from "../get-next-source-index";
-import { prepareTransferProps } from "./prepare-transfer-props";
+import { prepareTransferProps } from "../prepare-transfer-props";
 import { persistTransferTransaction } from "@db/transactions/persist-transaction";
 
 export const createTransferTransaction = async (
@@ -13,7 +13,7 @@ export const createTransferTransaction = async (
   const {
     expenseTransactionProps,
     incomeTransactionProps,
-  } = prepareTransferProps(dto, ownerId, sourceIndexExpense, sourceIndexIncome);
+  } = prepareTransferProps(dto, { ownerId, sourceIndexExpense, sourceIndexIncome });
 
   const [
     expenseTransaction,
