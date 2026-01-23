@@ -15,32 +15,36 @@ describe("prepareTransferProps", () => {
     const INCOME_IDX = 2;
 
     const {
-      expenseTransactionProps: expenseProps,
-      incomeTransactionProps: incomeProps,
+      expenseTransactionProps,
+      incomeTransactionProps,
     } = prepareTransferProps(
       dto,
-      { ownerId: OWNER_ID, sourceIndexExpense: EXPENSE_IDX, sourceIndexIncome: INCOME_IDX }
+      {
+        ownerId: OWNER_ID,
+        sourceIndexExpense: EXPENSE_IDX,
+        sourceIndexIncome: INCOME_IDX,
+      }
     );
 
     const mockProps = getTransferTransactionProps(
       { ownerId: OWNER_ID, sourceIndexExpense: EXPENSE_IDX, sourceIndexIncome: INCOME_IDX }
     );
 
-    expect(expenseProps).toEqual(mockProps.expenseProps);
-    expect(incomeProps).toEqual(mockProps.incomeProps);
+    expect(expenseTransactionProps).toEqual(mockProps.expenseProps);
+    expect(incomeTransactionProps).toEqual(mockProps.incomeProps);
   })
 
   it("prepare props for update", () => {
     const dto = getTransactionCreateTransferDTO();
 
     const {
-      expenseTransactionProps: expenseProps,
-      incomeTransactionProps: incomeProps,
+      expenseTransactionProps,
+      incomeTransactionProps,
     } = prepareTransferProps(dto);
 
     const mockProps = getTransferTransactionProps();
 
-    expect(expenseProps).toEqual(mockProps.expenseProps);
-    expect(incomeProps).toEqual(mockProps.incomeProps);
+    expect(expenseTransactionProps).toEqual(mockProps.expenseProps);
+    expect(incomeTransactionProps).toEqual(mockProps.incomeProps);
   })
 })

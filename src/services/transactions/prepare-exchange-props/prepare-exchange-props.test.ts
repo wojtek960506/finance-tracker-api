@@ -8,15 +8,15 @@ import {
 
 
 describe("prepareExchangeProps", () => {
-  it("prepare props", () => {
+  it("prepare props for create", () => {
     const dto = getTransactionCreateExchangeDTO();
     const OWNER_ID = randomObjectIdString();
     const EXPENSE_IDX = 1;
     const INCOME_IDX = 2;
 
     const {
-      expenseTransactionProps: expenseProps,
-      incomeTransactionProps: incomeProps,
+      expenseTransactionProps,
+      incomeTransactionProps,
     } = prepareExchangeProps(
       dto,
       {
@@ -26,9 +26,27 @@ describe("prepareExchangeProps", () => {
       }
     );
 
-    const mockProps = getExchangeTransactionProps(OWNER_ID, EXPENSE_IDX, INCOME_IDX);
+    const mockProps = getExchangeTransactionProps({
+      ownerId: OWNER_ID,
+      sourceIndexExpense: EXPENSE_IDX,
+      sourceIndexIncome: INCOME_IDX,
+    });
 
-    expect(expenseProps).toEqual(mockProps.expenseProps);
-    expect(incomeProps).toEqual(mockProps.incomeProps);
+    expect(expenseTransactionProps).toEqual(mockProps.expenseProps);
+    expect(incomeTransactionProps).toEqual(mockProps.incomeProps);
+  })
+
+  it("prepare props for update", () => {
+    const dto = getTransactionCreateExchangeDTO();
+
+    const {
+      expenseTransactionProps,
+      incomeTransactionProps,
+    } = prepareExchangeProps(dto);
+
+    const mockProps = getExchangeTransactionProps();
+
+    expect(expenseTransactionProps).toEqual(mockProps.expenseProps);
+    expect(incomeTransactionProps).toEqual(mockProps.incomeProps);
   })
 })

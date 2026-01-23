@@ -1,6 +1,6 @@
+import { TransferTransactionUpdateProps } from "@db/transactions";
 import { TransactionCreateTransferDTO } from "@schemas/transaction";
 import { TransferTransactionProps } from "@db/transactions/persist-transaction";
-import { TransferTransactionUpdateProps } from "@db/transactions";
 
 
 const date = new Date("2026-01-09");
@@ -30,7 +30,6 @@ export const getTransferTransactionProps = (
 ) => {
   const commonProps = {
     category: "myAccount",
-    // ownerId,
     date,
     amount,
     currency,
