@@ -17,7 +17,14 @@ describe("prepareExchangeProps", () => {
     const {
       expenseTransactionProps: expenseProps,
       incomeTransactionProps: incomeProps,
-    } = prepareExchangeProps(dto, OWNER_ID, EXPENSE_IDX, INCOME_IDX);
+    } = prepareExchangeProps(
+      dto,
+      {
+        ownerId: OWNER_ID,
+        sourceIndexExpense: EXPENSE_IDX,
+        sourceIndexIncome: INCOME_IDX
+      }
+    );
 
     const mockProps = getExchangeTransactionProps(OWNER_ID, EXPENSE_IDX, INCOME_IDX);
 

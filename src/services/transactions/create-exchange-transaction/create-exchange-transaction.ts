@@ -14,7 +14,7 @@ export const createExchangeTransaction = async (
   const {
     expenseTransactionProps,
     incomeTransactionProps
-  } = prepareExchangeProps(dto, ownerId, sourceIndexExpense, sourceIndexIncome);
+  } = prepareExchangeProps(dto, { ownerId, sourceIndexExpense, sourceIndexIncome });
 
   const [
     expenseTransaction,

@@ -1,7 +1,7 @@
-import { TransactionCreateExchangeDTO } from "@schemas/transaction";
+import { TransactionCreateExchangeDTO, TransactionUpdateExchangeDTO } from "@schemas/transaction";
 
 type PropsType = Pick<
-  TransactionCreateExchangeDTO,
+  TransactionCreateExchangeDTO | TransactionUpdateExchangeDTO,
   "amountExpense" |
   "amountIncome" |
   "currencyExpense" |

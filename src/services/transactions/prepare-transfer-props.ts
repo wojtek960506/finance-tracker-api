@@ -38,13 +38,13 @@ export function prepareTransferProps (
   if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
   const commonTransactionProps = {
-      category: "myAccount",
-      date: body.date,
-      amount: body.amount,
-      currency: body.currency,
-      paymentMethod: body.paymentMethod,
-      description,
-    }
+    category: "myAccount",
+    date: body.date,
+    amount: body.amount,
+    currency: body.currency,
+    paymentMethod: body.paymentMethod,
+    description,
+  }
   
   const commonExpenseTransactionProps = {
     ...commonTransactionProps,

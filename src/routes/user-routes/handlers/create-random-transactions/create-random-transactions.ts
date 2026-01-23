@@ -42,6 +42,7 @@ export async function createRandomTransactions(
   );
 
   // TODO add refId in transactions which have sourceRefIndex
+  // TODO save proper source index counter for this test user because it just goes from 0
 
   return result.insertedCount;
 }

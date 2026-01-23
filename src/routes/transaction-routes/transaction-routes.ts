@@ -16,6 +16,7 @@ import {
   createTransferTransactionHandler,
   updateStandardTransactionHandler,
   updateTransferTransactionHandler,
+  updateExchangeTransactionHandler,
 } from "./handlers";
 import {
   TransactionResponseDTO,
@@ -25,11 +26,13 @@ import {
   TransactionCreateTransferDTO,
   TransactionUpdateStandardDTO,
   TransactionUpdateTransferDTO,
+  TransactionUpdateExchangeDTO,
   TransactionCreateStandardSchema,
   TransactionCreateExchangeSchema,
   TransactionCreateTransferSchema,
   TransactionUpdateStandardSchema,
   TransactionUpdateTransferSchema,
+  TransactionUpdateExchangeSchema,
 } from "@schemas/transaction";
 import {
   ParamsJustId,
@@ -149,6 +152,21 @@ export async function transactionRoutes(
       ]
     },
     updateTransferTransactionHandler
+  );
+
+  app.put<{ 
+    Params: ParamsJustId;
+    Body: TransactionUpdateExchangeDTO;
+    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+  }>(
+    "/exchange/:id",
+    {
+      preHandler: [
+        validateBody(TransactionUpdateExchangeSchema),
+        authorizeAccessToken(),
+      ]
+    },
+    updateExchangeTransactionHandler
   );
 
   app.delete<{

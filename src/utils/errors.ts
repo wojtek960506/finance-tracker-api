@@ -37,11 +37,19 @@ export class TransactionNotFoundError extends AppError {
   }
 }
 
+export class TransactionTransferCategoryError extends AppError {
+  readonly code = 'TRANSACTION_TRANSFER_CATEGORY_ERROR'
+
+  constructor(readonly transactionId: string) {
+    super(400, "Transfer transaction should have 'myAccount' category");
+  }
+}
+
 export class TransactionExchangeCategoryError extends AppError {
   readonly code = 'TRANSACTION_EXCHAGE_CATEGORY_ERROR'
 
   constructor(readonly transactionId: string) {
-    super(400, "Transaction should have 'exchange' category");
+    super(400, "Exchange transaction should have 'exchange' category");
   }
 }
 

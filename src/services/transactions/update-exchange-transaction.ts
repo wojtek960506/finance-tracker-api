@@ -1,33 +1,35 @@
 import { startSession } from "mongoose";
 import { findTransaction } from "@db/transactions";
-import { prepareTransferProps } from "@services/transactions";
 import { checkTransactionOwner } from "@services/services-utils";
-import { TransactionUpdateTransferDTO } from "@schemas/transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
+import { TransactionResponseDTO, TransactionUpdateExchangeDTO } from "@schemas/transaction";
+import {
+  prepareExchangeProps
+} from "@services/transactions/create-exchange-transaction/prepare-exchange-props";
 import {
   TransactionWrongTypesError,
   TransactionWrongReferenceError,
-  TransactionTransferCategoryError,
+  TransactionExchangeCategoryError,
   TransactionMissingReferenceError,
 } from "@utils/errors";
 
 
-export const updateTransferTransaction = async (
+export const updateExchangeTransaction = async (
   transactionId: string,
   userId: string,
-  dto: TransactionUpdateTransferDTO,
-) => {
+  dto: TransactionUpdateExchangeDTO,
+): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
   const transaction = await findTransaction(transactionId);
   checkTransactionOwner(userId, transactionId, transaction.ownerId.toString());
-  if (transaction.category !== "myAccount")
-    throw new TransactionTransferCategoryError(transactionId);
+  if (transaction.category !== "exchange")
+    throw new TransactionExchangeCategoryError(transactionId);
   if (transaction.refId === undefined)
     throw new TransactionMissingReferenceError(transactionId);
 
   const transactionRef = await findTransaction(transaction.refId!.toString());
   checkTransactionOwner(userId, transactionRef.id, transactionRef.ownerId.toString());
-  if (transactionRef.category !== "myAccount")
-    throw new TransactionTransferCategoryError(transactionRef.id);
+  if (transactionRef.category !== "exchange")
+    throw new TransactionExchangeCategoryError(transactionRef.id);
   if (transactionRef.refId === undefined)
     throw new TransactionMissingReferenceError(transactionRef.id);
 
@@ -45,10 +47,9 @@ export const updateTransferTransaction = async (
   const {
     expenseTransactionProps,
     incomeTransactionProps,
-  } = prepareTransferProps(dto);
-  
-  const session = await startSession();
+  } = prepareExchangeProps(dto);
 
+  const session = await startSession();
   try {
     await session.withTransaction(async () => {
       if (transaction.transactionType === "expense") {
