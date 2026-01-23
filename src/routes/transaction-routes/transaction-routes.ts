@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { validateBody } from "@utils/validation";
 import { authorizeAccessToken } from "@services/auth";
-import { findTransaction } from "@routes/routes-utils";
+import { findTransactionOld } from "@routes/routes-utils";
 import { TransactionModel } from "@models/transaction-model";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
@@ -77,7 +77,7 @@ export async function transactionRoutes(
   app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
     "/:id",
     async (req) => {
-      const transaction = await findTransaction(req.params.id);
+      const transaction = await findTransactionOld(req.params.id);
       return serializeTransaction(transaction);
     }
   )

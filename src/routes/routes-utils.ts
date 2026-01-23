@@ -1,7 +1,7 @@
 import { ITransaction, TransactionModel } from "@models/transaction-model";
 import { AppError, NotFoundError } from "@utils/errors";
 
-export const findTransaction = async (id: string) => {
+export const findTransactionOld = async (id: string) => {
   const transaction = await TransactionModel.findById(id);
   if (!transaction)
     throw new NotFoundError(`Transaction with ID '${id}' not found`);
