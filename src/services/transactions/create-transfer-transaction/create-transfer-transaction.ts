@@ -1,7 +1,6 @@
-import { getNextSourceIndex } from "@services/transactions";
-import { prepareTransferProps } from "../prepare-transfer-props";
 import { TransactionCreateTransferDTO } from "@schemas/transaction";
 import { persistTransferTransaction } from "@db/transactions/persist-transaction";
+import { getNextSourceIndex, prepareTransferProps } from "@services/transactions";
 
 
 export const createTransferTransaction = async (
