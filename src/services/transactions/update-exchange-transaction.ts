@@ -1,11 +1,9 @@
 import { startSession } from "mongoose";
 import { findTransaction } from "@db/transactions";
+import { prepareExchangeProps } from "@services/transactions";
 import { checkTransactionOwner } from "@services/services-utils";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionResponseDTO, TransactionUpdateExchangeDTO } from "@schemas/transaction";
-import {
-  prepareExchangeProps
-} from "@services/transactions/create-exchange-transaction/prepare-exchange-props";
 import {
   TransactionWrongTypesError,
   TransactionWrongReferenceError,

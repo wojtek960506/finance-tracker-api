@@ -1,4 +1,4 @@
-import { getNextSourceIndex } from "./get-next-source-index";
+import { getNextSourceIndex } from "@services/transactions";
 import { persistStandardTransaction } from "@db/transactions/persist-transaction";
 import {
   TransactionResponseDTO,

@@ -1,6 +1,6 @@
 import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
-import { getNextSourceIndex } from "./get-next-source-index";
+import { getNextSourceIndex } from "@services/transactions";
 import { createStandardTransaction } from "./create-standard-transaction";
 import { persistStandardTransaction } from "@db/transactions/persist-transaction";
 import {
