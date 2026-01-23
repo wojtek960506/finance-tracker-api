@@ -1,10 +1,12 @@
+import { ExchangeTransactionUpdateProps } from "@db/transactions";
+import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
+import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
 import {
   TransactionCreateExchangeDTO,
   TransactionUpdateExchangeDTO,
 } from "@schemas/transaction";
-import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
-import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
-import { ExchangeTransactionUpdateProps } from "@db/transactions";
+
+
 
 export function prepareExchangeProps(
   dto: TransactionCreateExchangeDTO,

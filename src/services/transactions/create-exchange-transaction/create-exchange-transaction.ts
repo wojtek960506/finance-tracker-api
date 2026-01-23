@@ -1,5 +1,4 @@
-import { getNextSourceIndex } from "@services/transactions";
-import { prepareExchangeProps } from "./prepare-exchange-props";
+import { getNextSourceIndex, prepareExchangeProps } from "@services/transactions";
 import { persistExchangeTransaction } from "@db/transactions/persist-transaction";
 import { TransactionCreateExchangeDTO, TransactionResponseDTO } from "@schemas/transaction";
 
