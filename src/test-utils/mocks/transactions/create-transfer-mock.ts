@@ -21,13 +21,21 @@ export const getTransactionCreateTransferDTO = () => ({
   additionalDescription,
 } as TransactionCreateTransferDTO);
 
-export const getTransferTransactionProps = (
-  additionalProps?: {
-    ownerId: string,
-    sourceIndexExpense: number,
-    sourceIndexIncome: number,
-  }
-) => {
+type AdditionalProps = {
+  ownerId: string,
+  sourceIndexExpense: number,
+  sourceIndexIncome: number,
+}
+
+export function getTransferTransactionProps (): {
+  expenseProps: TransferTransactionUpdateProps,
+  incomeProps: TransferTransactionUpdateProps,
+}
+export function getTransferTransactionProps (additionalProps: AdditionalProps): {
+  expenseProps: TransferTransactionProps,
+  incomeProps: TransferTransactionProps,
+}
+export function getTransferTransactionProps (additionalProps?: AdditionalProps) {
   const commonProps = {
     category: "myAccount",
     date,

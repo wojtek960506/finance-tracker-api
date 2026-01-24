@@ -50,9 +50,11 @@ describe("persistTransaction", async () => {
   })
   
   it("persist pair for exchange transaction", async () => {
-    const { expenseProps, incomeProps } = getExchangeTransactionProps(
-      randomObjectIdString(), EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX
-    );
+    const { expenseProps, incomeProps } = getExchangeTransactionProps({
+      ownerId: randomObjectIdString(),
+      sourceIndexExpense: EXPENSE_SOURCE_INDEX,
+      sourceIndexIncome: INCOME_SOURCE_INDEX,
+    });
     const expenseTransaction = { ...expenseProps, id: EXPENSE_ID, refId: INCOME_ID };
     const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
     (persistTransactionPair as Mock).mockResolvedValue([expenseTransaction, incomeTransaction]);
@@ -66,9 +68,11 @@ describe("persistTransaction", async () => {
   })
 
   it("persist pair for transfer transaction", async () => {
-    const { expenseProps, incomeProps } = getTransferTransactionProps(
-      randomObjectIdString(), EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX
-    );
+    const { expenseProps, incomeProps } = getTransferTransactionProps({
+      ownerId: randomObjectIdString(),
+      sourceIndexExpense: EXPENSE_SOURCE_INDEX,
+      sourceIndexIncome: INCOME_SOURCE_INDEX,
+    });
     const expenseTransaction = { ...expenseProps, id: EXPENSE_ID, refId: INCOME_ID };
     const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
     (persistTransactionPair as Mock).mockResolvedValue([expenseTransaction, incomeTransaction]);

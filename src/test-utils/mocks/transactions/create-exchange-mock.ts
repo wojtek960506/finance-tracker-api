@@ -23,13 +23,21 @@ export const getTransactionCreateExchangeDTO = () => ({
   additionalDescription,
 } as TransactionCreateExchangeDTO);
 
-export const getExchangeTransactionProps = (
-  additionalProps?: {
-    ownerId: string,
-    sourceIndexExpense: number,
-    sourceIndexIncome: number,
-  }
-) => {
+type AdditionalProps = {
+  ownerId: string,
+  sourceIndexExpense: number,
+  sourceIndexIncome: number,
+}
+
+export function getExchangeTransactionProps (): {
+  expenseProps: ExchangeTransactionUpdateProps,
+  incomeProps: ExchangeTransactionUpdateProps,
+}
+export function getExchangeTransactionProps (additionalProps: AdditionalProps): {
+  expenseProps: ExchangeTransactionProps,
+  incomeProps: ExchangeTransactionProps,
+}
+export function getExchangeTransactionProps (additionalProps?: AdditionalProps) {
   const commonProps = {
     category: "exchange",
     date,
