@@ -7,3 +7,4 @@ export * from "./create-standard-transaction";
 export * from "./create-transfer-transaction";
 export * from "./update-standard-transaction";
 export * from "./update-transfer-transaction";
+export * from "./update-exchange-transaction";

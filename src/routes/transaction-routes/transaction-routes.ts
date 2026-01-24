@@ -9,14 +9,12 @@ import {
   getTransactionsHandler,
   deleteTransactionHandler,
   exportTransacionsHandler,
+  updateTransactionHandler,
   getTransactionTotalsHandler,
   getTransactionStatisticsHandler,
   createExchangeTransactionHandler,
   createStandardTransactionHandler,
   createTransferTransactionHandler,
-  updateStandardTransactionHandler,
-  updateTransferTransactionHandler,
-  updateExchangeTransactionHandler,
 } from "./handlers";
 import {
   TransactionResponseDTO,
@@ -136,7 +134,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    updateStandardTransactionHandler
+    updateTransactionHandler
   );
 
   app.put<{ 
@@ -151,7 +149,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    updateTransferTransactionHandler
+    updateTransactionHandler
   );
 
   app.put<{ 
@@ -166,7 +164,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    updateExchangeTransactionHandler
+    updateTransactionHandler
   );
 
   app.delete<{

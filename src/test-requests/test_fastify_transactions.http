@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzY5MTIzMzIyLCJleHAiOjE3NjkxMjUxMjJ9.LH85PdPhu4M4vpSvKjc6HMb_8aSaUR_zAF035DaZoeQ
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzY5MjYxNjgzLCJleHAiOjE3NjkyNjM0ODN9.mJc1YuvMOcqnP49-6uxo3fRiEVEh3uLH8UCA7SahWL8
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -57,7 +57,7 @@ Authorization: Bearer {{accessToken}}
 # expense - 6972b1e2b479aa46a8af5207
 
 ### Get single transaction
-GET {{baseUrl}}/transactions/6972b1e2b479aa46a8af5209
+GET {{baseUrl}}/transactions/6958215e420fe37be9ee80f4
 Accept: application/json
 
 ### Create new standard transaction
@@ -110,19 +110,20 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Update a transaction (PUT)
-PUT {{baseUrl}}/transactions/standard/{{wzTransactionId}}
+PUT {{baseUrl}}/transactions/standard/6958215d420fe37be9ee4ac7
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 { 
-  "date": "2015-9-24",
-  "description": "ASEC W-wa Ratusz Ar/Warszawa some change",
-  "amount": 1.70,
-  "currency": "PLN",
-  "category": "transport",
+  "date": "2015-12-24",
+  "description": "expense - food - 372.5971177941268 EUR - 2025-12-24",
+  "amount": 372.5971177941268,
+  "currency": "EUR",
+  "category": "food",
   "transactionType": "expense",
   "paymentMethod": "card",
-  "account": "mBank"
+  "account": "creditAgricole",
+  "abc": "mama"
 }
 
 ### Update a TRANSFER transaction (PUT)
@@ -146,14 +147,14 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2025-12-17",
-  "additionalDescription": "some additional desc",
-  "amountExpense": 20,
-  "amountIncome": 84.23,
-  "currencyExpense": "EUR",
-  "currencyIncome": "PLN",
-  "account": "revolut",
-  "paymentMethod": "cash"
+  "date": "2025-12-18",
+  "additionalDescription": "123 some additional desc",
+  "amountExpense": 200,
+  "amountIncome": 840.23,
+  "currencyExpense": "HUF",
+  "currencyIncome": "RON",
+  "account": "mBank",
+  "paymentMethod": "bankTransfer"
 }
 
 
