@@ -9,12 +9,10 @@ import {
   getTransactionsHandler,
   deleteTransactionHandler,
   exportTransacionsHandler,
+  createTransactionHandler,
   updateTransactionHandler,
   getTransactionTotalsHandler,
   getTransactionStatisticsHandler,
-  createExchangeTransactionHandler,
-  createStandardTransactionHandler,
-  createTransferTransactionHandler,
 } from "./handlers";
 import {
   TransactionResponseDTO,
@@ -89,7 +87,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    createStandardTransactionHandler
+    createTransactionHandler
   );
 
   // create exchange transactions - one expense and one income
@@ -104,7 +102,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    createExchangeTransactionHandler
+    createTransactionHandler
   );
 
   // create transfer transactions - one expense and one income
@@ -119,7 +117,7 @@ export async function transactionRoutes(
         authorizeAccessToken(),
       ]
     },
-    createTransferTransactionHandler
+    createTransactionHandler
   );
 
   app.put<{ 

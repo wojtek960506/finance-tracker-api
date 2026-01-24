@@ -3,7 +3,5 @@ export * from "./delete-transaction";
 export * from "./export-transactions";
 export * from "./get-transaction-totals";
 export * from "./get-transaction-statistics";
+export * from "./create-transaction-handler";
 export * from "./update-transaction-handler";
-export * from "./create-transfer-transaction-handler";
-export * from "./create-standard-transaction-handler";
-export * from "./create-exchange-transaction-handler";
