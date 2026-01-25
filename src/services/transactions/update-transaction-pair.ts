@@ -2,15 +2,15 @@ import { prepareExchangeProps, prepareTransferProps } from "@services/transactio
 import { loadTransactionWithReference, saveTransactionPairChanges } from "@db/transactions";
 import {
   TransactionResponseDTO,
-  TransactionCreateExchangeDTO,
-  TransactionCreateTransferDTO,
+  TransactionExchangeDTO,
+  TransactionTransferDTO,
 } from "@schemas/transaction";
 
 
 export const updateTransactionPair = async (
   transactionId: string,
   userId: string,
-  dto: TransactionCreateExchangeDTO | TransactionCreateTransferDTO,
+  dto: TransactionExchangeDTO | TransactionTransferDTO,
   kind: "exchange" | "myAccount"
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
   const { transaction, transactionRef } = await loadTransactionWithReference(

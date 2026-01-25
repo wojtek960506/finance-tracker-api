@@ -1,5 +1,5 @@
+import { TransactionTransferDTO } from "@schemas/transaction";
 import { TransferTransactionUpdateProps } from "@db/transactions";
-import { TransactionCreateTransferDTO } from "@schemas/transaction";
 import { TransferTransactionProps } from "@db/transactions/persist-transaction";
 
 
@@ -19,7 +19,7 @@ export const getTransactionCreateTransferDTO = () => ({
   accountIncome,
   paymentMethod,
   additionalDescription,
-} as TransactionCreateTransferDTO);
+} as TransactionTransferDTO);
 
 type AdditionalProps = {
   ownerId: string,

@@ -1,5 +1,5 @@
+import { TransactionExchangeDTO } from "@schemas/transaction";
 import { ExchangeTransactionUpdateProps } from "@db/transactions";
-import { TransactionCreateExchangeDTO } from "@schemas/transaction";
 import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
 
 
@@ -21,7 +21,7 @@ export const getTransactionCreateExchangeDTO = () => ({
   account,
   paymentMethod,
   additionalDescription,
-} as TransactionCreateExchangeDTO);
+} as TransactionExchangeDTO);
 
 type AdditionalProps = {
   ownerId: string,

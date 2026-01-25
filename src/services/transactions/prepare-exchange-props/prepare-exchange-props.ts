@@ -1,11 +1,11 @@
 import { ExchangeTransactionUpdateProps } from "@db/transactions";
-import { TransactionCreateExchangeDTO } from "@schemas/transaction";
+import { TransactionExchangeDTO } from "@schemas/transaction";
 import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
 import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
 
 
 export function prepareExchangeProps(
-  dto: TransactionCreateExchangeDTO,
+  dto: TransactionExchangeDTO,
   additionalProps: {
     ownerId: string,
     sourceIndexExpense: number,
@@ -16,13 +16,13 @@ export function prepareExchangeProps(
   incomeTransactionProps: ExchangeTransactionProps,
 }
 export function prepareExchangeProps(
-  dto: TransactionCreateExchangeDTO,
+  dto: TransactionExchangeDTO,
 ): {
   expenseTransactionProps: ExchangeTransactionUpdateProps,
   incomeTransactionProps: ExchangeTransactionUpdateProps,
 }
 export function prepareExchangeProps(
-  dto: TransactionCreateExchangeDTO,
+  dto: TransactionExchangeDTO,
   additionalProps?: {
     ownerId: string,
     sourceIndexExpense: number,

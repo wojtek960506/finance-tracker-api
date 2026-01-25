@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
 import {
-  TransactionCreateExchangeDTO,
-  TransactionCreateStandardDTO,
-  TransactionCreateTransferDTO,
+  TransactionExchangeDTO,
+  TransactionStandardDTO,
+  TransactionTransferDTO,
 } from "@schemas/transaction";
 import {
   updateExchangeTransaction,
@@ -15,9 +15,7 @@ import {
 export const updateTransactionHandler = async (
   req: FastifyRequest<{
     Params: ParamsJustId,
-    Body: TransactionCreateStandardDTO |
-      TransactionCreateExchangeDTO |
-      TransactionCreateTransferDTO
+    Body: TransactionStandardDTO | TransactionExchangeDTO | TransactionTransferDTO
   }>,
   res: FastifyReply,
 ) => {

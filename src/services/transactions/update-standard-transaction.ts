@@ -1,12 +1,12 @@
 import { checkTransactionOwner } from "@services/services-utils";
-import { TransactionCreateStandardDTO } from "@schemas/transaction";
+import { TransactionStandardDTO } from "@schemas/transaction";
 import { findTransaction, saveStandardTransactionChanges } from "@db/transactions";
 
 
 export const updateStandardTransaction = async (
   transactionId: string,
   userId: string,
-  dto: TransactionCreateStandardDTO,
+  dto: TransactionStandardDTO,
 ) => {
   const transaction = await findTransaction(transactionId);
   checkTransactionOwner(userId, transactionId, transaction.ownerId.toString());

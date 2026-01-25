@@ -1,10 +1,10 @@
 import { getNextSourceIndex, prepareExchangeProps } from "@services/transactions";
 import { persistExchangeTransaction } from "@db/transactions/persist-transaction";
-import { TransactionCreateExchangeDTO, TransactionResponseDTO } from "@schemas/transaction";
+import { TransactionExchangeDTO, TransactionResponseDTO } from "@schemas/transaction";
 
 
 export const createExchangeTransaction = async (
-  dto: TransactionCreateExchangeDTO,
+  dto: TransactionExchangeDTO,
   ownerId: string,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
   const sourceIndexExpense = await getNextSourceIndex(ownerId);
