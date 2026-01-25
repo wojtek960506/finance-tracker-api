@@ -48,16 +48,10 @@ vi.mock("@schemas/serialize-transaction", () => ({
   serializeTransaction: vi.fn()
 }));
 
-vi.mock("@services/transactions/create-exchange-transaction", () => ({
-  createExchangeTransaction: vi.fn()
-}));
-
-vi.mock("@services/transactions/create-standard-transaction", () => ({
-  createStandardTransaction: vi.fn()
-}));
-
-vi.mock("@services/transactions/create-transfer-transaction", () => ({
-  createTransferTransaction: vi.fn()
+vi.mock("@services/transactions/create-transaction", () => ({
+  createStandardTransaction: vi.fn(),
+  createExchangeTransaction: vi.fn(),
+  createTransferTransaction: vi.fn(),
 }));
 
 describe("Transaction Routes (Fastify integration)", async () => {
