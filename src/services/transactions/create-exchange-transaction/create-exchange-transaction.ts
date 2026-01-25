@@ -1,5 +1,5 @@
+import { persistTransactionPair } from "@db/transactions/persist-transaction";
 import { getNextSourceIndex, prepareExchangeProps } from "@services/transactions";
-import { persistExchangeTransaction } from "@db/transactions/persist-transaction";
 import { TransactionExchangeDTO, TransactionResponseDTO } from "@schemas/transaction";
 
 
@@ -18,7 +18,7 @@ export const createExchangeTransaction = async (
   const [
     expenseTransaction,
     incomeTransaction
-  ] = await persistExchangeTransaction(expenseTransactionProps, incomeTransactionProps);
+  ] = await persistTransactionPair(expenseTransactionProps, incomeTransactionProps);
 
   return [expenseTransaction, incomeTransaction];
 }

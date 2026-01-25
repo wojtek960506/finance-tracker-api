@@ -1,8 +1,8 @@
 import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
-import { getNextSourceIndex } from "../get-next-source-index";
+import { persistTransactionPair } from "@db/transactions";
 import { createTransferTransaction } from "./create-transfer-transaction";
-import { persistTransferTransaction } from "@db/transactions/persist-transaction";
+import { getNextSourceIndex } from "@services/transactions/get-next-source-index";
 import {
   getTransactionCreateTransferDTO,
   getTransferTransactionResultJSON,
@@ -13,8 +13,8 @@ vi.mock("@services/transactions/get-next-source-index", () => ({
   getNextSourceIndex: vi.fn(),
 }));
 
-vi.mock("@db/transactions/persist-transaction/persist-transaction", () => ({
-  persistTransferTransaction: vi.fn(),
+vi.mock("@db/transactions/persist-transaction/persist-transaction-pair", () => ({
+  persistTransactionPair: vi.fn(),
 }));
 
 describe("createTransferTransaction", async () => {
@@ -26,7 +26,7 @@ describe("createTransferTransaction", async () => {
     const [expenseTransaction, incomeTransaction] = getTransferTransactionResultJSON(
       USER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
     );
-    (persistTransferTransaction as Mock).mockResolvedValue(
+    (persistTransactionPair as Mock).mockResolvedValue(
       [expenseTransaction, incomeTransaction]
     );
     (getNextSourceIndex as Mock)
@@ -35,7 +35,7 @@ describe("createTransferTransaction", async () => {
     
     const result = await createTransferTransaction(dto, USER_ID);
 
-    expect(persistTransferTransaction).toHaveBeenCalledOnce();
+    expect(persistTransactionPair).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID);
