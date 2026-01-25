@@ -8,7 +8,7 @@ import {
   createTransferTransaction,
 } from "./create-transaction";
 import {
-  getTransactionCreateStandardDTO,
+  getTransactionStandardDTO,
   getTransactionCreateExchangeDTO,
   getTransactionCreateTransferDTO,
   getStandardTransactionResultJSON,
@@ -38,7 +38,7 @@ describe("createStandardTransaction", async () => {
   afterEach(() => { vi.clearAllMocks() });
 
   it("should create standard transaction", async () => {
-    const dto = getTransactionCreateStandardDTO();
+    const dto = getTransactionStandardDTO();
     const transaction = getStandardTransactionResultJSON(
       OWNER_ID, EXPENSE_SOURCE_INDEX, EXPENSE_ID
     );

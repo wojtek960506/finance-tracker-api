@@ -12,8 +12,8 @@ import {
   createTransferTransaction,
 } from "@services/transactions";
 import {
+  getTransactionStandardDTO,
   getTransactionCreateExchangeDTO,
-  getTransactionCreateStandardDTO,
   getTransactionCreateTransferDTO,
   getExchangeTransactionResultJSON,
   getStandardTransactionResultJSON,
@@ -88,7 +88,7 @@ describe("Transaction Routes (Fastify integration)", async () => {
 
   it("should create standard transaction via POST", async () => {
     const [TRANSACTION_SOURCE_INDEX, TRANSACTION_ID] = [1, randomObjectIdString()];
-    const dto = getTransactionCreateStandardDTO();
+    const dto = getTransactionStandardDTO();
     const resultJSON = getStandardTransactionResultJSON(
       USER_ID, TRANSACTION_SOURCE_INDEX, TRANSACTION_ID
     );

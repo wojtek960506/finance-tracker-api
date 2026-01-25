@@ -3,7 +3,7 @@ import { TransactionStandardDTO } from "@schemas/transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 
 
-export const saveStandardTransactionChanges = async (
+export const saveTransactionChanges = async (
   transaction: ITransaction,
   newProps: TransactionStandardDTO,
 ) => {

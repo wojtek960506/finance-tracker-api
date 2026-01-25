@@ -9,7 +9,7 @@ const paymentMethod = "card";
 const description = "some transaction";
 const transactionType = "expense";
 
-export const getTransactionCreateStandardDTO = () => ({
+export const getTransactionStandardDTO = () => ({
   date,
   amount,
   currency,
@@ -21,7 +21,7 @@ export const getTransactionCreateStandardDTO = () => ({
 } as TransactionStandardDTO);
 
 export const getStandardTransactionProps = (ownerId: string, sourceIndex: number) => ({
-  ...getTransactionCreateStandardDTO(),
+  ...getTransactionStandardDTO(),
   ownerId,
   sourceIndex,
 })

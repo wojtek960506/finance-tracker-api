@@ -1,6 +1,6 @@
 import { checkTransactionOwner } from "@services/services-utils";
 import { updateTransactionPair } from "./update-transaction-pair";
-import { findTransaction, saveStandardTransactionChanges } from "@db/transactions";
+import { findTransaction, saveTransactionChanges } from "@db/transactions";
 import { prepareExchangeProps, prepareTransferProps } from "@services/transactions";
 import {
   TransactionExchangeDTO,
@@ -18,7 +18,7 @@ export const updateStandardTransaction = async (
   const transaction = await findTransaction(transactionId);
   checkTransactionOwner(userId, transactionId, transaction.ownerId.toString());
 
-  const updatedTransaction = await saveStandardTransactionChanges(transaction, dto);
+  const updatedTransaction = await saveTransactionChanges(transaction, dto);
   return updatedTransaction;
 }
 
