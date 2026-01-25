@@ -1,7 +1,7 @@
 import { randomObjectIdString } from "@utils/random";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { persistStandardTransaction } from "./persist-transaction";
+import { persistTransaction } from "./persist-transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { getStandardTransactionProps } from "@/test-utils/mocks/transactions";
 
@@ -27,7 +27,7 @@ describe("persistTransaction", async () => {
     (serializeTransaction as Mock)
       .mockReturnValueOnce(transaction)
 
-    const result = await persistStandardTransaction(props);
+    const result = await persistTransaction(props);
 
     expect(TransactionModel.create).toHaveBeenCalledOnce();
     expect(TransactionModel.create).toHaveBeenCalledWith(props);
