@@ -1,10 +1,10 @@
 import { TransactionStandardDTO } from "@schemas/transaction";
 
-export type TransferTransactionUpdateProps = Omit<
+export type TransactionTransferUpdateProps = Omit<
   TransactionStandardDTO, "category" | "transactionType"
 >;
 
-export type ExchangeTransactionUpdateProps = TransferTransactionUpdateProps & {
+export type TransactionExchangeUpdateProps = TransactionTransferUpdateProps & {
   currencies: string,
   exchangeRate: number,
 }

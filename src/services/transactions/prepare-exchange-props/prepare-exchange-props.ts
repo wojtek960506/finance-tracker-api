@@ -1,6 +1,6 @@
-import { ExchangeTransactionUpdateProps } from "@db/transactions";
+import { TransactionExchangeUpdateProps } from "@db/transactions";
 import { TransactionExchangeDTO } from "@schemas/transaction";
-import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
+import { TransactionExchangeCreateProps } from "@db/transactions/persist-transaction";
 import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
 
 
@@ -12,14 +12,14 @@ export function prepareExchangeProps(
     sourceIndexIncome: number,
   }
 ): {
-  expenseTransactionProps: ExchangeTransactionProps,
-  incomeTransactionProps: ExchangeTransactionProps,
+  expenseTransactionProps: TransactionExchangeCreateProps,
+  incomeTransactionProps: TransactionExchangeCreateProps,
 }
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
 ): {
-  expenseTransactionProps: ExchangeTransactionUpdateProps,
-  incomeTransactionProps: ExchangeTransactionUpdateProps,
+  expenseTransactionProps: TransactionExchangeUpdateProps,
+  incomeTransactionProps: TransactionExchangeUpdateProps,
 }
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
@@ -63,7 +63,7 @@ export function prepareExchangeProps(
         ownerId,
         sourceIndex: sourceIndexExpense,
         sourceRefIndex: sourceIndexIncome,
-      } as ExchangeTransactionProps,
+      } as TransactionExchangeCreateProps,
       incomeTransactionProps: {
         ...commonIncomeTransactionProps,
         ownerId,
@@ -73,8 +73,8 @@ export function prepareExchangeProps(
     }
   } else {
     return {
-      expenseTransactionProps: commonExpenseTransactionProps as ExchangeTransactionUpdateProps,
-      incomeTransactionProps: commonIncomeTransactionProps as ExchangeTransactionUpdateProps,
+      expenseTransactionProps: commonExpenseTransactionProps as TransactionExchangeUpdateProps,
+      incomeTransactionProps: commonIncomeTransactionProps as TransactionExchangeUpdateProps,
     }
   }
 }

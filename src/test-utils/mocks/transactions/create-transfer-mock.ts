@@ -1,6 +1,6 @@
 import { TransactionTransferDTO } from "@schemas/transaction";
-import { TransferTransactionUpdateProps } from "@db/transactions";
-import { TransferTransactionProps } from "@db/transactions/persist-transaction";
+import { TransactionTransferUpdateProps } from "@db/transactions";
+import { TransactionTransferCreateProps } from "@db/transactions/persist-transaction";
 
 
 const date = new Date("2026-01-09");
@@ -28,12 +28,12 @@ type AdditionalProps = {
 }
 
 export function getTransferTransactionProps (): {
-  expenseProps: TransferTransactionUpdateProps,
-  incomeProps: TransferTransactionUpdateProps,
+  expenseProps: TransactionTransferUpdateProps,
+  incomeProps: TransactionTransferUpdateProps,
 }
 export function getTransferTransactionProps (additionalProps: AdditionalProps): {
-  expenseProps: TransferTransactionProps,
-  incomeProps: TransferTransactionProps,
+  expenseProps: TransactionTransferCreateProps,
+  incomeProps: TransactionTransferCreateProps,
 }
 export function getTransferTransactionProps (additionalProps?: AdditionalProps) {
   const commonProps = {
@@ -65,18 +65,18 @@ export function getTransferTransactionProps (additionalProps?: AdditionalProps) 
         sourceIndex: sourceIndexExpense,
         sourceRefIndex: sourceIndexIncome,
         ownerId,
-      } as TransferTransactionProps,
+      } as TransactionTransferCreateProps,
       incomeProps: {
         ...commonIncomeProps,
         sourceIndex: sourceIndexIncome,
         sourceRefIndex: sourceIndexExpense,
         ownerId,
-      } as TransferTransactionProps
+      } as TransactionTransferCreateProps
     }
   } else {
     return {
-      expenseProps: commonExpenseProps as TransferTransactionUpdateProps,
-      incomeProps: commonIncomeProps as TransferTransactionUpdateProps,
+      expenseProps: commonExpenseProps as TransactionTransferUpdateProps,
+      incomeProps: commonIncomeProps as TransactionTransferUpdateProps,
     }
   }
 }

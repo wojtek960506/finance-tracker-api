@@ -1,6 +1,6 @@
 import { TransactionTransferDTO } from "@schemas/transaction";
-import { TransferTransactionProps } from "@db/transactions/persist-transaction";
-import { TransferTransactionUpdateProps } from "@db/transactions/save-transaction-changes";
+import { TransactionTransferCreateProps } from "@db/transactions/persist-transaction";
+import { TransactionTransferUpdateProps } from "@db/transactions/save-transaction-changes";
 
 
 export function prepareTransferProps(
@@ -11,14 +11,14 @@ export function prepareTransferProps(
     sourceIndexIncome: number,
   }
 ): {
-  expenseTransactionProps: TransferTransactionProps,
-  incomeTransactionProps: TransferTransactionProps,
+  expenseTransactionProps: TransactionTransferCreateProps,
+  incomeTransactionProps: TransactionTransferCreateProps,
 }
 export function prepareTransferProps(
   body: TransactionTransferDTO,
 ): {
-  expenseTransactionProps: TransferTransactionUpdateProps,
-  incomeTransactionProps: TransferTransactionUpdateProps,
+  expenseTransactionProps: TransactionTransferUpdateProps,
+  incomeTransactionProps: TransactionTransferUpdateProps,
 }
 export function prepareTransferProps (
   body: TransactionTransferDTO,
@@ -63,7 +63,7 @@ export function prepareTransferProps (
         ownerId,
         sourceIndex: sourceIndexExpense,
         sourceRefIndex: sourceIndexIncome,
-      } as TransferTransactionProps,
+      } as TransactionTransferCreateProps,
       incomeTransactionProps: {
         ...commonIncomeTransactionProps,
         ownerId,
@@ -73,8 +73,8 @@ export function prepareTransferProps (
     }
   } else {
     return {
-      expenseTransactionProps: commonExpenseTransactionProps as TransferTransactionUpdateProps,
-      incomeTransactionProps: commonIncomeTransactionProps as TransferTransactionUpdateProps,
+      expenseTransactionProps: commonExpenseTransactionProps as TransactionTransferUpdateProps,
+      incomeTransactionProps: commonIncomeTransactionProps as TransactionTransferUpdateProps,
     }
   }
 }

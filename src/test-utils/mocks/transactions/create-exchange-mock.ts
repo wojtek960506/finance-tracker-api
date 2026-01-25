@@ -1,6 +1,6 @@
 import { TransactionExchangeDTO } from "@schemas/transaction";
-import { ExchangeTransactionUpdateProps } from "@db/transactions";
-import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
+import { TransactionExchangeUpdateProps } from "@db/transactions";
+import { TransactionExchangeCreateProps } from "@db/transactions/persist-transaction";
 
 
 const date = new Date("2026-01-08");
@@ -30,12 +30,12 @@ type AdditionalProps = {
 }
 
 export function getExchangeTransactionProps (): {
-  expenseProps: ExchangeTransactionUpdateProps,
-  incomeProps: ExchangeTransactionUpdateProps,
+  expenseProps: TransactionExchangeUpdateProps,
+  incomeProps: TransactionExchangeUpdateProps,
 }
 export function getExchangeTransactionProps (additionalProps: AdditionalProps): {
-  expenseProps: ExchangeTransactionProps,
-  incomeProps: ExchangeTransactionProps,
+  expenseProps: TransactionExchangeCreateProps,
+  incomeProps: TransactionExchangeCreateProps,
 }
 export function getExchangeTransactionProps (additionalProps?: AdditionalProps) {
   const commonProps = {
@@ -70,18 +70,18 @@ export function getExchangeTransactionProps (additionalProps?: AdditionalProps) 
         sourceIndex: sourceIndexExpense,
         sourceRefIndex: sourceIndexIncome,
         ownerId,
-      } as ExchangeTransactionProps,
+      } as TransactionExchangeCreateProps,
       incomeProps: {
         ...commonIncomeProps,
         sourceIndex: sourceIndexIncome,
         sourceRefIndex: sourceIndexExpense,
         ownerId,
-      } as ExchangeTransactionProps,
+      } as TransactionExchangeCreateProps,
     }
   } else {
     return {
-      expenseProps: commonExpenseProps as ExchangeTransactionUpdateProps,
-      incomeProps: commonIncomeProps as ExchangeTransactionUpdateProps,
+      expenseProps: commonExpenseProps as TransactionExchangeUpdateProps,
+      incomeProps: commonIncomeProps as TransactionExchangeUpdateProps,
     }
   }
 }
