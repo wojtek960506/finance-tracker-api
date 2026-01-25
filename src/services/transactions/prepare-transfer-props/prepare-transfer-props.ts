@@ -1,9 +1,6 @@
+import { TransactionCreateTransferDTO } from "@schemas/transaction";
 import { TransferTransactionProps } from "@db/transactions/persist-transaction";
 import { TransferTransactionUpdateProps } from "@db/transactions/save-transaction-changes";
-import {
-  TransactionCreateTransferDTO,
-  TransactionUpdateTransferDTO
-} from "@schemas/transaction";
 
 
 export function prepareTransferProps(
@@ -18,13 +15,13 @@ export function prepareTransferProps(
   incomeTransactionProps: TransferTransactionProps,
 }
 export function prepareTransferProps(
-  body: TransactionUpdateTransferDTO,
+  body: TransactionCreateTransferDTO,
 ): {
   expenseTransactionProps: TransferTransactionUpdateProps,
   incomeTransactionProps: TransferTransactionUpdateProps,
 }
 export function prepareTransferProps (
-  body: TransactionCreateTransferDTO | TransactionUpdateTransferDTO,
+  body: TransactionCreateTransferDTO,
   additionalProps?: {
     ownerId: string,
     sourceIndexExpense: number,

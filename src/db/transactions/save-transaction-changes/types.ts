@@ -1,7 +1,7 @@
-import { TransactionUpdateStandardDTO } from "@schemas/transaction";
+import { TransactionCreateStandardDTO } from "@schemas/transaction";
 
 export type TransferTransactionUpdateProps = Omit<
-  TransactionUpdateStandardDTO, "category" | "transactionType"
+  TransactionCreateStandardDTO, "category" | "transactionType"
 >;
 
 export type ExchangeTransactionUpdateProps = TransferTransactionUpdateProps & {

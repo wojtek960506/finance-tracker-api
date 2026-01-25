@@ -46,12 +46,6 @@ export const TransactionCreateTransferSchema = TransactionCreateCommonSchema.ext
   paymentMethod: z.enum(["bankTransfer", "cash", "card"]),
 })
 
-export const TransactionUpdateStandardSchema = TransactionCreateStandardSchema;
-
-export const TransactionUpdateTransferSchema = TransactionCreateTransferSchema;
-
-export const TransactionUpdateExchangeSchema = TransactionCreateExchangeSchema;
-
 export const TransactionResponseSchema = TransactionCreateStandardSchema.extend({
   id: z.string(),
   ownerId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `ownerId`"),
@@ -77,8 +71,5 @@ export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
 export type TransactionCreateStandardDTO = z.infer<typeof TransactionCreateStandardSchema>;
 export type TransactionCreateExchangeDTO = z.infer<typeof TransactionCreateExchangeSchema>;
 export type TransactionCreateTransferDTO = z.infer<typeof TransactionCreateTransferSchema>;
-export type TransactionUpdateStandardDTO = z.infer<typeof TransactionUpdateStandardSchema>;
-export type TransactionUpdateTransferDTO = z.infer<typeof TransactionUpdateTransferSchema>;
-export type TransactionUpdateExchangeDTO = z.infer<typeof TransactionUpdateExchangeSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionsResponseDTO = z.infer<typeof TransactionsResponseSchema>;

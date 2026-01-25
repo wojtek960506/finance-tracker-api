@@ -20,15 +20,9 @@ import {
   TransactionCreateStandardDTO,
   TransactionCreateExchangeDTO,
   TransactionCreateTransferDTO,
-  TransactionUpdateStandardDTO,
-  TransactionUpdateTransferDTO,
-  TransactionUpdateExchangeDTO,
   TransactionCreateStandardSchema,
   TransactionCreateExchangeSchema,
   TransactionCreateTransferSchema,
-  TransactionUpdateStandardSchema,
-  TransactionUpdateTransferSchema,
-  TransactionUpdateExchangeSchema,
 } from "@schemas/transaction";
 import {
   ParamsJustId,
@@ -122,13 +116,13 @@ export async function transactionRoutes(
 
   app.put<{ 
     Params: ParamsJustId;
-    Body: TransactionUpdateStandardDTO;
+    Body: TransactionCreateStandardDTO;
     Reply: TransactionResponseDTO
   }>(
     "/standard/:id",
     {
       preHandler: [
-        validateBody(TransactionUpdateStandardSchema),
+        validateBody(TransactionCreateStandardSchema),
         authorizeAccessToken(),
       ]
     },
@@ -137,13 +131,13 @@ export async function transactionRoutes(
 
   app.put<{ 
     Params: ParamsJustId;
-    Body: TransactionUpdateTransferDTO;
+    Body: TransactionCreateTransferDTO;
     Reply: [TransactionResponseDTO, TransactionResponseDTO]
   }>(
     "/transfer/:id",
     {
       preHandler: [
-        validateBody(TransactionUpdateTransferSchema),
+        validateBody(TransactionCreateTransferSchema),
         authorizeAccessToken(),
       ]
     },
@@ -152,13 +146,13 @@ export async function transactionRoutes(
 
   app.put<{ 
     Params: ParamsJustId;
-    Body: TransactionUpdateExchangeDTO;
+    Body: TransactionCreateExchangeDTO;
     Reply: [TransactionResponseDTO, TransactionResponseDTO]
   }>(
     "/exchange/:id",
     {
       preHandler: [
-        validateBody(TransactionUpdateExchangeSchema),
+        validateBody(TransactionCreateExchangeSchema),
         authorizeAccessToken(),
       ]
     },
