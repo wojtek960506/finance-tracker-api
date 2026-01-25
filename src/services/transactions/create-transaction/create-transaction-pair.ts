@@ -1,29 +1,20 @@
+import { persistTransactionPair } from "@db/transactions";
+import { getNextSourceIndex } from "@services/transactions";
 import { TransactionResponseDTO } from "@schemas/transaction";
-import { getNextSourceIndex } from "@services/transactions/get-next-source-index";
 import {
-  persistTransactionPair,
-  TransactionExchangeCreateProps,
-  TransactionTransferCreateProps
-} from "@db/transactions";
+  TransactionCreateProps,
+  PreparedTransactionCreateProps,
+  PrepareTransactionPropsContext,
+} from "@services/transactions/types";
 
 
-type PrepareContext = {
+export const createTransactionPair = async <
+  T extends TransactionCreateProps
+>(
   ownerId: string,
-  sourceIndexExpense: number,
-  sourceIndexIncome: number,
-}
-
-type PreparedProps = {
-  expenseTransactionProps: TransactionExchangeCreateProps,
-  incomeTransactionProps: TransactionExchangeCreateProps,
-} | {
-  expenseTransactionProps: TransactionTransferCreateProps,
-  incomeTransactionProps: TransactionTransferCreateProps,
-}
-
-export const createTransactionPair = async (
-  ownerId: string,
-  prepareProps: (context: PrepareContext) => PreparedProps,
+  prepareProps: (
+    context: PrepareTransactionPropsContext
+  ) => PreparedTransactionCreateProps<T>,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
   const sourceIndexExpense = await getNextSourceIndex(ownerId)
   const sourceIndexIncome = await getNextSourceIndex(ownerId);
