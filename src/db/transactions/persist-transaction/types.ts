@@ -1,15 +1,15 @@
-import { TransactionStandardDTO } from "@schemas/transaction";
+import { TransactionCreateStandardDTO } from "@schemas/transaction";
 
-export type TransactionStandardCreateProps = TransactionStandardDTO & {
+export type StandardTransactionProps = TransactionCreateStandardDTO & {
   ownerId: string,
   sourceIndex: number,
 }
 
-export type TransactionTransferCreateProps = TransactionStandardCreateProps & {
+export type TransferTransactionProps = StandardTransactionProps & {
   sourceRefIndex: number,
 };
 
-export type TransactionExchangeCreateProps = TransactionTransferCreateProps & {
+export type ExchangeTransactionProps = TransferTransactionProps & {
   currencies: string,
   exchangeRate: number,
 };

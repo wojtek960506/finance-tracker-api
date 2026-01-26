@@ -1,14 +1,14 @@
 import { ITransaction, TransactionModel } from "@models/transaction-model";
 import { AppError, NotFoundError } from "@utils/errors";
 
-export const findTransactionOld = async (id: string) => {
+export const findTransaction = async (id: string) => {
   const transaction = await TransactionModel.findById(id);
   if (!transaction)
     throw new NotFoundError(`Transaction with ID '${id}' not found`);
   return transaction;
 }
 
-export const checkOwnerOld = (
+export const checkOwner = (
   userId: string,
   transaction: ITransaction,
   action: "update" | "delete"

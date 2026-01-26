@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzY5MzU5MDUzLCJleHAiOjE3NjkzNjA4NTN9.MNyanrGVhjdI0gjwt66ByYXfvv08e7FNw4N2BZ_JVj4
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTIxOTI1ODNlOTY0MDdlYmUxYWMxY2EiLCJlbWFpbCI6IndAei5wbCIsImlhdCI6MTc2NzA5NzE0MSwiZXhwIjoxNzY3MTAwNzQxfQ.MlbF0vteI9cGVQMzFi9iz2_WHF8_P5fTrtWuFMVeXw0
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -49,37 +49,30 @@ Authorization: Bearer {{accessToken}}
 
 
 ### Get all transactions (still default pagination is applied)
-GET {{baseUrl}}/transactions?startDate=2026-01-01
+GET {{baseUrl}}/transactions
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
-# income -  6972b1e2b479aa46a8af5209
-# expense - 6972b1e2b479aa46a8af5207
-
 ### Get single transaction
-GET {{baseUrl}}/transactions/6974d150efa585c6eca912e7
+GET {{baseUrl}}/transactions/{{transactionId}}
 Accept: application/json
-
-# 6976262aceeb9078893d8a43 - standard
-# 6974d150efa585c6eca912e7 - exchange
-# 6976263cceeb9078893d8a51 - transfer
 
 ### Create new standard transaction
 
 # @name createTransaction
-POST {{baseUrl}}/transactions/standard
+POST {{baseUrl}}/transactions
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2025-12-16",
   "description": "VERY NEW TRANSACTION",
   "amount": 1.70,
   "currency": "PLN",
   "category": "transport",
   "transactionType": "expense",
   "paymentMethod": "card",
-  "account": "mBank"
+  "account": "mBank",
 }
 
 ### CREATE NEW EXCHANGE TRANSACTIONS
@@ -88,7 +81,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2025-12-17",
   "additionalDescription": "some additional desc",  
   "amountExpense": 20,
   "amountIncome": 84.23,
@@ -104,7 +97,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2025-12-27",
   "additionalDescription": "z oszczędnościowego na zwykłe",  
   "amount": 12345.67,
   "currency": "PLN",
@@ -113,53 +106,21 @@ Authorization: Bearer {{accessToken}}
   "paymentMethod": "bankTransfer"
 }
 
-### Update STANDARD transaction
-PUT {{baseUrl}}/transactions/standard/6976262aceeb9078893d8a43
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
-
-{ 
-  "date": "2026-12-25",
-  "description": "expense - food - 372.5971177941268 EUR - 2025-12-24",
-  "amount": 372.5971177941268,
-  "currency": "EUR",
-  "category": "food",
-  "transactionType": "expense",
-  "paymentMethod": "card",
-  "account": "creditAgricole"
-}
-
-### Update TRANSFER transaction
-PUT {{baseUrl}}/transactions/transfer/6976263cceeb9078893d8a51
+### Update a transaction (PUT)
+PUT {{baseUrl}}/transactions/{{wzTransactionId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 { 
   "date": "2015-9-24",
-  "additionalDescription": "abcdef",
+  "description": "ASEC W-wa Ratusz Ar/Warszawa some change",
   "amount": 1.70,
   "currency": "PLN",
+  "category": "transport",
+  "transactionType": "expense",
   "paymentMethod": "card",
-  "accountExpense": "mBank",
-  "accountIncome": "veloBank"
+  "account": "mBank"
 }
-
-### Update EXCHAGE transaction
-PUT {{baseUrl}}/transactions/exchange/6974d150efa585c6eca912e7
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
-
-{
-  "date": "2026-12-18",
-  "additionalDescription": "123 some additional desc",
-  "amountExpense": 200,
-  "amountIncome": 840.23,
-  "currencyExpense": "HUF",
-  "currencyIncome": "RON",
-  "account": "mBank",
-  "paymentMethod": "bankTransfer"
-}
-
 
 ### Partial update of transaction (PATCH)
 PATCH {{baseUrl}}/transactions/{{wzTransactionId}}

@@ -1,6 +1,5 @@
-import { TransactionExchangeDTO } from "@schemas/transaction";
-import { TransactionExchangeUpdateProps } from "@db/transactions";
-import { TransactionExchangeCreateProps } from "@db/transactions/persist-transaction";
+import { TransactionCreateExchangeDTO } from "@schemas/transaction";
+import { ExchangeTransactionProps } from "@db/transactions/persist-transaction";
 
 
 const date = new Date("2026-01-08");
@@ -12,34 +11,25 @@ const account = "revolut";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "for travel";
 
-export const getTransactionExchangeDTO = () => ({
+export const getTransactionCreateExchangeDTO = () => ({
   date,
-  amountExpense,
-  amountIncome,
-  currencyExpense,
-  currencyIncome,
-  account,
-  paymentMethod,
-  additionalDescription,
-} as TransactionExchangeDTO);
+  amountExpense: 25,
+  amountIncome: 90.26,
+  currencyExpense: "USD",
+  currencyIncome: "PLN",
+  account: "revolut",
+  paymentMethod: "bankTransfer",
+  additionalDescription: "for travel",
+} as TransactionCreateExchangeDTO);
 
-type AdditionalProps = {
+export const getExchangeTransactionProps = (
   ownerId: string,
-  sourceIndexExpense: number,
-  sourceIndexIncome: number,
-}
-
-export function getExchangeTransactionProps (): {
-  expenseProps: TransactionExchangeUpdateProps,
-  incomeProps: TransactionExchangeUpdateProps,
-}
-export function getExchangeTransactionProps (additionalProps: AdditionalProps): {
-  expenseProps: TransactionExchangeCreateProps,
-  incomeProps: TransactionExchangeCreateProps,
-}
-export function getExchangeTransactionProps (additionalProps?: AdditionalProps) {
+  expenseIdx: number,
+  incomeIdx: number
+) => {
   const commonProps = {
     category: "exchange",
+    ownerId,
     date,
     account,
     paymentMethod,
@@ -48,42 +38,25 @@ export function getExchangeTransactionProps (additionalProps?: AdditionalProps) 
     exchangeRate: amountIncome / amountExpense,
   }
 
-  const commonExpenseProps = {
+  const expenseProps: ExchangeTransactionProps = {
     ...commonProps,
     transactionType: "expense",
     amount: amountExpense,
     currency: currencyExpense,
+    sourceIndex: expenseIdx,
+    sourceRefIndex: incomeIdx,
   }
 
-  const commonIncomeProps = {
+  const incomeProps: ExchangeTransactionProps = {
     ...commonProps,
     transactionType: "income",
     amount: amountIncome,
     currency: currencyIncome,
+    sourceIndex: incomeIdx,
+    sourceRefIndex: expenseIdx,
   }
 
-  if (additionalProps) {
-    const { ownerId, sourceIndexExpense, sourceIndexIncome } = additionalProps;
-    return {
-      expenseProps: {
-        ...commonExpenseProps,
-        sourceIndex: sourceIndexExpense,
-        sourceRefIndex: sourceIndexIncome,
-        ownerId,
-      } as TransactionExchangeCreateProps,
-      incomeProps: {
-        ...commonIncomeProps,
-        sourceIndex: sourceIndexIncome,
-        sourceRefIndex: sourceIndexExpense,
-        ownerId,
-      } as TransactionExchangeCreateProps,
-    }
-  } else {
-    return {
-      expenseProps: commonExpenseProps as TransactionExchangeUpdateProps,
-      incomeProps: commonIncomeProps as TransactionExchangeUpdateProps,
-    }
-  }
+  return { expenseProps, incomeProps };
 }
 
 export const getExchangeTransactionResultJSON = (
@@ -93,9 +66,9 @@ export const getExchangeTransactionResultJSON = (
   expenseId: string,
   incomeId: string,
 ) => {
-  const { expenseProps, incomeProps } = getExchangeTransactionProps({
-    ownerId, sourceIndexExpense: expenseSourceIndex, sourceIndexIncome: incomeSourceIndex
-  });
+  const { expenseProps, incomeProps } = getExchangeTransactionProps(
+    ownerId, expenseSourceIndex, incomeSourceIndex
+  );
   const expenseTransaction = { 
     ...expenseProps,
     id: expenseId,

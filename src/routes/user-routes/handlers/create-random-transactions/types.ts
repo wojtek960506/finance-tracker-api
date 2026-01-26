@@ -1,6 +1,6 @@
-import { TransactionStandardDTO } from "@schemas/transaction";
+import { TransactionCreateStandardDTO } from "@schemas/transaction";
 
-export type RandomStandardTransaction = TransactionStandardDTO & {
+export type RandomStandardTransaction = TransactionCreateStandardDTO & {
   ownerId: string;
   sourceIndex: number
 };

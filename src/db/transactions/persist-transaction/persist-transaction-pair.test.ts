@@ -42,11 +42,7 @@ describe("createTransactionPair", async () => {
   const {
     expenseProps,
     incomeProps,
-  } = getTransferTransactionProps({
-    ownerId: OWNER_ID,
-    sourceIndexExpense: EXPENSE_SOURCE_IDX,
-    sourceIndexIncome: INCOME_SOURCE_IDX
-  });
+  } = getTransferTransactionProps(OWNER_ID, EXPENSE_SOURCE_IDX, INCOME_SOURCE_IDX);
   const expenseTransaction = { ...expenseProps, id: EXPENSE_ID, refId: INCOME_ID };
   const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
 
