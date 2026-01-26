@@ -2,11 +2,11 @@ import { startSession } from "mongoose";
 import { TransactionModel } from "@models/transaction-model";
 import { TransactionResponseDTO } from "@schemas/transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
-import { ExchangeTransactionProps, TransferTransactionProps } from "./types";
+import { TransactionExchangeCreateProps, TransactionTransferCreateProps } from "./types";
 
 
 export async function persistTransactionPair<
-  T extends ExchangeTransactionProps | TransferTransactionProps
+  T extends TransactionExchangeCreateProps | TransactionTransferCreateProps
 >(
   expenseTransactionProps: T,
   incomeTransactionProps: T,
