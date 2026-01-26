@@ -12,7 +12,7 @@ const account = "revolut";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "for travel";
 
-export const getTransactionCreateExchangeDTO = () => ({
+export const getTransactionExchangeDTO = () => ({
   date,
   amountExpense,
   amountIncome,

@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { randomObjectIdString } from "@utils/random";
 import { prepareExchangeProps } from "./prepare-exchange-props";
 import {
+  getTransactionExchangeDTO,
   getExchangeTransactionProps,
-  getTransactionCreateExchangeDTO
 } from "@/test-utils/mocks/transactions";
 
 
 describe("prepareExchangeProps", () => {
   it("prepare props for create", () => {
-    const dto = getTransactionCreateExchangeDTO();
+    const dto = getTransactionExchangeDTO();
     const OWNER_ID = randomObjectIdString();
     const EXPENSE_IDX = 1;
     const INCOME_IDX = 2;
@@ -37,7 +37,7 @@ describe("prepareExchangeProps", () => {
   })
 
   it("prepare props for update", () => {
-    const dto = getTransactionCreateExchangeDTO();
+    const dto = getTransactionExchangeDTO();
 
     const {
       expenseTransactionProps,

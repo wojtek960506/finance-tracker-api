@@ -13,8 +13,8 @@ import {
 } from "@services/transactions";
 import {
   getTransactionStandardDTO,
-  getTransactionCreateExchangeDTO,
-  getTransactionCreateTransferDTO,
+  getTransactionExchangeDTO,
+  getTransactionTransferDTO,
   getExchangeTransactionResultJSON,
   getStandardTransactionResultJSON,
   getTransferTransactionResultJSON,
@@ -105,12 +105,12 @@ describe("Transaction Routes (Fastify integration)", async () => {
   it.each([
     [
       "transfer", 
-      getTransactionCreateTransferDTO,
+      getTransactionTransferDTO,
       getTransferTransactionResultJSON,
       createTransferTransaction,
     ], [
       "exchange",
-      getTransactionCreateExchangeDTO,
+      getTransactionExchangeDTO,
       getExchangeTransactionResultJSON,
       createExchangeTransaction,
     ]

@@ -9,8 +9,8 @@ import {
 } from "./create-transaction";
 import {
   getTransactionStandardDTO,
-  getTransactionCreateExchangeDTO,
-  getTransactionCreateTransferDTO,
+  getTransactionExchangeDTO,
+  getTransactionTransferDTO,
   getStandardTransactionResultJSON,
   getExchangeTransactionResultJSON,  
   getTransferTransactionResultJSON,
@@ -54,7 +54,7 @@ describe("createStandardTransaction", async () => {
   });
 
   it("should create exchange transaction", async () => {
-    const dto = getTransactionCreateExchangeDTO();
+    const dto = getTransactionExchangeDTO();
     const expectedResult = getExchangeTransactionResultJSON(
       OWNER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
     );
@@ -73,7 +73,7 @@ describe("createStandardTransaction", async () => {
   });
 
   it("should create transfer transaction", async () => {
-    const dto = getTransactionCreateTransferDTO();
+    const dto = getTransactionTransferDTO();
     const expectedResult = getTransferTransactionResultJSON(
       OWNER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
     );

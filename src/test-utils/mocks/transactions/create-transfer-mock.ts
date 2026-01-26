@@ -11,7 +11,7 @@ const accountIncome = "veloBank";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "savings";
 
-export const getTransactionCreateTransferDTO = () => ({
+export const getTransactionTransferDTO = () => ({
   date,
   amount,
   currency,
