@@ -1,5 +1,6 @@
-import { TransactionStatisticsQuery } from "@schemas/transaction-query";
 import { PipelineStage } from "mongoose";
+import { TransactionStatisticsQuery } from "@schemas/transaction-query";
+
 
 const groupingByYear = { year: { $year: "$date" } } as const;
 type TGroupingByYear = typeof groupingByYear;
@@ -15,7 +16,7 @@ export const getAmountAndItemsGrouping = (
   totalItems: { $sum: 1 } 
 } as const);
 
-export const getStatisticsGrouping = (q: TransactionStatisticsQuery) => {
+export const getStatisticsGrouping = (q: Pick<TransactionStatisticsQuery, "year" | "month">) => {
   let grouping = {};
 
   if (q.year) {

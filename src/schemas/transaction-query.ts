@@ -3,11 +3,11 @@ import {
   CATEGORIES,
   CURRENCIES,
   PAYMENT_METHODS,
-  TRANSACTION_TYPES
+  TRANSACTION_TYPES,
 } from "@utils/consts";
 import { z } from "zod";
 
-const transacionFiltersQuerySchema = z.object({
+const TransacionFiltersQuerySchema = z.object({
   // fitlering options
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
@@ -20,9 +20,9 @@ const transacionFiltersQuerySchema = z.object({
   account: z.enum([...ACCOUNTS]).optional(),
 })
 
-export type TransactionFiltersQuery = z.infer<typeof transacionFiltersQuerySchema>;
+export type TransactionFiltersQuery = z.infer<typeof TransacionFiltersQuerySchema>;
 
-export const transactionQuerySchema = transacionFiltersQuerySchema.extend({
+export const TransactionQuerySchema = TransacionFiltersQuerySchema.extend({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
 
@@ -32,9 +32,9 @@ export const transactionQuerySchema = transacionFiltersQuerySchema.extend({
 
 
 
-export type TransactionQuery = z.infer<typeof transactionQuerySchema>;
+export type TransactionQuery = z.infer<typeof TransactionQuerySchema>;
 
-export const transactionTotalsQuerySchema = transacionFiltersQuerySchema.extend({
+export const TransactionTotalsQuerySchema = TransacionFiltersQuerySchema.extend({
   excludeCategories: z
     .string()
     .transform(value => value.split(","))
@@ -45,9 +45,9 @@ export const transactionTotalsQuerySchema = transacionFiltersQuerySchema.extend(
     .optional(),
 });
 
-export type TransactionTotalsQuery = z.infer<typeof transactionTotalsQuerySchema>;
+export type TransactionTotalsQuery = z.infer<typeof TransactionTotalsQuerySchema>;
 
-export const transactionStatisticsQuerySchema = z.object({
+export const TransactionStatisticsQuerySchema = z.object({
   year: z.coerce.number().min(0).optional(),
   month: z.coerce.number().min(1).max(12).optional(),
   transactionType: z.enum([...TRANSACTION_TYPES]),
@@ -65,4 +65,4 @@ export const transactionStatisticsQuerySchema = z.object({
   account: z.enum([...ACCOUNTS]).optional(),
 })
 
-export type TransactionStatisticsQuery = z.infer<typeof transactionStatisticsQuerySchema>;
+export type TransactionStatisticsQuery = z.infer<typeof TransactionStatisticsQuerySchema>;

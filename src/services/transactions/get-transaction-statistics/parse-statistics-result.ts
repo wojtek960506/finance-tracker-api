@@ -21,8 +21,8 @@ const getTotalAmountAndItems = (
 };
 
 export const parseStatisticsResult = (
-  result : any[],
-  q: TransactionStatisticsQuery
+  result: any[] | undefined,
+  q: Pick<TransactionStatisticsQuery, "year" | "month">,
 ): TransactionStatisticsResponse => {
 
   if (!result || result.length === 0) return { totalAmount: 0, totalItems: 0 };

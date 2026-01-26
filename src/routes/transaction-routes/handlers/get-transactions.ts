@@ -2,7 +2,7 @@ import { validateSchema } from "@utils/validation";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
-import { transactionQuerySchema } from "@schemas/transaction-query";
+import { TransactionQuerySchema } from "@schemas/transaction-query";
 import { buildTransactionFilterQuery } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 
@@ -11,7 +11,7 @@ import { serializeTransaction } from "@schemas/serialize-transaction";
 export async function getTransactionsHandler (
   req: FastifyRequest, res: FastifyReply
 ) {
-  const q = validateSchema(transactionQuerySchema, req.query);
+  const q = validateSchema(TransactionQuerySchema, req.query);
 
   const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
   const skip = (q.page - 1) * q.limit;

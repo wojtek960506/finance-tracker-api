@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
-import { validateBody } from "@utils/validation";
 import { authorizeAccessToken } from "@services/auth";
 import { findTransactionOld } from "@routes/routes-utils";
 import { TransactionModel } from "@models/transaction-model";
+import { validateBody, validateQuery } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
@@ -29,6 +29,10 @@ import {
   DeleteManyReply,
   FilteredResponse,
 } from "@routes/routes-types";
+import {
+  TransactionStatisticsQuery,
+  TransactionStatisticsQuerySchema,
+} from "@schemas/transaction-query";
 
 
 export async function transactionRoutes(
@@ -58,9 +62,17 @@ export async function transactionRoutes(
   // - just year (then we get all statistics from given year and grouped by month in a given year)
   // - year and month - then we get all statistics from a given month of the given year
   // additionally we can filter it by category or payment method or account
-  app.get<{ Reply: TransactionStatisticsResponse }>(
+  app.get<{
+    Querystring: TransactionStatisticsQuery,
+    Reply: TransactionStatisticsResponse,
+  }>(
     "/statistics",
-    { preHandler: authorizeAccessToken() },
+    { 
+      preHandler: [
+        validateQuery(TransactionStatisticsQuerySchema),
+        authorizeAccessToken(),
+      ]
+    },
     getTransactionStatisticsHandler
   )
 

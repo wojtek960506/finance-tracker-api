@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzY5MzU5MDUzLCJleHAiOjE3NjkzNjA4NTN9.MNyanrGVhjdI0gjwt66ByYXfvv08e7FNw4N2BZ_JVj4
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzY5NDQ5Mjg1LCJleHAiOjE3Njk0NTEwODV9.J9DEJqHuvlS9shY2FKTInuZyTVsXbQMScvr0OfB0C1o
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -161,25 +161,15 @@ Authorization: Bearer {{accessToken}}
 }
 
 
-### Partial update of transaction (PATCH)
-PATCH {{baseUrl}}/transactions/{{wzTransactionId}}
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
-
-{
-  "description": "tratata",
-  "amount": 7.77
-}
-
 ### Delete a transaction
 
 @newTransactionId = {{createTransaction.response.body.id}}
 
-DELETE {{baseUrl}}/transactions/694331f209d01dec2f8e0a07
+DELETE {{baseUrl}}/transactions/6974d150efa585c6eca912e7
 Authorization: Bearer {{accessToken}}
 
 
 ### DELETE ALL TRANSACTIONS
 # !!! BE CAREFUL !!!
 
-DELETE {{baseUrl}}/transactions
+# DELETE {{baseUrl}}/transactions
