@@ -1,6 +1,5 @@
-import { TransactionTransferDTO } from "@schemas/transaction";
-import { TransactionTransferUpdateProps } from "@db/transactions";
-import { TransactionTransferCreateProps } from "@db/transactions/persist-transaction";
+import { TransactionCreateTransferDTO } from "@schemas/transaction";
+import { TransferTransactionProps } from "@db/transactions/persist-transaction";
 
 
 const date = new Date("2026-01-09");
@@ -11,7 +10,7 @@ const accountIncome = "veloBank";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "savings";
 
-export const getTransactionTransferDTO = () => ({
+export const getTransactionCreateTransferDTO = () => ({
   date,
   amount,
   currency,
@@ -19,25 +18,16 @@ export const getTransactionTransferDTO = () => ({
   accountIncome,
   paymentMethod,
   additionalDescription,
-} as TransactionTransferDTO);
+} as TransactionCreateTransferDTO);
 
-type AdditionalProps = {
+export const getTransferTransactionProps = (
   ownerId: string,
-  sourceIndexExpense: number,
-  sourceIndexIncome: number,
-}
-
-export function getTransferTransactionProps (): {
-  expenseProps: TransactionTransferUpdateProps,
-  incomeProps: TransactionTransferUpdateProps,
-}
-export function getTransferTransactionProps (additionalProps: AdditionalProps): {
-  expenseProps: TransactionTransferCreateProps,
-  incomeProps: TransactionTransferCreateProps,
-}
-export function getTransferTransactionProps (additionalProps?: AdditionalProps) {
+  expenseIdx: number,
+  incomeIdx: number,
+) => {
   const commonProps = {
     category: "myAccount",
+    ownerId,
     date,
     amount,
     currency,
@@ -45,40 +35,23 @@ export function getTransferTransactionProps (additionalProps?: AdditionalProps) 
     description: `${accountExpense} --> ${accountIncome} (${additionalDescription})`,
   }
 
-  const commonExpenseProps = {
+  const expenseProps: TransferTransactionProps = {
     ...commonProps,
     transactionType: "expense",
     account: accountExpense,
+    sourceIndex: expenseIdx,
+    sourceRefIndex: incomeIdx
   }
 
-  const commonIncomeProps = {
+  const incomeProps: TransferTransactionProps = {
     ...commonProps,
     transactionType: "income",
     account: accountIncome,
+    sourceIndex: incomeIdx,
+    sourceRefIndex: expenseIdx,
   }
 
-  if (additionalProps) {
-    const { ownerId, sourceIndexExpense, sourceIndexIncome } = additionalProps;
-    return {
-      expenseProps: {
-        ...commonExpenseProps,
-        sourceIndex: sourceIndexExpense,
-        sourceRefIndex: sourceIndexIncome,
-        ownerId,
-      } as TransactionTransferCreateProps,
-      incomeProps: {
-        ...commonIncomeProps,
-        sourceIndex: sourceIndexIncome,
-        sourceRefIndex: sourceIndexExpense,
-        ownerId,
-      } as TransactionTransferCreateProps
-    }
-  } else {
-    return {
-      expenseProps: commonExpenseProps as TransactionTransferUpdateProps,
-      incomeProps: commonIncomeProps as TransactionTransferUpdateProps,
-    }
-  }
+  return { expenseProps, incomeProps };
 }
 
 export const getTransferTransactionResultJSON = (
@@ -88,9 +61,9 @@ export const getTransferTransactionResultJSON = (
   expenseId: string,
   incomeId: string,
 ) => {
-  const { expenseProps, incomeProps } = getTransferTransactionProps({
-      ownerId, sourceIndexExpense: expenseSourceIndex, sourceIndexIncome: incomeSourceIndex
-    });
+  const { expenseProps, incomeProps } = getTransferTransactionProps(
+      ownerId, expenseSourceIndex, incomeSourceIndex
+    );
     const expenseTransaction = { 
       ...expenseProps,
       id: expenseId,
