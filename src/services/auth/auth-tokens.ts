@@ -1,6 +1,5 @@
-import argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import { randomUUID } from "crypto";
+import { randomBytes, createHash } from "crypto";
 
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
@@ -10,15 +9,18 @@ const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
 // create JWT access token
 export function createAccessToken(payload: object) {
   // return jwt.sign(payload, ACCESS_SECRET, { expiresIn: ACCESS_EXPIRES! });
-  return jwt.sign(payload, ACCESS_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, ACCESS_SECRET, { expiresIn: "30m" });
 }
 
 // create secure random refresh token (opaque) and return both token and its hashed form
-export async function createRefreshToken() {
-  // use a secure random string (UUID + crypto random can be used)
-  const token = randomUUID() + "." + Date.now().toString(36);
-  const tokenHash = await argon2.hash(token); // store hash in DB
-  return { token, tokenHash } 
+export function createRefreshToken() {
+  const token = randomBytes(64).toString("hex");
+  const tokenHash = getTokenHash(token);
+  return { token, tokenHash }
+}
+
+export function getTokenHash(token: string) {
+  return createHash("sha256").update(token).digest("hex");
 }
 
 // verify access token (throws if invalid)

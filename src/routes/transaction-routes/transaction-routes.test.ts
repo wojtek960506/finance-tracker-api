@@ -12,9 +12,9 @@ import {
   createTransferTransaction,
 } from "@services/transactions";
 import {
-  getTransactionCreateExchangeDTO,
-  getTransactionCreateStandardDTO,
-  getTransactionCreateTransferDTO,
+  getTransactionStandardDTO,
+  getTransactionExchangeDTO,
+  getTransactionTransferDTO,
   getExchangeTransactionResultJSON,
   getStandardTransactionResultJSON,
   getTransferTransactionResultJSON,
@@ -48,16 +48,10 @@ vi.mock("@schemas/serialize-transaction", () => ({
   serializeTransaction: vi.fn()
 }));
 
-vi.mock("@services/transactions/create-exchange-transaction", () => ({
-  createExchangeTransaction: vi.fn()
-}));
-
-vi.mock("@services/transactions/create-standard-transaction", () => ({
-  createStandardTransaction: vi.fn()
-}));
-
-vi.mock("@services/transactions/create-transfer-transaction", () => ({
-  createTransferTransaction: vi.fn()
+vi.mock("@services/transactions/create-transaction", () => ({
+  createStandardTransaction: vi.fn(),
+  createExchangeTransaction: vi.fn(),
+  createTransferTransaction: vi.fn(),
 }));
 
 describe("Transaction Routes (Fastify integration)", async () => {
@@ -94,13 +88,13 @@ describe("Transaction Routes (Fastify integration)", async () => {
 
   it("should create standard transaction via POST", async () => {
     const [TRANSACTION_SOURCE_INDEX, TRANSACTION_ID] = [1, randomObjectIdString()];
-    const dto = getTransactionCreateStandardDTO();
+    const dto = getTransactionStandardDTO();
     const resultJSON = getStandardTransactionResultJSON(
       USER_ID, TRANSACTION_SOURCE_INDEX, TRANSACTION_ID
     );
     (createStandardTransaction as Mock).mockResolvedValue(resultJSON);
     
-    const response = await app.inject({ method: "POST", url: `/`, payload: dto });
+    const response = await app.inject({ method: "POST", url: `/standard`, payload: dto });
 
     expect(createStandardTransaction).toHaveBeenCalledOnce();
     expect(createStandardTransaction).toHaveBeenCalledWith(dto, USER_ID);
@@ -111,12 +105,12 @@ describe("Transaction Routes (Fastify integration)", async () => {
   it.each([
     [
       "transfer", 
-      getTransactionCreateTransferDTO,
+      getTransactionTransferDTO,
       getTransferTransactionResultJSON,
       createTransferTransaction,
     ], [
       "exchange",
-      getTransactionCreateExchangeDTO,
+      getTransactionExchangeDTO,
       getExchangeTransactionResultJSON,
       createExchangeTransaction,
     ]

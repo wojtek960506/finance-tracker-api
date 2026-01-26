@@ -1,34 +1,28 @@
 import { FastifyInstance } from "fastify";
 import { authorizeAccessToken } from "@services/auth";
-import { findTransaction } from "@routes/routes-utils";
+import { findTransactionOld } from "@routes/routes-utils";
 import { TransactionModel } from "@models/transaction-model";
 import { validateBody, validateQuery } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
   getTransactionsHandler,
-  updateTransactionHandler,
   deleteTransactionHandler,
   exportTransacionsHandler,
+  createTransactionHandler,
+  updateTransactionHandler,
   getTransactionTotalsHandler,
   getTransactionStatisticsHandler,
-  createExchangeTransactionHandler,
-  createStandardTransactionHandler,
-  createTransferTransactionHandler,
 } from "./handlers";
 import {
-  TransactionPatchDTO,
-  TransactionUpdateDTO,
-  TransactionPatchSchema,
   TransactionResponseDTO,
-  TransactionUpdateSchema,
   TransactionsResponseDTO,
-  TransactionCreateStandardDTO,
-  TransactionCreateExchangeDTO,
-  TransactionCreateTransferDTO,
-  TransactionCreateStandardSchema,
-  TransactionCreateExchangeSchema,
-  TransactionCreateTransferSchema,
+  TransactionStandardDTO,
+  TransactionExchangeDTO,
+  TransactionTransferDTO,
+  TransactionStandardSchema,
+  TransactionExchangeSchema,
+  TransactionTransferSchema,
 } from "@schemas/transaction";
 import {
   ParamsJustId,
@@ -85,78 +79,93 @@ export async function transactionRoutes(
   app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
     "/:id",
     async (req) => {
-      const transaction = await findTransaction(req.params.id);
+      const transaction = await findTransactionOld(req.params.id);
       return serializeTransaction(transaction);
     }
   )
 
   // create one standard transaction
-  app.post<{ Body: TransactionCreateStandardDTO; Reply: TransactionResponseDTO }>(
-    "/",
+  app.post<{ Body: TransactionStandardDTO; Reply: TransactionResponseDTO }>(
+    "/standard",
     {
       preHandler: [
-        validateBody(TransactionCreateStandardSchema),
+        validateBody(TransactionStandardSchema),
         authorizeAccessToken(),
       ]
     },
-    createStandardTransactionHandler
+    createTransactionHandler
   );
 
   // create exchange transactions - one expense and one income
   app.post<{
-    Body: TransactionCreateExchangeDTO,
+    Body: TransactionExchangeDTO,
     Reply: [TransactionResponseDTO, TransactionResponseDTO]
   }>(
     "/exchange",
     {
       preHandler: [
-        validateBody(TransactionCreateExchangeSchema),
+        validateBody(TransactionExchangeSchema),
         authorizeAccessToken(),
       ]
     },
-    createExchangeTransactionHandler
+    createTransactionHandler
   );
 
   // create transfer transactions - one expense and one income
   app.post<{
-    Body: TransactionCreateTransferDTO,
+    Body: TransactionTransferDTO,
     Reply: [TransactionResponseDTO, TransactionResponseDTO]
   }>(
     "/transfer",
     {
       preHandler: [
-        validateBody(TransactionCreateTransferSchema),
+        validateBody(TransactionTransferSchema),
         authorizeAccessToken(),
       ]
     },
-    createTransferTransactionHandler
+    createTransactionHandler
   );
 
   app.put<{ 
     Params: ParamsJustId;
-    Body: TransactionUpdateDTO;
+    Body: TransactionStandardDTO;
     Reply: TransactionResponseDTO
   }>(
-    "/:id",
+    "/standard/:id",
     {
       preHandler: [
-        validateBody(TransactionUpdateSchema),
+        validateBody(TransactionStandardSchema),
         authorizeAccessToken(),
       ]
     },
     updateTransactionHandler
   );
 
-  app.patch<{
+  app.put<{ 
     Params: ParamsJustId;
-    Body: TransactionPatchDTO;
-    Reply: TransactionResponseDTO
+    Body: TransactionTransferDTO;
+    Reply: [TransactionResponseDTO, TransactionResponseDTO]
   }>(
-    "/:id",
-    { 
+    "/transfer/:id",
+    {
       preHandler: [
-        validateBody(TransactionPatchSchema),
-        authorizeAccessToken()
+        validateBody(TransactionTransferSchema),
+        authorizeAccessToken(),
+      ]
+    },
+    updateTransactionHandler
+  );
+
+  app.put<{ 
+    Params: ParamsJustId;
+    Body: TransactionExchangeDTO;
+    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+  }>(
+    "/exchange/:id",
+    {
+      preHandler: [
+        validateBody(TransactionExchangeSchema),
+        authorizeAccessToken(),
       ]
     },
     updateTransactionHandler

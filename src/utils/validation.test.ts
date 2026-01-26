@@ -1,22 +1,19 @@
 import { ValidationError } from "./errors";
 import { describe, expect, it } from "vitest";
 import { validateBody, validateQuery } from "./validation";
-import { TransactionCreateStandardSchema } from "@schemas/transaction";
+import { TransactionStandardSchema } from "@schemas/transaction";
 import { TransactionStatisticsQuerySchema } from "@schemas/transaction-query";
-import {
-  generatePartialTransaction,
-  generateFullStandardTransaction,
-} from "../test-utils/mocks/transactionMock";
+import { generateFullStandardTransaction } from "../test-utils/mocks/transactionMock";
 
 
 describe("validation", () => {
   const validBody = generateFullStandardTransaction();
   const validQuery = { transactionType: "expense", currency: "PLN" };
-  const notValidBody = generatePartialTransaction();
+  const { date, ...notValidBody}  = generateFullStandardTransaction();
   const notValidQuery = { transactionType: "expense" };
 
   it.each([
-    ["validateBody", validateBody, "body", validBody, TransactionCreateStandardSchema],
+    ["validateBody", validateBody, "body", validBody, TransactionStandardSchema],
     ["validateQuery", validateQuery, "query", validQuery, TransactionStatisticsQuerySchema]
   ])("%s - when data is proper then no errors", async (
     _funcName, func, reqKey, reqValue, schema
@@ -30,7 +27,7 @@ describe("validation", () => {
   })
 
   it.each([
-    ["validateBody", validateBody, "body", notValidBody, TransactionCreateStandardSchema],
+    ["validateBody", validateBody, "body", notValidBody, TransactionStandardSchema],
     ["validateQuery", validateQuery, "query", notValidQuery, TransactionStatisticsQuerySchema]
   ])("%s - when data is not proper then error is thrown", async (
     _funcName, func, reqKey, reqValue, schema

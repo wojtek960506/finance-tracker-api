@@ -2,7 +2,7 @@ import { startSession } from "mongoose";
 import { NotFoundError } from "@utils/errors";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { TransactionModel } from "@models/transaction-model";
-import { checkOwner, findTransaction } from "@routes/routes-utils";
+import { checkOwnerOld, findTransactionOld } from "@routes/routes-utils";
 import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
 
 
@@ -10,8 +10,8 @@ export async function deleteTransactionHandler(
   req: FastifyRequest<{ Params: ParamsJustId }>,
   res: FastifyReply,
 ) {
-  const transaction = await findTransaction(req.params.id);
-  checkOwner((req as AuthenticatedRequest).userId, transaction, "delete");    
+  const transaction = await findTransactionOld(req.params.id);
+  checkOwnerOld((req as AuthenticatedRequest).userId, transaction, "delete");    
 
   const session = await startSession();
   let result;

@@ -11,6 +11,7 @@ import {
 } from "@/routes";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
+import { mainRoute } from "@routes/main-route";
 
 
 //############################################################################################
@@ -42,6 +43,7 @@ const buildApp = async () => {
     secret: process.env.JWT_ACCESS_SECRET!
   });
   
+  app.register(mainRoute, { prefix: "" });
   app.register(authRoutes, { prefix: "/api/auth" });  
   app.register(userRoutes, { prefix: "/api/users" });
   app.register(transactionRoutes, { prefix: "/api/transactions" });
@@ -50,8 +52,13 @@ const buildApp = async () => {
 
   // Register CORS
   await app.register(cors, {
-    origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    origin: [
+      "http://localhost:3000",
+      "http://192.168.0.244:3000",
+      "https://finance-tracker-web-three.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   });
 
@@ -62,8 +69,9 @@ const start = async () => {
   await connectDB();
   const app = await buildApp();
   try {
-    await app.listen({ port: PORT });
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log('port from environment variables:', process.env.PORT);
+    await app.listen({ port: PORT, host: "0.0.0.0" });
+    console.log(`Server running on port ${PORT}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);
