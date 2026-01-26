@@ -24,9 +24,7 @@ vi.mock("mongoose", async () => {
   }
 });
 
-vi.mock("@schemas/serialize-transaction", () => ({
-  serializeTransaction: vi.fn(),
-}));
+vi.mock("@schemas/serialize-transaction", () => ({ serializeTransaction: vi.fn() }));
 
 describe("saveTransactionPairChanges", () => {
   const [saveMock1, saveMock2] = [vi.fn(), vi.fn()];
@@ -134,4 +132,17 @@ describe("saveTransactionPairChanges", () => {
     expect(result).toEqual([incomeAfterSerialization, expenseAfterSerialization]);
   })
 
+  it("end session even when the error is thrown within `withTransaction`", async () => {
+    withTransactionMock.mockImplementationOnce(async () => {
+      throw new Error("fails");
+    });
+
+    await expect(saveTransactionPairChanges(
+      transactionIncome, transactionExpense, newPropsExpense, newPropsIncome)
+    ).rejects.toThrow();
+
+    expect(endSessionMock).toHaveBeenCalledOnce();
+    expect(withTransactionMock).toHaveBeenCalledOnce();
+    expect(serializeTransaction).not.toHaveBeenCalled();
+  })
 })
