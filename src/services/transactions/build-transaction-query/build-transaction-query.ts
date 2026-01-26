@@ -13,7 +13,7 @@ export const buildTransactionFilterQuery = (
   if (q.category) query.category = q.category;
   if (q.paymentMethod) query.paymentMethod = q.paymentMethod;
   if (q.account) query.account = q.account;
-  
+
   if (q.minAmount || q.maxAmount) {
     query.amount = {};
     if (q.minAmount) query.amount.$gte = q.minAmount;

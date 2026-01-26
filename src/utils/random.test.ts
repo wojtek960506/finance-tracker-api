@@ -92,4 +92,12 @@ describe("weigthedRandomFromSet", () => {
   
     expect(occurrences).toBe(0);
   })
+
+  it("throws if weights are lower than 0 and result of random is 0", () => {
+    const values = new Set([1,2,3]);
+    const weights = { 1: -1, 2: -2, 3: -3 };
+    vi.spyOn(Math, "random").mockReturnValue(0);
+
+    expect(() => weightedRandomFromSet(values, weights)).toThrow();
+  })
 })
