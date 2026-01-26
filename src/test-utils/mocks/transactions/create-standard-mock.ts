@@ -1,4 +1,4 @@
-import { TransactionCreateStandardDTO } from "@schemas/transaction";
+import { TransactionStandardDTO } from "@schemas/transaction";
 
 const date = new Date("2025-01-12");
 const amount = 88;
@@ -9,7 +9,7 @@ const paymentMethod = "card";
 const description = "some transaction";
 const transactionType = "expense";
 
-export const getTransactionCreateStandardDTO = () => ({
+export const getTransactionStandardDTO = () => ({
   date,
   amount,
   currency,
@@ -18,10 +18,10 @@ export const getTransactionCreateStandardDTO = () => ({
   paymentMethod,
   description,
   transactionType,
-} as TransactionCreateStandardDTO);
+} as TransactionStandardDTO);
 
 export const getStandardTransactionProps = (ownerId: string, sourceIndex: number) => ({
-  ...getTransactionCreateStandardDTO(),
+  ...getTransactionStandardDTO(),
   ownerId,
   sourceIndex,
 })
