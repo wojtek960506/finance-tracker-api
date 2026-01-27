@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { ValidationError } from "@utils/errors";
 import { buildTransactionFilterQuery } from "./build-transaction-query";
+
 
 const TRANSACTION_TYPE = "expense";
 const CURRENCY = "PLN";
@@ -25,6 +27,7 @@ describe("build-transaction-query", () => {
     endDate: END_DATE,
     minAmount: MIN_AMOUNT,
     maxAmount: MAX_AMOUNT,
+    excludeCategories: [CATEGORY],
   }
   const USER_ID = "23456789abcdef0123456789";
 
@@ -33,21 +36,22 @@ describe("build-transaction-query", () => {
     
     expect(query.transactionType).toBe(TRANSACTION_TYPE);
     expect(query.currency).toBe(CURRENCY);
-    expect(query.category).toBe(CATEGORY);
     expect(query.paymentMethod).toBe(PAYMENT_METHOD);
     expect(query.account).toBe(ACCOUNT);
+    expect(query.category).toBe(CATEGORY);
     expect(query.amount).toBeUndefined();
     expect(query.date).toBeUndefined();
   });
 
-  it("build query with some filters", () => {
+  it("build query with advanced filters", () => {
     const query = buildTransactionFilterQuery(advancedFilters, USER_ID);
     
     expect(query.transactionType).toBeUndefined();
     expect(query.currency).toBeUndefined();
-    expect(query.category).toBeUndefined();
     expect(query.paymentMethod).toBeUndefined();
     expect(query.account).toBeUndefined();
+
+    expect(query.category).toEqual({ $nin: [CATEGORY] });
 
     expect(query.amount).toEqual({ $gte: MIN_AMOUNT, $lte: MAX_AMOUNT });
     expect(query.date).toEqual({ $gte: START_DATE, $lte: END_DATE });
@@ -71,5 +75,10 @@ describe("build-transaction-query", () => {
   it("build just part of advanced filters - maxAmount", () => {
     const query = buildTransactionFilterQuery({ maxAmount: MAX_AMOUNT }, USER_ID);
     expect(query.amount).toEqual({ $lte: MAX_AMOUNT } );
+  })
+
+  it("throws when 'category' and 'excludeCategories' are provided together", () => {
+    const q = { category: CATEGORY, excludeCategories: [CATEGORY] }
+    expect(() => buildTransactionFilterQuery(q, USER_ID)).toThrow(ValidationError);
   })
 })

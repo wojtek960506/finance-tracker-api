@@ -16,10 +16,10 @@ import {
 } from "./handlers";
 import {
   TransactionResponseDTO,
-  TransactionsResponseDTO,
   TransactionStandardDTO,
   TransactionExchangeDTO,
   TransactionTransferDTO,
+  TransactionsResponseDTO,
   TransactionStandardSchema,
   TransactionExchangeSchema,
   TransactionTransferSchema,
@@ -30,7 +30,9 @@ import {
   FilteredResponse,
 } from "@routes/routes-types";
 import {
+  TransactionFiltersQuery,
   TransactionStatisticsQuery,
+  TransactionFiltersQuerySchema,
   TransactionStatisticsQuerySchema,
 } from "@schemas/transaction-query";
 
@@ -45,16 +47,24 @@ export async function transactionRoutes(
     getTransactionsHandler
   );
 
-  app.get<{ Reply: TransactionTotalsResponse }>(
-    "/totals",
-    { preHandler: authorizeAccessToken() },
-    getTransactionTotalsHandler
-  )
-
   app.get(
     "/export",
     { preHandler: authorizeAccessToken() },
     exportTransacionsHandler
+  )
+
+  app.get<{
+    Querystring: TransactionFiltersQuery,
+    Reply: TransactionTotalsResponse
+  }>(
+    "/totals",
+    { 
+      preHandler: [
+        validateQuery(TransactionFiltersQuerySchema),
+        authorizeAccessToken()
+      ]
+    },
+    getTransactionTotalsHandler
   )
 
   // it is possible to group by

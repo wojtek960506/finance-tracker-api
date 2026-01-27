@@ -10,5 +10,5 @@ export async function getTransactionStatisticsHandler(
 ) {
   const userId = (req as AuthenticatedRequest).userId;
   const result = await getTransactionStatistics(req.query, userId);
-  return res.status(200).send(result);
+  return res.code(200).send(result);
 }
