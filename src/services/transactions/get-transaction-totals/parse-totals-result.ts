@@ -8,11 +8,11 @@ import {
 
 
 export const parseTotalsByCurrencyResult = (
-  transactions: TransactionTotalsByCurrencyObjDb[]
+  totalsObjDb: TransactionTotalsByCurrencyObjDb[]
 ) => {
   const totalsByCurrencies: Record<string, TransactionTotalsByCurrency> = {};
 
-  transactions.forEach(({ _id, ...data }: TransactionTotalsByCurrencyObjDb) => {
+  totalsObjDb.forEach(({ _id, ...data }: TransactionTotalsByCurrencyObjDb) => {
     const defaultSubcategoryTotals = {
       totalAmount: 0,
       totalItems: 0,
@@ -41,7 +41,7 @@ export const parseTotalsByCurrencyResult = (
 }
 
 export const parseTotalsOverallResult = (
-  transactions: TransactionTotalsOverallObjDb[]
+  totalsObjDb: TransactionTotalsOverallObjDb[]
 ) => {
   const totalsOverall = {
     totalItems: 0,
@@ -50,7 +50,7 @@ export const parseTotalsOverallResult = (
   } as TransactionTotalsOverall;
 
   let total = 0;
-  transactions.forEach(({ _id, totalItems }: TransactionTotalsOverallObjDb) => {
+  totalsObjDb.forEach(({ _id, totalItems }: TransactionTotalsOverallObjDb) => {
     const { transactionType } = _id;
 
 

@@ -30,9 +30,9 @@ import {
   FilteredResponse,
 } from "@routes/routes-types";
 import {
-  TransactionTotalsQuery,
+  TransactionFiltersQuery,
   TransactionStatisticsQuery,
-  TransactionTotalsQuerySchema,
+  TransactionFiltersQuerySchema,
   TransactionStatisticsQuerySchema,
 } from "@schemas/transaction-query";
 
@@ -54,13 +54,13 @@ export async function transactionRoutes(
   )
 
   app.get<{
-    Querystring: TransactionTotalsQuery,
+    Querystring: TransactionFiltersQuery,
     Reply: TransactionTotalsResponse
   }>(
     "/totals",
     { 
       preHandler: [
-        validateQuery(TransactionTotalsQuerySchema),
+        validateQuery(TransactionFiltersQuerySchema),
         authorizeAccessToken()
       ]
     },

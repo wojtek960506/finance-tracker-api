@@ -1,4 +1,4 @@
-import { TransactionTotalsQuery } from "@schemas/transaction-query";
+import { TransactionFiltersQuery } from "@schemas/transaction-query";
 import { buildTransactionFilterQuery } from "@/services/transactions";
 import {
   findTransactionTotalsOverall,
@@ -11,12 +11,11 @@ import {
 
 
 export async function getTransactionTotals(
-  q: TransactionTotalsQuery,
+  q: TransactionFiltersQuery,
   userId: string
 ) {
   const filter = buildTransactionFilterQuery(q, userId);
-  if (q.excludeCategories && !q.category) filter.category = { $nin: q.excludeCategories }
-
+  
   const totalsOverall = await findTransactionTotalsOverall(filter);
   const totalsByCurrency = await findTransactionTotalsByCurrency(filter);
 

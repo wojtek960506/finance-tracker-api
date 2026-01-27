@@ -1,4 +1,5 @@
 import { FilterQuery, Types } from "mongoose";
+import { ValidationError } from "@utils/errors";
 import { ITransaction } from "@models/transaction-model";
 import { TransactionFiltersQuery } from "@schemas/transaction-query";
 
@@ -6,13 +7,22 @@ import { TransactionFiltersQuery } from "@schemas/transaction-query";
 export const buildTransactionFilterQuery = (
   q: TransactionFiltersQuery, ownerId: string
 ): FilterQuery<ITransaction> => {
+
+  if (q.category && q.excludeCategories) {
+    throw new ValidationError(
+      `'category' and 'excludeCategories' cannot be provided together in query`
+    );
+  }
+
   const query: FilterQuery<ITransaction> = {};
 
   if (q.transactionType) query.transactionType = q.transactionType;
   if (q.currency) query.currency = q.currency;
-  if (q.category) query.category = q.category;
   if (q.paymentMethod) query.paymentMethod = q.paymentMethod;
   if (q.account) query.account = q.account;
+
+  if (q.category) query.category = q.category;
+  if (q.excludeCategories) query.category = { $nin: q.excludeCategories }
 
   if (q.minAmount || q.maxAmount) {
     query.amount = {};
