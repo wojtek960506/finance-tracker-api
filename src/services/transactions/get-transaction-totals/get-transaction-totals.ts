@@ -1,6 +1,9 @@
-import { TransactionModel } from "@models/transaction-model";
 import { TransactionTotalsQuery } from "@schemas/transaction-query";
 import { buildTransactionFilterQuery } from "@/services/transactions";
+import {
+  findTransactionTotalsOverall,
+  findTransactionTotalsByCurrency,
+} from "@db/transactions";
 import {
   parseTotalsOverallResult,
   parseTotalsByCurrencyResult,
@@ -14,33 +17,11 @@ export async function getTransactionTotals(
   const filter = buildTransactionFilterQuery(q, userId);
   if (q.excludeCategories && !q.category) filter.category = { $nin: q.excludeCategories }
 
-  const totalsByCurrency = await TransactionModel.aggregate([
-    { $match: filter },
-    { $group: { 
-      _id: {
-        currency: "$currency",
-        transactionType: "$transactionType"
-      },
-      totalAmount: { $sum: "$amount" },
-      totalItems: { $sum: 1 },
-      averageAmount: { $avg: "$amount" },
-      maxAmount: { $max: "$amount" },
-      minAmount: { $min: "$amount" },
-    }},
-    { $sort: { "_id.currency": 1, "_id.transactionType": 1 } }
-  ]);
-
-  const totalsOverall = await TransactionModel.aggregate([
-    { $match: filter },
-    { $group: {
-      _id: { transactionType: "$transactionType" },
-      totalItems: { $sum: 1 },
-    }},
-    { $sort: {"_id.transactionType": 1 } }
-  ])
+  const totalsOverall = await findTransactionTotalsOverall(filter);
+  const totalsByCurrency = await findTransactionTotalsByCurrency(filter);
 
   return {
-    byCurrency: parseTotalsByCurrencyResult(totalsByCurrency),
     overall: parseTotalsOverallResult(totalsOverall),
+    byCurrency: parseTotalsByCurrencyResult(totalsByCurrency),    
   }
 }

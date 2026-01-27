@@ -3,7 +3,7 @@ import {
   TransactionTotalsByCurrency,
   TransactionSubcategoryTotals,
   TransactionTotalsOverallObjDb,
-  TransactionTotalsByCurrencyObjDb,  
+  TransactionTotalsByCurrencyObjDb,
 } from "@routes/transaction-routes/types";
 
 
