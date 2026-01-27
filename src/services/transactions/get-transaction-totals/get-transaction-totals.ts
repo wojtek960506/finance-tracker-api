@@ -1,21 +1,17 @@
-import { validateSchema } from "@utils/validation";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
+import { TransactionTotalsQuery } from "@schemas/transaction-query";
 import { buildTransactionFilterQuery } from "@/services/transactions";
-import { TransactionTotalsQuerySchema } from "@schemas/transaction-query";
 import {
+  parseTotalsOverallResult,
   parseTotalsByCurrencyResult,
-  parseTotalsOverallResult
 } from "./parse-totals-result";
 
 
-export async function getTransactionTotalsHandler(
-  req: FastifyRequest, _res: FastifyReply
+export async function getTransactionTotals(
+  q: TransactionTotalsQuery,
+  userId: string
 ) {
-  const q = validateSchema(TransactionTotalsQuerySchema, req.query);
-  
-  const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
+  const filter = buildTransactionFilterQuery(q, userId);
   if (q.excludeCategories && !q.category) filter.category = { $nin: q.excludeCategories }
 
   const totalsByCurrency = await TransactionModel.aggregate([
