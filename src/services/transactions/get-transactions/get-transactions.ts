@@ -1,19 +1,16 @@
-import { validateSchema } from "@utils/validation";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@routes/routes-types";
+import { FilteredResponse } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
-import { TransactionQuerySchema } from "@schemas/transaction-query";
+import { TransactionQuery } from "@schemas/transaction-query";
+import { TransactionsResponseDTO } from "@schemas/transaction";
 import { buildTransactionFilterQuery } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 
 
-
-export async function getTransactionsHandler (
-  req: FastifyRequest, res: FastifyReply
-) {
-  const q = validateSchema(TransactionQuerySchema, req.query);
-
-  const filter = buildTransactionFilterQuery(q, (req as AuthenticatedRequest).userId);
+export const getTransactions = async (
+  q: TransactionQuery,
+  userId: string,
+): Promise<FilteredResponse<TransactionsResponseDTO>> => {
+  const filter = buildTransactionFilterQuery(q, userId);
   const skip = (q.page - 1) * q.limit;
 
   const [transactions, total] = await Promise.all([
@@ -30,11 +27,11 @@ export async function getTransactionsHandler (
 
   const totalPages = Math.ceil(total / q.limit);
 
-  return res.send({
+  return {
     page: q.page,
     limit: q.limit,
     total,
     totalPages,
     items: transactions.map(transaction => serializeTransaction(transaction))
-  })
+  }
 }
