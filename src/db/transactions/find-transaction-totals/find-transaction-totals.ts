@@ -21,10 +21,7 @@ export const findTransactionTotalsByCurrency = async (
   return TransactionModel.aggregate([
     { $match: filter },
     { $group: { 
-      _id: {
-        currency: "$currency",
-        transactionType: "$transactionType",
-      },
+      _id: { currency: "$currency", transactionType: "$transactionType" },
       totalAmount: { $sum: "$amount" },
       totalItems: { $sum: 1 },
       averageAmount: { $avg: "$amount" },
