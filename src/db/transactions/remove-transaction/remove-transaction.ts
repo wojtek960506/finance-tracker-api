@@ -1,18 +1,9 @@
 import { startSession } from "mongoose";
 import { NotFoundError } from "@utils/errors";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { TransactionModel } from "@models/transaction-model";
-import { checkOwnerOld, findTransactionOld } from "@routes/routes-utils";
-import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
+import { ITransaction, TransactionModel } from "@models/transaction-model";
 
 
-export async function deleteTransactionHandler(
-  req: FastifyRequest<{ Params: ParamsJustId }>,
-  res: FastifyReply,
-) {
-  const transaction = await findTransactionOld(req.params.id);
-  checkOwnerOld((req as AuthenticatedRequest).userId, transaction, "delete");    
-
+export const removeTransaction = async (transaction: ITransaction) => {
   const session = await startSession();
   let result;
   try {
@@ -28,13 +19,13 @@ export async function deleteTransactionHandler(
 
       if (result.deletedCount !== idsToDelete.length) {
         throw new NotFoundError(
-          `There should be deletion of ${idsToDelete.length} transactions`
+          `Transaction(s) deleted - ${result.deletedCount}. ` +
+          `Expected to be deleted - ${idsToDelete.length}.`
         );
       }
     })
   } finally {
     session.endSession()
   }
-
   return result;
 }
