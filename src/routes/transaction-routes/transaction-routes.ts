@@ -1,10 +1,9 @@
 import { FastifyInstance } from "fastify";
 import { authorizeAccessToken } from "@services/auth";
-import { findTransactionOld } from "@routes/routes-utils";
 import { validateBody, validateQuery } from "@utils/validation";
-import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {
+  getTransactionHandler,
   getTransactionsHandler,
   deleteTransactionHandler,
   exportTransacionsHandler,
@@ -43,166 +42,108 @@ export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
 ) {
 
-  app.get<{
-    Querystring: TransactionQuery
-    Reply: FilteredResponse<TransactionsResponseDTO>
+  app.get<{ 
+    Querystring: TransactionQuery,
+    Reply: FilteredResponse<TransactionsResponseDTO>,
   }>(
     "/",
-    {
-      preHandler: [
-        validateQuery(TransactionQuerySchema),
-        authorizeAccessToken()
-      ]
-    },
-    getTransactionsHandler
+    { preHandler: [validateQuery(TransactionQuerySchema), authorizeAccessToken()] },
+    getTransactionsHandler,
   );
 
   app.get(
     "/export",
     { preHandler: authorizeAccessToken() },
-    exportTransacionsHandler
+    exportTransacionsHandler,
   )
 
   app.get<{
     Querystring: TransactionFiltersQuery,
-    Reply: TransactionTotalsResponse
+    Reply: TransactionTotalsResponse,
   }>(
     "/totals",
-    { 
-      preHandler: [
-        validateQuery(TransactionFiltersQuerySchema),
-        authorizeAccessToken()
-      ]
-    },
-    getTransactionTotalsHandler
+    { preHandler: [validateQuery(TransactionFiltersQuerySchema), authorizeAccessToken()] },
+    getTransactionTotalsHandler,
   )
 
-  // it is possible to group by
-  // - just month (then we get all time statistics for month and grouped by a year)
-  // - just year (then we get all statistics from given year and grouped by month in a given year)
-  // - year and month - then we get all statistics from a given month of the given year
-  // additionally we can filter it by category or payment method or account
   app.get<{
     Querystring: TransactionStatisticsQuery,
     Reply: TransactionStatisticsResponse,
   }>(
     "/statistics",
-    { 
-      preHandler: [
-        validateQuery(TransactionStatisticsQuerySchema),
-        authorizeAccessToken(),
-      ]
-    },
-    getTransactionStatisticsHandler
+    { preHandler: [validateQuery(TransactionStatisticsQuerySchema), authorizeAccessToken()] },
+    getTransactionStatisticsHandler,
   )
 
   app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
     "/:id",
-    async (req) => {
-      const transaction = await findTransactionOld(req.params.id);
-      return serializeTransaction(transaction);
-    }
+    { preHandler: authorizeAccessToken() },
+    getTransactionHandler,
   )
 
-  // create one standard transaction
-  app.post<{ Body: TransactionStandardDTO; Reply: TransactionResponseDTO }>(
+  app.post<{ Body: TransactionStandardDTO, Reply: TransactionResponseDTO }>(
     "/standard",
-    {
-      preHandler: [
-        validateBody(TransactionStandardSchema),
-        authorizeAccessToken(),
-      ]
-    },
-    createTransactionHandler
+    { preHandler: [validateBody(TransactionStandardSchema), authorizeAccessToken()] },
+    createTransactionHandler,
   );
 
-  // create exchange transactions - one expense and one income
   app.post<{
     Body: TransactionExchangeDTO,
-    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+    Reply: [TransactionResponseDTO, TransactionResponseDTO],
   }>(
     "/exchange",
-    {
-      preHandler: [
-        validateBody(TransactionExchangeSchema),
-        authorizeAccessToken(),
-      ]
-    },
-    createTransactionHandler
+    { preHandler: [validateBody(TransactionExchangeSchema), authorizeAccessToken()] },
+    createTransactionHandler,
   );
 
-  // create transfer transactions - one expense and one income
   app.post<{
     Body: TransactionTransferDTO,
-    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+    Reply: [TransactionResponseDTO, TransactionResponseDTO],
   }>(
     "/transfer",
-    {
-      preHandler: [
-        validateBody(TransactionTransferSchema),
-        authorizeAccessToken(),
-      ]
-    },
-    createTransactionHandler
+    { preHandler: [validateBody(TransactionTransferSchema), authorizeAccessToken()] },
+    createTransactionHandler,
   );
 
   app.put<{ 
-    Params: ParamsJustId;
-    Body: TransactionStandardDTO;
-    Reply: TransactionResponseDTO
+    Params: ParamsJustId,
+    Body: TransactionStandardDTO,
+    Reply: TransactionResponseDTO,
   }>(
     "/standard/:id",
-    {
-      preHandler: [
-        validateBody(TransactionStandardSchema),
-        authorizeAccessToken(),
-      ]
-    },
-    updateTransactionHandler
+    { preHandler: [validateBody(TransactionStandardSchema), authorizeAccessToken()] },
+    updateTransactionHandler,
   );
 
   app.put<{ 
-    Params: ParamsJustId;
-    Body: TransactionTransferDTO;
-    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+    Params: ParamsJustId,
+    Body: TransactionTransferDTO,
+    Reply: [TransactionResponseDTO, TransactionResponseDTO],
   }>(
     "/transfer/:id",
-    {
-      preHandler: [
-        validateBody(TransactionTransferSchema),
-        authorizeAccessToken(),
-      ]
-    },
-    updateTransactionHandler
+    { preHandler: [validateBody(TransactionTransferSchema), authorizeAccessToken()] },
+    updateTransactionHandler,
   );
 
   app.put<{ 
-    Params: ParamsJustId;
-    Body: TransactionExchangeDTO;
-    Reply: [TransactionResponseDTO, TransactionResponseDTO]
+    Params: ParamsJustId,
+    Body: TransactionExchangeDTO,
+    Reply: [TransactionResponseDTO, TransactionResponseDTO],
   }>(
     "/exchange/:id",
-    {
-      preHandler: [
-        validateBody(TransactionExchangeSchema),
-        authorizeAccessToken(),
-      ]
-    },
-    updateTransactionHandler
+    { preHandler: [validateBody(TransactionExchangeSchema), authorizeAccessToken()] },
+    updateTransactionHandler,
   );
 
-  app.delete<{
-    Params: ParamsJustId,
-    Reply: DeleteManyReply
-  }>(
+  app.delete<{ Params: ParamsJustId, Reply: DeleteManyReply }>(
     "/:id",
     { preHandler: authorizeAccessToken() },
-    deleteTransactionHandler
+    deleteTransactionHandler,
   )
 
   app.delete<{ Reply: DeleteManyReply }>(
     "/",
     { preHandler: authorizeAccessToken() }, 
-    deleteAllTransactionsHandler
+    deleteAllTransactionsHandler,
   )
 }
