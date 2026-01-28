@@ -1,6 +1,9 @@
-import { findTransactionTotalsByCurrency, findTransactionTotalsOverall } from "@db/transactions/find-transaction-totals/find-transaction-totals";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import {
+  findTransactionTotalsOverall,
+  findTransactionTotalsByCurrency,
+} from "./find-transaction-totals";
 
 
 vi.mock("@models/transaction-model", () => ({

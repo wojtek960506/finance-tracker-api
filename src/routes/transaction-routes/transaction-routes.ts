@@ -30,6 +30,8 @@ import {
   FilteredResponse,
 } from "@routes/routes-types";
 import {
+  TransactionQuery,
+  TransactionQuerySchema,
   TransactionFiltersQuery,
   TransactionStatisticsQuery,
   TransactionFiltersQuerySchema,
@@ -41,9 +43,17 @@ export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <T>() => any }
 ) {
 
-  app.get<{ Reply: FilteredResponse<TransactionsResponseDTO> }>(
+  app.get<{
+    Querystring: TransactionQuery
+    Reply: FilteredResponse<TransactionsResponseDTO>
+  }>(
     "/",
-    { preHandler: authorizeAccessToken() },
+    {
+      preHandler: [
+        validateQuery(TransactionQuerySchema),
+        authorizeAccessToken()
+      ]
+    },
     getTransactionsHandler
   );
 
