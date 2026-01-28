@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import { getTransactions } from "@services/transactions";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionQuery } from "@schemas/transaction-query";
-import { getTransactions } from "@services/transactions/get-transactions";
 
 
 export async function getTransactionsHandler (
