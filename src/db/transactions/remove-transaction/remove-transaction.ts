@@ -1,17 +1,15 @@
 import { startSession } from "mongoose";
 import { NotFoundError } from "@utils/errors";
-import { ITransaction, TransactionModel } from "@models/transaction-model";
+import { DeleteManyReply } from "@routes/routes-types";
+import { TransactionModel } from "@models/transaction-model";
 
 
-export const removeTransaction = async (transaction: ITransaction) => {
+export const removeTransaction = async (id: string, refId?: string) => {
   const session = await startSession();
   let result;
   try {
     await session.withTransaction(async () => {
-      const idsToDelete = transaction.refId
-        ? [transaction._id, transaction.refId]
-        : [transaction._id]
-
+      const idsToDelete = refId ? [id, refId] : [id];
       result = await TransactionModel.deleteMany(
         { _id: { $in: idsToDelete }},
         { session }
@@ -27,5 +25,5 @@ export const removeTransaction = async (transaction: ITransaction) => {
   } finally {
     session.endSession()
   }
-  return result;
+  return result! as DeleteManyReply;
 }

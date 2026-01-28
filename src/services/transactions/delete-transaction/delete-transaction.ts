@@ -8,5 +8,5 @@ export const deleteTransaction = async (
 ) => {
   const transaction = await findTransaction(transactionId);
   checkTransactionOwner(userId, transactionId, transaction.ownerId.toString());
-  return removeTransaction(transaction);
+  return removeTransaction(transactionId, transaction.refId?.toString());
 }
