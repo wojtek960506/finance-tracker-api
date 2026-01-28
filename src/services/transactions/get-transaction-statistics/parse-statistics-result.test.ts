@@ -1,5 +1,6 @@
-import { parseStatisticsResult } from "./parse-statistics-result";
 import { describe, expect, it } from "vitest";
+import { parseStatisticsResult } from "./parse-statistics-result";
+
 
 describe("parseStatisticsResults", () => {
 

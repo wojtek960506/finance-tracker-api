@@ -1,10 +1,10 @@
+import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
+import { TransactionModel } from "@models/transaction-model";
 import { getStatisticsGrouping } from "./get-statistics-grouping";
 import { getStatisticsMatching } from "./get-statistics-matching";
-import { TransactionModel } from "@models/transaction-model";
-import { getTransactionStatistics } from "@services/transactions/get-transaction-statistics/get-transaction-statistics";
-import { randomObjectIdString } from "@utils/random";
-import { parseStatisticsResult } from "@services/transactions/get-transaction-statistics/parse-statistics-result";
+import { parseStatisticsResult } from "./parse-statistics-result";
+import { getTransactionStatistics } from "./get-transaction-statistics";
 
 
 vi.mock(

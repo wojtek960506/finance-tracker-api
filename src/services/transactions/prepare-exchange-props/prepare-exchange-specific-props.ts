@@ -1,5 +1,6 @@
 import { TransactionExchangeDTO } from "@schemas/transaction";
 
+
 type PropsType = Pick<
   TransactionExchangeDTO,
   "amountExpense" |

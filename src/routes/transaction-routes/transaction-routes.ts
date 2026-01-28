@@ -1,7 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { authorizeAccessToken } from "@services/auth";
 import { findTransactionOld } from "@routes/routes-utils";
-import { TransactionModel } from "@models/transaction-model";
 import { validateBody, validateQuery } from "@utils/validation";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
@@ -12,6 +11,7 @@ import {
   createTransactionHandler,
   updateTransactionHandler,
   getTransactionTotalsHandler,
+  deleteAllTransactionsHandler,
   getTransactionStatisticsHandler,
 } from "./handlers";
 import {
@@ -200,8 +200,9 @@ export async function transactionRoutes(
     deleteTransactionHandler
   )
 
-  app.delete<{ Reply: DeleteManyReply }>("/", async (_req, res) => {
-    const tmp = await TransactionModel.deleteMany();
-    return res.send(tmp);
-  })
+  app.delete<{ Reply: DeleteManyReply }>(
+    "/",
+    { preHandler: authorizeAccessToken() }, 
+    deleteAllTransactionsHandler
+  )
 }

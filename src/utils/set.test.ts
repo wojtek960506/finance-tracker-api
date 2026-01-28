@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
 import { excludeFromSet } from "./set";
+import { describe, expect, it } from "vitest";
+
 
 describe("excludeFromSet", () => {
   it("value is not anymore in set when excluded", () => {

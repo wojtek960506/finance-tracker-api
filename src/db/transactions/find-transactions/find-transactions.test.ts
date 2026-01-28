@@ -1,8 +1,7 @@
-import { findTransactions, findTransactionsCount } from "@db/transactions";
 import { randomObjectIdString } from "@utils/random";
-import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { TransactionModel } from "@models/transaction-model";
-
+import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import { findTransactions, findTransactionsCount } from "@db/transactions";
 
 
 const mockResult = ["a"];

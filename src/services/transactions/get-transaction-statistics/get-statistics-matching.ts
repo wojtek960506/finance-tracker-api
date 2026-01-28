@@ -3,7 +3,6 @@ import { ValidationError } from "@utils/errors";
 import { TransactionStatisticsQuery } from "@schemas/transaction-query";
 
 
-
 export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: string) => {
   if (q.category && q.excludeCategories) {
     throw new ValidationError(
