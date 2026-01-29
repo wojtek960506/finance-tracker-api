@@ -1,5 +1,5 @@
 import { findTransaction } from "@db/transactions";
-import { checkTransactionOwner } from "@services/services-utils";
+import { checkTransactionOwner } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 
 

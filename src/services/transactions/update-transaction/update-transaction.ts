@@ -1,4 +1,4 @@
-import { checkTransactionOwner } from "@services/services-utils";
+import { checkTransactionOwner } from "@services/transactions";
 import { updateTransactionPair } from "./update-transaction-pair";
 import { findTransaction, saveTransactionChanges } from "@db/transactions";
 import { prepareExchangeProps, prepareTransferProps } from "@services/transactions";
