@@ -3,6 +3,7 @@ import * as serviceT from "@services/transactions";
 import { randomObjectIdString } from "@utils/random";
 import { streamTransactions } from "@db/transactions";
 import { registerErrorHandler } from "@plugins/errorHandler";
+import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { getCsvForTransactions } from "@/test-utils/get-csv-for-transactions";
 import { transactionRoutes } from "@routes/transaction-routes/transaction-routes";
@@ -22,9 +23,8 @@ const MOCKED_RESULT = { result: "result" };
 const mockPreHandler = vi.fn(async (req, _res) => { (req as any).userId = USER_ID });
 
 vi.mock("@services/auth", () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
-vi.mock("@db/transactions", () => ({
-  streamTransactions: vi.fn(),
-}));
+vi.mock("@db/transactions", () => ({ streamTransactions: vi.fn() }));
+vi.mock("@models/transaction-model", () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
 describe("transaction routes", async () => {
 
@@ -32,9 +32,8 @@ describe("transaction routes", async () => {
   app.register(transactionRoutes);
   await registerErrorHandler(app);
 
-  const [E_ID, I_ID] = [randomObjectIdString(), randomObjectIdString()];
-  const [E_SRC_IDX, I_SRC_IDX] = [1, 2];
-  const standardT = getStandardTransactionResultJSON(USER_ID, E_SRC_IDX, E_ID);
+  const [T_ID, T_SRC_IDX] = [randomObjectIdString(), 1];
+  const standardT = getStandardTransactionResultJSON(USER_ID, T_SRC_IDX, T_ID);
   const standardDTO = getTransactionStandardDTO();
   const exchangeDTO = getTransactionExchangeDTO();
   const transferDTO = getTransactionTransferDTO();
@@ -87,9 +86,9 @@ describe("transaction routes", async () => {
 
   it("should get transaction - `GET /:id`", async () => {
     vi.spyOn(serviceT, "getTransaction").mockResolvedValue(MOCKED_RESULT as any);
-    const response = await app.inject({ method: "GET", url: `/${E_ID}` });
+    const response = await app.inject({ method: "GET", url: `/${T_ID}` });
     expect(serviceT.getTransaction).toHaveBeenCalledOnce();
-    expect(serviceT.getTransaction).toHaveBeenCalledWith(E_ID, USER_ID);
+    expect(serviceT.getTransaction).toHaveBeenCalledWith(T_ID, USER_ID);
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);
   });
@@ -124,11 +123,28 @@ describe("transaction routes", async () => {
     ["transfer", "transfer", "updateTransferTransaction", transferDTO],
   ])("should update %s transaction - 'PUT /%s'", async (kind, _, serviceName, body) => {
       vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
-      const response = await app.inject({ method: "PUT", url: `/${kind}/${E_ID}`, body });
+      const response = await app.inject({ method: "PUT", url: `/${kind}/${T_ID}`, body });
       expect(serviceT[serviceName]).toHaveBeenCalledOnce();
-      expect(serviceT[serviceName]).toHaveBeenCalledWith(E_ID, USER_ID, body);
+      expect(serviceT[serviceName]).toHaveBeenCalledWith(T_ID, USER_ID, body);
       expect(response.statusCode).toBe(200);
       expect(response.json()).toEqual(MOCKED_RESULT);
     }
   );
+
+  it("should delete transaction - 'DELETE /:id'", async () => {
+    vi.spyOn(serviceT, "deleteTransaction").mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: "DELETE", url: `/${T_ID}`});
+    expect(serviceT.deleteTransaction).toHaveBeenCalledOnce();
+    expect(serviceT.deleteTransaction).toHaveBeenCalledWith(T_ID, USER_ID);
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
+
+  it("should delete all transactions - 'DELETE /'", async () => {
+    (TransactionModel.deleteMany as Mock).mockResolvedValue(MOCKED_RESULT);
+    const response = await app.inject({ method: "DELETE", url: "/" });
+    expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  })
 })
