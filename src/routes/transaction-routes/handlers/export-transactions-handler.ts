@@ -23,7 +23,7 @@ export async function exportTransacionsHandler (
   const csvStream = stringify({ header: true, columns: csvExportColumns });  
 
   // 3. Send stream to client
-  res.code(200).send(csvStream);
+  res.send(csvStream);
 
   // 4. Stream DB records into CSV
   const cursor = streamTransactions((req as AuthenticatedRequest).userId);
