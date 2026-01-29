@@ -1,3 +1,4 @@
+import { Schema, model, Document, Types } from "mongoose";
 import {
   ACCOUNTS,
   CATEGORIES,
@@ -5,7 +6,7 @@ import {
   PAYMENT_METHODS,
   TRANSACTION_TYPES
 } from "@utils/consts";
-import { Schema, model, Document, Types } from "mongoose";
+
 
 export interface TransactionAttributes {
   date: Date;

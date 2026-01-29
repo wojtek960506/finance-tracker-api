@@ -1,5 +1,6 @@
 import { Document, model, Schema, Types } from "mongoose";
 
+
 export interface UserAttributes {
   firstName: string;
   lastName: string;

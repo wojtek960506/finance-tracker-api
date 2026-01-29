@@ -1,6 +1,8 @@
 import { TransactionTransferDTO } from "@schemas/transaction";
-import { TransactionTransferCreateProps } from "@db/transactions/persist-transaction";
-import { TransactionTransferUpdateProps } from "@db/transactions/save-transaction-changes";
+import {
+  TransactionTransferCreateProps,
+  TransactionTransferUpdateProps,
+} from "@db/transactions";
 
 
 export function prepareTransferProps(

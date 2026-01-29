@@ -1,5 +1,6 @@
-import { getStatisticsGrouping } from "@services/transactions/get-transaction-statistics/get-statistics-grouping";
 import { describe, expect, it } from "vitest";
+import { getStatisticsGrouping } from "./get-statistics-grouping";
+
 
 const getCommonGrouping = (_id: unknown) => ({
   _id,

@@ -1,6 +1,7 @@
+import { ZodError } from "zod";
 import { AppError } from "@utils/errors";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { ZodError } from "zod";
+
 
 export async function registerErrorHandler(app: FastifyInstance) {
   app.setErrorHandler(

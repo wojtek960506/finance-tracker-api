@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzY5NDQ5Mjg1LCJleHAiOjE3Njk0NTEwODV9.J9DEJqHuvlS9shY2FKTInuZyTVsXbQMScvr0OfB0C1o
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4Mjg0NjQyMGZlMzdiZTllZWE5OWQiLCJlbWFpbCI6IncxQHoucGwiLCJpYXQiOjE3Njk2MjU1MzAsImV4cCI6MTc2OTYyNzMzMH0.FEtkKFjCuKbtoEh_ETr7CqVJi_sr12kdmPHtAkksSjY
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -56,9 +56,12 @@ Authorization: Bearer {{accessToken}}
 # income -  6972b1e2b479aa46a8af5209
 # expense - 6972b1e2b479aa46a8af5207
 
+
 ### Get single transaction
-GET {{baseUrl}}/transactions/6974d150efa585c6eca912e7
+GET {{baseUrl}}/transactions/6958215e420fe37be9ee76a5
 Accept: application/json
+Authorization: Bearer {{accessToken}}
+
 
 # 6976262aceeb9078893d8a43 - standard
 # 6974d150efa585c6eca912e7 - exchange

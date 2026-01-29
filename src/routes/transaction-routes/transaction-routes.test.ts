@@ -64,17 +64,14 @@ describe("Transaction Routes (Fastify integration)", async () => {
   beforeEach(() => { vi.clearAllMocks(); })
 
   it("should return single transaction via GET when found", async () => {
-    const transaction = { id, ...generateFullStandardTransaction() };
+    const transaction = getStandardTransactionResultJSON(USER_ID, 1, TRANSACTION_ID);
     (TransactionModel.findById as Mock).mockResolvedValue(transaction);
     (serializeTransaction as Mock).mockResolvedValue(transaction);
 
     const response = await app.inject({ method: "GET", url: `/${id}` });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toMatchObject({
-      ...transaction,
-      date: transaction.date.toISOString(),
-    });
+    expect(response.json()).toMatchObject(transaction);
   })
 
   it("should return code 404 via GET when transaction not found", async () => {

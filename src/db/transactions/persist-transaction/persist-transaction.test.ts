@@ -1,7 +1,7 @@
 import { randomObjectIdString } from "@utils/random";
+import { persistTransaction } from "./persist-transaction";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { persistTransaction } from "./persist-transaction";
 import { serializeTransaction } from "@schemas/serialize-transaction";
 import { getStandardTransactionProps } from "@/test-utils/mocks/transactions";
 
