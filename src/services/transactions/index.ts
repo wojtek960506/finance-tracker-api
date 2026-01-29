@@ -4,6 +4,7 @@ export * from "./get-transactions";
 export * from "./create-transaction";
 export * from "./update-transaction";
 export * from "./delete-transaction";
+export * from "./export-transactions";
 export * from "./get-next-source-index";
 export * from "./prepare-transfer-props";
 export * from "./prepare-exchange-props";
