@@ -10,4 +10,5 @@ export * from "./prepare-transfer-props";
 export * from "./prepare-exchange-props";
 export * from "./get-transaction-totals";
 export * from "./build-transaction-query";
+export * from "./check-transaction-owner";
 export * from "./get-transaction-statistics";

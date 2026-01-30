@@ -1,4 +1,4 @@
-import { checkTransactionOwner } from "@services/services-utils";
+import { checkTransactionOwner } from "@services/transactions";
 import { findTransaction } from "@db/transactions/find-transaction";
 import {
   TransactionWrongTypesError,

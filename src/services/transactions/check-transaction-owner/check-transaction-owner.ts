@@ -1,4 +1,4 @@
-import { TransactionOwnershipError } from "@utils/errors"
+import { TransactionOwnershipError } from "@utils/errors";
 
 
 export const checkTransactionOwner = (
