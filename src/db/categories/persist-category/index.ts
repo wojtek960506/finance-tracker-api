@@ -1,2 +1,1 @@
-export * from "./find-category";
 export * from "./persist-category";

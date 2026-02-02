@@ -1,5 +1,5 @@
 import { ITransaction } from "@models/transaction-model";
-import { TransactionResponseDTO } from "./transaction";
+import { TransactionResponseDTO } from "@schemas/transaction";
 
 
 export const serializeTransaction = (transaction: ITransaction): TransactionResponseDTO => {

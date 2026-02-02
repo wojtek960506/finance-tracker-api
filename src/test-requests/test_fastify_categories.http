@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:5000/api/categories
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMDU2ODE4LCJleHAiOjE3NzAwNTg2MTh9.vi97SWsbQa0F95Q7LvHgtPO4YDBqzHWXOMW_QvFoe-4
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMDcyNTM1LCJleHAiOjE3NzAwNzQzMzV9.Wpo5Hhe8aC9hnCSgoPVI4KWd7H0nUz7seZEQA0RFyYo
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
@@ -22,4 +22,13 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-###
+### CREATE NEW CATEGORY
+
+POST {{baseUrl}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "food"
+}

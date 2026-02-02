@@ -1,8 +1,10 @@
 import { model, Schema, Types, Document } from "mongoose";
 
 
+export type CategoryType = "user" | "system";
+
 export interface CategoryAttributes {
-  type: "user" | "system",
+  type: CategoryType,
   name: string,
   nameNormalized: string,
 };
