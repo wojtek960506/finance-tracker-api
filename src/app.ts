@@ -5,6 +5,7 @@ import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
 import { connectDB } from "@utils/db";
 import { mainRoute } from "@routes/main-route";
+import { upsertSystemCategories } from "@/setup";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
 import {
@@ -32,6 +33,9 @@ const PORT = Number(process.env.PORT) || 5000;
 
 const buildApp = async () => {
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
+
+  // upsert system categories
+  await upsertSystemCategories();
   
   // register cookie
   await app.register(cookie, {
@@ -44,7 +48,7 @@ const buildApp = async () => {
   });
   
   app.register(mainRoute, { prefix: "" });
-  app.register(authRoutes, { prefix: "/api/auth" });  
+  app.register(authRoutes, { prefix: "/api/auth" });
   app.register(userRoutes, { prefix: "/api/users" });
   app.register(transactionRoutes, { prefix: "/api/transactions" });
 
