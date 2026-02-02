@@ -3,9 +3,8 @@ import Fastify from "fastify";
 import cors from "@fastify/cors"
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
-import { connectDB } from "@utils/db";
 import { mainRoute } from "@routes/main-route";
-import { upsertSystemCategories } from "@/setup";
+import { upsertSystemCategories, connectDB } from "@/setup";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
 import {
@@ -18,7 +17,6 @@ import {
 
 //############################################################################################
 // TODOS                                                                                     #
-// * write unit tests because there is very big lack of unit tests here                      #
 // * revisit `user-routes` logic because maybe it is too complicated for now                 #
 //   and sometimes I do not understand why I am logged out due to problem with tokens        #
 // * write some logic to update all transactions in other currencies with exchange rate      #
@@ -75,7 +73,6 @@ const start = async () => {
   await connectDB();
   const app = await buildApp();
   try {
-    console.log('port from environment variables:', process.env.PORT);
     await app.listen({ port: PORT, host: "0.0.0.0" });
     console.log(`Server running on port ${PORT}`);
   } catch (err) {
