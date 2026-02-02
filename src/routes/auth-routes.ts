@@ -5,9 +5,9 @@ import { LoginSchema } from "@schemas/auth";
 import { UserModel } from "@models/user-model";
 import { UserResponseDTO } from "@schemas/user";
 import { validateBody } from "@utils/validation";
+import { serializeUser } from "@schemas/serializers";
 import { AuthenticatedRequest } from "./routes-types";
 import { AppError, NotFoundError } from "@utils/errors";
-import { serializeUser } from "@schemas/serialize-user";
 import {
   getTokenHash,
   createAccessToken,
@@ -63,8 +63,6 @@ export async function authRoutes(app: FastifyInstance) {
   )
 
   app.get("/refresh", async (req, res) => {
-    
-    console.log('a');
 
     const refreshToken = req.cookies["refreshToken"];
     if (!refreshToken) {
@@ -73,52 +71,33 @@ export async function authRoutes(app: FastifyInstance) {
 
     const refreshTokenHash = getTokenHash(refreshToken);
 
-    console.log('b');
-
     // find user by refresh token hash
     const user = await UserModel.findOne({
       "refreshTokenHash.tokenHash": refreshTokenHash
     });
-
-    console.log('c');
-    console.log('d');
     
     if (!user) throw new AppError(401, `Invalid refresh token`);
 
-    console.log('e');
-
     // Rotate refresh token (security best practice)
     const { token: newRefreshToken, tokenHash: newRefreshTokenHash } = createRefreshToken();
-    
-    console.log('f');
 
     // remove old hash, add new one
     user.refreshTokenHash = { tokenHash: newRefreshTokenHash, createdAt: new Date() };
     await user.save();
 
-    console.log('g');
-
     // set new cookie
     const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
     const isProductionEnv = process.env.NODE_ENV === "production";
     res.setCookie("refreshToken", newRefreshToken, {
-      // httpOnly: true,
-      // secure: isProductionEnv,
-      // sameSite: isProductionEnv ? "none" : "lax",
-      // path: "/",
       ...refreshCookieOptions,
       maxAge: 60 * 60 * 24 * refreshExpiresDays,
     })
-
-    console.log('h');
 
     // issue new access token
     const accessToken = createAccessToken({
       userId: user._id.toString(),
       email: user.email
     });
-
-    console.log('i');
 
     return res.send({ accessToken });
   })

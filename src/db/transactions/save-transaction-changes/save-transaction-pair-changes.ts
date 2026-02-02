@@ -1,7 +1,7 @@
 import { startSession } from "mongoose";
 import { ITransaction } from "@models/transaction-model";
+import { serializeTransaction } from "@schemas/serializers";
 import { TransactionResponseDTO } from "@schemas/transaction";
-import { serializeTransaction } from "@schemas/serialize-transaction";
 import { TransactionExchangeUpdateProps, TransactionTransferUpdateProps } from "./types";
 
 

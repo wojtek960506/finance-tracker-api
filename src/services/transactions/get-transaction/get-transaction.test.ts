@@ -2,12 +2,12 @@ import { findTransaction } from "@db/transactions";
 import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
 import { getTransaction } from "@services/transactions";
-import { serializeTransaction } from "@schemas/serialize-transaction";
+import { serializeTransaction } from "@schemas/serializers";
 import { getStandardTransactionResultJSON } from "@/test-utils/mocks/transactions";
 
 
 vi.mock("@db/transactions", () => ({ findTransaction: vi.fn() }));
-vi.mock("@schemas/serialize-transaction", () => ({ serializeTransaction: vi.fn() }));
+vi.mock("@schemas/serializers", () => ({ serializeTransaction: vi.fn() }));
 
 describe("getTransaction", () => {
   it("get transaction", async () => {
@@ -24,4 +24,4 @@ describe("getTransaction", () => {
     expect(serializeTransaction).toHaveBeenCalledWith(transaction);
     expect(result).toEqual(transaction);
   })
-})
+});

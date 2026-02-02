@@ -1,8 +1,8 @@
 import { startSession } from "mongoose";
 import { randomObjectIdString } from "@utils/random";
+import { serializeTransaction } from "@schemas/serializers";
 import { saveTransactionPairChanges } from "@db/transactions";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { serializeTransaction } from "@schemas/serialize-transaction";
 import {
   getTransferTransactionProps,
   getTransferTransactionResultJSON,
@@ -24,7 +24,7 @@ vi.mock("mongoose", async () => {
   }
 });
 
-vi.mock("@schemas/serialize-transaction", () => ({ serializeTransaction: vi.fn() }));
+vi.mock("@schemas/serializers", () => ({ serializeTransaction: vi.fn() }));
 
 describe("saveTransactionPairChanges", () => {
   const [saveMock1, saveMock2] = [vi.fn(), vi.fn()];
@@ -145,4 +145,4 @@ describe("saveTransactionPairChanges", () => {
     expect(withTransactionMock).toHaveBeenCalledOnce();
     expect(serializeTransaction).not.toHaveBeenCalled();
   })
-})
+});

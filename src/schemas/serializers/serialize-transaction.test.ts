@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { describe, expect, it } from "vitest";
-import { serializeTransaction } from "@schemas/serialize-transaction";
+import { serializeTransaction } from "@schemas/serializers";
 import { getStandardTransactionProps } from "@/test-utils/mocks/transactions";
 
 
@@ -24,4 +24,4 @@ describe("serializeTransaction", () => {
     const result = serializeTransaction(iTransaction as any);
     expect(result).toEqual({ ...props, id: T_ID_STR, refId: T_REF_ID_STR });
   })
-})
+});

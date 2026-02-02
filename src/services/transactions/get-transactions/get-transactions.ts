@@ -1,8 +1,8 @@
 import { FilteredResponse } from "@routes/routes-types";
+import { serializeTransaction } from "@schemas/serializers";
 import { TransactionQuery } from "@schemas/transaction-query";
 import { TransactionsResponseDTO } from "@schemas/transaction";
 import { buildTransactionFilterQuery } from "@services/transactions";
-import { serializeTransaction } from "@schemas/serialize-transaction";
 import { findTransactions, findTransactionsCount } from "@db/transactions";
 
 

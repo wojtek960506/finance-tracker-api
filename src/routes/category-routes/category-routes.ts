@@ -3,7 +3,7 @@ import { findCategory } from "@db/categories";
 import { checkOwner } from "@services/general";
 import { authorizeAccessToken } from "@services/auth";
 import { CategoryModel } from "@models/category-model";
-import { serializeCategory } from "@schemas/serialize-category";
+import { serializeCategory } from "@schemas/serializers";
 import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
 import { CategoriesResponseDTO, CategoryResponseDTO } from "@schemas/category";
 

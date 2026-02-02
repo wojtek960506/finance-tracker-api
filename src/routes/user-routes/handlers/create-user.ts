@@ -4,7 +4,7 @@ import { ClientSession } from "mongoose";
 import { AppError } from "@utils/errors";
 import { UserCreateDTO } from "@schemas/user";
 import { UserModel } from "@models/user-model";
-import { serializeUser } from "@schemas/serialize-user";
+import { serializeUser } from "@schemas/serializers";
 
 
 export async function createUserHandler(

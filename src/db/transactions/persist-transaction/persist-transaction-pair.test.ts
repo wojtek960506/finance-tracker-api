@@ -1,9 +1,9 @@
 import { startSession } from "mongoose";
 import { randomObjectIdString } from "@utils/random";
+import { serializeTransaction } from "@schemas/serializers";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { persistTransactionPair } from "./persist-transaction-pair";
-import { serializeTransaction } from "@schemas/serialize-transaction";
 import { getTransferTransactionProps } from "@/test-utils/mocks/transactions";
 
 
@@ -29,7 +29,7 @@ vi.mock("@models/transaction-model", () => ({
   }
 }));
 
-vi.mock("@schemas/serialize-transaction", () => ({
+vi.mock("@schemas/serializers", () => ({
   serializeTransaction: vi.fn(),
 }))
 
@@ -113,4 +113,4 @@ describe("createTransactionPair", async () => {
     expect(withTransactionMock).toHaveBeenCalledOnce();
     expect(TransactionModel.create).not.toHaveBeenCalled();
   })
-})
+});
