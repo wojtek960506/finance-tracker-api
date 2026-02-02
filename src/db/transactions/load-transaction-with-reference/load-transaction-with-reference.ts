@@ -1,4 +1,4 @@
-import { checkTransactionOwner } from "@services/transactions";
+import { checkOwner } from "@services/general";
 import { findTransaction } from "@db/transactions/find-transaction";
 import {
   TransactionWrongTypesError,
@@ -17,7 +17,7 @@ export const loadTransactionWithReference = async (
   expectedCategory: TransactionCategory,
 ) => {
   const transaction = await findTransaction(transactionId);
-  checkTransactionOwner(userId, transactionId, transaction.ownerId.toString());
+  checkOwner(userId, transactionId, transaction.ownerId, "transaction");
 
   if (transaction.category !== expectedCategory) {
     if (expectedCategory === "myAccount")
@@ -30,7 +30,7 @@ export const loadTransactionWithReference = async (
     throw new TransactionMissingReferenceError(transactionId);
 
   const transactionRef = await findTransaction(transaction.refId!.toString());
-  checkTransactionOwner(userId, transactionRef.id, transactionRef.ownerId.toString());
+  checkOwner(userId, transactionRef.id, transactionRef.ownerId, "transaction");
 
   if (transactionRef.category !== expectedCategory) {
     if (expectedCategory === "myAccount")
