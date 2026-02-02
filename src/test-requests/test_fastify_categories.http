@@ -1,0 +1,25 @@
+@baseUrl = http://localhost:5000/api/categories
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMDU2ODE4LCJleHAiOjE3NzAwNTg2MTh9.vi97SWsbQa0F95Q7LvHgtPO4YDBqzHWXOMW_QvFoe-4
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### GET ALL CATEGORIES
+
+GET {{baseUrl}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### GET CATEGORY BY ID
+
+GET {{baseUrl}}/6980aef7f9f1739803300ef5
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+###

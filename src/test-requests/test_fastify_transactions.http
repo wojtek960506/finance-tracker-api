@@ -1,7 +1,7 @@
-@baseUrl = http://localhost:5000/api
+@baseUrl = http://localhost:5000/api/transactions
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4Mjg0NjQyMGZlMzdiZTllZWE5OWQiLCJlbWFpbCI6IncxQHoucGwiLCJpYXQiOjE3Njk2MjU1MzAsImV4cCI6MTc2OTYyNzMzMH0.FEtkKFjCuKbtoEh_ETr7CqVJi_sr12kdmPHtAkksSjY
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMDU2ODE4LCJleHAiOjE3NzAwNTg2MTh9.vi97SWsbQa0F95Q7LvHgtPO4YDBqzHWXOMW_QvFoe-4
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -21,56 +21,74 @@
 @pagination = limit=100&page=1
 @type = transactionType=expense
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### Get transactions with pagination, filters and sorting
 
-GET {{baseUrl}}/transactions?{{exchange}}&{{sorting}}&{{pagination}}
+GET {{baseUrl}}?{{exchange}}&{{sorting}}&{{pagination}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### GET STATISTICS ABOUT TRANSACTIONS
 @excludeCategories = excludeCategories=myAccount,investments
 @yearAndMonth = year=2023
 
-GET {{baseUrl}}/transactions/statistics?{{PLN}}&{{type}}&{{yearAndMonth}}&{{excludeCategories}}
+GET {{baseUrl}}/statistics?{{PLN}}&{{type}}&{{yearAndMonth}}&{{excludeCategories}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### GET TOTALS FOR TRANSACTIONS
-GET {{baseUrl}}/transactions/totals?{{excludeCategories}}&startDate=2024-12-01&endDate=2024-12-31
+GET {{baseUrl}}/totals?{{excludeCategories}}&startDate=2024-12-01&endDate=2024-12-31
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### EXPORT TRANSACTIONS AS CSV STREAM
 
 # code commented as it returns all transactions in CSV format,
 # so there is a lot of them and thus VSC gets clogged
-# GET {{baseUrl}}/transactions/export
+# GET {{baseUrl}}/export
 # Authorization: Bearer {{accessToken}}
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### Get all transactions (still default pagination is applied)
-GET {{baseUrl}}/transactions?startDate=2026-01-01
+GET {{baseUrl}}?startDate=2026-01-01
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 # income -  6972b1e2b479aa46a8af5209
 # expense - 6972b1e2b479aa46a8af5207
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### Get single transaction
-GET {{baseUrl}}/transactions/6958215e420fe37be9ee76a5
+GET {{baseUrl}}/6958215e420fe37be9ee76a5
 Accept: application/json
 Authorization: Bearer {{accessToken}}
-
 
 # 6976262aceeb9078893d8a43 - standard
 # 6974d150efa585c6eca912e7 - exchange
 # 6976263cceeb9078893d8a51 - transfer
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### Create new standard transaction
 
 # @name createTransaction
-POST {{baseUrl}}/transactions/standard
+POST {{baseUrl}}/standard
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -85,8 +103,11 @@ Authorization: Bearer {{accessToken}}
   "account": "mBank"
 }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### CREATE NEW EXCHANGE TRANSACTIONS
-POST {{baseUrl}}/transactions/exchange
+POST {{baseUrl}}/exchange
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -101,8 +122,11 @@ Authorization: Bearer {{accessToken}}
   "paymentMethod": "bankTransfer"
 }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### CREATE NEW TRANSFER TRANSACTIONS
-POST {{baseUrl}}/transactions/transfer
+POST {{baseUrl}}/transfer
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -116,8 +140,11 @@ Authorization: Bearer {{accessToken}}
   "paymentMethod": "bankTransfer"
 }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### Update STANDARD transaction
-PUT {{baseUrl}}/transactions/standard/6976262aceeb9078893d8a43
+PUT {{baseUrl}}/standard/6976262aceeb9078893d8a43
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -132,8 +159,11 @@ Authorization: Bearer {{accessToken}}
   "account": "creditAgricole"
 }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### Update TRANSFER transaction
-PUT {{baseUrl}}/transactions/transfer/6976263cceeb9078893d8a51
+PUT {{baseUrl}}/transfer/6976263cceeb9078893d8a51
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -147,8 +177,11 @@ Authorization: Bearer {{accessToken}}
   "accountIncome": "veloBank"
 }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### Update EXCHAGE transaction
-PUT {{baseUrl}}/transactions/exchange/6974d150efa585c6eca912e7
+PUT {{baseUrl}}/exchange/6974d150efa585c6eca912e7
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -163,16 +196,23 @@ Authorization: Bearer {{accessToken}}
   "paymentMethod": "bankTransfer"
 }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### Delete a transaction
 
 @newTransactionId = {{createTransaction.response.body.id}}
 
-DELETE {{baseUrl}}/transactions/6974d150efa585c6eca912e7
+DELETE {{baseUrl}}/6974d150efa585c6eca912e7
 Authorization: Bearer {{accessToken}}
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### DELETE ALL TRANSACTIONS
 # !!! BE CAREFUL !!!
 
-# DELETE {{baseUrl}}/transactions
+# DELETE {{baseUrl}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------

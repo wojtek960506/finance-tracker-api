@@ -11,6 +11,7 @@ import { registerErrorHandler } from "./plugins/errorHandler";
 import {
   authRoutes,
   userRoutes,
+  categoryRoutes,
   transactionRoutes,
 } from "@/routes";
 
@@ -50,6 +51,7 @@ const buildApp = async () => {
   app.register(mainRoute, { prefix: "" });
   app.register(authRoutes, { prefix: "/api/auth" });
   app.register(userRoutes, { prefix: "/api/users" });
+  app.register(categoryRoutes, { prefix: "/api/categories" });
   app.register(transactionRoutes, { prefix: "/api/transactions" });
 
   await registerErrorHandler(app);
