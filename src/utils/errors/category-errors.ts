@@ -1,4 +1,4 @@
-import { AppError } from "./errors";
+import { AppError } from "./general-errors";
 
 
 export class CategoryNotFoundError extends AppError {
