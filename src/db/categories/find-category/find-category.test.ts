@@ -1,31 +1,18 @@
-import { randomObjectIdString } from "@utils/random";
+import { findCategory } from "./find-category";
 import { CategoryNotFoundError } from "@utils/errors";
 import { CategoryModel } from "@models/category-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { findCategory } from "@db/categories/find-category/find-category";
+import {
+  USER_CATEGORY_ID,
+  getUserCategoryResultSerialized,
+} from "@/test-utils/factories";
 
 
 vi.mock("@models/category-model", () => ({ CategoryModel: { findById: vi.fn() } }));
 
 describe("findCategory", () => {
 
-  const [USER_CATEGORY_ID, OWNER_ID] = [randomObjectIdString(), randomObjectIdString()];
-  const userCategory = {
-    id: USER_CATEGORY_ID,
-    type: "user",
-    name: "Food",
-    nameNormalized: "food",
-    ownerId: OWNER_ID,
-  };
-
-  // const SYSTEM_CATEGORY_ID = randomObjectIdString();
-  // const systemCategory = {
-  //   id: SYSTEM_CATEGORY_ID,
-  //   type: "system",
-  //   name: "exchange",
-  //   nameNormalized: "exchange",
-  //   ownerId: undefined,
-  // };
+  const userCategory = getUserCategoryResultSerialized();
 
   afterEach(() => { vi.clearAllMocks() });
 
