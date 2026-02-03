@@ -7,7 +7,7 @@ import { serializeCategory } from "@schemas/serializers";
 export const findCategoryById = async (id: string) => {
   const category = await CategoryModel.findById(id);
   if (!category) throw new CategoryNotFoundError(id);
-  return serializeCategory(category);
+  return category;
 }
 
 export const findCategoryByName = async (name: string) => {

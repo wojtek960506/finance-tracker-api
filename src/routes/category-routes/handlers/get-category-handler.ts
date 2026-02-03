@@ -9,7 +9,6 @@ export const getCategoryHandler = async (
 ) => {
   const categoryId = req.params.id;
   const userId = (req as AuthenticatedRequest).userId;
-
   const result = await getCategory(categoryId, userId);
   return res.code(200).send(result);
 }

@@ -28,3 +28,19 @@ export class CategoryAlreadyExistsError extends AppError {
     super(409, `Category with normalized name '${categoryName}' already exists`);
   }
 }
+
+export class SystemCategoryUpdateNotAllowed extends AppError {
+  readonly code = 'SYSTEM_CATEGORY_UPDATE_NOT_ALLOWED';
+
+  constructor(readonly categoryId: string) {
+    super(403, `Updating system category not allowed`);
+  }
+}
+
+export class UserCategoryMissingOwner extends AppError {
+  readonly code = 'USER_CATEGORY_MISSING_OWNER';
+
+  constructor(readonly categoryId: string) {
+    super(500, "Invalid category state - 'user' category is missing owner");
+  }
+}

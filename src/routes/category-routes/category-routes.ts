@@ -6,6 +6,7 @@ import {
   getCategoryHandler,
   getCategoriesHandler,
   createCategoryHandler,
+  updateCategoryHandler,
 } from "./handlers";
 import {
   CategoryDTO,
@@ -36,4 +37,10 @@ export async function categoryRoutes(
     { preHandler: [validateBody(CategorySchema), authorizeAccessToken()] },
     createCategoryHandler,
   );
+
+  app.put<{ Params: ParamsJustId, Body: CategoryDTO, Reply: CategoryResponseDTO }>(
+    "/:id",
+    { preHandler: [validateBody(CategorySchema), authorizeAccessToken()] },
+    updateCategoryHandler,
+  )
 }
