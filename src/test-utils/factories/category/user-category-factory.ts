@@ -10,6 +10,8 @@ export const getUserCategoryProps = () => ({
   ownerId: CATEGORY_OWNER_ID,
 });
 
+export const getUpdateCategoryProps = () => ({ name: "Food" });
+
 export const getUserCategoryResultJSON = () => ({
   ...commonProps,
   _id: new Types.ObjectId(USER_CATEGORY_ID),

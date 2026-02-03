@@ -8,7 +8,7 @@ import { SystemCategoryUpdateNotAllowed, UserCategoryMissingOwner } from "@utils
 export const updateCategory = async (
   categoryId: string,
   ownerId: string,
-  dto: CategoryDTO
+  dto: CategoryDTO,
 ): Promise<CategoryResponseDTO> => {
   const category = await findCategoryById(categoryId);
   if (category.type === "system")
