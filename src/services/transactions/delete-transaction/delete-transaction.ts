@@ -1,4 +1,4 @@
-import { checkTransactionOwner } from "@services/transactions";
+import { checkOwner } from "@services/general";
 import { findTransaction, removeTransaction } from "@db/transactions";
 
 
@@ -7,6 +7,6 @@ export const deleteTransaction = async (
   userId: string,
 ) => {
   const transaction = await findTransaction(transactionId);
-  checkTransactionOwner(userId, transactionId, transaction.ownerId.toString());
+  checkOwner(userId, transactionId, transaction.ownerId, "transaction");
   return removeTransaction(transactionId, transaction.refId?.toString());
 }

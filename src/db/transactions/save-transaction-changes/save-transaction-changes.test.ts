@@ -1,7 +1,7 @@
 import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
 import { saveTransactionChanges } from "@db/transactions/";
-import { serializeTransaction } from "@schemas/serialize-transaction";
+import { serializeTransaction } from "@schemas/serializers";
 import {
   getTransactionStandardDTO,
   getStandardTransactionProps,
@@ -9,7 +9,7 @@ import {
 } from "@/test-utils/mocks/transactions";
 
 
-vi.mock("@schemas/serialize-transaction", () => ({
+vi.mock("@schemas/serializers", () => ({
   serializeTransaction: vi.fn(),
 }));
 
@@ -46,4 +46,4 @@ describe("saveTransactionChanges", async () => {
      expect(serializeTransaction).toHaveBeenCalledWith(transactionAfterUpdate);
      expect(result).toEqual(transactionAfterSerialization);
   });
-})
+});

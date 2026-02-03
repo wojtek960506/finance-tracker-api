@@ -1,6 +1,6 @@
 import { ITransaction } from "@models/transaction-model";
 import { TransactionStandardDTO } from "@schemas/transaction";
-import { serializeTransaction } from "@schemas/serialize-transaction";
+import { serializeTransaction } from "@schemas/serializers";
 
 
 export const saveTransactionChanges = async (

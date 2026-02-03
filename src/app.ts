@@ -3,20 +3,20 @@ import Fastify from "fastify";
 import cors from "@fastify/cors"
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
-import { connectDB } from "@utils/db";
 import { mainRoute } from "@routes/main-route";
+import { upsertSystemCategories, connectDB } from "@/setup";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
 import {
   authRoutes,
   userRoutes,
+  categoryRoutes,
   transactionRoutes,
 } from "@/routes";
 
 
 //############################################################################################
 // TODOS                                                                                     #
-// * write unit tests because there is very big lack of unit tests here                      #
 // * revisit `user-routes` logic because maybe it is too complicated for now                 #
 //   and sometimes I do not understand why I am logged out due to problem with tokens        #
 // * write some logic to update all transactions in other currencies with exchange rate      #
@@ -32,6 +32,9 @@ const PORT = Number(process.env.PORT) || 5000;
 
 const buildApp = async () => {
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
+
+  // upsert system categories
+  await upsertSystemCategories();
   
   // register cookie
   await app.register(cookie, {
@@ -44,8 +47,9 @@ const buildApp = async () => {
   });
   
   app.register(mainRoute, { prefix: "" });
-  app.register(authRoutes, { prefix: "/api/auth" });  
+  app.register(authRoutes, { prefix: "/api/auth" });
   app.register(userRoutes, { prefix: "/api/users" });
+  app.register(categoryRoutes, { prefix: "/api/categories" });
   app.register(transactionRoutes, { prefix: "/api/transactions" });
 
   await registerErrorHandler(app);
@@ -69,7 +73,6 @@ const start = async () => {
   await connectDB();
   const app = await buildApp();
   try {
-    console.log('port from environment variables:', process.env.PORT);
     await app.listen({ port: PORT, host: "0.0.0.0" });
     console.log(`Server running on port ${PORT}`);
   } catch (err) {

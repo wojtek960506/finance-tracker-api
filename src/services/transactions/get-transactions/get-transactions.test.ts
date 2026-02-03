@@ -1,7 +1,7 @@
 import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
 import { getTransactions } from "@services/transactions";
-import { serializeTransaction } from "@schemas/serialize-transaction";
+import { serializeTransaction } from "@schemas/serializers";
 import { findTransactions, findTransactionsCount } from "@db/transactions";
 import { getStandardTransactionResultJSON } from "@/test-utils/mocks/transactions";
 
@@ -11,7 +11,7 @@ vi.mock("@db/transactions", () => ({
   findTransactionsCount: vi.fn(),
 }));
 
-vi.mock("@schemas/serialize-transaction", () => ({ serializeTransaction: vi.fn() }));
+vi.mock("@schemas/serializers", () => ({ serializeTransaction: vi.fn() }));
 
 describe('getTransactionsTest', () => {
   
@@ -40,5 +40,4 @@ describe('getTransactionsTest', () => {
       items: [transaction1, transaction2]
     });
   });
-
 });

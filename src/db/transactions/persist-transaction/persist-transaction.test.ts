@@ -1,8 +1,8 @@
 import { randomObjectIdString } from "@utils/random";
 import { persistTransaction } from "./persist-transaction";
+import { serializeTransaction } from "@schemas/serializers";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { serializeTransaction } from "@schemas/serialize-transaction";
 import { getStandardTransactionProps } from "@/test-utils/mocks/transactions";
 
 
@@ -10,7 +10,7 @@ vi.mock("@models/transaction-model", () => ({
   TransactionModel: { create: vi.fn() }
 }));
 
-vi.mock("@schemas/serialize-transaction", () => ({
+vi.mock("@schemas/serializers", () => ({
   serializeTransaction: vi.fn(),
 }))
 
@@ -34,4 +34,4 @@ describe("persistTransaction", async () => {
     expect(serializeTransaction).toHaveBeenCalledWith(transaction);
     expect(result).toEqual(transaction);
   })
-})
+});
