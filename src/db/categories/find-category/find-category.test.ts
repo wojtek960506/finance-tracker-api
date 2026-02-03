@@ -1,4 +1,4 @@
-import { findCategoryById } from "./find-category";
+import { findCategoryById, findCategoryByName } from "./find-category";
 import { CategoryNotFoundError } from "@utils/errors";
 import { CategoryModel } from "@models/category-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -8,11 +8,12 @@ import {
 } from "@/test-utils/factories";
 
 
-vi.mock("@models/category-model", () => ({ CategoryModel: { findById: vi.fn() } }));
+vi.mock("@models/category-model", () => (
+  { CategoryModel: { findById: vi.fn(), find: vi.fn() } }));
 
-describe("findCategory", () => {
+const userCategory = getUserCategoryResultSerialized();
 
-  const userCategory = getUserCategoryResultSerialized();
+describe("findCategoryById", () => {
 
   afterEach(() => { vi.clearAllMocks() });
 
@@ -33,5 +34,29 @@ describe("findCategory", () => {
 
     expect(CategoryModel.findById).toHaveBeenCalledOnce();
     expect(CategoryModel.findById).toHaveBeenCalledWith(USER_CATEGORY_ID);
+  });
+});
+
+describe("findCategoryByName", () => {
+
+  afterEach(() => { vi.clearAllMocks() });
+
+  it("category exists", async () => {
+    (CategoryModel.find as Mock).mockResolvedValue([userCategory]);
+
+    const result = await findCategoryByName("  FooD  ");
+
+    expect(CategoryModel.find).toHaveBeenCalledOnce();
+    expect(CategoryModel.find).toHaveBeenCalledWith({ nameNormalized: "food" });
+    expect(result).toEqual(userCategory);
+  });
+
+  it("category does not exist", async () => {
+    (CategoryModel.find as Mock).mockResolvedValue(undefined);
+
+    await expect(findCategoryByName(" a     B   c ")).rejects.toThrow(CategoryNotFoundError);
+
+    expect(CategoryModel.find).toHaveBeenCalledOnce();
+    expect(CategoryModel.find).toHaveBeenCalledWith({ nameNormalized: "a b c" });
   });
 });

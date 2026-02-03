@@ -1,8 +1,14 @@
 import { Types } from "mongoose";
+import { CategoryType } from "@models/category-model";
 import { CATEGORY_OWNER_ID, USER_CATEGORY_ID } from "./general-category-consts";
 
 
-const commonProps = { type: "user", name: "Food", nameNormalized: "food" }
+const commonProps = { type: "user" as CategoryType, name: "Food", nameNormalized: "food" }
+
+export const getUserCategoryProps = () => ({
+  ...commonProps,
+  ownerId: CATEGORY_OWNER_ID,
+});
 
 export const getUserCategoryResultJSON = () => ({
   ...commonProps,
