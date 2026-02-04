@@ -1,6 +1,6 @@
 import { checkOwner } from "@services/general";
 import { findTransaction } from "@db/transactions";
-import { ITransactionEnhanced, serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@schemas/serializers";
 
 
 export const getTransaction = async (
@@ -13,5 +13,5 @@ export const getTransaction = async (
     { path: "categoryId", select: '_id type name' }
   ]);
 
-  return serializeTransaction(transaction as unknown as ITransactionEnhanced);
+  return serializeTransaction(transaction);
 }

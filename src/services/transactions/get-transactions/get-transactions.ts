@@ -1,3 +1,4 @@
+import { CategoryModel } from "@models/category-model";
 import { FilteredResponse } from "@routes/routes-types";
 import { serializeTransaction } from "@schemas/serializers";
 import { TransactionQuery } from "@schemas/transaction-query";
@@ -15,15 +16,27 @@ export const getTransactions = async (
   const [transactions, total] = await Promise.all([
     findTransactions(filter, query),
     findTransactionsCount(filter),
-  ])
+  ]);
 
   const totalPages = Math.ceil(total / query.limit);
+
+  const categoryIds = transactions.map(t => t.categoryId.toString());
+  const categories = await CategoryModel.find({
+    ownerId: { $in: [userId, undefined] },
+    _id: { $in: categoryIds },
+  }).lean();
+
+  const categoriesMap = Object.fromEntries(categories.map(
+    c => [c._id.toString(), { id: c._id.toString(), type: c.type, name: c.name }]
+  ));
 
   return {
     page: query.page,
     limit: query.limit,
     total,
     totalPages,
-    items: transactions.map(transaction => serializeTransaction(transaction))
+    items: transactions.map(
+      transaction => serializeTransaction(transaction, categoriesMap)
+    )
   }
 }

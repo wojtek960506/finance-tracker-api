@@ -1,7 +1,7 @@
 import { startSession } from "mongoose";
 import { ITransaction } from "@models/transaction-model";
+import { serializeTransaction } from "@schemas/serializers";
 import { TransactionResponseDTO } from "@schemas/transaction";
-import { ITransactionEnhanced, serializeTransaction } from "@schemas/serializers";
 import { TransactionExchangeUpdateProps, TransactionTransferUpdateProps } from "./types";
 
 
@@ -39,7 +39,7 @@ export async function saveTransactionPairChanges<
   }
 
   return [
-    serializeTransaction(transaction as unknown as ITransactionEnhanced),
-    serializeTransaction(transactionRef  as unknown as ITransactionEnhanced),
+    serializeTransaction(transaction),
+    serializeTransaction(transactionRef),
   ];
 }

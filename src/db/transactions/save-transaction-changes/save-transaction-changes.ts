@@ -1,6 +1,6 @@
 import { ITransaction } from "@models/transaction-model";
+import { serializeTransaction } from "@schemas/serializers";
 import { TransactionStandardDTO } from "@schemas/transaction";
-import { ITransactionEnhanced, serializeTransaction } from "@schemas/serializers";
 
 
 export const saveTransactionChanges = async (
@@ -12,5 +12,5 @@ export const saveTransactionChanges = async (
   await transaction.populate([
     { path: "categoryId", select: '_id type name' },
   ]);
-  return serializeTransaction(transaction as unknown as ITransactionEnhanced);
+  return serializeTransaction(transaction);
 }
