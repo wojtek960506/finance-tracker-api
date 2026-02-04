@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5000/api/transactions
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMDU2ODE4LCJleHAiOjE3NzAwNTg2MTh9.vi97SWsbQa0F95Q7LvHgtPO4YDBqzHWXOMW_QvFoe-4
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMjA1NzM0LCJleHAiOjE3NzAyMDc1MzR9.Yt-JLRn1rSNsrei-UNgvJ2YxFOhnk-IcFGD9jsMClJc
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -87,6 +87,11 @@ Authorization: Bearer {{accessToken}}
 
 ### Create new standard transaction
 
+# "categoryId": "69812ea8e6de6ef869bfba38", (food)
+# "category": "transport",
+# "categoryId": "6980aef7f9f1739803300ef5", (exchange - system category)
+
+
 # @name createTransaction
 POST {{baseUrl}}/standard
 Content-Type: application/json
@@ -97,7 +102,7 @@ Authorization: Bearer {{accessToken}}
   "description": "VERY NEW TRANSACTION",
   "amount": 1.70,
   "currency": "PLN",
-  "category": "transport",
+  "categoryId": "69812ea8e6de6ef869bfba38",
   "transactionType": "expense",
   "paymentMethod": "card",
   "account": "mBank"
@@ -143,8 +148,11 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
+# "category": "food",
+# "categoryId": "69830737a0d0fb8f48f900cc" (transport)
+
 ### Update STANDARD transaction
-PUT {{baseUrl}}/standard/6976262aceeb9078893d8a43
+PUT {{baseUrl}}/standard/69830f15269a841a876428f0
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -153,7 +161,7 @@ Authorization: Bearer {{accessToken}}
   "description": "expense - food - 372.5971177941268 EUR - 2025-12-24",
   "amount": 372.5971177941268,
   "currency": "EUR",
-  "category": "food",
+  "categoryId": "69830737a0d0fb8f48f900cc",
   "transactionType": "expense",
   "paymentMethod": "card",
   "account": "creditAgricole"
@@ -163,7 +171,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Update TRANSFER transaction
-PUT {{baseUrl}}/transfer/6976263cceeb9078893d8a51
+PUT {{baseUrl}}/transfer/69830b42269a841a876428ba
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -181,7 +189,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Update EXCHAGE transaction
-PUT {{baseUrl}}/exchange/6974d150efa585c6eca912e7
+PUT {{baseUrl}}/exchange/69830b9a269a841a876428d5
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 

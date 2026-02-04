@@ -10,9 +10,10 @@ export const createCategory = async (
   dto: CategoryDTO,
 ): Promise<CategoryResponseDTO> => {
   const { name } = dto;
-
-  const category = await findCategoryByName(name); 
-  if (category) throw new CategoryAlreadyExistsError(category.nameNormalized);
+  try {
+    const category = await findCategoryByName(name);
+    if (category) throw new CategoryAlreadyExistsError(category.nameNormalized);
+  } catch {}
 
   const props = {
     ownerId,

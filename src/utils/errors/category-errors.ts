@@ -41,6 +41,33 @@ export class UserCategoryMissingOwner extends AppError {
   readonly code = 'USER_CATEGORY_MISSING_OWNER';
 
   constructor(readonly categoryId: string) {
-    super(500, "Invalid category state - 'user' category is missing owner");
+    super(500, "Invalid category state - user category is missing owner");
+  }
+}
+
+export class SystemCategoryWrongType extends AppError {
+  readonly code = 'SYSTEM_CATEGORY_WRONG_TYPE';
+
+  constructor(readonly categoryId: string, readonly categoryName: string) {
+    super(
+      500,
+      `Invalid category state - category with name '${categoryName}' should be system category`,
+    )
+  }
+}
+
+export class SystemCategoryHasOwner extends AppError {
+  readonly code = 'SYSTEM_CATEGORY_HAS_OWNER';
+
+  constructor(readonly categoryId: string) {
+    super(500, "System category shouldn't have owner");
+  }
+}
+
+export class SystemCategoryNotAllowed extends AppError {
+  readonly code = 'SYSTEM_CATEGORY_NOT_ALLOWED';
+
+  constructor(readonly categoryId: string) {
+    super(403, "System category is not allowed in 'standard' transaction");
   }
 }

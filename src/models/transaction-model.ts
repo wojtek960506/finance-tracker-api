@@ -13,7 +13,7 @@ export interface TransactionAttributes {
   description: string;
   amount: number;
   currency: string;
-  category: string;
+  categoryId: Types.ObjectId;
   transactionType: "income" | "expense";
   paymentMethod: string;
   account: string;
@@ -45,7 +45,7 @@ const transactionSchema = new Schema<ITransaction>(
       maxlength: 3,
       enums: [...CURRENCIES]
     },
-    category: { type: String, required: true, enum: [...CATEGORIES] },
+    categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true, index: true },
     transactionType: { type: String, required: true, enum: [...TRANSACTION_TYPES] },
     paymentMethod: { type: String, required: true, enum: [...PAYMENT_METHODS] },
     account: { type: String, required: true, enum: [...ACCOUNTS] },

@@ -1,8 +1,6 @@
 import { z } from "zod";
-import { excludeFromSet } from "@utils/set";
 import {
   ACCOUNTS,
-  CATEGORIES,
   CURRENCIES,
   PAYMENT_METHODS,
   TRANSACTION_TYPES,
@@ -21,7 +19,7 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
   description: z.string().min(1, "Description is required"),
   amount: z.number().positive("Amount must be positive"),
   currency: z.enum([...CURRENCIES]),
-  category: z.enum([...excludeFromSet(CATEGORIES, ["myAccount", "exchange"])]),
+  categoryId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `categoryId`"),
   paymentMethod: z.enum([...PAYMENT_METHODS]),
   account: z.enum([...ACCOUNTS]),
   transactionType: z.enum([...TRANSACTION_TYPES]),

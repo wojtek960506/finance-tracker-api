@@ -9,18 +9,19 @@ import {
 } from "@utils/errors";
 
 
-type TransactionCategory = "exchange" | "myAccount";
+export type SystemCategoryName = "exchange" | "myAccount";
 
 export const loadTransactionWithReference = async (
   transactionId: string,
   userId: string,
-  expectedCategory: TransactionCategory,
+  expectedCategoryId: string,
+  expectedCategoryName: SystemCategoryName,
 ) => {
   const transaction = await findTransaction(transactionId);
   checkOwner(userId, transactionId, transaction.ownerId, "transaction");
 
-  if (transaction.category !== expectedCategory) {
-    if (expectedCategory === "myAccount")
+  if (transaction.categoryId.toString() !== expectedCategoryId) {
+    if (expectedCategoryName === "myAccount")
       throw new TransactionTransferCategoryError(transactionId);
     else
       throw new TransactionExchangeCategoryError(transactionId);
@@ -32,8 +33,8 @@ export const loadTransactionWithReference = async (
   const transactionRef = await findTransaction(transaction.refId!.toString());
   checkOwner(userId, transactionRef.id, transactionRef.ownerId, "transaction");
 
-  if (transactionRef.category !== expectedCategory) {
-    if (expectedCategory === "myAccount")
+  if (transactionRef.categoryId.toString() !== expectedCategoryId) {
+    if (expectedCategoryName === "myAccount")
       throw new TransactionTransferCategoryError(transactionRef.id);
     else
       throw new TransactionExchangeCategoryError(transactionRef.id);
@@ -46,13 +47,13 @@ export const loadTransactionWithReference = async (
     throw new TransactionWrongReferenceError(
       transactionRef.id.toString(),
       transactionRef.refId.toString(),
-    )
+    );
 
   if (transactionRef.transactionType === transaction.transactionType)
     throw new TransactionWrongTypesError(
       transactionId,
       transactionRef.id.toString()
-    )
+    );
 
   return { transaction, transactionRef }
 }

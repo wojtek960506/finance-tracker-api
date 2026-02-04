@@ -14,6 +14,8 @@ export const findCategoryByName = async (name: string) => {
   const categoriesByName = await CategoryModel.find(
     { nameNormalized: normalizeWhitespace(name).toLowerCase() }
   );
-  if (!categoriesByName) throw new CategoryNotFoundError(undefined, name);
+
+  if (categoriesByName.length === 0)
+    throw new CategoryNotFoundError(undefined, name);
   return serializeCategory(categoriesByName[0]);
 }
