@@ -1,7 +1,20 @@
+
+### LOGIN
+# @name loginReq
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@test.com",
+  "password": "123"
+}
+
+###
+
 @baseUrl = http://localhost:5000/api/transactions
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMjA1NzM0LCJleHAiOjE3NzAyMDc1MzR9.Yt-JLRn1rSNsrei-UNgvJ2YxFOhnk-IcFGD9jsMClJc
+@accessToken = {{loginReq.response.body.accessToken}}
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -26,7 +39,7 @@
 
 ### Get transactions with pagination, filters and sorting
 
-GET {{baseUrl}}?{{exchange}}&{{sorting}}&{{pagination}}
+GET {{baseUrl}}?{{sorting}}&{{pagination}}&startDate=2026-02-04
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -74,7 +87,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Get single transaction
-GET {{baseUrl}}/6958215e420fe37be9ee76a5
+GET {{baseUrl}}/69830f15269a841a876428f0
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -98,7 +111,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2026-02-04",
   "description": "VERY NEW TRANSACTION",
   "amount": 1.70,
   "currency": "PLN",
@@ -117,7 +130,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2026-02-04",
   "additionalDescription": "some additional desc",  
   "amountExpense": 20,
   "amountIncome": 84.23,
@@ -136,7 +149,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2026-02-04",
   "additionalDescription": "z oszczędnościowego na zwykłe",  
   "amount": 12345.67,
   "currency": "PLN",

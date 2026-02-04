@@ -1,6 +1,6 @@
 import { checkOwner } from "@services/general";
 import { findTransaction } from "@db/transactions";
-import { serializeTransaction } from "@schemas/serializers";
+import { ITransactionEnhanced, serializeTransaction } from "@schemas/serializers";
 
 
 export const getTransaction = async (
@@ -9,5 +9,9 @@ export const getTransaction = async (
 ) => {
   const transaction = await findTransaction(transactionId);
   checkOwner(userId, transactionId, transaction.ownerId, "transaction");
-  return serializeTransaction(transaction);
+  await transaction.populate([
+    { path: "categoryId", select: '_id type name' }
+  ]);
+
+  return serializeTransaction(transaction as unknown as ITransactionEnhanced);
 }

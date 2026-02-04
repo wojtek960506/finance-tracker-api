@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CategoryResponseSchema } from "@schemas/category";
 import {
   ACCOUNTS,
   CURRENCIES,
@@ -52,22 +53,25 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
   paymentMethod: z.enum(["bankTransfer", "cash", "card"]),
 })
 
-export const TransactionResponseSchema = TransactionStandardSchema.extend({
-  id: z.string(),
-  ownerId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `ownerId`"),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
-  // TODO - probably move it to create schema later while enhancing logic for adding transaction
-  sourceIndex: z.number(),
-  sourceRefIndex: z.number().optional(),
-  refId: z.string().regex(
-    /^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `refId`"
-  ).optional(),
-  currencies: z.string()
-  .min(7, "'currencies' must be in format 'XXX/XXX'")
-  .max(7, "'currencies' must be in format 'XXX/XXX'").optional(),
-  exchangeRate: z.number().optional(),
-})
+export const TransactionResponseSchema = TransactionStandardSchema
+  .omit({ categoryId: true })
+  .extend({
+    id: z.string(),
+    ownerId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `ownerId`"),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    sourceIndex: z.number(),
+    sourceRefIndex: z.number().optional(),
+    refId: z.string().regex(
+      /^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `refId`"
+    ).optional(),
+    currencies: z.string()
+    .min(7, "'currencies' must be in format 'XXX/XXX'")
+    .max(7, "'currencies' must be in format 'XXX/XXX'").optional(),
+    exchangeRate: z.number().optional(),
+    category: CategoryResponseSchema.pick({ id: true, type: true, name: true }),
+  }
+)
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
 

@@ -1,7 +1,7 @@
 import { startSession } from "mongoose";
 import { ITransaction } from "@models/transaction-model";
-import { serializeTransaction } from "@schemas/serializers";
 import { TransactionResponseDTO } from "@schemas/transaction";
+import { ITransactionEnhanced, serializeTransaction } from "@schemas/serializers";
 import { TransactionExchangeUpdateProps, TransactionTransferUpdateProps } from "./types";
 
 
@@ -26,13 +26,20 @@ export async function saveTransactionPairChanges<
       }
       await transaction.save();
       await transactionRef.save();
+
+      await transaction.populate([
+        { path: "categoryId", select: '_id type name' },
+      ]);
+      await transactionRef.populate([
+        { path: "categoryId", select: '_id type name' },
+      ]);
     })
   } finally {
     await session.endSession();
   }
 
   return [
-    serializeTransaction(transaction),
-    serializeTransaction(transactionRef),
-  ]
+    serializeTransaction(transaction as unknown as ITransactionEnhanced),
+    serializeTransaction(transactionRef  as unknown as ITransactionEnhanced),
+  ];
 }
