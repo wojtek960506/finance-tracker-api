@@ -4,7 +4,7 @@ import { CategoryModel } from "@models/category-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { findCategoryById, findCategoryByName } from "./find-category";
 import {
-  USER_CATEGORY_ID,
+  FOOD_CATEGORY_ID_STR,
   getUserCategoryResultSerialized,
 } from "@/test-utils/factories";
 
@@ -22,20 +22,20 @@ describe("findCategoryById", () => {
   it("category exists", async () => {
     (CategoryModel.findById as Mock).mockResolvedValue(userCategory);
 
-    const result = await findCategoryById(USER_CATEGORY_ID);
+    const result = await findCategoryById(FOOD_CATEGORY_ID_STR);
 
     expect(CategoryModel.findById).toHaveBeenCalledOnce();
-    expect(CategoryModel.findById).toHaveBeenCalledWith(USER_CATEGORY_ID);
+    expect(CategoryModel.findById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
     expect(result).toEqual(userCategory);
   });
 
   it("category does not exist", async () => {
     (CategoryModel.findById as Mock).mockResolvedValue(undefined);
 
-    await expect(findCategoryById(USER_CATEGORY_ID)).rejects.toThrow(CategoryNotFoundError);
+    await expect(findCategoryById(FOOD_CATEGORY_ID_STR)).rejects.toThrow(CategoryNotFoundError);
 
     expect(CategoryModel.findById).toHaveBeenCalledOnce();
-    expect(CategoryModel.findById).toHaveBeenCalledWith(USER_CATEGORY_ID);
+    expect(CategoryModel.findById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
   });
 });
 

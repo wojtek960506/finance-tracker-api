@@ -1,20 +1,43 @@
-import { Types } from "mongoose";
-import { SYSTEM_CATEGORY_ID } from "./general-category-consts";
+import {
+  EXCHANGE_CATEGORY_ID_OBJ,
+  EXCHANGE_CATEGORY_ID_STR,
+  EXCHANGE_CATEGORY_NAME,
+  TRANSFER_CATEGORY_ID_OBJ,
+  TRANSFER_CATEGORY_ID_STR,
+  TRANSFER_CATEGORY_NAME,
+} from "./general-category-consts";
 
 
-const commonProps = { 
-  type: "system",
-  name: "exchange",
-  nameNormalized: "exchange",
-  ownerId: undefined,
+const commonProps = { type: "system", ownerId: undefined }
+const propsTransfer = {
+  name: TRANSFER_CATEGORY_NAME,
+  nameNormalized: TRANSFER_CATEGORY_NAME.toLowerCase(),
+}
+const propsExchange = {
+  name: EXCHANGE_CATEGORY_NAME,
+  nameNormalized: EXCHANGE_CATEGORY_NAME.toLowerCase(),
 }
 
-export const getSystemCategoryResultJSON = () => ({
+export const getExchangeCategoryResultJSON = () => ({
   ...commonProps,
-  _id: new Types.ObjectId(SYSTEM_CATEGORY_ID),
+  ...propsExchange,
+  _id: EXCHANGE_CATEGORY_ID_OBJ,
 });
 
-export const getSystemCategoryResultSerialized = () => ({
+export const getExchangeCategoryResultSerialized = () => ({
   ...commonProps,
-  id: SYSTEM_CATEGORY_ID,
+  ...propsExchange,
+  id: EXCHANGE_CATEGORY_ID_STR,
+});
+
+export const getTransferCategoryResultJSON = () => ({
+  ...commonProps,
+  ...propsTransfer,
+  _id: TRANSFER_CATEGORY_ID_OBJ,
+});
+
+export const getTransferCategoryResultSerialized = () => ({
+  ...commonProps,
+  ...propsTransfer,
+  id: TRANSFER_CATEGORY_ID_STR,
 });

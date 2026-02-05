@@ -1,24 +1,25 @@
 import * as db from "@db/categories";
 import { updateCategory } from "@services/categories";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { USER_ID_STR } from "@/test-utils/factories/general-consts";
 import {
   UserCategoryMissingOwner,
   SystemCategoryUpdateNotAllowed,
 } from "@utils/errors";
 import {
-  USER_CATEGORY_ID,
-  CATEGORY_OWNER_ID,
-  SYSTEM_CATEGORY_ID,
+  FOOD_CATEGORY_ID_STR,
   getUpdateCategoryProps,
+  EXCHANGE_CATEGORY_ID_STR,
   getUserCategoryResultSerialized,
-  getSystemCategoryResultSerialized,
+  getExchangeCategoryResultSerialized,
 } from "@/test-utils/factories";
+
 
 
 describe("updateCategory", () => {
 
   const userCategory = getUserCategoryResultSerialized();
-  const systemCategory = getSystemCategoryResultSerialized();
+  const systemCategory = getExchangeCategoryResultSerialized();
   const dto = getUpdateCategoryProps();
 
   afterEach(() => { vi.clearAllMocks() });
@@ -27,7 +28,7 @@ describe("updateCategory", () => {
     vi.spyOn(db, "findCategoryById").mockResolvedValue(userCategory as any);
     vi.spyOn(db, "saveCategoryChanges").mockResolvedValue(userCategory as any);
 
-    const result = await updateCategory(USER_CATEGORY_ID, CATEGORY_OWNER_ID, dto);
+    const result = await updateCategory(FOOD_CATEGORY_ID_STR, USER_ID_STR, dto);
 
     expect(db.findCategoryById).toHaveBeenCalledOnce();
     expect(db.saveCategoryChanges).toHaveBeenCalledOnce();
@@ -35,18 +36,18 @@ describe("updateCategory", () => {
   });
 
   it.each([
-    ["system category", systemCategory, SYSTEM_CATEGORY_ID, SystemCategoryUpdateNotAllowed],
+    ["system category", systemCategory, EXCHANGE_CATEGORY_ID_STR, SystemCategoryUpdateNotAllowed],
     [
       "user category without owner",
       { ...userCategory, ownerId: undefined },
-      USER_CATEGORY_ID,
+      FOOD_CATEGORY_ID_STR,
       UserCategoryMissingOwner,
     ],
   ])("throws error when updating %s", async (_, category, id, error) => {
     vi.spyOn(db, "findCategoryById").mockResolvedValue(category as any);
     vi.spyOn(db, "saveCategoryChanges");
 
-    await expect(updateCategory(id, CATEGORY_OWNER_ID, dto)).rejects.toThrow(error);
+    await expect(updateCategory(id, USER_ID_STR, dto)).rejects.toThrow(error);
 
     expect(db.findCategoryById).toHaveBeenCalledOnce();
     expect(db.findCategoryById).toHaveBeenCalledWith(id);

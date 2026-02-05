@@ -2,17 +2,17 @@ import { findCategories } from "@db/categories";
 import { describe, expect, it, vi } from "vitest";
 import * as serializers from "@schemas/serializers";
 import { CategoryModel } from "@models/category-model";
+import { USER_ID_STR } from "@/test-utils/factories/general-consts";
 import {
-  CATEGORY_OWNER_ID,
   getUserCategoryResultSerialized,
-  getSystemCategoryResultSerialized,
+  getExchangeCategoryResultSerialized,
 } from "@/test-utils/factories";
 
 
 describe("findCategories", () => {
 
   const userCategory = getUserCategoryResultSerialized();
-  const systemCategory = getSystemCategoryResultSerialized();
+  const systemCategory = getExchangeCategoryResultSerialized();
   const categories = [userCategory, systemCategory];
 
   it("find categories", async () => {
@@ -20,11 +20,11 @@ describe("findCategories", () => {
     vi.spyOn(serializers, "serializeCategory").mockReturnValueOnce(userCategory as any);
     vi.spyOn(serializers, "serializeCategory").mockReturnValueOnce(systemCategory as any);
 
-    const result = await findCategories(CATEGORY_OWNER_ID);
+    const result = await findCategories(USER_ID_STR);
 
     expect(serializers.serializeCategory).toHaveBeenCalledTimes(2);
     expect(CategoryModel.find).toHaveBeenCalledWith(
-      { $or: [{ ownerId: CATEGORY_OWNER_ID }, { type: "system" }]})
+      { $or: [{ ownerId: USER_ID_STR }, { type: "system" }]})
     expect(result).toEqual(categories);
   });
 });
