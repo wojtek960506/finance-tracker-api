@@ -1,9 +1,12 @@
-import { randomObjectIdString } from "@utils/random";
 import { persistTransaction } from "./persist-transaction";
 import { serializeTransaction } from "@schemas/serializers";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { getStandardTransactionProps } from "@/test-utils/mocks/transactions";
+import {
+  getStandardTransactionProps,
+  getStandardTransactionResultJSON,
+  getStandardTransactionResultSerialized,
+} from "@/test-utils/factories/transaction";
 
 
 vi.mock("@models/transaction-model", () => ({
@@ -15,23 +18,25 @@ vi.mock("@schemas/serializers", () => ({
 }))
 
 describe("persistTransaction", async () => {
-  const [ID, SOURCE_INDEX] = [randomObjectIdString(), 1];
-  const OWNER_ID = randomObjectIdString();
   
+  const populateMock = vi.fn();
+
   afterEach(() => { vi.clearAllMocks() });
 
+  const props = getStandardTransactionProps();
+  const transactionJSON = getStandardTransactionResultJSON();
+  const transactionSerialized = getStandardTransactionResultSerialized();
+
   it("transaction is persisted", async () => {
-    const props = getStandardTransactionProps(OWNER_ID, SOURCE_INDEX);
-    const transaction = { ...props, id: ID };
-    (TransactionModel.create as Mock).mockResolvedValue(transaction);
-    (serializeTransaction as Mock)
-      .mockReturnValueOnce(transaction)
+    const iTransaction = { ...transactionJSON, populate: populateMock };
+    (TransactionModel.create as Mock).mockResolvedValue(iTransaction);
+    (serializeTransaction as Mock).mockReturnValueOnce(transactionSerialized);
 
     const result = await persistTransaction(props);
 
     expect(TransactionModel.create).toHaveBeenCalledOnce();
     expect(TransactionModel.create).toHaveBeenCalledWith(props);
-    expect(serializeTransaction).toHaveBeenCalledWith(transaction);
-    expect(result).toEqual(transaction);
+    expect(serializeTransaction).toHaveBeenCalledWith(iTransaction);
+    expect(result).toEqual(transactionSerialized);
   })
 });

@@ -9,10 +9,12 @@ import { getCsvForTransactions } from "@/test-utils/get-csv-for-transactions";
 import { transactionRoutes } from "@routes/transaction-routes/transaction-routes";
 import {
   getTransactionExchangeDTO,
-  getTransactionStandardDTO,
-  getStandardTransactionResultJSON,
   getTransactionTransferDTO,
 } from "@/test-utils/mocks/transactions";
+import {
+  getStandardTransactionDTO,
+  getStandardTransactionResultJSON,
+} from "@/test-utils/factories/transaction";
 
 
 async function* mockAsyncCursor<T>(items: T[]) { for (const item of items) { yield item; } }
@@ -33,8 +35,8 @@ describe("transaction routes", async () => {
   await registerErrorHandler(app);
 
   const [T_ID, T_SRC_IDX] = [randomObjectIdString(), 1];
-  const standardT = getStandardTransactionResultJSON(USER_ID, T_SRC_IDX, T_ID);
-  const standardDTO = getTransactionStandardDTO();
+  const standardT = getStandardTransactionResultJSON();
+  const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getTransactionExchangeDTO();
   const transferDTO = getTransactionTransferDTO();
   
