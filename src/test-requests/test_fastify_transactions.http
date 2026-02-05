@@ -38,7 +38,6 @@ Content-Type: application/json
 #--------------------------------------------------------------------------------------
 
 ### Get transactions with pagination, filters and sorting
-
 GET {{baseUrl}}?{{sorting}}&{{pagination}}&startDate=2026-02-04
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -66,7 +65,6 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### EXPORT TRANSACTIONS AS CSV STREAM
-
 # code commented as it returns all transactions in CSV format,
 # so there is a lot of them and thus VSC gets clogged
 # GET {{baseUrl}}/export
@@ -76,7 +74,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Get all transactions (still default pagination is applied)
-GET {{baseUrl}}?startDate=2026-01-01
+GET {{baseUrl}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -221,19 +219,23 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Delete a transaction
-
-@newTransactionId = {{createTransaction.response.body.id}}
-
 DELETE {{baseUrl}}/6974d150efa585c6eca912e7
 Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-### DELETE ALL TRANSACTIONS
+### DELETE ALL TRANSACTIONS (of an authenticated user)
 # !!! BE CAREFUL !!!
-
 # DELETE {{baseUrl}}
+# Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### CREATE TEST TRANSACTIONS (only when user has no transactions)
+POST {{baseUrl}}/test
+Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------

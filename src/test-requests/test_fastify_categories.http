@@ -1,11 +1,22 @@
+### LOGIN
+# @name loginReq
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@test.com",
+  "password": "123"
+}
+
+###
+
 @baseUrl = http://localhost:5000/api/categories
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMTM4ODU3LCJleHAiOjE3NzAxNDA2NTd9.CXiKB6ZHajCQMecIfwlqOAmN3QMWV3mtHVw9hTQAstM
+@accessToken = {{loginReq.response.body.accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
 ### GET ALL CATEGORIES
-
 GET {{baseUrl}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -14,7 +25,6 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### GET CATEGORY BY ID
-
 GET {{baseUrl}}/69812ea8e6de6ef869bfba38
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -23,7 +33,6 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### CREATE NEW CATEGORY
-
 POST {{baseUrl}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -37,7 +46,6 @@ Content-Type: application/json
 #--------------------------------------------------------------------------------------
 
 ### UPDATE CATEGORY
-
 PUT {{baseUrl}}/69812ea8e6de6ef869bfba38
 Accept: application/json
 Authorization: Bearer {{accessToken}}

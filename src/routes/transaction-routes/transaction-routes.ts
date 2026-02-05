@@ -11,6 +11,7 @@ import {
   updateTransactionHandler,
   getTransactionTotalsHandler,
   deleteAllTransactionsHandler,
+  createTestTransactionsHandler,
   getTransactionStatisticsHandler,
 } from "./handlers";
 import {
@@ -141,9 +142,17 @@ export async function transactionRoutes(
     deleteTransactionHandler,
   )
 
+  // delete all transactions of an authenticated user
   app.delete<{ Reply: DeleteManyReply }>(
     "/",
     { preHandler: authorizeAccessToken() }, 
     deleteAllTransactionsHandler,
+  )
+
+  // create test transactions for authenticated user (only when it has no transactions)
+  app.post<{ Reply: { insertedCount: number }}>(
+    "/test",
+    { preHandler: authorizeAccessToken() },
+    createTestTransactionsHandler,
   )
 }
