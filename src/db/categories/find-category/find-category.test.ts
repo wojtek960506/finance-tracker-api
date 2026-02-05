@@ -6,7 +6,7 @@ import { findCategoryById, findCategoryByName } from "./find-category";
 import {
   FOOD_CATEGORY_ID_STR,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories";
+} from "@/test-utils/factories/category";
 
 
 vi.mock("@models/category-model", () => (

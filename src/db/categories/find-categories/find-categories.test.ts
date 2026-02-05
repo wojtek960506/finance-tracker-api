@@ -2,11 +2,11 @@ import { findCategories } from "@db/categories";
 import { describe, expect, it, vi } from "vitest";
 import * as serializers from "@schemas/serializers";
 import { CategoryModel } from "@models/category-model";
-import { USER_ID_STR } from "@/test-utils/factories/general-consts";
+import { USER_ID_STR } from "@/test-utils/factories/general";
 import {
   getUserCategoryResultSerialized,
   getExchangeCategoryResultSerialized,
-} from "@/test-utils/factories";
+} from "@/test-utils/factories/category";
 
 
 describe("findCategories", () => {

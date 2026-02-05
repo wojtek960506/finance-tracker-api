@@ -12,3 +12,6 @@ export const TRANSFER_CATEGORY_ID_OBJ = new Types.ObjectId(TRANSFER_CATEGORY_ID_
 export const TRANSFER_CATEGORY_NAME = "myAccount";
 export const EXCHANGE_CATEGORY_NAME = "exchange";
 export const FOOD_CATEGORY_NAME = "Food";
+
+export const CATEGORY_TYPE_SYSTEM = "system";
+export const CATEGORY_TYPE_USER = "user";

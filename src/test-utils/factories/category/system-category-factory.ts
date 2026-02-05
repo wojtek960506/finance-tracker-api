@@ -1,14 +1,16 @@
+import { CategoryType } from "@models/category-model";
 import {
+  CATEGORY_TYPE_SYSTEM,
+  EXCHANGE_CATEGORY_NAME,
+  TRANSFER_CATEGORY_NAME,
   EXCHANGE_CATEGORY_ID_OBJ,
   EXCHANGE_CATEGORY_ID_STR,
-  EXCHANGE_CATEGORY_NAME,
   TRANSFER_CATEGORY_ID_OBJ,
   TRANSFER_CATEGORY_ID_STR,
-  TRANSFER_CATEGORY_NAME,
-} from "./general-category-consts";
+} from "./category-consts";
 
 
-const commonProps = { type: "system", ownerId: undefined }
+const commonProps = { type: CATEGORY_TYPE_SYSTEM as CategoryType, ownerId: undefined }
 const propsTransfer = {
   name: TRANSFER_CATEGORY_NAME,
   nameNormalized: TRANSFER_CATEGORY_NAME.toLowerCase(),

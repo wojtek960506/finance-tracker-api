@@ -1,14 +1,16 @@
 import { CategoryType } from "@models/category-model";
+import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
 import {
   FOOD_CATEGORY_NAME,
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
-} from "./general-category-consts";
-import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general-consts";
+  CATEGORY_TYPE_USER,
+} from "./category-consts";
+
 
 
 const commonProps = {
-  type: "user" as CategoryType,
+  type: CATEGORY_TYPE_USER as CategoryType,
   name: FOOD_CATEGORY_NAME,
   nameNormalized: FOOD_CATEGORY_NAME.toLowerCase(),
 };

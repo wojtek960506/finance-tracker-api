@@ -6,7 +6,7 @@ import {
   getUserCategoryProps,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories";
+} from "@/test-utils/factories/category";
 
 
 describe("persistCategory", () => {
