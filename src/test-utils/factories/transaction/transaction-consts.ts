@@ -4,6 +4,7 @@ import { Types } from "mongoose";
 
 export const DATE_STR = "2026-02-05";
 export const DATE_OBJ = new Date(DATE_STR);
+export const DATE_ISO_STR = DATE_OBJ.toISOString();
 
 export const AMOUNT_EXPENSE = 423;
 export const AMOUNT_INCOME = 100;
