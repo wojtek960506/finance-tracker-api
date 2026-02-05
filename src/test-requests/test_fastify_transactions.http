@@ -31,14 +31,27 @@ Content-Type: application/json
 @date = startDate=2022-11-17&endDate=2023-10-30
 @date2 = startDate=2016-01-01&endDate=2017-01-01
 @sorting = sortBy=date&sortOrder=asc
-@pagination = limit=100&page=1
+@pagination = limit=44&page=1
 @type = transactionType=expense
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
+# "exchange" - "6980aef7f9f1739803300ef5"
+# "myAccount" - "6980aef8f9f1739803300ef6"
+# "Food" - "69812ea8e6de6ef869bfba38"
+# "Transport" - "69830737a0d0fb8f48f900cc"
+# "Accomodation" - "6983be0a1f23bdc4ac4b2edc"
+# "Entertainment" - "6983be0a1f23bdc4ac4b2ede"
+# "Sport" - "6983be0a1f23bdc4ac4b2ee0"
+
+@excludeCategoryIds = excludeCategoryIds=6980aef8f9f1739803300ef6,6983be0a1f23bdc4ac4b2ede
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### Get transactions with pagination, filters and sorting
-GET {{baseUrl}}?{{sorting}}&{{pagination}}&startDate=2026-02-04
+GET {{baseUrl}}?{{sorting}}&{{pagination}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -46,18 +59,22 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### GET STATISTICS ABOUT TRANSACTIONS
-@excludeCategories = excludeCategories=myAccount,investments
+
 @yearAndMonth = year=2023
 
-GET {{baseUrl}}/statistics?{{PLN}}&{{type}}&{{yearAndMonth}}&{{excludeCategories}}
+# {{PLN}}&{{type}}&{{yearAndMonth}}&
+
+GET {{baseUrl}}/statistics?{{PLN}}&{{type}}&{{excludeCategoryIds}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
+# &startDate=2024-12-01&endDate=2024-12-31
+
 ### GET TOTALS FOR TRANSACTIONS
-GET {{baseUrl}}/totals?{{excludeCategories}}&startDate=2024-12-01&endDate=2024-12-31
+GET {{baseUrl}}/totals?categoryId=69830737a0d0fb8f48f900cc
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 

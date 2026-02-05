@@ -3,6 +3,7 @@ import { CategoryResponseSchema } from "@schemas/category";
 import {
   ACCOUNTS,
   CURRENCIES,
+  OBJECT_ID_REGEX,
   PAYMENT_METHODS,
   TRANSACTION_TYPES,
 } from "@utils/consts";
@@ -20,7 +21,7 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
   description: z.string().min(1, "Description is required"),
   amount: z.number().positive("Amount must be positive"),
   currency: z.enum([...CURRENCIES]),
-  categoryId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `categoryId`"),
+  categoryId: z.string().regex(OBJECT_ID_REGEX, "Invalid ObjectId format for `categoryId`"),
   paymentMethod: z.enum([...PAYMENT_METHODS]),
   account: z.enum([...ACCOUNTS]),
   transactionType: z.enum([...TRANSACTION_TYPES]),
@@ -57,13 +58,13 @@ export const TransactionResponseSchema = TransactionStandardSchema
   .omit({ categoryId: true })
   .extend({
     id: z.string(),
-    ownerId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `ownerId`"),
+    ownerId: z.string().regex(OBJECT_ID_REGEX, "Invalid ObjectId format for `ownerId`"),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
     sourceIndex: z.number(),
     sourceRefIndex: z.number().optional(),
     refId: z.string().regex(
-      /^[0-9a-fA-F]{24}$/, "Invalid ObjectId format for `refId`"
+      OBJECT_ID_REGEX, "Invalid ObjectId format for `refId`"
     ).optional(),
     currencies: z.string()
     .min(7, "'currencies' must be in format 'XXX/XXX'")

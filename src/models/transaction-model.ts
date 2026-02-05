@@ -1,7 +1,6 @@
 import { Schema, model, Document, Types } from "mongoose";
 import {
   ACCOUNTS,
-  CATEGORIES,
   CURRENCIES,
   PAYMENT_METHODS,
   TRANSACTION_TYPES

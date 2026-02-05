@@ -8,9 +8,9 @@ export const buildTransactionFilterQuery = (
   q: TransactionFiltersQuery, ownerId: string
 ): FilterQuery<ITransaction> => {
 
-  if (q.category && q.excludeCategories) {
+  if (q.categoryId && q.excludeCategoryIds) {
     throw new ValidationError(
-      `'category' and 'excludeCategories' cannot be provided together in query`
+      `'categoryId' and 'excludeCategoryIds' cannot be provided together in query`
     );
   }
 
@@ -21,8 +21,10 @@ export const buildTransactionFilterQuery = (
   if (q.paymentMethod) query.paymentMethod = q.paymentMethod;
   if (q.account) query.account = q.account;
 
-  if (q.category) query.category = q.category;
-  if (q.excludeCategories) query.category = { $nin: q.excludeCategories }
+  if (q.categoryId) query.categoryId = new Types.ObjectId(q.categoryId);
+  if (q.excludeCategoryIds) query.categoryId = {
+    $nin: q.excludeCategoryIds.map(id => new Types.ObjectId(id))
+  }
 
   if (q.minAmount || q.maxAmount) {
     query.amount = {};

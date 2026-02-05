@@ -1,6 +1,8 @@
 // TODO - maybe later think about some support of dynamic values for constants below
 // maybe some way to specify your own additional payment methods, accounts or categories
 
+export const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
+
 export const PAYMENT_METHODS = new Set([
   "atm",
   "card",
