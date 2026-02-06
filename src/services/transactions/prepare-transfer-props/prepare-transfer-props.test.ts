@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { randomObjectIdString } from "@utils/random";
 import { prepareTransferProps } from "./prepare-transfer-props";
 import {
-  getTransactionTransferDTO,
-  getTransferTransactionProps,
+  OLD_getTransactionTransferDTO,
+  OLD_getTransferTransactionProps,
 } from "@/test-utils/mocks/transactions";
 
 
 describe("prepareTransferProps", () => {
   it("prepare props for create", () => {
-    const dto = getTransactionTransferDTO();
+    const dto = OLD_getTransactionTransferDTO();
     const OWNER_ID = randomObjectIdString();
     const EXPENSE_IDX = 1;
     const INCOME_IDX = 2;
@@ -26,7 +26,7 @@ describe("prepareTransferProps", () => {
       }
     );
 
-    const mockProps = getTransferTransactionProps(
+    const mockProps = OLD_getTransferTransactionProps(
       { ownerId: OWNER_ID, sourceIndexExpense: EXPENSE_IDX, sourceIndexIncome: INCOME_IDX }
     );
 
@@ -35,14 +35,14 @@ describe("prepareTransferProps", () => {
   })
 
   it("prepare props for update", () => {
-    const { additionalDescription, ...dto } = getTransactionTransferDTO();
+    const { additionalDescription, ...dto } = OLD_getTransactionTransferDTO();
 
     const {
       expenseTransactionProps,
       incomeTransactionProps,
     } = prepareTransferProps(dto);
 
-    const mockProps = getTransferTransactionProps();
+    const mockProps = OLD_getTransferTransactionProps();
     
     const shortenDescription = (description: string, endingToErase: string) => (
       description.slice(0, description.indexOf(endingToErase)).trim()

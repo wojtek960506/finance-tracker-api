@@ -4,8 +4,8 @@ import { removeTransaction } from "./remove-transaction";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import {
-  getStandardTransactionResultJSON,
-  getTransferTransactionResultJSON,
+  OLD_getStandardTransactionResultJSON,
+  OLD_getTransferTransactionResultJSON,
 } from "@/test-utils/mocks/transactions";
 
 
@@ -29,8 +29,8 @@ describe("removeTransaction", () => {
   const [E_ID, I_ID] = [randomObjectIdString(), randomObjectIdString()];
   const OWNER_ID = randomObjectIdString();
   const [E_SRC_IDX, I_SRC_IDX] = [1, 2];
-  const [transfer] = getTransferTransactionResultJSON(OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID);
-  const standard = getStandardTransactionResultJSON(OWNER_ID, E_SRC_IDX, E_ID);
+  const [transfer] = OLD_getTransferTransactionResultJSON(OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID);
+  const standard = OLD_getStandardTransactionResultJSON(OWNER_ID, E_SRC_IDX, E_ID);
   const RESULT_ONE = { acknowledged: true, deletedCount: 1 };
   const RESULT_TWO = { ...RESULT_ONE, deletedCount: 2 };
 

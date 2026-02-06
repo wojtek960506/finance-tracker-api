@@ -2,14 +2,14 @@ import { findTransaction } from "./find-transaction";
 import { TransactionNotFoundError } from "@utils/errors";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { getStandardTransactionResultJSON } from "@/test-utils/mocks/transactions";
+import { OLD_getStandardTransactionResultJSON } from "@/test-utils/mocks/transactions";
 
 
 vi.mock("@models/transaction-model", () => ({ TransactionModel: { findById: vi.fn() } }));
 
 describe("findTransaction", () => {
   const TRANSACTION_ID = "123"
-  const transaction = getStandardTransactionResultJSON("234", 1, TRANSACTION_ID)
+  const transaction = OLD_getStandardTransactionResultJSON("234", 1, TRANSACTION_ID)
 
   afterEach(() => { vi.clearAllMocks(); });
   

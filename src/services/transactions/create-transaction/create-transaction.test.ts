@@ -8,12 +8,12 @@ import {
   createTransferTransaction,
 } from "./create-transaction";
 import {
-  getTransactionStandardDTO,
-  getTransactionExchangeDTO,
-  getTransactionTransferDTO,
-  getStandardTransactionResultJSON,
-  getExchangeTransactionResultJSON,  
-  getTransferTransactionResultJSON,
+  OLD_getTransactionStandardDTO,
+  OLD_getTransactionExchangeDTO,
+  OLD_getTransactionTransferDTO,
+  OLD_getStandardTransactionResultJSON,
+  OLD_getExchangeTransactionResultJSON,  
+  OLD_getTransferTransactionResultJSON,
 } from "@/test-utils/mocks/transactions";
 
 
@@ -38,8 +38,8 @@ describe("createStandardTransaction", async () => {
   afterEach(() => { vi.clearAllMocks() });
 
   it("should create standard transaction", async () => {
-    const dto = getTransactionStandardDTO();
-    const transaction = getStandardTransactionResultJSON(
+    const dto = OLD_getTransactionStandardDTO();
+    const transaction = OLD_getStandardTransactionResultJSON(
       OWNER_ID, EXPENSE_SOURCE_INDEX, EXPENSE_ID
     );
     (persistTransaction as Mock).mockResolvedValue(transaction);
@@ -54,8 +54,8 @@ describe("createStandardTransaction", async () => {
   });
 
   it("should create exchange transaction", async () => {
-    const dto = getTransactionExchangeDTO();
-    const expectedResult = getExchangeTransactionResultJSON(
+    const dto = OLD_getTransactionExchangeDTO();
+    const expectedResult = OLD_getExchangeTransactionResultJSON(
       OWNER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
     );
     (persistTransactionPair as Mock).mockResolvedValue(expectedResult);
@@ -73,8 +73,8 @@ describe("createStandardTransaction", async () => {
   });
 
   it("should create transfer transaction", async () => {
-    const dto = getTransactionTransferDTO();
-    const expectedResult = getTransferTransactionResultJSON(
+    const dto = OLD_getTransactionTransferDTO();
+    const expectedResult = OLD_getTransferTransactionResultJSON(
       OWNER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
     );
     (persistTransactionPair as Mock).mockResolvedValue(expectedResult);

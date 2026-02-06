@@ -9,7 +9,7 @@ const paymentMethod = "card";
 const description = "some transaction";
 const transactionType = "expense";
 
-export const getTransactionStandardDTO = () => ({
+export const OLD_getTransactionStandardDTO = () => ({
   date,
   amount,
   currency,
@@ -20,18 +20,18 @@ export const getTransactionStandardDTO = () => ({
   transactionType,
 } as TransactionStandardDTO);
 
-export const getStandardTransactionProps = (ownerId: string, sourceIndex: number) => ({
-  ...getTransactionStandardDTO(),
+export const OLD_getStandardTransactionProps = (ownerId: string, sourceIndex: number) => ({
+  ...OLD_getTransactionStandardDTO(),
   ownerId,
   sourceIndex,
 })
 
-export const getStandardTransactionResultJSON = (
+export const OLD_getStandardTransactionResultJSON = (
   ownerId: string,
   sourceIndex: number,
   transactionId: string,
 ) => {
-  const props = getStandardTransactionProps(ownerId, sourceIndex);
+  const props = OLD_getStandardTransactionProps(ownerId, sourceIndex);
   return {
     ...props,
     id: transactionId,

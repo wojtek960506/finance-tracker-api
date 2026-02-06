@@ -3,7 +3,7 @@ import { describe, expect, it, Mock, vi } from "vitest";
 import { getTransactions } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serializers";
 import { findTransactions, findTransactionsCount } from "@db/transactions";
-import { getStandardTransactionResultJSON } from "@/test-utils/mocks/transactions";
+import { OLD_getStandardTransactionResultJSON } from "@/test-utils/mocks/transactions";
 
 
 vi.mock("@db/transactions", () => ({
@@ -18,8 +18,8 @@ describe('getTransactionsTest', () => {
   it("get transactions", async () => {
     const USER_ID = randomObjectIdString();
     const TOTAL = 2;
-    const transaction1 = getStandardTransactionResultJSON(USER_ID, 1, "1");
-    const transaction2 = getStandardTransactionResultJSON(USER_ID, 2, "2");
+    const transaction1 = OLD_getStandardTransactionResultJSON(USER_ID, 1, "1");
+    const transaction2 = OLD_getStandardTransactionResultJSON(USER_ID, 2, "2");
     const query = { page: 1, limit: 10, sortBy: "date", sortOrder: "desc" } as const;
 
     (findTransactions as Mock).mockResolvedValue([transaction1, transaction2]);

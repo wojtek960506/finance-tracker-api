@@ -11,7 +11,7 @@ const accountIncome = "veloBank";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "savings";
 
-export const getTransactionTransferDTO = () => ({
+export const OLD_getTransactionTransferDTO = () => ({
   date,
   amount,
   currency,
@@ -27,15 +27,15 @@ type AdditionalProps = {
   sourceIndexIncome: number,
 }
 
-export function getTransferTransactionProps (): {
+export function OLD_getTransferTransactionProps (): {
   expenseProps: TransactionTransferUpdateProps,
   incomeProps: TransactionTransferUpdateProps,
 }
-export function getTransferTransactionProps (additionalProps: AdditionalProps): {
+export function OLD_getTransferTransactionProps (additionalProps: AdditionalProps): {
   expenseProps: TransactionTransferCreateProps,
   incomeProps: TransactionTransferCreateProps,
 }
-export function getTransferTransactionProps (additionalProps?: AdditionalProps) {
+export function OLD_getTransferTransactionProps (additionalProps?: AdditionalProps) {
   const commonProps = {
     category: "myAccount",
     date,
@@ -81,14 +81,14 @@ export function getTransferTransactionProps (additionalProps?: AdditionalProps) 
   }
 }
 
-export const getTransferTransactionResultJSON = (
+export const OLD_getTransferTransactionResultJSON = (
   ownerId: string,
   expenseSourceIndex: number,
   incomeSourceIndex: number,
   expenseId: string,
   incomeId: string,
 ) => {
-  const { expenseProps, incomeProps } = getTransferTransactionProps({
+  const { expenseProps, incomeProps } = OLD_getTransferTransactionProps({
       ownerId, sourceIndexExpense: expenseSourceIndex, sourceIndexIncome: incomeSourceIndex
     });
     const expenseTransaction = { 

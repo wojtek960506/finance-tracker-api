@@ -12,12 +12,12 @@ import {
   updateTransferTransaction,
 } from "@services/transactions";
 import {
-  getTransactionStandardDTO,
-  getTransactionTransferDTO,
-  getTransactionExchangeDTO,
-  getStandardTransactionResultJSON,
-  getTransferTransactionResultJSON,
-  getExchangeTransactionResultJSON,
+  OLD_getTransactionStandardDTO,
+  OLD_getTransactionTransferDTO,
+  OLD_getTransactionExchangeDTO,
+  OLD_getStandardTransactionResultJSON,
+  OLD_getTransferTransactionResultJSON,
+  OLD_getExchangeTransactionResultJSON,
 } from "@/test-utils/mocks/transactions";
 
 
@@ -33,18 +33,18 @@ describe('update transaction', async () => {
   const [E_SRC_IDX, I_SRC_IDX] = [1, 2];
   const OWNER_ID = randomObjectIdString();
 
-  const expectedExchange = getExchangeTransactionResultJSON(
+  const expectedExchange = OLD_getExchangeTransactionResultJSON(
     OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID
   );
-  const expectedTransfer = getTransferTransactionResultJSON(
+  const expectedTransfer = OLD_getTransferTransactionResultJSON(
     OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID
   );
 
   afterEach(() => { vi.clearAllMocks() });
 
   it("update standard transaction", async () => {
-    const dto = getTransactionStandardDTO();
-    const expectedResult = getStandardTransactionResultJSON(OWNER_ID, E_SRC_IDX, E_ID);
+    const dto = OLD_getTransactionStandardDTO();
+    const expectedResult = OLD_getStandardTransactionResultJSON(OWNER_ID, E_SRC_IDX, E_ID);
     (findTransaction as Mock).mockResolvedValue(expectedResult);
     (saveTransactionChanges as Mock).mockResolvedValue(expectedResult);
 
@@ -56,8 +56,8 @@ describe('update transaction', async () => {
   })
 
   it.each([
-    ["transfer", expectedTransfer, getTransactionTransferDTO(), updateTransferTransaction],
-    ["exchange", expectedExchange, getTransactionExchangeDTO(), updateExchangeTransaction],
+    ["transfer", expectedTransfer, OLD_getTransactionTransferDTO(), updateTransferTransaction],
+    ["exchange", expectedExchange, OLD_getTransactionExchangeDTO(), updateExchangeTransaction],
   ])('udate %s transaction', async (_, expectedResult, dto, updateFunc) => {
     (loadTransactionWithReference as Mock).mockResolvedValue(expectedResult);
     (saveTransactionPairChanges as Mock).mockResolvedValue(expectedResult);

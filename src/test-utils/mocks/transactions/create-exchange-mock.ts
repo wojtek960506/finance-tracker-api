@@ -12,7 +12,7 @@ const account = "revolut";
 const paymentMethod = "bankTransfer";
 const additionalDescription = "for travel";
 
-export const getTransactionExchangeDTO = () => ({
+export const OLD_getTransactionExchangeDTO = () => ({
   date,
   amountExpense,
   amountIncome,
@@ -29,15 +29,15 @@ type AdditionalProps = {
   sourceIndexIncome: number,
 }
 
-export function getExchangeTransactionProps (): {
+export function OLD_getExchangeTransactionProps (): {
   expenseProps: TransactionExchangeUpdateProps,
   incomeProps: TransactionExchangeUpdateProps,
 }
-export function getExchangeTransactionProps (additionalProps: AdditionalProps): {
+export function OLD_getExchangeTransactionProps (additionalProps: AdditionalProps): {
   expenseProps: TransactionExchangeCreateProps,
   incomeProps: TransactionExchangeCreateProps,
 }
-export function getExchangeTransactionProps (additionalProps?: AdditionalProps) {
+export function OLD_getExchangeTransactionProps (additionalProps?: AdditionalProps) {
   const commonProps = {
     category: "exchange",
     date,
@@ -86,14 +86,14 @@ export function getExchangeTransactionProps (additionalProps?: AdditionalProps) 
   }
 }
 
-export const getExchangeTransactionResultJSON = (
+export const OLD_getExchangeTransactionResultJSON = (
   ownerId: string,
   expenseSourceIndex: number,
   incomeSourceIndex: number,
   expenseId: string,
   incomeId: string,
 ) => {
-  const { expenseProps, incomeProps } = getExchangeTransactionProps({
+  const { expenseProps, incomeProps } = OLD_getExchangeTransactionProps({
     ownerId, sourceIndexExpense: expenseSourceIndex, sourceIndexIncome: incomeSourceIndex
   });
   const expenseTransaction = { 
