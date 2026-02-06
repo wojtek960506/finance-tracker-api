@@ -49,6 +49,11 @@ export const getStandardTransactionResultJSON = () => ({
   },
 });
 
+export const getStandardTransactionNotPopulatedResultJSON = () => {
+  const { categoryId, ...props } = getStandardTransactionResultJSON();
+  return { ...props, categoryId: categoryId._id }
+}
+
 export const getStandardTransactionResultSerialized = () => {
   const { categoryId, ...props } = getStandardTransactionProps();
 

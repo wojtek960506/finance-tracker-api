@@ -9,6 +9,7 @@ export interface CategoryAttributes {
   nameNormalized: string,
 };
 export interface ICategory extends CategoryAttributes, Document {
+  __v: number,
   _id: Types.ObjectId,
   ownerId: Types.ObjectId,
 };
