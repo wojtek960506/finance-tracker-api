@@ -121,6 +121,20 @@ export const getExchangeTransactionResultJSON = () => {
   return { expenseTransactionJSON, incomeTransactionJSON }
 }
 
+export const getExchangeTransactionNotPopulatedResultJSON = () => {
+  const { expenseTransactionJSON, incomeTransactionJSON } = getExchangeTransactionResultJSON();
+  return {
+    expenseTransactionNotPopulatedJSON: {
+      ...expenseTransactionJSON,
+      categoryId: expenseTransactionJSON.categoryId._id
+    },
+    incomeTransactionNotPopulatedJSON: {  
+      ...incomeTransactionJSON,
+      categoryId: incomeTransactionJSON.categoryId._id
+    }
+  }
+}
+
 export const getExchangeTransactionResultSerialized = () => {
   const { expenseProps, incomeProps } = getExchangeTransactionProps(true);
   const { categoryId: categoryId1, ...expensePropsRest } = expenseProps;

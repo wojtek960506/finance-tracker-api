@@ -31,28 +31,31 @@ export const loadTransactionWithReference = async (
     throw new TransactionMissingReferenceError(transactionId);
 
   const transactionRef = await findTransaction(transaction.refId!.toString());
-  checkOwner(userId, transactionRef.id, transactionRef.ownerId, "transaction");
+  
+  const transactionRefId = transactionRef._id.toString();
+  
+  checkOwner(userId, transactionRefId, transactionRef.ownerId, "transaction");
 
   if (transactionRef.categoryId.toString() !== expectedCategoryId) {
     if (expectedCategoryName === "myAccount")
-      throw new TransactionTransferCategoryError(transactionRef.id);
+      throw new TransactionTransferCategoryError(transactionRefId);
     else
-      throw new TransactionExchangeCategoryError(transactionRef.id);
+      throw new TransactionExchangeCategoryError(transactionRefId);
   }
 
   if (transactionRef.refId === undefined)
-    throw new TransactionMissingReferenceError(transactionRef.id);
+    throw new TransactionMissingReferenceError(transactionRefId);
 
   if (transactionRef.refId.toString() !== transactionId)
     throw new TransactionWrongReferenceError(
-      transactionRef.id.toString(),
+      transactionRefId,
       transactionRef.refId.toString(),
     );
 
   if (transactionRef.transactionType === transaction.transactionType)
     throw new TransactionWrongTypesError(
       transactionId,
-      transactionRef.id.toString()
+      transactionRefId,
     );
 
   return { transaction, transactionRef }

@@ -1,8 +1,7 @@
-import { randomObjectIdString } from "@utils/random";
-import { loadTransactionWithReference } from "@db/transactions";
+import { USER_ID_STR } from "@/test-utils/factories/general";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { findTransaction } from "@db/transactions/find-transaction";
-import { getTransferTransactionResultJSON } from "@/test-utils/mocks/transactions";
+import { loadTransactionWithReference, SystemCategoryName } from "@db/transactions";
 import {
   TransactionWrongTypesError,
   TransactionWrongReferenceError,
@@ -10,111 +9,142 @@ import {
   TransactionMissingReferenceError,
   TransactionTransferCategoryError,
 } from "@utils/errors";
+import {
+  FOOD_CATEGORY_ID_STR,
+  EXCHANGE_CATEGORY_NAME,
+  EXCHANGE_CATEGORY_ID_STR,
+} from "@/test-utils/factories/category";
+import {
+  TRANSACTION_TYPE_EXPENSE,
+  EXCHANGE_TXN_INCOME_ID_STR,
+  EXCHANGE_TXN_EXPENSE_ID_STR,
+  getExchangeTransactionNotPopulatedResultJSON,
+} from "@/test-utils/factories/transaction";
 
 
 vi.mock("@db/transactions/find-transaction", () => ({ findTransaction: vi.fn() }));
 
 describe('loadTransactionWithReference', () => {
   
-  const [E_ID, I_ID] = [randomObjectIdString(), randomObjectIdString()];
-  const [E_SRC_IDX, I_SRC_IDX] = [1, 2];
-  const OWNER_ID = randomObjectIdString();
-  const TRANSFER_CATEGORY = "myAccount";
-  const EXCHANGE_CATEGORY = "exchange";
-  
-  const [expenseTransaction, incomeTransaction] = getTransferTransactionResultJSON(
-    OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID
-  );
+  const {
+    expenseTransactionNotPopulatedJSON,
+    incomeTransactionNotPopulatedJSON,
+  } = getExchangeTransactionNotPopulatedResultJSON();
 
   afterEach(() => { vi.clearAllMocks() });
 
   it("loaded correctly", async () => {
     (findTransaction as Mock)
-      .mockResolvedValueOnce(expenseTransaction)
-      .mockResolvedValueOnce(incomeTransaction);
+      .mockResolvedValueOnce(expenseTransactionNotPopulatedJSON)
+      .mockResolvedValueOnce(incomeTransactionNotPopulatedJSON);
 
     const { transaction, transactionRef } = await loadTransactionWithReference(
-      E_ID, OWNER_ID, TRANSFER_CATEGORY
+      EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, EXCHANGE_CATEGORY_ID_STR, EXCHANGE_CATEGORY_NAME
     );
 
     expect(findTransaction).toHaveBeenCalledTimes(2);
-    expect(findTransaction).toHaveBeenNthCalledWith(1, E_ID);
-    expect(findTransaction).toHaveBeenNthCalledWith(2, I_ID);
-    expect(transaction).toEqual(expenseTransaction);
-    expect(transactionRef).toEqual(incomeTransaction);
+    expect(findTransaction).toHaveBeenNthCalledWith(1, EXCHANGE_TXN_EXPENSE_ID_STR);
+    expect(findTransaction).toHaveBeenNthCalledWith(2, EXCHANGE_TXN_INCOME_ID_STR);
+    expect(transaction).toEqual(expenseTransactionNotPopulatedJSON);
+    expect(transactionRef).toEqual(incomeTransactionNotPopulatedJSON);
   });
 
   it.each([
-    ["transfer", TRANSFER_CATEGORY, TransactionTransferCategoryError],
-    ["exchange", EXCHANGE_CATEGORY, TransactionExchangeCategoryError]
+    // TODO - uncomment it when proper test data factories will be created for transfer transaction
+    // ["transfer", TRANSFER_CATEGORY, TransactionTransferCategoryError],
+    [
+      "exchange",
+      EXCHANGE_CATEGORY_ID_STR,
+      EXCHANGE_CATEGORY_NAME,
+      TransactionExchangeCategoryError
+    ],
   ])("throws if reference transaction has wrong category ('%s')",
-    async (_, expectedCategory, expectedError) => {
-      (findTransaction as Mock)
-        .mockResolvedValueOnce({ ...expenseTransaction, category: "food" })  
+    async (_, expectedCategoryId, expectedCategoryName, expectedError) => {
+      (findTransaction as Mock).mockResolvedValueOnce(
+        { ...expenseTransactionNotPopulatedJSON, categoryId: FOOD_CATEGORY_ID_STR }
+      );  
 
-      await expect(
-        loadTransactionWithReference(E_ID, OWNER_ID, expectedCategory as "exchange" | "myAccount")
-      ).rejects.toThrow(expectedError);
+      await expect(loadTransactionWithReference(
+        EXCHANGE_TXN_EXPENSE_ID_STR,
+        USER_ID_STR,
+        expectedCategoryId,
+        expectedCategoryName as SystemCategoryName,
+      )).rejects.toThrow(expectedError);
       expect(findTransaction).toHaveBeenCalledTimes(1);
     }
   );
 
   it("throws if main transaction is missing refId", async () => {
     (findTransaction as Mock)
-      .mockResolvedValueOnce({ ...expenseTransaction, refId: undefined });
+      .mockResolvedValueOnce({ ...expenseTransactionNotPopulatedJSON, refId: undefined });
 
-    await expect(
-      loadTransactionWithReference(E_ID, OWNER_ID, TRANSFER_CATEGORY)
-    ).rejects.toThrow(TransactionMissingReferenceError);
+    await expect(loadTransactionWithReference(
+      EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, EXCHANGE_CATEGORY_ID_STR, EXCHANGE_CATEGORY_NAME
+    )).rejects.toThrow(TransactionMissingReferenceError);
     expect(findTransaction).toHaveBeenCalledOnce();
   });
 
   it.each([
-    ["transfer", TRANSFER_CATEGORY, TransactionTransferCategoryError],
-    ["exchange", EXCHANGE_CATEGORY, TransactionExchangeCategoryError]
+    // TODO - uncomment it when proper test data factories will be created for transfer transaction
+    // ["transfer", TRANSFER_CATEGORY, TransactionTransferCategoryError],
+    [
+      "exchange",
+      EXCHANGE_CATEGORY_ID_STR,
+      EXCHANGE_CATEGORY_NAME,
+      TransactionExchangeCategoryError
+    ],
   ])("throws if reference transaction has wrong category ('%s')",
-    async (_, expectedCategory, expectedError) => {
+    async (_, expectedCategoryId, expectedCategoryName, expectedError) => {
       (findTransaction as Mock)
-        .mockResolvedValueOnce({ ...expenseTransaction, category: expectedCategory })  
-        .mockResolvedValueOnce({ ...incomeTransaction, category: "food" });
+        .mockResolvedValueOnce(expenseTransactionNotPopulatedJSON)  
+        .mockResolvedValueOnce(
+          { ...incomeTransactionNotPopulatedJSON, categoryId: FOOD_CATEGORY_ID_STR }
+        );
 
-      await expect(
-        loadTransactionWithReference(E_ID, OWNER_ID, expectedCategory as "exchange" | "myAccount")
-      ).rejects.toThrow(expectedError);
+      await expect(loadTransactionWithReference(
+        EXCHANGE_TXN_EXPENSE_ID_STR,
+        USER_ID_STR,
+        expectedCategoryId,
+        expectedCategoryName as SystemCategoryName,
+      )).rejects.toThrow(expectedError);
       expect(findTransaction).toHaveBeenCalledTimes(2);
     }
   );
 
   it("throws if reference transaction is missing refId", async () => {
     (findTransaction as Mock)
-      .mockResolvedValueOnce(expenseTransaction)
-      .mockResolvedValueOnce({ ...incomeTransaction, refId: undefined });
+      .mockResolvedValueOnce(expenseTransactionNotPopulatedJSON)
+      .mockResolvedValueOnce({ ...incomeTransactionNotPopulatedJSON, refId: undefined });
 
-    await expect(
-      loadTransactionWithReference(E_ID, OWNER_ID, TRANSFER_CATEGORY)
-    ).rejects.toThrow(TransactionMissingReferenceError);
+    await expect(loadTransactionWithReference(
+      EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, EXCHANGE_CATEGORY_ID_STR, EXCHANGE_CATEGORY_NAME
+    )).rejects.toThrow(TransactionMissingReferenceError);
     expect(findTransaction).toHaveBeenCalledTimes(2);
   });
 
   it("throws if reference transaction's refId is not pointing to main transaction", async () => {
     (findTransaction as Mock)
-      .mockResolvedValueOnce(expenseTransaction)
-      .mockResolvedValueOnce({ ...incomeTransaction, refId: "123" });
+      .mockResolvedValueOnce(expenseTransactionNotPopulatedJSON)
+      .mockResolvedValueOnce(
+        { ...incomeTransactionNotPopulatedJSON, refId: EXCHANGE_TXN_INCOME_ID_STR }
+      );
 
-    await expect(
-      loadTransactionWithReference(E_ID, OWNER_ID, TRANSFER_CATEGORY)
-    ).rejects.toThrow(TransactionWrongReferenceError);
+    await expect(loadTransactionWithReference(
+      EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, EXCHANGE_CATEGORY_ID_STR, EXCHANGE_CATEGORY_NAME
+    )).rejects.toThrow(TransactionWrongReferenceError);
     expect(findTransaction).toHaveBeenCalledTimes(2);
   });
 
   it("throws if both transactions have the same type", async () => {
     (findTransaction as Mock)
-      .mockResolvedValueOnce({ ...expenseTransaction, transactionType: "expense" })
-      .mockResolvedValueOnce({ ...incomeTransaction, transactionType: "expense" });
+      .mockResolvedValueOnce(
+        { ...expenseTransactionNotPopulatedJSON, transactionType: TRANSACTION_TYPE_EXPENSE })
+      .mockResolvedValueOnce(
+        { ...incomeTransactionNotPopulatedJSON, transactionType: TRANSACTION_TYPE_EXPENSE });
 
-    await expect(
-      loadTransactionWithReference(E_ID, OWNER_ID, TRANSFER_CATEGORY)
-    ).rejects.toThrow(TransactionWrongTypesError);
+    await expect(loadTransactionWithReference(
+      EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, EXCHANGE_CATEGORY_ID_STR, EXCHANGE_CATEGORY_NAME
+    )).rejects.toThrow(TransactionWrongTypesError);
     expect(findTransaction).toHaveBeenCalledTimes(2);
   });
 })
