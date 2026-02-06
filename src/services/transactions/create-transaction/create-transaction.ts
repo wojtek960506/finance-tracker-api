@@ -1,7 +1,7 @@
 import { findCategoryById } from "@db/categories";
+import { persistTransaction } from "@db/transactions";
 import { SystemCategoryNotAllowed } from "@utils/errors";
 import { createTransactionPair } from "./create-transaction-pair";
-import { persistTransaction } from "@db/transactions/persist-transaction";
 import {
   TransactionResponseDTO,
   TransactionStandardDTO,
@@ -14,13 +14,6 @@ import {
   prepareExchangeProps,
 } from "@services/transactions";
 
-
-// TODO (create transaction endpoints work after quick manual testing)
-// - test manually update transcation endpoints
-// - correct all unit tests which are broken by the changes for create and update of transactions
-// - update retriving transaction to have full information about category
-// - think about updating transaction factory functions (currently named mocks) to have similar
-//   structure as for categories
 
 export const createStandardTransaction = async (
   dto: TransactionStandardDTO,
