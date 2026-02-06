@@ -1,12 +1,11 @@
 import { startSession } from "mongoose";
-import { randomObjectIdString } from "@utils/random";
 import { serializeTransaction } from "@schemas/serializers";
 import { saveTransactionPairChanges } from "@db/transactions";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import {
-  getTransferTransactionProps,
-  getTransferTransactionResultJSON,
-} from "@/test-utils/mocks/transactions";
+  getExchangeTransactionProps,
+  getExchangeTransactionResultSerialized,
+} from "@/test-utils/factories/transaction";
 
 
 const withTransactionMock = vi.fn();
@@ -28,108 +27,98 @@ vi.mock("@schemas/serializers", () => ({ serializeTransaction: vi.fn() }));
 
 describe("saveTransactionPairChanges", () => {
   const [saveMock1, saveMock2] = [vi.fn(), vi.fn()];
+  const [populateMock1, populateMock2] = [vi.fn(), vi.fn()];
 
-  const [EXPENSE_ID, INCOME_ID] = [randomObjectIdString(), randomObjectIdString()];
-  const [EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX] = [1, 2];
-  const OWNER_ID = randomObjectIdString();
-  const { expenseProps, incomeProps } = getTransferTransactionProps();
+  const { expenseProps, incomeProps } = getExchangeTransactionProps();
+
+  const {
+    expenseTransactionSerialized,
+    incomeTransactionSerialized,
+  } = getExchangeTransactionResultSerialized();
+
 
   const transactionExpense = {
+    ...expenseTransactionSerialized,
     ...expenseProps,
-    _id: EXPENSE_ID,
-    ownerId: OWNER_ID,
-    refId: INCOME_ID,
-    sourceIndex: EXPENSE_SOURCE_INDEX,
-    sourceRefIndex: INCOME_SOURCE_INDEX,
     save: saveMock1,
+    populate: populateMock1,
   } as any;
   const transactionIncome = {
+    ...incomeTransactionSerialized,
     ...incomeProps,
-    _id: INCOME_ID,
-    ownerId: OWNER_ID,
-    refId: EXPENSE_ID,
-    sourceIndex: INCOME_SOURCE_INDEX,
-    sourceRefIndex: EXPENSE_SOURCE_INDEX,
     save: saveMock2,
+    populate: populateMock2,
   } as any;
-
-  const newPropsExpense = {
-    ...expenseProps,
-    description: "new desc",
-    amount: 100
-  }
-  const newPropsIncome = {
-    ...incomeProps,
-    description: "another desc",
-    amount: 256
-  }
 
   afterEach( () => { vi.clearAllMocks(); } );
 
   it("reference transaction is an income", async () => {
-    const [expenseJSON, incomeJSON] = getTransferTransactionResultJSON(
-      OWNER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
-    )
-
-    const expenseAfterUpdate = { ...transactionExpense, ...newPropsExpense };
-    const incomeAfterUpdate = { ...transactionIncome, ...newPropsIncome };
-
-    const expenseAfterSerialization = { ...expenseJSON, ...newPropsExpense };
-    const incomeAfterSerialization = { ...incomeJSON, ...newPropsIncome };
+    
 
     withTransactionMock.mockImplementation(async (fn) => {
       await fn();
     });
     (serializeTransaction as Mock)
-      .mockReturnValueOnce(expenseAfterSerialization)
-      .mockReturnValueOnce(incomeAfterSerialization);
+      .mockReturnValueOnce(transactionExpense)
+      .mockReturnValueOnce(transactionIncome);
 
     const result = await saveTransactionPairChanges(
-      transactionExpense, transactionIncome, newPropsExpense, newPropsIncome
+      transactionExpense, transactionIncome, expenseProps, incomeProps
     );
 
     expect(startSession).toHaveBeenCalled();
     expect(withTransactionMock).toHaveBeenCalledOnce();
     expect(endSessionMock).toHaveBeenCalledOnce();
     expect(serializeTransaction).toHaveBeenCalledTimes(2);
-    expect(serializeTransaction).toHaveBeenNthCalledWith(1, expenseAfterUpdate);
-    expect(serializeTransaction).toHaveBeenNthCalledWith(2, incomeAfterUpdate);
+    expect(serializeTransaction).toHaveBeenNthCalledWith(1, transactionExpense);
+    expect(serializeTransaction).toHaveBeenNthCalledWith(2, transactionIncome);
     expect(saveMock1).toHaveBeenCalledOnce();
+    expect(populateMock1).toHaveBeenCalledOnce();
     expect(saveMock2).toHaveBeenCalledOnce();
-    expect(result).toEqual([expenseAfterSerialization, incomeAfterSerialization]);
+    expect(populateMock2).toHaveBeenCalledOnce();
+    expect(result).toEqual([transactionExpense, transactionIncome]);
   })
 
   it("reference transaction is an expense", async () => {
-    const [expenseJSON, incomeJSON] = getTransferTransactionResultJSON(
-      OWNER_ID, INCOME_SOURCE_INDEX, EXPENSE_SOURCE_INDEX, INCOME_ID, EXPENSE_ID
-    )
-
-    const expenseAfterUpdate = { ...transactionExpense, ...newPropsExpense };
-    const incomeAfterUpdate = { ...transactionIncome, ...newPropsIncome };
-
-    const expenseAfterSerialization = { ...expenseJSON, ...newPropsExpense };
-    const incomeAfterSerialization = { ...incomeJSON, ...newPropsIncome };
 
     withTransactionMock.mockImplementation(async (fn) => {
       await fn();
     });
+
+    
+    const mainTransactionIsIncome = {
+      ...incomeTransactionSerialized,
+      ...incomeProps,
+      save: saveMock2,
+      populate: populateMock2,
+    } as any;
+
+    const refTransactionIsExpense = {
+      ...expenseTransactionSerialized,
+      ...expenseProps,
+      save: saveMock1,
+      populate: populateMock1,
+    } as any;
+
     (serializeTransaction as Mock)
-      .mockReturnValueOnce(incomeAfterSerialization)
-      .mockReturnValueOnce(expenseAfterSerialization);
+      .mockReturnValueOnce(mainTransactionIsIncome)
+      .mockReturnValueOnce(refTransactionIsExpense);
 
     const result = await saveTransactionPairChanges(
-      transactionIncome, transactionExpense, newPropsExpense, newPropsIncome
+      mainTransactionIsIncome, refTransactionIsExpense, expenseProps, incomeProps
     );
 
     expect(startSession).toHaveBeenCalled();
     expect(withTransactionMock).toHaveBeenCalledOnce();
     expect(endSessionMock).toHaveBeenCalledOnce();
     expect(serializeTransaction).toHaveBeenCalledTimes(2);
-    expect(serializeTransaction).toHaveBeenNthCalledWith(1, incomeAfterUpdate);
-    expect(serializeTransaction).toHaveBeenNthCalledWith(2, expenseAfterUpdate);
+    expect(serializeTransaction).toHaveBeenNthCalledWith(1, mainTransactionIsIncome);
+    expect(serializeTransaction).toHaveBeenNthCalledWith(2, refTransactionIsExpense);
     expect(saveMock1).toHaveBeenCalledOnce();
+    expect(populateMock1).toHaveBeenCalledOnce();
     expect(saveMock2).toHaveBeenCalledOnce();
-    expect(result).toEqual([incomeAfterSerialization, expenseAfterSerialization]);
+    expect(populateMock2).toHaveBeenCalledOnce();
+    expect(result).toEqual([mainTransactionIsIncome, refTransactionIsExpense]);
   })
 
   it("end session even when the error is thrown within `withTransaction`", async () => {
@@ -138,7 +127,7 @@ describe("saveTransactionPairChanges", () => {
     });
 
     await expect(saveTransactionPairChanges(
-      transactionIncome, transactionExpense, newPropsExpense, newPropsIncome)
+      transactionExpense, transactionIncome, expenseProps, incomeProps)
     ).rejects.toThrow();
 
     expect(endSessionMock).toHaveBeenCalledOnce();
