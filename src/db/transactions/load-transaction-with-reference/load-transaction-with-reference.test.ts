@@ -1,6 +1,7 @@
 import { USER_ID_STR } from "@/test-utils/factories/general";
-import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { findTransaction } from "@db/transactions/find-transaction";
+import * as db from "@db/transactions";
 import { loadTransactionWithReference, SystemCategoryName } from "@db/transactions";
 import {
   TransactionWrongTypesError,
@@ -13,12 +14,16 @@ import {
   FOOD_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_NAME,
   EXCHANGE_CATEGORY_ID_STR,
+  TRANSFER_CATEGORY_ID_STR,
+  TRANSFER_CATEGORY_NAME,
 } from "@/test-utils/factories/category";
 import {
   TRANSACTION_TYPE_EXPENSE,
   EXCHANGE_TXN_INCOME_ID_STR,
   EXCHANGE_TXN_EXPENSE_ID_STR,
   getExchangeTransactionNotPopulatedResultJSON,
+  TRANSFER_TXN_EXPENSE_ID_OBJ,
+  TRANSFER_TXN_EXPENSE_ID_STR,
 } from "@/test-utils/factories/transaction";
 
 
@@ -32,6 +37,7 @@ describe('loadTransactionWithReference', () => {
   } = getExchangeTransactionNotPopulatedResultJSON();
 
   afterEach(() => { vi.clearAllMocks() });
+  beforeEach(() => { vi.clearAllMocks() });
 
   it("loaded correctly", async () => {
     (findTransaction as Mock)
@@ -50,8 +56,12 @@ describe('loadTransactionWithReference', () => {
   });
 
   it.each([
-    // TODO - uncomment it when proper test data factories will be created for transfer transaction
-    // ["transfer", TRANSFER_CATEGORY, TransactionTransferCategoryError],
+    [
+      "transfer",
+      TRANSFER_CATEGORY_ID_STR,
+      TRANSFER_CATEGORY_NAME,
+      TransactionTransferCategoryError
+    ],
     [
       "exchange",
       EXCHANGE_CATEGORY_ID_STR,
@@ -85,29 +95,38 @@ describe('loadTransactionWithReference', () => {
   });
 
   it.each([
-    // TODO - uncomment it when proper test data factories will be created for transfer transaction
-    // ["transfer", TRANSFER_CATEGORY, TransactionTransferCategoryError],
+    
+    [
+      "transfer",
+      TRANSFER_TXN_EXPENSE_ID_STR,
+      TRANSFER_CATEGORY_ID_STR,
+      TRANSFER_CATEGORY_NAME,
+      TransactionTransferCategoryError
+    ],
     [
       "exchange",
+      EXCHANGE_TXN_EXPENSE_ID_STR,
       EXCHANGE_CATEGORY_ID_STR,
       EXCHANGE_CATEGORY_NAME,
       TransactionExchangeCategoryError
     ],
   ])("throws if reference transaction has wrong category ('%s')",
-    async (_, expectedCategoryId, expectedCategoryName, expectedError) => {
+    async (_, txnId, expectedCategoryId, expectedCategoryName, expectedError) => {
       (findTransaction as Mock)
-        .mockResolvedValueOnce(expenseTransactionNotPopulatedJSON)  
+        .mockResolvedValueOnce(
+          { ...expenseTransactionNotPopulatedJSON, categoryId: expectedCategoryId }
+        )
         .mockResolvedValueOnce(
           { ...incomeTransactionNotPopulatedJSON, categoryId: FOOD_CATEGORY_ID_STR }
         );
 
       await expect(loadTransactionWithReference(
-        EXCHANGE_TXN_EXPENSE_ID_STR,
+        txnId,
         USER_ID_STR,
         expectedCategoryId,
         expectedCategoryName as SystemCategoryName,
       )).rejects.toThrow(expectedError);
-      expect(findTransaction).toHaveBeenCalledTimes(2);
+      expect(db.findTransaction).toHaveBeenCalledTimes(2);
     }
   );
 

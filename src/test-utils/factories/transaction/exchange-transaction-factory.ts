@@ -104,19 +104,18 @@ const categoryWithIdStr = { ...tmpCategoryCommon, id: EXCHANGE_CATEGORY_ID_STR }
 
 export const getExchangeTransactionResultJSON = () => {
   const { expenseProps, incomeProps } = getExchangeTransactionProps(true);
+  const commonJSON = { date: DATE_ISO_STR, categoryId: { ...categoryWithIdObj } };
   const expenseTransactionJSON = {
     ...expenseProps,
+    ...commonJSON, // order of unpacking dict is important due to overwriting `categoryId`
     _id: EXCHANGE_TXN_EXPENSE_ID_OBJ,
     refId: EXCHANGE_TXN_INCOME_ID_OBJ,
-    date: DATE_ISO_STR,
-    categoryId: { ...categoryWithIdObj },
   }
   const incomeTransactionJSON = {
     ...incomeProps,
+    ...commonJSON, // order of unpacking dict is important due to overwriting `categoryId`
     _id: EXCHANGE_TXN_INCOME_ID_OBJ,
     refId: EXCHANGE_TXN_EXPENSE_ID_OBJ,
-    date: DATE_ISO_STR,
-    categoryId: { ...categoryWithIdObj },
   }
   return { expenseTransactionJSON, incomeTransactionJSON }
 }
@@ -137,21 +136,22 @@ export const getExchangeTransactionNotPopulatedResultJSON = () => {
 
 export const getExchangeTransactionResultSerialized = () => {
   const { expenseProps, incomeProps } = getExchangeTransactionProps(true);
-  const { categoryId: categoryId1, ...expensePropsRest } = expenseProps;
-  const { categoryId: categoryId2, ...incomePropsRest } = incomeProps;
+  const { categoryId: _1, ...expensePropsRest } = expenseProps;
+  const { categoryId: _2, ...incomePropsRest } = incomeProps;
+  const commonSerialized = { date: DATE_ISO_STR, category: { ...categoryWithIdStr } }
+
   const expenseTransactionSerialized = {
     ...expensePropsRest,
+    ...commonSerialized,
     id: EXCHANGE_TXN_EXPENSE_ID_STR,
     refId: EXCHANGE_TXN_INCOME_ID_STR,
-    date: DATE_ISO_STR,
-    category: { ...categoryWithIdStr },
   }
   const incomeTransactionSerialized = {
     ...incomePropsRest,
+    ...commonSerialized,
     id: EXCHANGE_TXN_INCOME_ID_STR,
     refId: EXCHANGE_TXN_EXPENSE_ID_STR,
-    date: DATE_ISO_STR,
-    category: { ...categoryWithIdStr },
   }
+
   return { expenseTransactionSerialized, incomeTransactionSerialized }
 }
