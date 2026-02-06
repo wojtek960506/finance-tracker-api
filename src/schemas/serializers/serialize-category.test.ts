@@ -9,13 +9,9 @@ import {
 describe("serializeCategory", () => {
   const categoryJSON = getUserCategoryResultJSON();
   const categoryResult = getUserCategoryResultSerialized();
-  const iCategory = {
-    ...categoryJSON,
-    toObject: () => ({ ...categoryJSON, __v: 1 }),
-  }
 
   it("serialize category", () => {
-    const result = serializeCategory(iCategory as any);
+    const result = serializeCategory(categoryJSON as any);
     expect(result).toEqual(categoryResult);
   });
 });
