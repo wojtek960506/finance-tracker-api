@@ -3,6 +3,8 @@ import { transactionToCsvRow } from "./transaction-to-csv-row";
 import { OLD_getStandardTransactionResultJSON } from "@/test-utils/mocks/transactions";
 
 
+// Remove usage of OLD test data factory after fixing implementation of `transactionToCsvRow`
+
 describe("transactionToCsvRow", () => {
   const { ownerId, date, id, ...transaction } = OLD_getStandardTransactionResultJSON("1", 1, "1");
   const iTransaction = { ...transaction, _id: id, date: new Date(date) };

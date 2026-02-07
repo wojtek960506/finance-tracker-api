@@ -1,12 +1,11 @@
 import { NotFoundError } from "@utils/errors";
-import { randomObjectIdString } from "@utils/random";
 import { removeTransaction } from "./remove-transaction";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import {
-  OLD_getStandardTransactionResultJSON,
-  OLD_getTransferTransactionResultJSON,
-} from "@/test-utils/mocks/transactions";
+  getStandardTransactionResultSerialized,
+  getTransferTransactionResultSerialized,
+} from "@/test-utils/factories/transaction";
 
 
 const withTransactionMock = vi.fn();
@@ -26,21 +25,18 @@ vi.mock("mongoose", async () => {
 vi.mock("@models/transaction-model", () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
 describe("removeTransaction", () => {
-  const [E_ID, I_ID] = [randomObjectIdString(), randomObjectIdString()];
-  const OWNER_ID = randomObjectIdString();
-  const [E_SRC_IDX, I_SRC_IDX] = [1, 2];
-  const [transfer] = OLD_getTransferTransactionResultJSON(OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID);
-  const standard = OLD_getStandardTransactionResultJSON(OWNER_ID, E_SRC_IDX, E_ID);
-  const RESULT_ONE = { acknowledged: true, deletedCount: 1 };
-  const RESULT_TWO = { ...RESULT_ONE, deletedCount: 2 };
+  const standard = getStandardTransactionResultSerialized();
+  const { expenseTransactionSerialized: transfer } = getTransferTransactionResultSerialized();
+  const resultOne = { acknowledged: true, deletedCount: 1 };
+  const resultTwo = { ...resultOne, deletedCount: 2 };
 
   afterEach(() => { vi.clearAllMocks() });
 
   withTransactionMock.mockImplementation(async (fn) => { await fn() });
 
   it.each([
-    ["without", RESULT_ONE, standard.id, undefined, [standard.id]],
-    ["with", RESULT_TWO, transfer.id, transfer.refId, [transfer.id, transfer.refId]]
+    ["without", resultOne, standard.id, undefined, [standard.id]],
+    ["with", resultTwo, transfer.id, transfer.refId, [transfer.id, transfer.refId]]
   ])(
     "remove transaction %d reference",
     async (_, expectedResult, transactionId, transactionRefId, expectedIds) => {
@@ -60,13 +56,12 @@ describe("removeTransaction", () => {
   })
 
   it("throws when removed not as much as provided but still end session", async () => {
-    (TransactionModel.deleteMany as Mock).mockResolvedValue(RESULT_TWO);
+    (TransactionModel.deleteMany as Mock).mockResolvedValue(resultTwo);
 
     await expect(removeTransaction(transfer.id)).rejects.toThrow(NotFoundError);
 
     expect(endSessionMock).toHaveBeenCalledOnce();
     expect(withTransactionMock).toHaveBeenCalledOnce();
     expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
-  })
-
-})
+  });
+});

@@ -8,11 +8,9 @@ import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { getCsvForTransactions } from "@/test-utils/get-csv-for-transactions";
 import { transactionRoutes } from "@routes/transaction-routes/transaction-routes";
 import {
-  OLD_getTransactionExchangeDTO,
-  OLD_getTransactionTransferDTO,
-} from "@/test-utils/mocks/transactions";
-import {
+  getExchangeTransactionDTO,
   getStandardTransactionDTO,
+  getTransferTransactionDTO,
   getStandardTransactionResultJSON,
 } from "@/test-utils/factories/transaction";
 
@@ -36,8 +34,8 @@ describe("transaction routes", async () => {
   const [T_ID, T_SRC_IDX] = [randomObjectIdString(), 1];
   const standardT = getStandardTransactionResultJSON();
   const standardDTO = getStandardTransactionDTO();
-  const exchangeDTO = OLD_getTransactionExchangeDTO();
-  const transferDTO = OLD_getTransactionTransferDTO();
+  const exchangeDTO = getExchangeTransactionDTO();
+  const transferDTO = getTransferTransactionDTO();
   
   afterEach(() => { vi.clearAllMocks() });
 
