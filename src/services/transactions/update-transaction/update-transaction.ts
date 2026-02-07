@@ -25,8 +25,7 @@ export const updateStandardTransaction = async (
   const transaction = await findTransaction(transactionId);
   checkOwner(userId, transactionId, transaction.ownerId, "transaction");
 
-  const updatedTransaction = await saveTransactionChanges(transaction, dto);
-  return updatedTransaction;
+  return saveTransactionChanges(transaction, dto);
 }
 
 export const updateTransferTransaction = async (

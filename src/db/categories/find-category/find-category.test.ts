@@ -45,7 +45,7 @@ describe("findCategoryByName", () => {
 
   it("category exists", async () => {
     vi.spyOn(serializers, "serializeCategory").mockReturnValue(userCategory);
-    (CategoryModel.find as Mock).mockResolvedValue([userCategory]);
+    (CategoryModel.find as Mock).mockReturnValue([userCategory]);
 
     const result = await findCategoryByName("  FooD  ");
 
@@ -57,7 +57,7 @@ describe("findCategoryByName", () => {
 
   it("category does not exist", async () => {
     vi.spyOn(serializers, "serializeCategory");
-    (CategoryModel.find as Mock).mockResolvedValue([]);
+    (CategoryModel.find as Mock).mockReturnValue([]);
 
     await expect(findCategoryByName(" a     B   c ")).rejects.toThrow(CategoryNotFoundError);
 

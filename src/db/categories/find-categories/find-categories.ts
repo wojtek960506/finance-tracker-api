@@ -20,5 +20,5 @@ export const findCategories = async (
 
   if (categoryIds) query._id = { $in: categoryIds };
 
-  return CategoryModel.find(query).lean();
+  return CategoryModel.find(query);
 }

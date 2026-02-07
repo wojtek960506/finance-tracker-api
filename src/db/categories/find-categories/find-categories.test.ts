@@ -31,13 +31,10 @@ describe("findCategories", () => {
   ])(
     "find categories when `ownerId` and `categoryIds` are specified",
     async (_, categories, ownerId, categoryIds, findCalledWith) => {
-      const leanMock = vi.fn();
-      const query = { lean: leanMock.mockResolvedValue(categories) }
-      vi.spyOn(CategoryModel, "find").mockReturnValue(query as any);
+      vi.spyOn(CategoryModel, "find").mockReturnValue(categories as any);
     
       const result = await findCategories(ownerId, categoryIds);
 
-      expect(leanMock).toHaveBeenCalledOnce();
       expect(CategoryModel.find).toHaveBeenCalledOnce();
       expect(CategoryModel.find).toHaveBeenCalledWith(findCalledWith);
       expect(result).toEqual(categories);
