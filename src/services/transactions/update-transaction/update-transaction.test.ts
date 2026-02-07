@@ -1,71 +1,131 @@
-import { randomObjectIdString } from "@utils/random";
-import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import * as dbCategories from "@db/categories";
+import * as dbTransactions from "@db/transactions";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { USER_ID_STR } from "@/test-utils/factories/general";
 import {
-  findTransaction,
-  saveTransactionChanges,
-  saveTransactionPairChanges,
-  loadTransactionWithReference,
-} from "@db/transactions";
+  SystemCategoryHasOwner,
+  SystemCategoryWrongType,
+  SystemCategoryNotAllowed,
+} from "@utils/errors";
 import {
   updateStandardTransaction,
   updateExchangeTransaction,
   updateTransferTransaction,
 } from "@services/transactions";
 import {
-  OLD_getTransactionStandardDTO,
-  OLD_getTransactionTransferDTO,
-  OLD_getTransactionExchangeDTO,
-  OLD_getStandardTransactionResultJSON,
-  OLD_getTransferTransactionResultJSON,
-  OLD_getExchangeTransactionResultJSON,
-} from "@/test-utils/mocks/transactions";
+  CATEGORY_TYPE_USER,
+  CATEGORY_TYPE_SYSTEM,
+  FOOD_CATEGORY_ID_STR,
+  getUserCategoryResultJSON,
+  getExchangeCategoryResultJSON,
+  getTransferCategoryResultJSON,
+} from "@/test-utils/factories/category";
+import {
+  STANDARD_TXN_ID_STR,
+  getExchangeTransactionDTO,
+  getTransferTransactionDTO,
+  getStandardTransactionDTO,
+  TRANSFER_TXN_EXPENSE_ID_STR,
+  EXCHANGE_TXN_EXPENSE_ID_STR,
+  getExchangeTransactionResultJSON,
+  getTransferTransactionResultJSON,
+  getStandardTransactionNotPopulatedResultJSON,
+} from "@/test-utils/factories/transaction";
 
-
-vi.mock("@db/transactions", () => ({
-  findTransaction: vi.fn(),
-  saveTransactionChanges: vi.fn(),
-  saveTransactionPairChanges: vi.fn(),
-  loadTransactionWithReference: vi.fn(),
-}));
 
 describe('update transaction', async () => {
-  const [E_ID, I_ID] = [randomObjectIdString(), randomObjectIdString()];
-  const [E_SRC_IDX, I_SRC_IDX] = [1, 2];
-  const OWNER_ID = randomObjectIdString();
+  const standardDTO = getStandardTransactionDTO();
+  const exchangeDTO = getExchangeTransactionDTO();
+  const transferDTO = getTransferTransactionDTO();
 
-  const expectedExchange = OLD_getExchangeTransactionResultJSON(
-    OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID
-  );
-  const expectedTransfer = OLD_getTransferTransactionResultJSON(
-    OWNER_ID, E_SRC_IDX, I_SRC_IDX, E_ID, I_ID
-  );
+  const transaction = getStandardTransactionNotPopulatedResultJSON();
+  const transferPair = getTransferTransactionResultJSON();
+  const exchangePair = getExchangeTransactionResultJSON();
+
+  const foodCategory = getUserCategoryResultJSON();
+  const transferCategory = getTransferCategoryResultJSON();
+  const exchangeCategory = getExchangeCategoryResultJSON();
 
   afterEach(() => { vi.clearAllMocks() });
 
   it("update standard transaction", async () => {
-    const dto = OLD_getTransactionStandardDTO();
-    const expectedResult = OLD_getStandardTransactionResultJSON(OWNER_ID, E_SRC_IDX, E_ID);
-    (findTransaction as Mock).mockResolvedValue(expectedResult);
-    (saveTransactionChanges as Mock).mockResolvedValue(expectedResult);
+    vi.spyOn(dbTransactions, "findTransaction").mockResolvedValue(transaction as any);
+    vi.spyOn(dbTransactions, "saveTransactionChanges").mockResolvedValue(transaction as any);
+    vi.spyOn(dbCategories, "findCategoryById").mockResolvedValue(foodCategory as any);
 
-    const result = await updateStandardTransaction(E_ID, OWNER_ID, dto);
+    const result = await updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO);
 
-    expect(result).toEqual(expectedResult);
-    expect(findTransaction).toHaveBeenCalledOnce();
-    expect(saveTransactionChanges).toHaveBeenCalledOnce();
+    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+    expect(dbCategories.findCategoryById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
+    expect(dbTransactions.findTransaction).toHaveBeenCalledOnce();
+    expect(dbTransactions.findTransaction).toHaveBeenCalledWith(STANDARD_TXN_ID_STR);
+    expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledOnce();
+    expect(
+      dbTransactions.saveTransactionChanges
+    ).toHaveBeenCalledWith(transaction, standardDTO);
+    expect(result).toEqual(transaction);
   })
 
   it.each([
-    ["transfer", expectedTransfer, OLD_getTransactionTransferDTO(), updateTransferTransaction],
-    ["exchange", expectedExchange, OLD_getTransactionExchangeDTO(), updateExchangeTransaction],
-  ])('udate %s transaction', async (_, expectedResult, dto, updateFunc) => {
-    (loadTransactionWithReference as Mock).mockResolvedValue(expectedResult);
-    (saveTransactionPairChanges as Mock).mockResolvedValue(expectedResult);
+    ["transfer", transferPair, transferDTO, updateTransferTransaction, transferCategory],
+    ["exchange", exchangePair, exchangeDTO, updateExchangeTransaction, exchangeCategory],
+  ])('udate %s transaction', async (_, expectedResult, dto, updateFunc, category) => {
+    vi.spyOn(dbTransactions, "loadTransactionWithReference")
+      .mockResolvedValue(expectedResult as any);
+    vi.spyOn(dbTransactions, "saveTransactionPairChanges")
+      .mockResolvedValue(expectedResult as any);
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(category as any)
 
-    const result = await updateFunc(E_ID, OWNER_ID, dto as any);
-
+    const result = await updateFunc(TRANSFER_TXN_EXPENSE_ID_STR, USER_ID_STR, dto as any);
+    
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(dbTransactions.loadTransactionWithReference).toHaveBeenCalledOnce();
+    expect(dbTransactions.saveTransactionPairChanges).toHaveBeenCalledOnce();
     expect(result).toEqual(expectedResult);
-    expect(loadTransactionWithReference).toHaveBeenCalledOnce();
-    expect(saveTransactionPairChanges).toHaveBeenCalledOnce();
-  })
-})
+  });
+
+  it("throws when updating standard transaction with system category", async () => {
+    vi.spyOn(dbCategories, "findCategoryById")
+      .mockResolvedValue({ ...foodCategory, type: CATEGORY_TYPE_SYSTEM } as any);
+    vi.spyOn(dbTransactions, "findTransaction");
+    vi.spyOn(dbTransactions, "saveTransactionChanges");
+
+    await expect(
+      updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO)
+    ).rejects.toThrow(SystemCategoryNotAllowed);
+
+    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+    expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
+    expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
+  });
+
+  it("throws when updating transaction pair with not system category", async () => {
+    vi.spyOn(dbCategories, "findCategoryByName")
+      .mockResolvedValue({ ...exchangeCategory, type: CATEGORY_TYPE_USER } as any);
+    vi.spyOn(dbTransactions, "loadTransactionWithReference");
+    vi.spyOn(dbTransactions, "saveTransactionPairChanges");
+
+    await expect(
+      updateExchangeTransaction(EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, exchangeDTO)
+    ).rejects.toThrow(SystemCategoryWrongType);
+
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
+    expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
+  });
+
+  it("throws when updating transaction pair with system category which has owner", async () => {
+    vi.spyOn(dbCategories, "findCategoryByName")
+      .mockResolvedValue({ ...transferCategory, ownerId: USER_ID_STR } as any);
+    vi.spyOn(dbTransactions, "loadTransactionWithReference");
+    vi.spyOn(dbTransactions, "saveTransactionPairChanges");
+
+    await expect(
+      updateTransferTransaction(TRANSFER_TXN_EXPENSE_ID_STR, USER_ID_STR, transferDTO)
+    ).rejects.toThrow(SystemCategoryHasOwner);
+
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
+    expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
+  });
+});
