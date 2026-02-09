@@ -1,17 +1,23 @@
 import Fastify from "fastify";
+import * as serviceC from "@/services/categories";
 import * as serviceT from "@services/transactions";
-import { randomObjectIdString } from "@utils/random";
 import { streamTransactions } from "@db/transactions";
+import { transactionRoutes } from "./transaction-routes";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { registerErrorHandler } from "@plugins/errorHandler";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { getCsvForTransactions } from "@/test-utils/get-csv-for-transactions";
-import { transactionRoutes } from "@routes/transaction-routes/transaction-routes";
+import {
+  FOOD_CATEGORY_NAME,
+  FOOD_CATEGORY_ID_OBJ,
+  FOOD_CATEGORY_ID_STR,
+} from "@/test-utils/factories/category";
 import {
   getExchangeTransactionDTO,
   getStandardTransactionDTO,
   getTransferTransactionDTO,
-  getStandardTransactionResultJSON,
+  STANDARD_TXN_ID_STR as T_ID,
+  getStandardTransactionResultSerialized,
 } from "@/test-utils/factories/transaction";
 
 
@@ -31,8 +37,7 @@ describe("transaction routes", async () => {
   app.register(transactionRoutes);
   await registerErrorHandler(app);
 
-  const [T_ID, T_SRC_IDX] = [randomObjectIdString(), 1];
-  const standardT = getStandardTransactionResultJSON();
+  const standardSerialized = getStandardTransactionResultSerialized();
   const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getExchangeTransactionDTO();
   const transferDTO = getTransferTransactionDTO();
@@ -52,18 +57,27 @@ describe("transaction routes", async () => {
   });
 
   it("should export transactions - 'GET /export'", async () => {
-    (streamTransactions as Mock).mockReturnValue(
-      mockAsyncCursor([{ ...standardT, date: new Date(standardT.date) }])
+    
+    vi.spyOn(serviceC, "prepareCategoriesMap").mockResolvedValue(
+      { [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } as any }
     );
+    (streamTransactions as Mock).mockReturnValue(
+      mockAsyncCursor([{
+        ...standardSerialized,
+        date: new Date(standardSerialized.date),
+        categoryId: FOOD_CATEGORY_ID_OBJ,
+      }])
+    );
+
     const response = await app.inject({ method: "GET", url: "/export" });
+    
     expect(streamTransactions).toHaveBeenCalledOnce();
     expect(streamTransactions).toHaveBeenCalledWith(USER_ID_STR);
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toContain("text/csv");
     expect(response.headers["content-disposition"]).toContain("transactions-backup");
-    // TODO the whole logic for export should be fixed to get proper category
     expect(response.payload).toEqual(getCsvForTransactions(
-      { ...standardT, date: standardT.date.slice(0, 10) }
+      { ...standardSerialized, date: standardSerialized.date.slice(0, 10) }
     ));
   });
 

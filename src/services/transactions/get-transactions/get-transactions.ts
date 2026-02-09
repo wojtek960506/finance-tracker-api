@@ -20,8 +20,7 @@ export const getTransactions = async (
 
   const totalPages = Math.ceil(total / query.limit);
 
-  const categoryIds = transactions.map(t => t.categoryId.toString());
-  const categoriesMap = await prepareCategoriesMap(userId, categoryIds);
+  const categoriesMap = await prepareCategoriesMap(userId, transactions);
 
   return {
     page: query.page,

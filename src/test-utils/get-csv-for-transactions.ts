@@ -1,29 +1,37 @@
+import { CategoryResponseDTO } from "@schemas/category";
 import { TransactionResponseDTO } from "@schemas/transaction";
+
 
 type GetCSVPayload = Omit<
   TransactionResponseDTO,
-  "ownerId" | "createdAt" | "updatedAt" | "id" | "refId" | "date"
-> & { date: string }
+  "ownerId" | "createdAt" | "updatedAt" | "id" | "refId" | "date" | "category"
+> & { date: string, category: Pick<CategoryResponseDTO, "name"> }
 
 export function getCsvForTransactions(payload: GetCSVPayload) {
   let result = '';
   result += 'sourceIndex,date,description,amount,currency,category,paymentMethod,' +
     'account,exchangeRate,currencies,transactionType,sourceRefIndex\n';
-  const tmp = (propName: keyof GetCSVPayload, isLast: boolean = false) => (
-    (payload[propName] ? payload[propName] : '') + (isLast ? '' : ',')
-  );
-  result += tmp("sourceIndex");
-  result += tmp("date");
-  result += tmp("description");
-  result += tmp("amount");
-  result += tmp("currency");
-  result += tmp("category");
-  result += tmp("paymentMethod");
-  result += tmp("account");
-  result += tmp("exchangeRate");
-  result += tmp("currencies");
-  result += tmp("transactionType");
-  result += tmp("sourceRefIndex", true);
+  
+    const getPropValue = (propName: keyof GetCSVPayload, isLast: boolean = false) => {
+    const value = propName === "category"
+      ? payload[propName].name
+      : (payload[propName] ? payload[propName] : '')
+
+
+    return value + (isLast ? '' : ',')
+  };
+  result += getPropValue("sourceIndex");
+  result += getPropValue("date");
+  result += getPropValue("description");
+  result += getPropValue("amount");
+  result += getPropValue("currency");
+  result += getPropValue("category");
+  result += getPropValue("paymentMethod");
+  result += getPropValue("account");
+  result += getPropValue("exchangeRate");
+  result += getPropValue("currencies");
+  result += getPropValue("transactionType");
+  result += getPropValue("sourceRefIndex", true);
   result += '\n';
   
   return result;
