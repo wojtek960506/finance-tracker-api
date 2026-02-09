@@ -1,4 +1,5 @@
 import { NotFoundError } from "@utils/errors";
+import { withSession } from "@utils/with-session";
 import { removeTransaction } from "./remove-transaction";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -8,20 +9,12 @@ import {
 } from "@/test-utils/factories/transaction";
 
 
-const withTransactionMock = vi.fn();
-const endSessionMock = vi.fn();
+vi.mock("@utils/with-session", () => ({
+  withSession: vi.fn().mockImplementation(
+    async (func, ...args) => { return await func({}, ...args) }
+  ),
+}));
 
-vi.mock("mongoose", async () => {
-  const actual = await vi.importActual("mongoose");
-
-  return {
-    ...actual,
-    startSession: vi.fn(async () => ({
-      withTransaction: withTransactionMock,
-      endSession: endSessionMock,
-    }))
-  }
-});
 vi.mock("@models/transaction-model", () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
 describe("removeTransaction", () => {
@@ -32,8 +25,6 @@ describe("removeTransaction", () => {
 
   afterEach(() => { vi.clearAllMocks() });
 
-  withTransactionMock.mockImplementation(async (fn) => { await fn() });
-
   it.each([
     ["without", resultOne, standard.id, undefined, [standard.id]],
     ["with", resultTwo, transfer.id, transfer.refId, [transfer.id, transfer.refId]]
@@ -42,26 +33,24 @@ describe("removeTransaction", () => {
     async (_, expectedResult, transactionId, transactionRefId, expectedIds) => {
     (TransactionModel.deleteMany as Mock).mockResolvedValue(expectedResult);
 
-
     const result = await removeTransaction(transactionId, transactionRefId);
 
-    expect(endSessionMock).toHaveBeenCalledOnce();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
     expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
     expect(TransactionModel.deleteMany).toHaveBeenCalledWith(
       { _id: { $in: expectedIds }},
       expect.anything()
     );
+    expect(withSession).toHaveBeenCalledOnce();
     expect(result).toEqual(expectedResult);
-  })
+  });
 
   it("throws when removed not as much as provided but still end session", async () => {
     (TransactionModel.deleteMany as Mock).mockResolvedValue(resultTwo);
 
     await expect(removeTransaction(transfer.id)).rejects.toThrow(NotFoundError);
 
-    expect(endSessionMock).toHaveBeenCalledOnce();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
+    expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
+    expect(withSession).toHaveBeenCalledOnce();
     expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
   });
 });

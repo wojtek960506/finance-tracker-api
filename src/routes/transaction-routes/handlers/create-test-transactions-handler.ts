@@ -1,10 +1,22 @@
-import { startSession } from "mongoose";
+import { ClientSession } from "mongoose";
 import { AppError } from "@utils/errors";
+import { withSession } from "@utils/with-session";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
 import { createRandomTransactions } from "@routes/user-routes/handlers";
 
+
+const createRandomTransactionsCore = async (
+  session: ClientSession,
+  ownerId: string,
+  totalTransactions: number,
+): Promise<{ insertedCount: number }> => {
+  const insertedCount = await createRandomTransactions(
+    ownerId, totalTransactions, session,
+  );
+  return { insertedCount };
+}
 
 export const createTestTransactionsHandler = async (
   req: FastifyRequest,
@@ -19,15 +31,10 @@ export const createTestTransactionsHandler = async (
     );
 
   const totalTransactions = 200;
-  const session = await startSession();
-  try {
-    await session.withTransaction(async () => {
-      const insertedCount = await createRandomTransactions(
-        ownerId, totalTransactions, session,
-      );
-      return res.code(201).send({ insertedCount });
-    });
-  } finally {
-    await session.endSession();
-  }
+  const result = await withSession(
+    createRandomTransactionsCore,
+    ownerId,
+    totalTransactions,
+  )
+  return res.code(201).send(result);
 }
