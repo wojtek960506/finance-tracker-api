@@ -6,7 +6,7 @@ import { TransactionResponseDTO } from "@schemas/transaction";
 import { TransactionExchangeCreateProps, TransactionTransferCreateProps } from "./types";
 
 
-const persistTransactionPairHandler = async <
+const persistTransactionPairCore = async <
   T extends TransactionExchangeCreateProps | TransactionTransferCreateProps
 >(
   session: ClientSession,
@@ -49,7 +49,7 @@ export const persistTransactionPair = async <
   incomeTransactionProps: T,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => (
   withSession(
-    persistTransactionPairHandler,
+    persistTransactionPairCore,
     expenseTransactionProps,
     incomeTransactionProps,
   )

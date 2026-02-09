@@ -6,7 +6,7 @@ import { TransactionResponseDTO } from "@schemas/transaction";
 import { TransactionExchangeUpdateProps, TransactionTransferUpdateProps } from "./types";
 
 
-export const saveTransactionPairChangesHandler = async <
+export const saveTransactionPairChangesCore = async <
   T extends TransactionExchangeUpdateProps | TransactionTransferUpdateProps
 >(
   session: ClientSession,
@@ -47,7 +47,7 @@ export const saveTransactionPairChanges = async <
   incomeTransactionProps: T,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => (
   withSession(
-    saveTransactionPairChangesHandler,
+    saveTransactionPairChangesCore,
     transaction,
     transactionRef,
     expenseTransactionProps,

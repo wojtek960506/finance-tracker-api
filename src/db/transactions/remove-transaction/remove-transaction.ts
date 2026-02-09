@@ -5,7 +5,7 @@ import { DeleteManyReply } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
 
 
-export const removeTransactionHandler = async (
+export const removeTransactionCore = async (
   session: ClientSession,
   id: string,
   refId?: string,
@@ -30,5 +30,5 @@ export const removeTransaction = async (
   id: string,
   refId?: string
 ): Promise<DeleteManyReply> => (
-  withSession(removeTransactionHandler, id, refId)
+  withSession(removeTransactionCore, id, refId)
 );
