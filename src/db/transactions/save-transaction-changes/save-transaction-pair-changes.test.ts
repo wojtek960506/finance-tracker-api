@@ -1,4 +1,4 @@
-import { startSession } from "mongoose";
+import { withSession } from "@utils/with-session";
 import { serializeTransaction } from "@schemas/serializers";
 import { saveTransactionPairChanges } from "@db/transactions";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -8,20 +8,11 @@ import {
 } from "@/test-utils/factories/transaction";
 
 
-const withTransactionMock = vi.fn();
-const endSessionMock = vi.fn();
-
-vi.mock("mongoose", async () => {
-  const actual = await vi.importActual("mongoose");
-
-  return {
-    ...actual,
-    startSession: vi.fn(async () => ({
-      withTransaction: withTransactionMock,
-      endSession: endSessionMock,
-    }))
-  }
-});
+vi.mock("@utils/with-session", () => ({
+  withSession: vi.fn().mockImplementation(
+    async (func, ...args) => { return await func({}, ...args) }
+  ),
+}));
 
 vi.mock("@schemas/serializers", () => ({ serializeTransaction: vi.fn() }));
 
@@ -35,7 +26,6 @@ describe("saveTransactionPairChanges", () => {
     expenseTransactionSerialized,
     incomeTransactionSerialized,
   } = getExchangeTransactionResultSerialized();
-
 
   const transactionExpense = {
     ...expenseTransactionSerialized,
@@ -54,10 +44,6 @@ describe("saveTransactionPairChanges", () => {
 
   it("reference transaction is an income", async () => {
     
-
-    withTransactionMock.mockImplementation(async (fn) => {
-      await fn();
-    });
     (serializeTransaction as Mock)
       .mockReturnValueOnce(transactionExpense)
       .mockReturnValueOnce(transactionIncome);
@@ -66,9 +52,6 @@ describe("saveTransactionPairChanges", () => {
       transactionExpense, transactionIncome, expenseProps, incomeProps
     );
 
-    expect(startSession).toHaveBeenCalled();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
-    expect(endSessionMock).toHaveBeenCalledOnce();
     expect(serializeTransaction).toHaveBeenCalledTimes(2);
     expect(serializeTransaction).toHaveBeenNthCalledWith(1, transactionExpense);
     expect(serializeTransaction).toHaveBeenNthCalledWith(2, transactionIncome);
@@ -76,16 +59,12 @@ describe("saveTransactionPairChanges", () => {
     expect(populateMock1).toHaveBeenCalledOnce();
     expect(saveMock2).toHaveBeenCalledOnce();
     expect(populateMock2).toHaveBeenCalledOnce();
+    expect(withSession).toHaveBeenCalledOnce();
     expect(result).toEqual([transactionExpense, transactionIncome]);
   })
 
   it("reference transaction is an expense", async () => {
 
-    withTransactionMock.mockImplementation(async (fn) => {
-      await fn();
-    });
-
-    
     const mainTransactionIsIncome = {
       ...incomeTransactionSerialized,
       ...incomeProps,
@@ -108,9 +87,6 @@ describe("saveTransactionPairChanges", () => {
       mainTransactionIsIncome, refTransactionIsExpense, expenseProps, incomeProps
     );
 
-    expect(startSession).toHaveBeenCalled();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
-    expect(endSessionMock).toHaveBeenCalledOnce();
     expect(serializeTransaction).toHaveBeenCalledTimes(2);
     expect(serializeTransaction).toHaveBeenNthCalledWith(1, mainTransactionIsIncome);
     expect(serializeTransaction).toHaveBeenNthCalledWith(2, refTransactionIsExpense);
@@ -118,20 +94,7 @@ describe("saveTransactionPairChanges", () => {
     expect(populateMock1).toHaveBeenCalledOnce();
     expect(saveMock2).toHaveBeenCalledOnce();
     expect(populateMock2).toHaveBeenCalledOnce();
+    expect(withSession).toHaveBeenCalledOnce();
     expect(result).toEqual([mainTransactionIsIncome, refTransactionIsExpense]);
-  })
-
-  it("end session even when the error is thrown within `withTransaction`", async () => {
-    withTransactionMock.mockImplementationOnce(async () => {
-      throw new Error("fails");
-    });
-
-    await expect(saveTransactionPairChanges(
-      transactionExpense, transactionIncome, expenseProps, incomeProps)
-    ).rejects.toThrow();
-
-    expect(endSessionMock).toHaveBeenCalledOnce();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
-    expect(serializeTransaction).not.toHaveBeenCalled();
-  })
+  });
 });

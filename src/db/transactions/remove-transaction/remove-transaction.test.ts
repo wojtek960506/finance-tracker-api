@@ -1,3 +1,5 @@
+import { NotFoundError } from "@utils/errors";
+import { withSession } from "@utils/with-session";
 import { removeTransaction } from "./remove-transaction";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -31,7 +33,6 @@ describe("removeTransaction", () => {
     async (_, expectedResult, transactionId, transactionRefId, expectedIds) => {
     (TransactionModel.deleteMany as Mock).mockResolvedValue(expectedResult);
 
-
     const result = await removeTransaction(transactionId, transactionRefId);
 
     expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
@@ -39,6 +40,17 @@ describe("removeTransaction", () => {
       { _id: { $in: expectedIds }},
       expect.anything()
     );
+    expect(withSession).toHaveBeenCalledOnce();
     expect(result).toEqual(expectedResult);
-  })
+  });
+
+  it("throws when removed not as much as provided but still end session", async () => {
+    (TransactionModel.deleteMany as Mock).mockResolvedValue(resultTwo);
+
+    await expect(removeTransaction(transfer.id)).rejects.toThrow(NotFoundError);
+
+    expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
+    expect(withSession).toHaveBeenCalledOnce();
+    expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
+  });
 });
