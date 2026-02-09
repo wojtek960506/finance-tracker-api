@@ -1,5 +1,4 @@
 import { ClientSession } from "mongoose";
-import { AppError } from "@utils/errors";
 import { withSession } from "@utils/with-session";
 import { serializeTransaction } from "@schemas/serializers";
 import { TransactionModel } from "@models/transaction-model";
@@ -48,15 +47,10 @@ export const persistTransactionPair = async <
 >(
   expenseTransactionProps: T,
   incomeTransactionProps: T,
-): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-
-  const result = await withSession(
+): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => (
+  withSession(
     persistTransactionPairHandler,
     expenseTransactionProps,
     incomeTransactionProps,
-  );
-  if (!result)
-    throw new AppError(500, "Error during executing operation within MongoDB session");
-
-  return result;
-}
+  )
+);

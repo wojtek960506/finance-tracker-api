@@ -12,7 +12,11 @@ import {
 } from "@/test-utils/factories/transaction";
 
 
-vi.mock("@utils/with-session", () => ({ withSession: vi.fn() }));
+vi.mock("@utils/with-session", () => ({
+  withSession: vi.fn().mockImplementation(
+    async (func, ...args) => { return await func({}, ...args) }
+  ),
+}));
 
 vi.mock("@models/transaction-model", () => ({
   TransactionModel: { create: vi.fn(), findOneAndUpdate: vi.fn() }
@@ -38,18 +42,7 @@ describe("createTransactionPair", async () => {
 
   afterEach(() => { vi.clearAllMocks() });
 
-  it("throws error when result is undefined", async () => {
-    (withSession as Mock).mockImplementation(async () => { return undefined });
-
-    await expect(
-      persistTransactionPair(expect.anything(), expect.anything())
-    ).rejects.toThrow(Error);
-  });
-
   it("2 transactions are created and updated", async () => {
-    (withSession as Mock).mockImplementation(
-    async (func, ...args) => { return await func({}, ...args) }
-  ),
     (TransactionModel.create as Mock).mockResolvedValue([
       { _id: EXCHANGE_TXN_EXPENSE_ID_OBJ },
       { _id: EXCHANGE_TXN_INCOME_ID_OBJ },
@@ -88,6 +81,4 @@ describe("createTransactionPair", async () => {
     expect(withSession).toHaveBeenCalledOnce();
     expect(result).toEqual([ expenseTransactionSerialized, incomeTransactionSerialized ]);
   });
-
-  
 });

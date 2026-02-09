@@ -7,7 +7,7 @@ export const withSession = async <T>(
     ...args: any[]
   ) => Promise<T>,
   ...args: any[]
-): Promise<T | undefined> => {
+): Promise<T> => {
 
   let result: T | undefined = undefined;
   const session = await startSession();
@@ -20,5 +20,5 @@ export const withSession = async <T>(
     await session.endSession();
   }
 
-  return result;
+  return result!;
 }

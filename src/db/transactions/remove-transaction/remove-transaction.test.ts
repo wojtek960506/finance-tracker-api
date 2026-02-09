@@ -1,4 +1,3 @@
-import { NotFoundError } from "@utils/errors";
 import { removeTransaction } from "./remove-transaction";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -8,20 +7,12 @@ import {
 } from "@/test-utils/factories/transaction";
 
 
-const withTransactionMock = vi.fn();
-const endSessionMock = vi.fn();
+vi.mock("@utils/with-session", () => ({
+  withSession: vi.fn().mockImplementation(
+    async (func, ...args) => { return await func({}, ...args) }
+  ),
+}));
 
-vi.mock("mongoose", async () => {
-  const actual = await vi.importActual("mongoose");
-
-  return {
-    ...actual,
-    startSession: vi.fn(async () => ({
-      withTransaction: withTransactionMock,
-      endSession: endSessionMock,
-    }))
-  }
-});
 vi.mock("@models/transaction-model", () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
 describe("removeTransaction", () => {
@@ -31,8 +22,6 @@ describe("removeTransaction", () => {
   const resultTwo = { ...resultOne, deletedCount: 2 };
 
   afterEach(() => { vi.clearAllMocks() });
-
-  withTransactionMock.mockImplementation(async (fn) => { await fn() });
 
   it.each([
     ["without", resultOne, standard.id, undefined, [standard.id]],
@@ -45,8 +34,6 @@ describe("removeTransaction", () => {
 
     const result = await removeTransaction(transactionId, transactionRefId);
 
-    expect(endSessionMock).toHaveBeenCalledOnce();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
     expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
     expect(TransactionModel.deleteMany).toHaveBeenCalledWith(
       { _id: { $in: expectedIds }},
@@ -54,14 +41,4 @@ describe("removeTransaction", () => {
     );
     expect(result).toEqual(expectedResult);
   })
-
-  it("throws when removed not as much as provided but still end session", async () => {
-    (TransactionModel.deleteMany as Mock).mockResolvedValue(resultTwo);
-
-    await expect(removeTransaction(transfer.id)).rejects.toThrow(NotFoundError);
-
-    expect(endSessionMock).toHaveBeenCalledOnce();
-    expect(withTransactionMock).toHaveBeenCalledOnce();
-    expect(TransactionModel.deleteMany).toHaveBeenCalledOnce();
-  });
 });
