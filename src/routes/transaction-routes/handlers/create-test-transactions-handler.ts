@@ -4,7 +4,7 @@ import { withSession } from "@utils/with-session";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { TransactionModel } from "@models/transaction-model";
-import { createRandomTransactions } from "@routes/user-routes/handlers";
+import { createRandomTransactions } from "@services/transactions";
 
 
 const createRandomTransactionsCore = async (

@@ -5,10 +5,13 @@ import { validateBody } from "@utils/validation";
 import { serializeUser } from "@schemas/serializers";
 import { authorizeAccessToken } from "@services/auth";
 import { AppError, NotFoundError } from "@utils/errors";
-import { createUserHandler } from "./handlers/create-user";
+import { TestUserCreateResponse } from "@services/users";
 import { TransactionModel } from "@models/transaction-model";
-import { createRandomTransactions } from "./handlers/create-random-transactions";
 import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "../routes-types";
+import {
+  createUserHandler,
+  createTestUserHandler,
+} from "./handlers";
 import {
   UserCreateDTO,
   UserResponseDTO,
@@ -50,51 +53,13 @@ export async function userRoutes(app: FastifyInstance) {
   app.post<{ Body: UserCreateDTO, Reply: UserResponseDTO }>(
     "/",
     { preHandler: validateBody(UserCreateSchema) },
-    async (req, res) => {
-      const newUser = await createUserHandler(req);
-      return res.code(201).send(newUser);
-    }
+    createUserHandler,
   )
 
-  app.post<{
-    Body: TestUserCreateDTO,
-    Reply: { userId: string, email: string, insertedTransactionsCount: number }
-  }>(
+  app.post<{ Body: TestUserCreateDTO, Reply: TestUserCreateResponse }>(
     "/test",
     { preHandler: validateBody(TestUserCreateSchema) },
-    async (req, res) => {
-      const { username, totalTransactions } = req.body;
-      const newBody = {
-        firstName: username,
-        lastName: username,
-        email: `${username}@test.com`,
-        password: '123',
-      }
-
-      const session = await startSession();
-      try {
-        await session.withTransaction(async () => {
-          const { id: userId, email } = await createUserHandler(
-            { ...req, body: newBody },
-            session
-          );
-
-          const insertedTransactionsCount = await createRandomTransactions(
-            userId,
-            totalTransactions,
-            session,
-          );
-
-          res.code(201).send({
-            userId,
-            email,
-            insertedTransactionsCount
-          });
-        })
-      } finally {
-        session.endSession();
-      }
-    }
+    createTestUserHandler,
   )
 
   app.delete<{ Params: ParamsJustId, Reply: UserResponseDTO }>(
