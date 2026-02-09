@@ -1,10 +1,15 @@
 import { startSession } from "mongoose";
-import { randomObjectIdString } from "@utils/random";
 import { serializeTransaction } from "@schemas/serializers";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { persistTransactionPair } from "./persist-transaction-pair";
-import { getTransferTransactionProps } from "@/test-utils/mocks/transactions";
+import {
+  EXCHANGE_TXN_INCOME_ID_OBJ,
+  EXCHANGE_TXN_EXPENSE_ID_OBJ,
+  getExchangeTransactionProps,
+  getExchangeTransactionResultJSON,
+  getExchangeTransactionResultSerialized,
+} from "@/test-utils/factories/transaction";
 
 
 const withTransactionMock = vi.fn();
@@ -34,21 +39,22 @@ vi.mock("@schemas/serializers", () => ({
 }))
 
 describe("createTransactionPair", async () => {
-  const EXPENSE_ID = randomObjectIdString();
-  const INCOME_ID = randomObjectIdString();
-  const OWNER_ID = randomObjectIdString();
-  const EXPENSE_SOURCE_IDX = 1;
-  const INCOME_SOURCE_IDX = 2;
   const {
-    expenseProps,
     incomeProps,
-  } = getTransferTransactionProps({
-    ownerId: OWNER_ID,
-    sourceIndexExpense: EXPENSE_SOURCE_IDX,
-    sourceIndexIncome: INCOME_SOURCE_IDX
-  });
-  const expenseTransaction = { ...expenseProps, id: EXPENSE_ID, refId: INCOME_ID };
-  const incomeTransaction = { ...incomeProps, id: INCOME_ID, refId: EXPENSE_ID };
+    expenseProps,
+  } = getExchangeTransactionProps(true);
+
+  const {
+    incomeTransactionJSON,
+    expenseTransactionJSON,
+  } = getExchangeTransactionResultJSON();
+
+  const {
+    incomeTransactionSerialized,
+    expenseTransactionSerialized,
+  } = getExchangeTransactionResultSerialized();
+
+
 
   afterEach(() => { vi.clearAllMocks() });
 
@@ -57,15 +63,19 @@ describe("createTransactionPair", async () => {
       await fn(); //simulate transaction body execution
     });
     (TransactionModel.create as Mock).mockResolvedValue([
-      { _id: EXPENSE_ID },
-      { _id: INCOME_ID },
+      { _id: EXCHANGE_TXN_EXPENSE_ID_OBJ },
+      { _id: EXCHANGE_TXN_INCOME_ID_OBJ },
     ]);
+
+    const mockQuery1 = { populate: vi.fn().mockResolvedValue(expenseTransactionJSON) };
+    const mockQuery2 = { populate: vi.fn().mockResolvedValue(incomeTransactionJSON) };
+
     (TransactionModel.findOneAndUpdate as Mock)
-      .mockResolvedValueOnce(expenseTransaction)
-      .mockResolvedValueOnce(incomeTransaction);
+      .mockReturnValueOnce(mockQuery1)
+      .mockReturnValueOnce(mockQuery2);
     (serializeTransaction as Mock)
-      .mockReturnValueOnce(expenseTransaction)
-      .mockReturnValueOnce(incomeTransaction);
+      .mockReturnValueOnce(expenseTransactionSerialized)
+      .mockReturnValueOnce(incomeTransactionSerialized);
 
     const result = await persistTransactionPair(expenseProps, incomeProps);
 
@@ -83,8 +93,8 @@ describe("createTransactionPair", async () => {
     );
     expect(TransactionModel.findOneAndUpdate).toHaveBeenNthCalledWith(
       1,
-      { _id: EXPENSE_ID },
-      { refId: INCOME_ID },
+      { _id: EXCHANGE_TXN_EXPENSE_ID_OBJ },
+      { refId: EXCHANGE_TXN_INCOME_ID_OBJ },
       { 
         session: { endSession: endSessionMock, withTransaction: withTransactionMock},
         new: true
@@ -92,14 +102,14 @@ describe("createTransactionPair", async () => {
     );
     expect(TransactionModel.findOneAndUpdate).toHaveBeenNthCalledWith(
       2,
-      { _id: INCOME_ID },
-      { refId: EXPENSE_ID },
+      { _id: EXCHANGE_TXN_INCOME_ID_OBJ },
+      { refId: EXCHANGE_TXN_EXPENSE_ID_OBJ },
       { 
         session: { endSession: endSessionMock, withTransaction: withTransactionMock},
         new: true
       }
     );
-    expect(result).toEqual([expenseTransaction, incomeTransaction]);
+    expect(result).toEqual([ expenseTransactionSerialized, incomeTransactionSerialized ]);
   })
 
   it("end session even when the error is thrown within `withTransaction`", async () => {

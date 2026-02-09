@@ -3,33 +3,33 @@ import {
   TransactionTransferCreateProps,
   TransactionTransferUpdateProps,
 } from "@db/transactions";
+import {
+  PrepareTransactionPropsContext,
+  PrepareTransactionPropsObjectIds,
+} from "@services/transactions/types";
 
 
 export function prepareTransferProps(
   body: TransactionTransferDTO,
-  additionalProps: {
-    ownerId: string,
-    sourceIndexExpense: number,
-    sourceIndexIncome: number,
-  }
+  objectIds: PrepareTransactionPropsObjectIds,
+  additionalProps: PrepareTransactionPropsContext,
 ): {
   expenseTransactionProps: TransactionTransferCreateProps,
   incomeTransactionProps: TransactionTransferCreateProps,
 }
 export function prepareTransferProps(
   body: TransactionTransferDTO,
+  objectIds: PrepareTransactionPropsObjectIds,
 ): {
   expenseTransactionProps: TransactionTransferUpdateProps,
   incomeTransactionProps: TransactionTransferUpdateProps,
 }
 export function prepareTransferProps (
   body: TransactionTransferDTO,
-  additionalProps?: {
-    ownerId: string,
-    sourceIndexExpense: number,
-    sourceIndexIncome: number,
-  }
+  objectIds: PrepareTransactionPropsObjectIds,
+  additionalProps?: PrepareTransactionPropsContext,
 ) {
+  const { categoryId } = objectIds;
 
   // TODO for now `accountExpense` and `accountIncome` are not translated in the body,
   // so decide how to handle it
@@ -37,7 +37,7 @@ export function prepareTransferProps (
   if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
   const commonTransactionProps = {
-    category: "myAccount",
+    categoryId,
     date: body.date,
     amount: body.amount,
     currency: body.currency,

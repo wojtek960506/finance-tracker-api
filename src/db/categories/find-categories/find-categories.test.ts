@@ -1,30 +1,43 @@
 import { findCategories } from "@db/categories";
-import { describe, expect, it, vi } from "vitest";
-import * as serializers from "@schemas/serializers";
 import { CategoryModel } from "@models/category-model";
+import { USER_ID_STR } from "@/test-utils/factories/general";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
-  CATEGORY_OWNER_ID,
   getUserCategoryResultSerialized,
-  getSystemCategoryResultSerialized,
-} from "@/test-utils/factories";
+  getExchangeCategoryResultSerialized,
+  FOOD_CATEGORY_ID_STR,
+  EXCHANGE_CATEGORY_ID_STR,
+} from "@/test-utils/factories/category";
 
 
 describe("findCategories", () => {
 
   const userCategory = getUserCategoryResultSerialized();
-  const systemCategory = getSystemCategoryResultSerialized();
-  const categories = [userCategory, systemCategory];
+  const systemCategory = getExchangeCategoryResultSerialized();
+  
+  afterEach(() => { vi.clearAllMocks() });
 
-  it("find categories", async () => {
-    vi.spyOn(CategoryModel, "find").mockResolvedValue(categories);
-    vi.spyOn(serializers, "serializeCategory").mockReturnValueOnce(userCategory as any);
-    vi.spyOn(serializers, "serializeCategory").mockReturnValueOnce(systemCategory as any);
+  const categoryIdsArr = [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR]
 
-    const result = await findCategories(CATEGORY_OWNER_ID);
+  it.each([
+    [
+      "are specified", [userCategory, systemCategory], USER_ID_STR, categoryIdsArr,
+      { $or: [{ ownerId: USER_ID_STR }, { type: "system" }], _id: { $in: categoryIdsArr } }
+    ],
+    [
+      "are not specified", [systemCategory], undefined, undefined,
+      { $and: [{ ownerId: undefined }, { type: "system" }] },
+    ],
+  ])(
+    "find categories when `ownerId` and `categoryIds` are specified",
+    async (_, categories, ownerId, categoryIds, findCalledWith) => {
+      vi.spyOn(CategoryModel, "find").mockReturnValue(categories as any);
+    
+      const result = await findCategories(ownerId, categoryIds);
 
-    expect(serializers.serializeCategory).toHaveBeenCalledTimes(2);
-    expect(CategoryModel.find).toHaveBeenCalledWith(
-      { $or: [{ ownerId: CATEGORY_OWNER_ID }, { type: "system" }]})
-    expect(result).toEqual(categories);
-  });
+      expect(CategoryModel.find).toHaveBeenCalledOnce();
+      expect(CategoryModel.find).toHaveBeenCalledWith(findCalledWith);
+      expect(result).toEqual(categories);
+    }
+  );
 });

@@ -1,6 +1,6 @@
 import { ITransaction } from "@models/transaction-model";
-import { TransactionStandardDTO } from "@schemas/transaction";
 import { serializeTransaction } from "@schemas/serializers";
+import { TransactionStandardDTO } from "@schemas/transaction";
 
 
 export const saveTransactionChanges = async (
@@ -9,6 +9,8 @@ export const saveTransactionChanges = async (
 ) => {
   Object.assign(transaction, newProps);
   await transaction.save();
-
+  await transaction.populate([
+    { path: "categoryId", select: '_id type name' },
+  ]);
   return serializeTransaction(transaction);
 }

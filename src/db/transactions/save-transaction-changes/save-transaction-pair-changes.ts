@@ -26,6 +26,13 @@ export async function saveTransactionPairChanges<
       }
       await transaction.save();
       await transactionRef.save();
+
+      await transaction.populate([
+        { path: "categoryId", select: '_id type name' },
+      ]);
+      await transactionRef.populate([
+        { path: "categoryId", select: '_id type name' },
+      ]);
     })
   } finally {
     await session.endSession();
@@ -34,5 +41,5 @@ export async function saveTransactionPairChanges<
   return [
     serializeTransaction(transaction),
     serializeTransaction(transactionRef),
-  ]
+  ];
 }

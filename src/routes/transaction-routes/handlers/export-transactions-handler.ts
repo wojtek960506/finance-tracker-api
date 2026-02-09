@@ -6,6 +6,7 @@ import {
   csvExportColumns,
   transactionToCsvRow,
 } from "@services/transactions";
+import { prepareCategoriesMap } from '@services/categories';
 
 
 export async function exportTransacionsHandler (
@@ -26,10 +27,12 @@ export async function exportTransacionsHandler (
   res.send(csvStream);
 
   // 4. Stream DB records into CSV
-  const cursor = streamTransactions((req as AuthenticatedRequest).userId);
+  const userId = (req as AuthenticatedRequest).userId;
+  const cursor = streamTransactions(userId);
+  const categoriesMap = await prepareCategoriesMap(userId);
 
   for await (const transaction of cursor) {
-    csvStream.write(transactionToCsvRow(transaction));
+    csvStream.write(transactionToCsvRow(transaction, categoriesMap));
   }
 
   // 5. End CSV stream

@@ -1,7 +1,20 @@
+
+### LOGIN
+# @name loginReq
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@test.com",
+  "password": "123"
+}
+
+###
+
 @baseUrl = http://localhost:5000/api/transactions
 @transactionId = 692071ec942967c3272e9682
 @newTransactionId = i
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTU4MjE1YzQyMGZlMzdiZTllZTQyNWQiLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiaWF0IjoxNzcwMDU2ODE4LCJleHAiOjE3NzAwNTg2MTh9.vi97SWsbQa0F95Q7LvHgtPO4YDBqzHWXOMW_QvFoe-4
+@accessToken = {{loginReq.response.body.accessToken}}
 
 @wzTransactionId = 6922f287242096bfdbb168a3
 
@@ -18,15 +31,27 @@
 @date = startDate=2022-11-17&endDate=2023-10-30
 @date2 = startDate=2016-01-01&endDate=2017-01-01
 @sorting = sortBy=date&sortOrder=asc
-@pagination = limit=100&page=1
+@pagination = limit=44&page=1
 @type = transactionType=expense
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-### Get transactions with pagination, filters and sorting
+# "exchange" - "6980aef7f9f1739803300ef5"
+# "myAccount" - "6980aef8f9f1739803300ef6"
+# "Food" - "69812ea8e6de6ef869bfba38"
+# "Transport" - "69830737a0d0fb8f48f900cc"
+# "Accomodation" - "6983be0a1f23bdc4ac4b2edc"
+# "Entertainment" - "6983be0a1f23bdc4ac4b2ede"
+# "Sport" - "6983be0a1f23bdc4ac4b2ee0"
 
-GET {{baseUrl}}?{{exchange}}&{{sorting}}&{{pagination}}
+@excludeCategoryIds = excludeCategoryIds=6980aef8f9f1739803300ef6,6983be0a1f23bdc4ac4b2ede
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### Get transactions with pagination, filters and sorting
+GET {{baseUrl}}?{{sorting}}&{{pagination}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -34,18 +59,22 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### GET STATISTICS ABOUT TRANSACTIONS
-@excludeCategories = excludeCategories=myAccount,investments
+
 @yearAndMonth = year=2023
 
-GET {{baseUrl}}/statistics?{{PLN}}&{{type}}&{{yearAndMonth}}&{{excludeCategories}}
+# {{PLN}}&{{type}}&{{yearAndMonth}}&
+
+GET {{baseUrl}}/statistics?{{PLN}}&{{type}}&{{excludeCategoryIds}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
+# &startDate=2024-12-01&endDate=2024-12-31
+
 ### GET TOTALS FOR TRANSACTIONS
-GET {{baseUrl}}/totals?{{excludeCategories}}&startDate=2024-12-01&endDate=2024-12-31
+GET {{baseUrl}}/totals?categoryId=69830737a0d0fb8f48f900cc
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -53,7 +82,6 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### EXPORT TRANSACTIONS AS CSV STREAM
-
 # code commented as it returns all transactions in CSV format,
 # so there is a lot of them and thus VSC gets clogged
 # GET {{baseUrl}}/export
@@ -63,7 +91,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Get all transactions (still default pagination is applied)
-GET {{baseUrl}}?startDate=2026-01-01
+GET {{baseUrl}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -74,7 +102,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Get single transaction
-GET {{baseUrl}}/6958215e420fe37be9ee76a5
+GET {{baseUrl}}/69830f15269a841a876428f0
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -87,17 +115,22 @@ Authorization: Bearer {{accessToken}}
 
 ### Create new standard transaction
 
+# "categoryId": "69812ea8e6de6ef869bfba38", (food)
+# "category": "transport",
+# "categoryId": "6980aef7f9f1739803300ef5", (exchange - system category)
+
+
 # @name createTransaction
 POST {{baseUrl}}/standard
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2026-02-04",
   "description": "VERY NEW TRANSACTION",
   "amount": 1.70,
   "currency": "PLN",
-  "category": "transport",
+  "categoryId": "69812ea8e6de6ef869bfba38",
   "transactionType": "expense",
   "paymentMethod": "card",
   "account": "mBank"
@@ -112,7 +145,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2026-02-04",
   "additionalDescription": "some additional desc",  
   "amountExpense": 20,
   "amountIncome": 84.23,
@@ -131,7 +164,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "date": "2026-01-24",
+  "date": "2026-02-04",
   "additionalDescription": "z oszczędnościowego na zwykłe",  
   "amount": 12345.67,
   "currency": "PLN",
@@ -143,8 +176,11 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
+# "category": "food",
+# "categoryId": "69830737a0d0fb8f48f900cc" (transport)
+
 ### Update STANDARD transaction
-PUT {{baseUrl}}/standard/6976262aceeb9078893d8a43
+PUT {{baseUrl}}/standard/69830f15269a841a876428f0
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -153,7 +189,7 @@ Authorization: Bearer {{accessToken}}
   "description": "expense - food - 372.5971177941268 EUR - 2025-12-24",
   "amount": 372.5971177941268,
   "currency": "EUR",
-  "category": "food",
+  "categoryId": "69830737a0d0fb8f48f900cc",
   "transactionType": "expense",
   "paymentMethod": "card",
   "account": "creditAgricole"
@@ -163,7 +199,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Update TRANSFER transaction
-PUT {{baseUrl}}/transfer/6976263cceeb9078893d8a51
+PUT {{baseUrl}}/transfer/69830b42269a841a876428ba
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -181,7 +217,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Update EXCHAGE transaction
-PUT {{baseUrl}}/exchange/6974d150efa585c6eca912e7
+PUT {{baseUrl}}/exchange/69830b9a269a841a876428d5
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -200,19 +236,23 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Delete a transaction
-
-@newTransactionId = {{createTransaction.response.body.id}}
-
 DELETE {{baseUrl}}/6974d150efa585c6eca912e7
 Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-### DELETE ALL TRANSACTIONS
+### DELETE ALL TRANSACTIONS (of an authenticated user)
 # !!! BE CAREFUL !!!
-
 # DELETE {{baseUrl}}
+# Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### CREATE TEST TRANSACTIONS (only when user has no transactions)
+POST {{baseUrl}}/test
+Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------

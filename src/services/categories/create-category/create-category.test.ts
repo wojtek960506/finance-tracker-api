@@ -1,11 +1,12 @@
 import { createCategory } from "@services/categories";
 import { CategoryAlreadyExistsError } from "@utils/errors";
+import { USER_ID_STR } from "@/test-utils/factories/general";
 import { describe, expect, it, Mock, vi, afterEach } from "vitest";
 import { findCategoryByName, persistCategory } from "@db/categories";
 import {
-  CATEGORY_OWNER_ID,
+  CATEGORY_TYPE_USER,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories";
+} from "@/test-utils/factories/category";
 
 
 vi.mock("@db/categories", () => ({ findCategoryByName: vi.fn(), persistCategory: vi.fn() }));
@@ -21,14 +22,14 @@ describe("createCategory", () => {
     (findCategoryByName as Mock).mockResolvedValue(undefined);
     (persistCategory as Mock).mockResolvedValue(categoryResult);
 
-    const result = await createCategory(CATEGORY_OWNER_ID, { name: NAME });
+    const result = await createCategory(USER_ID_STR, { name: NAME });
 
     expect(findCategoryByName).toHaveBeenCalledOnce();
     expect(findCategoryByName).toHaveBeenCalledWith(NAME);
     expect(persistCategory).toHaveBeenCalledOnce();
     expect(persistCategory).toHaveBeenCalledWith({
-      ownerId: CATEGORY_OWNER_ID,
-      type: "user",
+      ownerId: USER_ID_STR,
+      type: CATEGORY_TYPE_USER,
       name: NAME,
       nameNormalized: NAME.toLowerCase(),
     });
@@ -39,7 +40,7 @@ describe("createCategory", () => {
     (findCategoryByName as Mock).mockResolvedValue(categoryResult);
 
     await expect(
-      createCategory(CATEGORY_OWNER_ID, { name: NAME })
+      createCategory(USER_ID_STR, { name: NAME })
     ).rejects.toThrow(CategoryAlreadyExistsError);
 
     expect(findCategoryByName).toHaveBeenCalledOnce();

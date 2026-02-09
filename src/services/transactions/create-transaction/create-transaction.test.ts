@@ -1,93 +1,161 @@
-import { randomObjectIdString } from "@utils/random";
+import * as dbCategories from "@db/categories";
+import * as dbTransactions from "@db/transactions";
 import { getNextSourceIndex } from "@services/transactions";
+import { USER_ID_STR } from "@/test-utils/factories/general";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { persistTransaction, persistTransactionPair } from "@db/transactions";
+import {
+  SystemCategoryHasOwner,
+  SystemCategoryWrongType,
+  SystemCategoryNotAllowed,
+} from "@utils/errors";
 import {
   createStandardTransaction,
   createExchangeTransaction,
   createTransferTransaction,
 } from "./create-transaction";
 import {
-  getTransactionStandardDTO,
-  getTransactionExchangeDTO,
-  getTransactionTransferDTO,
-  getStandardTransactionResultJSON,
-  getExchangeTransactionResultJSON,  
-  getTransferTransactionResultJSON,
-} from "@/test-utils/mocks/transactions";
+  FOOD_CATEGORY_ID_STR,
+  EXCHANGE_CATEGORY_NAME,
+  TRANSFER_CATEGORY_NAME,
+  getUserCategoryResultJSON,
+  getExchangeCategoryResultJSON,
+  getTransferCategoryResultJSON,
+  CATEGORY_TYPE_SYSTEM,
+  CATEGORY_TYPE_USER,
+} from "@/test-utils/factories/category";
+import {
+  STANDARD_TXN_SRC_IDX,
+  getExchangeTransactionDTO,
+  getStandardTransactionDTO,
+  getTransferTransactionDTO,
+  EXCHANGE_TXN_INCOME_SRC_IDX,  
+  TRANSFER_TXN_INCOME_SRC_IDX,
+  TRANSFER_TXN_EXPENSE_SRC_IDX,
+  EXCHANGE_TXN_EXPENSE_SRC_IDX,
+  getExchangeTransactionResultSerialized,
+  getStandardTransactionResultSerialized,
+  getTransferTransactionResultSerialized,
+} from "@/test-utils/factories/transaction";
 
 
 vi.mock("@services/transactions/get-next-source-index", () => ({
   getNextSourceIndex: vi.fn(),
 }));
 
-vi.mock("@db/transactions/persist-transaction/persist-transaction", () => ({
-  persistTransaction: vi.fn(),
-}));
-
-vi.mock("@db/transactions/persist-transaction/persist-transaction-pair", () => ({
-  persistTransactionPair: vi.fn(),
-}));
-
 describe("createStandardTransaction", async () => {
-
-  const [EXPENSE_ID, INCOME_ID] = [randomObjectIdString(), randomObjectIdString()];
-  const [EXPENSE_SOURCE_INDEX,INCOME_SOURCE_INDEX] = [1,2];
-  const OWNER_ID = randomObjectIdString();
 
   afterEach(() => { vi.clearAllMocks() });
 
+  const foodCategory = getUserCategoryResultJSON();
+  const exchangeCategory = getExchangeCategoryResultJSON();
+  const transferCategory = getTransferCategoryResultJSON();
+  const standardDTO = getStandardTransactionDTO();
+  const exchangeDTO = getExchangeTransactionDTO();
+  const transferDTO = getTransferTransactionDTO();
+
   it("should create standard transaction", async () => {
-    const dto = getTransactionStandardDTO();
-    const transaction = getStandardTransactionResultJSON(
-      OWNER_ID, EXPENSE_SOURCE_INDEX, EXPENSE_ID
-    );
-    (persistTransaction as Mock).mockResolvedValue(transaction);
-    (getNextSourceIndex as Mock).mockResolvedValue(EXPENSE_SOURCE_INDEX);
+    const transaction = getStandardTransactionResultSerialized();
 
-    const result = await createStandardTransaction(dto, OWNER_ID);
+    vi.spyOn(dbTransactions, "persistTransaction").mockResolvedValue(transaction as any);
+    (getNextSourceIndex as Mock).mockResolvedValue(STANDARD_TXN_SRC_IDX);
+    vi.spyOn(dbCategories, "findCategoryById").mockResolvedValue(foodCategory as any);
 
-    expect(persistTransaction).toHaveBeenCalledOnce();
+    const result = await createStandardTransaction(standardDTO, USER_ID_STR);
+
+    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+    expect(dbCategories.findCategoryById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
+    expect(dbTransactions.persistTransaction).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledOnce();
-    expect(getNextSourceIndex).toHaveBeenCalledWith(OWNER_ID);
+    expect(getNextSourceIndex).toHaveBeenCalledWith(USER_ID_STR);
     expect(result).toEqual(transaction);
   });
 
   it("should create exchange transaction", async () => {
-    const dto = getTransactionExchangeDTO();
-    const expectedResult = getExchangeTransactionResultJSON(
-      OWNER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
-    );
-    (persistTransactionPair as Mock).mockResolvedValue(expectedResult);
-    (getNextSourceIndex as Mock)
-      .mockResolvedValueOnce(EXPENSE_SOURCE_INDEX)
-      .mockResolvedValueOnce(INCOME_SOURCE_INDEX);
-    
-    const result = await createExchangeTransaction(dto, OWNER_ID);
+    const transactionPair = getExchangeTransactionResultSerialized();
 
-    expect(persistTransactionPair).toHaveBeenCalledOnce();
+    vi.spyOn(dbTransactions, "persistTransactionPair").mockResolvedValue(transactionPair as any);
+    (getNextSourceIndex as Mock)
+      .mockResolvedValueOnce(EXCHANGE_TXN_EXPENSE_SRC_IDX)
+      .mockResolvedValueOnce(EXCHANGE_TXN_INCOME_SRC_IDX);
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(exchangeCategory as any);
+    
+    const result = await createExchangeTransaction(exchangeDTO, USER_ID_STR);
+
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledWith(EXCHANGE_CATEGORY_NAME);
+    expect(dbTransactions.persistTransactionPair).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
-    expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, OWNER_ID);
-    expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, OWNER_ID);
-    expect(result).toEqual(expectedResult);
+    expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID_STR);
+    expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID_STR);
+    expect(result).toEqual(transactionPair);
   });
 
   it("should create transfer transaction", async () => {
-    const dto = getTransactionTransferDTO();
-    const expectedResult = getTransferTransactionResultJSON(
-      OWNER_ID, EXPENSE_SOURCE_INDEX, INCOME_SOURCE_INDEX, EXPENSE_ID, INCOME_ID
-    );
-    (persistTransactionPair as Mock).mockResolvedValue(expectedResult);
-    (getNextSourceIndex as Mock)
-      .mockResolvedValueOnce(EXPENSE_SOURCE_INDEX)
-      .mockResolvedValueOnce(INCOME_SOURCE_INDEX);
-    
-    const result = await createTransferTransaction(dto, OWNER_ID);
+    const transactionPair = getTransferTransactionResultSerialized();
 
-    expect(persistTransactionPair).toHaveBeenCalledOnce();
+    vi.spyOn(dbTransactions, "persistTransactionPair").mockResolvedValue(transactionPair as any);
+    (getNextSourceIndex as Mock)
+      .mockResolvedValueOnce(TRANSFER_TXN_EXPENSE_SRC_IDX)
+      .mockResolvedValueOnce(TRANSFER_TXN_INCOME_SRC_IDX);
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(transferCategory as any);
+    
+    const result = await createTransferTransaction(transferDTO, USER_ID_STR);
+
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledWith(TRANSFER_CATEGORY_NAME);
+    expect(dbTransactions.persistTransactionPair).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
-    expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, OWNER_ID);
-    expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, OWNER_ID);
-    expect(result).toEqual(expectedResult);
+    expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID_STR);
+    expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID_STR);
+    expect(result).toEqual(transactionPair);
   });
-})
+
+  it("should throw error when creating single transaction with system category", async () => {
+
+    vi.spyOn(dbCategories, "findCategoryById").mockResolvedValue(
+      { ...foodCategory, type: CATEGORY_TYPE_SYSTEM} as any
+    );
+    vi.spyOn(dbTransactions, "persistTransaction");
+
+    await expect(createStandardTransaction(standardDTO, USER_ID_STR)).rejects.toThrow(
+      SystemCategoryNotAllowed
+    );
+
+    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+    expect(dbTransactions.persistTransaction).not.toHaveBeenCalled();
+    expect(getNextSourceIndex).not.toHaveBeenCalled();
+  });
+
+  it("should throw error when creating transaction pair with user category", async () => {
+
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(
+      { ...exchangeCategory, type: CATEGORY_TYPE_USER } as any
+    );
+    vi.spyOn(dbTransactions, "persistTransactionPair");
+
+    await expect(createExchangeTransaction(exchangeDTO, USER_ID_STR)).rejects.toThrow(
+      SystemCategoryWrongType
+    );
+
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
+    expect(getNextSourceIndex).not.toHaveBeenCalled();
+  });
+
+  it(
+    "should throw error when creating transaction pair with system category with owner",
+    async () => {
+      vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(
+        { ...transferCategory, ownerId: USER_ID_STR } as any
+      );
+      vi.spyOn(dbTransactions, "persistTransactionPair");
+
+      await expect(createTransferTransaction(transferDTO, USER_ID_STR)).rejects.toThrow(
+        SystemCategoryHasOwner
+      );
+
+      expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+      expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
+      expect(getNextSourceIndex).not.toHaveBeenCalled();
+  });
+});

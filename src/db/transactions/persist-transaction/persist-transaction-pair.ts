@@ -29,12 +29,16 @@ export async function persistTransactionPair<
         { _id: expenseTransactionId },
         { refId: incomeTransactionId },
         { session, new: true }
-      );
+      ).populate([
+        { path: 'categoryId', select: '_id type name' },
+      ]);
       incomeTransaction = await TransactionModel.findOneAndUpdate(
         { _id: incomeTransactionId },
         { refId: expenseTransactionId },
         { session, new: true }
-      );
+      ).populate([
+        { path: 'categoryId', select: '_id type name' },
+      ]);
     })
   } finally {
     await session.endSession();

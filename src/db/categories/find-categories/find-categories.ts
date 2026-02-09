@@ -1,13 +1,24 @@
 import { CategoryModel } from "@models/category-model";
-import { serializeCategory } from "@schemas/serializers";
-import { CategoriesResponseDTO } from "@schemas/category";
 
 
 export const findCategories = async (
-  ownerId?: string
-): Promise<CategoriesResponseDTO> => {
-  const result = await CategoryModel.find({
-    $or: [{ ownerId }, { type: "system" }]
-  });
-  return result.map(c => serializeCategory(c));
+  ownerId?: string,
+  categoryIds?: string[],
+) => {
+  
+  type OwnerSystemType<T extends string | undefined> = [{ ownerId: T }, { type: 'system' } ];
+  type Query = {
+    $or?: OwnerSystemType<string>,
+    $and?: OwnerSystemType<undefined>,
+    _id?: { $in: string[] },
+  }
+
+  const query: Query = {};
+
+  if (ownerId !== undefined) query.$or = [{ ownerId }, { type: 'system' }];
+  else query.$and = [{ ownerId }, { type: 'system' }];
+
+  if (categoryIds) query._id = { $in: categoryIds };
+
+  return CategoryModel.find(query);
 }

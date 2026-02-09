@@ -2,37 +2,37 @@ import { TransactionExchangeDTO } from "@schemas/transaction";
 import { TransactionExchangeUpdateProps } from "@db/transactions";
 import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
 import { TransactionExchangeCreateProps } from "@db/transactions/persist-transaction";
+import {
+  PrepareTransactionPropsContext,
+  PrepareTransactionPropsObjectIds,
+} from "@services/transactions/types";
 
 
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
-  additionalProps: {
-    ownerId: string,
-    sourceIndexExpense: number,
-    sourceIndexIncome: number,
-  }
+  objectIds: PrepareTransactionPropsObjectIds,
+  additionalProps: PrepareTransactionPropsContext
 ): {
   expenseTransactionProps: TransactionExchangeCreateProps,
   incomeTransactionProps: TransactionExchangeCreateProps,
 }
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
+  objectIds: PrepareTransactionPropsObjectIds,
 ): {
   expenseTransactionProps: TransactionExchangeUpdateProps,
   incomeTransactionProps: TransactionExchangeUpdateProps,
 }
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
-  additionalProps?: {
-    ownerId: string,
-    sourceIndexExpense: number,
-    sourceIndexIncome: number,
-  }
+  objectIds: PrepareTransactionPropsObjectIds,
+  additionalProps?: PrepareTransactionPropsContext
 ) {
   const { description, currencies, exchangeRate } = prepareExchangeSpecificProps(dto);
+  const { categoryId } = objectIds;
 
   const commonTransactionProps = {
-    category: "exchange",
+    categoryId,
     date: dto.date,
     account: dto.account,
     paymentMethod: dto.paymentMethod,

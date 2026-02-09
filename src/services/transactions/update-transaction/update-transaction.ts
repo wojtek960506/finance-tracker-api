@@ -1,4 +1,6 @@
 import { checkOwner } from "@services/general";
+import { findCategoryById } from "@db/categories";
+import { SystemCategoryNotAllowed } from "@utils/errors";
 import { updateTransactionPair } from "./update-transaction-pair";
 import { findTransaction, saveTransactionChanges } from "@db/transactions";
 import { prepareExchangeProps, prepareTransferProps } from "@services/transactions";
@@ -15,11 +17,15 @@ export const updateStandardTransaction = async (
   userId: string,
   dto: TransactionStandardDTO,
 ) => {
+  // in case of wrong categoryId the error is thrown and creation is stopped
+  const category = await findCategoryById(dto.categoryId);
+  if (category.type === "system")
+    throw new SystemCategoryNotAllowed(category.id);
+
   const transaction = await findTransaction(transactionId);
   checkOwner(userId, transactionId, transaction.ownerId, "transaction");
 
-  const updatedTransaction = await saveTransactionChanges(transaction, dto);
-  return updatedTransaction;
+  return saveTransactionChanges(transaction, dto);
 }
 
 export const updateTransferTransaction = async (
@@ -28,7 +34,10 @@ export const updateTransferTransaction = async (
   dto: TransactionTransferDTO,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
   return updateTransactionPair(
-    transactionId, userId, "myAccount", () => prepareTransferProps(dto)
+    transactionId,
+    userId,
+    "myAccount",
+    (objectIds) => prepareTransferProps(dto, objectIds),
   );
 }
 
@@ -38,6 +47,9 @@ export const updateExchangeTransaction = async (
   dto: TransactionExchangeDTO,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
   return updateTransactionPair(
-    transactionId, userId, "exchange", () => prepareExchangeProps(dto)
+    transactionId,
+    userId,
+    "exchange",
+    (objectIds) => prepareExchangeProps(dto, objectIds),
   );
 }

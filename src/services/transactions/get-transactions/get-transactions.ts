@@ -1,4 +1,5 @@
 import { FilteredResponse } from "@routes/routes-types";
+import { prepareCategoriesMap } from "@services/categories";
 import { serializeTransaction } from "@schemas/serializers";
 import { TransactionQuery } from "@schemas/transaction-query";
 import { TransactionsResponseDTO } from "@schemas/transaction";
@@ -15,15 +16,19 @@ export const getTransactions = async (
   const [transactions, total] = await Promise.all([
     findTransactions(filter, query),
     findTransactionsCount(filter),
-  ])
+  ]);
 
   const totalPages = Math.ceil(total / query.limit);
+
+  const categoriesMap = await prepareCategoriesMap(userId, transactions);
 
   return {
     page: query.page,
     limit: query.limit,
     total,
     totalPages,
-    items: transactions.map(transaction => serializeTransaction(transaction))
+    items: transactions.map(
+      transaction => serializeTransaction(transaction, categoriesMap)
+    )
   }
 }

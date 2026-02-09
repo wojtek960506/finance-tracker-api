@@ -1,33 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { randomObjectIdString } from "@utils/random";
+import { USER_ID_STR } from "@/test-utils/factories/general";
 import { prepareTransferProps } from "./prepare-transfer-props";
+import { TRANSFER_CATEGORY_ID_STR } from "@/test-utils/factories/category";
 import {
-  getTransactionTransferDTO,
+  getTransferTransactionDTO,
   getTransferTransactionProps,
-} from "@/test-utils/mocks/transactions";
+  TRANSFER_TXN_INCOME_SRC_IDX,
+  TRANSFER_TXN_EXPENSE_SRC_IDX,
+} from "@/test-utils/factories/transaction";
 
 
 describe("prepareTransferProps", () => {
   it("prepare props for create", () => {
-    const dto = getTransactionTransferDTO();
-    const OWNER_ID = randomObjectIdString();
-    const EXPENSE_IDX = 1;
-    const INCOME_IDX = 2;
+    const dto = getTransferTransactionDTO();
+    const mockProps = getTransferTransactionProps(true)
 
     const {
       expenseTransactionProps,
       incomeTransactionProps,
     } = prepareTransferProps(
       dto,
+      { categoryId: TRANSFER_CATEGORY_ID_STR },
       {
-        ownerId: OWNER_ID,
-        sourceIndexExpense: EXPENSE_IDX,
-        sourceIndexIncome: INCOME_IDX,
+        ownerId: USER_ID_STR,
+        sourceIndexExpense: TRANSFER_TXN_EXPENSE_SRC_IDX,
+        sourceIndexIncome: TRANSFER_TXN_INCOME_SRC_IDX,
       }
-    );
-
-    const mockProps = getTransferTransactionProps(
-      { ownerId: OWNER_ID, sourceIndexExpense: EXPENSE_IDX, sourceIndexIncome: INCOME_IDX }
     );
 
     expect(expenseTransactionProps).toEqual(mockProps.expenseProps);
@@ -35,15 +33,14 @@ describe("prepareTransferProps", () => {
   })
 
   it("prepare props for update", () => {
-    const { additionalDescription, ...dto } = getTransactionTransferDTO();
+    const { additionalDescription, ...dto } = getTransferTransactionDTO();
+    const mockProps = getTransferTransactionProps();
 
     const {
       expenseTransactionProps,
       incomeTransactionProps,
-    } = prepareTransferProps(dto);
+    } = prepareTransferProps(dto, { categoryId: TRANSFER_CATEGORY_ID_STR });
 
-    const mockProps = getTransferTransactionProps();
-    
     const shortenDescription = (description: string, endingToErase: string) => (
       description.slice(0, description.indexOf(endingToErase)).trim()
     )

@@ -3,13 +3,13 @@ import { describe, expect, it } from "vitest";
 import { validateBody, validateQuery } from "./validation";
 import { TransactionStandardSchema } from "@schemas/transaction";
 import { TransactionStatisticsQuerySchema } from "@schemas/transaction-query";
-import { generateFullStandardTransaction } from "../test-utils/mocks/transactionMock";
+import { getStandardTransactionDTO } from "@/test-utils/factories/transaction";
 
 
 describe("validation", () => {
-  const validBody = generateFullStandardTransaction();
+  const validBody = getStandardTransactionDTO();
   const validQuery = { transactionType: "expense", currency: "PLN" };
-  const { date, ...notValidBody}  = generateFullStandardTransaction();
+  const { date, ...notValidBody }  = validBody;
   const notValidQuery = { transactionType: "expense" };
 
   it.each([

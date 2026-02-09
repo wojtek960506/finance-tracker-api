@@ -4,9 +4,9 @@ import { TransactionStatisticsQuery } from "@schemas/transaction-query";
 
 
 export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: string) => {
-  if (q.category && q.excludeCategories) {
+  if (q.categoryId && q.excludeCategoryIds) {
     throw new ValidationError(
-      `'category' and 'excludeCategories' cannot be provided together in query`
+      `'categoryId' and 'excludeCategoryIds' cannot be provided together in query`
     );
   }
   
@@ -32,8 +32,10 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
   matching.transactionType = q.transactionType;
   matching.currency = q.currency;
 
-  if (q.category) matching.category = q.category;
-  if (q.excludeCategories) matching.category = { $nin: q.excludeCategories }
+  if (q.categoryId) matching.categoryId = new Types.ObjectId(q.categoryId);
+  if (q.excludeCategoryIds) matching.categoryId = {
+    $nin: q.excludeCategoryIds.map(id => new Types.ObjectId(id))
+  }
   if (q.paymentMethod) matching.paymentMethod = q.paymentMethod;
   if (q.account) matching.account = q.account;
 

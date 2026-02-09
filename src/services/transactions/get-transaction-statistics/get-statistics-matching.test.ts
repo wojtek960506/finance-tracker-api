@@ -1,9 +1,22 @@
 import { FilterQuery, Types } from "mongoose";
 import { describe, expect, it } from "vitest";
 import { ValidationError } from "@utils/errors";
-import { randomObjectIdString } from "@utils/random";
+import { USER_ID_STR } from "@/test-utils/factories/general";
 import { getStatisticsMatching } from "./get-statistics-matching";
 import { TransactionStatisticsQuery } from "@schemas/transaction-query";
+import {
+  FOOD_CATEGORY_ID_OBJ,
+  FOOD_CATEGORY_ID_STR,
+  EXCHANGE_CATEGORY_ID_OBJ,
+  EXCHANGE_CATEGORY_ID_STR,
+  TRANSFER_CATEGORY_ID_STR,
+} from "@/test-utils/factories/category";
+import {
+  PAYMENT_METHOD,
+  ACCOUNT_EXPENSE,
+  CURRENCY_EXPENSE,
+  TRANSACTION_TYPE_EXPENSE,
+} from "@/test-utils/factories/transaction";
 
 
 const checkRequiredProps = (
@@ -18,9 +31,10 @@ const checkRequiredProps = (
 }
 
 describe('getStatisticsMatching', () => {
-  const [TRANSACTION_TYPE, CURRENCY] = ["expense", "PLN"];
-  const USER_ID = randomObjectIdString();
-  const COMMON_QUERY_PROPS = { transactionType: TRANSACTION_TYPE, currency: CURRENCY };
+  const COMMON_QUERY_PROPS = {
+    transactionType: TRANSACTION_TYPE_EXPENSE,
+    currency: CURRENCY_EXPENSE
+  };
 
   it.each([
     ['year and no month', 2025, undefined, '2025/01/01', '2026/01/01'],
@@ -29,73 +43,68 @@ describe('getStatisticsMatching', () => {
   ])("%s", (_title, year, month, startDate, endDate) => {
     const query: TransactionStatisticsQuery = { ...COMMON_QUERY_PROPS, year, month };
 
-    const result = getStatisticsMatching(query, USER_ID);
+    const result = getStatisticsMatching(query, USER_ID_STR);
 
     expect(result.date).toEqual({
       $gte: new Date(startDate),
       $lt: new Date(endDate),
     })
-    checkRequiredProps(result, USER_ID, TRANSACTION_TYPE, CURRENCY);
-  })
+    checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
+  });
 
   it('no year and month', () => {
-    const MONTH = 5;
-    const query: TransactionStatisticsQuery = { ...COMMON_QUERY_PROPS, month: MONTH }
+    const month = 5;
+    const query: TransactionStatisticsQuery = { ...COMMON_QUERY_PROPS, month }
 
-    const result = getStatisticsMatching(query, USER_ID);
+    const result = getStatisticsMatching(query, USER_ID_STR);
 
-    expect(result.$expr).toEqual({ $eq: [{ $month: "$date" }, MONTH] });
-    checkRequiredProps(result, USER_ID, TRANSACTION_TYPE, CURRENCY);
+    expect(result.$expr).toEqual({ $eq: [{ $month: "$date" }, month] });
+    checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
   });
 
   it("throws error when 'category' and 'excludeCategories' provided together", () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      category: "food",
-      excludeCategories: ["myAccount", "investments"],
+      categoryId: FOOD_CATEGORY_ID_STR,
+      excludeCategoryIds: [TRANSFER_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
     }
 
-    expect(() => getStatisticsMatching(query, USER_ID)).toThrow(ValidationError);
-  })
+    expect(() => getStatisticsMatching(query, USER_ID_STR)).toThrow(ValidationError);
+  });
 
   it("category and no excluded categories", () => {
-    const CATEGORY = "food";
+    
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      category: CATEGORY,
+      categoryId: FOOD_CATEGORY_ID_STR,
     }
 
-    const result = getStatisticsMatching(query, USER_ID);
-    checkRequiredProps(result, USER_ID, TRANSACTION_TYPE, CURRENCY);
-    expect(result.category).toEqual(CATEGORY);
-  })
+    const result = getStatisticsMatching(query, USER_ID_STR);
+    checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
+    expect(result.categoryId).toEqual(FOOD_CATEGORY_ID_OBJ);
+  });
 
   it("no category and excluded categories", () => {
-    const EXCLUDED_CATEGORIES = ["food", "transport"];
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      excludeCategories: EXCLUDED_CATEGORIES,
+      excludeCategoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
     }
 
-    const result = getStatisticsMatching(query, USER_ID);
-    checkRequiredProps(result, USER_ID, TRANSACTION_TYPE, CURRENCY);
-    expect(result.category).toEqual({ $nin: EXCLUDED_CATEGORIES });
-  })
+    const result = getStatisticsMatching(query, USER_ID_STR);
+    checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
+    expect(result.categoryId).toEqual({ $nin: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ] });
+  });
 
   it("has 'account' and 'paymentMethod'", () => {
-    const ACCOUNT = "mBank";
-    const PAYMENT_METHOD = "card";
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      account: ACCOUNT,
+      account: ACCOUNT_EXPENSE,
       paymentMethod: PAYMENT_METHOD
     }
 
-    const result = getStatisticsMatching(query, USER_ID);
-    checkRequiredProps(result, USER_ID, TRANSACTION_TYPE, CURRENCY);
-    expect(result.account).toEqual(ACCOUNT);
+    const result = getStatisticsMatching(query, USER_ID_STR);
+    checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
+    expect(result.account).toEqual(ACCOUNT_EXPENSE);
     expect(result.paymentMethod).toEqual(PAYMENT_METHOD);
-  })
-
-
+  });
 })

@@ -19,6 +19,10 @@ export type PrepareTransactionPropsContext = {
   sourceIndexIncome: number,
 }
 
+export type PrepareTransactionPropsObjectIds = {
+  categoryId: string,
+}
+
 export type PreparedTransactionCreateProps<T extends TransactionCreateProps> = {
   expenseTransactionProps: T,
   incomeTransactionProps: T
@@ -28,18 +32,3 @@ export type PreparedTransactionUpdateProps<T extends TransactionUpdateProps> = {
   expenseTransactionProps: T,
   incomeTransactionProps: T
 }
-
-
-// {
-//   expenseTransactionProps: TransactionExchangeCreateProps,
-//   incomeTransactionProps: TransactionExchangeCreateProps,
-// } | {
-//   expenseTransactionProps: TransactionTransferCreateProps,
-//   incomeTransactionProps: TransactionTransferCreateProps,
-// } | {
-//   expenseTransactionProps: TransactionExchangeUpdateProps,
-//   incomeTransactionProps: TransactionExchangeUpdateProps,
-// } | {
-//   expenseTransactionProps: TransactionTransferUpdateProps,
-//   incomeTransactionProps: TransactionTransferUpdateProps,
-// }

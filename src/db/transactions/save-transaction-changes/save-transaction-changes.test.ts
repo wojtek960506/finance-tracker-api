@@ -1,12 +1,11 @@
-import { randomObjectIdString } from "@utils/random";
 import { describe, expect, it, Mock, vi } from "vitest";
 import { saveTransactionChanges } from "@db/transactions/";
 import { serializeTransaction } from "@schemas/serializers";
 import {
-  getTransactionStandardDTO,
-  getStandardTransactionProps,
+  getStandardTransactionDTO,
   getStandardTransactionResultJSON,
-} from "@/test-utils/mocks/transactions";
+  getStandardTransactionResultSerialized,
+} from "@/test-utils/factories/transaction";
 
 
 vi.mock("@schemas/serializers", () => ({
@@ -14,27 +13,18 @@ vi.mock("@schemas/serializers", () => ({
 }));
 
 describe("saveTransactionChanges", async () => {
-  
-  const TRANSACTION_ID = randomObjectIdString();
-  const SOURCE_INDEX = 1;
-  const OWNER_ID = randomObjectIdString();
 
   const saveMock = vi.fn();
+  const populateMock = vi.fn();
 
-  const newProps = { ...getTransactionStandardDTO(), amount: 123 }
+  const dto = getStandardTransactionDTO();
+  const transactionJSON = getStandardTransactionResultJSON();
+  const transactionSerialized = getStandardTransactionResultSerialized();
 
-  const transaction = {
-    ...getStandardTransactionProps(OWNER_ID, SOURCE_INDEX),
-    _id: TRANSACTION_ID,
-    save: saveMock,
-  } as any;
-
-  const transactionAfterUpdate = { ...transaction, amount: 123 }
-
-  const transactionAfterSerialization = {
-    ...getStandardTransactionResultJSON(OWNER_ID, SOURCE_INDEX, TRANSACTION_ID),
-    amount: 123,
-  }
+  const newProps = { ...dto, amount: 123 }
+  const transaction = { ...transactionJSON, save: saveMock, populate: populateMock } as any;
+  const transactionAfterUpdate = { ...transaction, ...dto, amount: 123 }
+  const transactionAfterSerialization = { ...transactionSerialized, amount: 123 }
 
   it("save single transaction changes ", async () => {
      (serializeTransaction as Mock).mockReturnValue(transactionAfterSerialization);
@@ -42,6 +32,7 @@ describe("saveTransactionChanges", async () => {
      const result = await saveTransactionChanges(transaction, newProps);
 
      expect(saveMock).toHaveBeenCalledOnce();
+     expect(populateMock).toHaveBeenCalledOnce();
      expect(serializeTransaction).toHaveBeenCalledOnce();
      expect(serializeTransaction).toHaveBeenCalledWith(transactionAfterUpdate);
      expect(result).toEqual(transactionAfterSerialization);

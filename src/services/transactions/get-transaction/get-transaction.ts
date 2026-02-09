@@ -9,5 +9,9 @@ export const getTransaction = async (
 ) => {
   const transaction = await findTransaction(transactionId);
   checkOwner(userId, transactionId, transaction.ownerId, "transaction");
+  await transaction.populate([
+    { path: "categoryId", select: '_id type name' }
+  ]);
+
   return serializeTransaction(transaction);
 }
