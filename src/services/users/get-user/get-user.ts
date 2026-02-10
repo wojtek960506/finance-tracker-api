@@ -1,7 +1,7 @@
-import { UserModel } from "@models/user-model";
+import { findUser } from "@db/users";
+import { AppError } from "@utils/errors";
 import { UserResponseDTO } from "@schemas/user";
 import { serializeUser } from "@schemas/serializers";
-import { AppError, NotFoundError } from "@utils/errors";
 
 
 export const getUser = async (
@@ -12,9 +12,5 @@ export const getUser = async (
     throw new AppError(401, "Cannot get info about different user.")
   }
 
-  const user = await UserModel.findById(userId);
-  if (!user)
-    throw new NotFoundError(`User with ID '${userId}' not found`);
-
-  return serializeUser(user);
+  return serializeUser(await findUser(userId));
 }
