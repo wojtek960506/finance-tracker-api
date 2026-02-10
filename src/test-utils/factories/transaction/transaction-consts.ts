@@ -2,10 +2,6 @@ import { randomObjectIdString } from "@utils/random";
 import { Types } from "mongoose";
 
 
-export const DATE_STR = "2026-02-05";
-export const DATE_OBJ = new Date(DATE_STR);
-export const DATE_ISO_STR = DATE_OBJ.toISOString();
-
 export const AMOUNT_EXPENSE = 423;
 export const AMOUNT_INCOME = 100;
 export const CURRENCY_EXPENSE = "PLN";
@@ -34,7 +30,6 @@ export const TRANSFER_TXN_INCOME_ID_STR = randomObjectIdString();
 export const TRANSFER_TXN_INCOME_ID_OBJ = new Types.ObjectId(TRANSFER_TXN_INCOME_ID_STR);
 export const TRANSFER_TXN_EXPENSE_SRC_IDX = 4;
 export const TRANSFER_TXN_INCOME_SRC_IDX = 5;
-
 
 export const START_DATE_FILTER = new Date("2015-01-01");
 export const END_DATE_FILTER = new Date("2025-12-31");

@@ -1,5 +1,5 @@
-import { USER_ID_STR } from "@/test-utils/factories/general";
 import { TransactionTransferDTO } from "@schemas/transaction";
+import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
 import {
   TransactionTransferCreateProps,
   TransactionTransferUpdateProps,
@@ -11,9 +11,7 @@ import {
   TRANSFER_CATEGORY_ID_STR,
 } from "@/test-utils/factories/category";
 import {
-  DATE_OBJ,
   DESCRPTION,
-  DATE_ISO_STR,
   ACCOUNT_INCOME,
   AMOUNT_EXPENSE,
   PAYMENT_METHOD,

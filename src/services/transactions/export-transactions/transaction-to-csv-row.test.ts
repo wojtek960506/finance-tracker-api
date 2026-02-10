@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
+import { DATE_STR } from "@/test-utils/factories/general";
 import { transactionToCsvRow } from "./transaction-to-csv-row";
-import { DATE_STR, getStandardTransactionProps } from "@/test-utils/factories/transaction";
+import { getStandardTransactionProps } from "@/test-utils/factories/transaction";
 import { FOOD_CATEGORY_ID_STR, FOOD_CATEGORY_NAME } from "@/test-utils/factories/category";
 
 
