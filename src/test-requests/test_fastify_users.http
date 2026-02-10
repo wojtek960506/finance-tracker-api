@@ -1,10 +1,26 @@
 @baseUrl = http://localhost:5000/api
-@newUserId = i
-@accessToken = i
 
-# GET ALL USERS
+### LOGIN
+# @name loginReq
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@test.com",
+  "password": "123"
+}
+
+###
+@accessToken = {{loginReq.response.body.accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### GET ALL USERS
 GET {{baseUrl}}/users
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### CREATE NEW USER
 # @name createUser
@@ -18,53 +34,49 @@ Content-Type: application/json
   "password": "klm"
 }
 
-
-### LOGIN
-# @name loginReq
-POST {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-  "email": "test1@test.com",
-  "password": "123"
-}
-
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### GET USER BY ACCESS TOKEN
-@accessToken = {{loginReq.response.body.accessToken}}
-
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{accessToken}}
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### REFRESH ACCESS TOKEN
 GET {{baseUrl}}/auth/refresh
 Cookie: refreshToken=fa5b75d8-09df-4473-b2f2-f51b28bec563.mi4o38we
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### LOGOUT
-@accessToken={{loginReq.response.body.accessToken}}
 @refreshToken=8f56d041-b541-437d-907a-0f07bac79e52.mi3gijg9
 
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer {{accessToken}}
 Cookie: refreshToken=be667747-2361-41ee-924c-56d04ca4e2ca.mi4o4pkl
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### GET USER BY ID
 @newUserId = {{createUser.response.body.id}}
-@accessToken = {{loginReq.response.body.accessToken}}
 
-GET {{baseUrl}}/users/691f1e90b1e751ec54cb352b
+GET {{baseUrl}}/users/6958215c420fe37be9ee425d
 # {{newUserId}}
 Authorization: Bearer {{accessToken}}
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### Delete user by id
-
 @newUserId = {{createUser.response.body.id}}
-
-
 DELETE {{baseUrl}}/users/{{newUserId}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 ### CREATE TEST USER WITH RANDOM TRANSACTIONS
 
@@ -76,7 +88,13 @@ Content-Type: application/json
   "totalTransactions": 20000
 }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 ### DELETE ALL USERS
 # !!! BE CAREFUL !!!
 
 # DELETE {{baseUrl}}/users
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------

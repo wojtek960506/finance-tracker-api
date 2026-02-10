@@ -1,14 +1,16 @@
 import { startSession } from "mongoose";
 import { FastifyInstance } from "fastify";
+import { NotFoundError } from "@utils/errors";
 import { UserModel } from "@models/user-model";
 import { validateBody } from "@utils/validation";
 import { serializeUser } from "@schemas/serializers";
 import { authorizeAccessToken } from "@services/auth";
-import { AppError, NotFoundError } from "@utils/errors";
 import { TestUserCreateResponse } from "@services/users";
 import { TransactionModel } from "@models/transaction-model";
-import { AuthenticatedRequest, DeleteManyReply, ParamsJustId } from "../routes-types";
+import { DeleteManyReply, ParamsJustId } from "../routes-types";
 import {
+  getUserHandler,
+  getUsersHandler,
   createUserHandler,
   createTestUserHandler,
 } from "./handlers";
@@ -24,31 +26,13 @@ import {
 
 export async function userRoutes(app: FastifyInstance) {
   
-  app.get<{ Params: ParamsJustId, Reply: UsersResponseDTO }>(
-    "/",
-    async () => {
-      const users = await UserModel.find().sort({ lastName: 1 });
-      return users.map(u => serializeUser(u))
-    }
-  )
+  app.get<{ Reply: UsersResponseDTO }>("/", getUsersHandler);
 
   app.get<{ Params: ParamsJustId, Reply: UserResponseDTO }>(
-    "/:id",
+    "/:id", 
     { preHandler: authorizeAccessToken() },
-    async (req, res) => {
-      const userId = (req as AuthenticatedRequest).userId;
-      const { id } = req.params;
-      if (userId !== id) {
-        throw new AppError(401, "Cannot get info about different user.")
-      }
-
-      const user = await UserModel.findById(id);
-      if (!user)
-        throw new NotFoundError(`User with ID '${id}' not found`);
-
-      return res.send(serializeUser(user));
-    }
-  )
+    getUserHandler,
+  );
 
   app.post<{ Body: UserCreateDTO, Reply: UserResponseDTO }>(
     "/",
