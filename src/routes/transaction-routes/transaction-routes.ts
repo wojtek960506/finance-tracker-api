@@ -23,6 +23,9 @@ import {
   TransactionStandardSchema,
   TransactionExchangeSchema,
   TransactionTransferSchema,
+  TestTransactionsCreateDTO,
+  TestTransactionsCreateSchema,
+  TestTransactionsCreateResponse,
 } from "@schemas/transaction";
 import {
   ParamsJustId,
@@ -150,9 +153,9 @@ export async function transactionRoutes(
   )
 
   // create test transactions for authenticated user (only when it has no transactions)
-  app.post<{ Reply: { insertedCount: number }}>(
+  app.post<{ Body?: TestTransactionsCreateDTO,  Reply: TestTransactionsCreateResponse }>(
     "/test",
-    { preHandler: authorizeAccessToken() },
+    { preHandler: [validateBody(TestTransactionsCreateSchema), authorizeAccessToken()] },
     createTestTransactionsHandler,
   )
 }

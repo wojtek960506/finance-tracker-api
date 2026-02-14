@@ -76,6 +76,14 @@ export const TransactionResponseSchema = TransactionStandardSchema
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
 
+export const TestTransactionsCreateSchema = z.object({
+  totalTransactions: z.number().min(200),
+}).optional();
+
+export const TestTransactionsCreateResponseSchema = z.object({
+  insertedCount: z.number(),
+});
+
 /**
  * TypeScript types for convenience
  */
@@ -84,3 +92,5 @@ export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionsResponseDTO = z.infer<typeof TransactionsResponseSchema>;
+export type TestTransactionsCreateDTO = z.infer<typeof TestTransactionsCreateSchema>;
+export type TestTransactionsCreateResponse = z.infer<typeof TestTransactionsCreateResponseSchema>;
