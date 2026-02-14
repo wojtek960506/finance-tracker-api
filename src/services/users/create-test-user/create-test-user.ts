@@ -1,16 +1,19 @@
 import { ClientSession } from "mongoose";
 import { withSession } from "@utils/with-session";
-import { TestUserCreateResponse } from "@services/users";
 import { createUser } from "@services/users/create-user";
-import { TestUserCreateDTO, UserCreateDTO } from "@schemas/user";
 import { createRandomTransactions } from "@services/transactions";
+import {
+  UserCreateDTO,
+  TestUserCreateDTO,
+  TestUserCreateResponseDTO,
+} from "@schemas/user";
 
 
 const createTestUserCore = async (
   session: ClientSession,
   dto: UserCreateDTO,
   totalTransactions: number,
-): Promise<TestUserCreateResponse> => {
+): Promise<TestUserCreateResponseDTO> => {
   const { id: userId, email } = await createUser(dto, session);
 
   const insertedTransactionsCount = await createRandomTransactions(
@@ -22,7 +25,7 @@ const createTestUserCore = async (
 
 export const createTestUser = async (
   dto: TestUserCreateDTO,
-): Promise<TestUserCreateResponse> => {
+): Promise<TestUserCreateResponseDTO> => {
   const { username, totalTransactions } = dto;
 
   const newBody = {

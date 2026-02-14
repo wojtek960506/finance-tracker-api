@@ -5,7 +5,6 @@ import { UserModel } from "@models/user-model";
 import { validateBody } from "@utils/validation";
 import { serializeUser } from "@schemas/serializers";
 import { authorizeAccessToken } from "@services/auth";
-import { TestUserCreateResponse } from "@services/users";
 import { TransactionModel } from "@models/transaction-model";
 import { DeleteManyReply, ParamsJustId } from "../routes-types";
 import {
@@ -21,6 +20,7 @@ import {
   UserCreateSchema,
   TestUserCreateDTO,
   TestUserCreateSchema,
+  TestUserCreateResponseDTO,
 } from "@schemas/user";
 
 
@@ -40,7 +40,7 @@ export async function userRoutes(app: FastifyInstance) {
     createUserHandler,
   )
 
-  app.post<{ Body: TestUserCreateDTO, Reply: TestUserCreateResponse }>(
+  app.post<{ Body: TestUserCreateDTO, Reply: TestUserCreateResponseDTO }>(
     "/test",
     { preHandler: validateBody(TestUserCreateSchema) },
     createTestUserHandler,
