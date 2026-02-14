@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 // mock BEFORE importing the file that uses argon2
 vi.mock("argon2", () => ({ default: { hash: vi.fn() }}));
@@ -13,6 +13,7 @@ import {
   getUserResultSerialized,
   USER_PASSWORD_HASH,
 } from "@/test-utils/factories/user";
+import { AppError } from "@utils/errors";
 
 
 describe("createUser", () => {
@@ -22,8 +23,9 @@ describe("createUser", () => {
   const { password, ...restOfUserDTO } = getUserDTO();
   const sessionMock = {} as any;
 
+  afterEach(() => { vi.clearAllMocks() });
+
   it("creates user", async () => {
-    // vi.spyOn(argon2, "hash").mockResolvedValue(USER_PASSWORD_HASH);
     (argon2.hash as any).mockResolvedValue(USER_PASSWORD_HASH);
     vi.spyOn(UserModel, "create").mockResolvedValue([user] as any);
     vi.spyOn(serializers, "serializeUser").mockReturnValue(userSerialized as any);
@@ -42,5 +44,22 @@ describe("createUser", () => {
     expect(result).toEqual(userSerialized);
   });
 
+  it("throws error when user with given email exists", async () => {
+    const EMAIL_ALREADY_EXISTS_CODE = 11000
+    vi.spyOn(UserModel, "create").mockRejectedValue({ code: EMAIL_ALREADY_EXISTS_CODE });
+    vi.spyOn(serializers, "serializeUser");
 
+    await expect(createUser({ ...restOfUserDTO, password })).rejects.toThrow(Error);
+    expect(UserModel.create).toHaveBeenCalledOnce();
+    expect(serializers.serializeUser).not.toHaveBeenCalled();
+  });
+
+  it("throws some not specific error", async () => {    
+    vi.spyOn(UserModel, "create").mockResolvedValue({} as any);
+    vi.spyOn(serializers, "serializeUser").mockImplementation(() => { throw new Error()});
+
+    await expect(createUser({ ...restOfUserDTO, password })).rejects.toThrow(AppError);
+    expect(UserModel.create).toHaveBeenCalledOnce();
+    expect(serializers.serializeUser).not.toHaveBeenCalled();
+  });
 });

@@ -11,11 +11,11 @@ export const createUser = async (
   session?: ClientSession,
 ): Promise<UserResponseDTO> => {
   const { password, ...rest } = dto;
-  const passwordHash1 = await argon2.hash(password);
+  const passwordHash = await argon2.hash(password);
   
   try {
     const [ newUser ] = await UserModel.create(
-      [{ ...rest, passwordHash: passwordHash1 }],
+      [{ ...rest, passwordHash: passwordHash }],
       { session });
     return serializeUser(newUser);
   } catch (err) {
