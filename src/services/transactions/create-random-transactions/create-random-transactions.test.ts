@@ -1,14 +1,16 @@
 import { AppError } from "@utils/errors";
-import { getOrCreateCategory } from "@services/categories";
 import { randomDate, randomFromSet } from "@utils/random";
+import { getOrCreateCategory } from "@services/categories";
 import { TransactionModel } from "@models/transaction-model";
+import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import { createRandomTransactions } from "./create-random-transactions";
+import { TEST_CATEGORIES, TEST_DATE, TEST_OWNER_ID } from "./test-fixtures";
 import {
   prepareRandomStandardTransaction,
   prepareRandomExchangeTransactionPair,
   prepareRandomTransferTransactionPair,
 } from "./prepare-random-transaction";
-import { createRandomTransactions } from "./create-random-transactions";
-import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+
 
 vi.mock("@services/categories", () => ({
   getOrCreateCategory: vi.fn(),
@@ -37,80 +39,68 @@ describe("createRandomTransactions", () => {
     vi.clearAllMocks();
   });
 
-  const ownerId = "owner-1";
-  const categories = [
-    { id: "cat-food", name: "Food" },
-    { id: "cat-sport", name: "Sport" },
-    { id: "cat-transport", name: "Transport" },
-    { id: "cat-accomodation", name: "Accomodation" },
-    { id: "cat-entertainment", name: "Entertainment" },
-    { id: "cat-exchange", name: "exchange" },
-    { id: "cat-my-account", name: "myAccount" },
-  ];
-
   it("creates random transactions and links reference ids for paired transactions", async () => {
     const session = {} as any;
-    const date = new Date("2020-01-01");
     const standardTransaction = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 0,
       amount: 20,
       categoryId: "cat-food",
       type: "expense",
       title: "Food expense",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const transferExpense = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 1,
       sourceRefIndex: 2,
       amount: 50,
       categoryId: "cat-my-account",
       type: "expense",
       title: "Transfer out",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const transferIncome = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 2,
       sourceRefIndex: 1,
       amount: 50,
       categoryId: "cat-my-account",
       type: "income",
       title: "Transfer in",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const exchangeExpense = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 3,
       sourceRefIndex: 4,
       amount: 50,
       categoryId: "cat-exchange",
       type: "expense",
       title: "Exchange out",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const exchangeIncome = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 4,
       sourceRefIndex: 3,
       amount: 50,
       categoryId: "cat-exchange",
       type: "income",
       title: "Exchange in",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
 
 
     (getOrCreateCategory as Mock)
-      .mockResolvedValueOnce(categories[0])
-      .mockResolvedValueOnce(categories[1])
-      .mockResolvedValueOnce(categories[2])
-      .mockResolvedValueOnce(categories[3])
-      .mockResolvedValueOnce(categories[4])
-      .mockResolvedValueOnce(categories[5])
-      .mockResolvedValueOnce(categories[6]);
-    (randomDate as Mock).mockReturnValue(date);
+      .mockResolvedValueOnce(TEST_CATEGORIES[0])
+      .mockResolvedValueOnce(TEST_CATEGORIES[1])
+      .mockResolvedValueOnce(TEST_CATEGORIES[2])
+      .mockResolvedValueOnce(TEST_CATEGORIES[3])
+      .mockResolvedValueOnce(TEST_CATEGORIES[4])
+      .mockResolvedValueOnce(TEST_CATEGORIES[5])
+      .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (randomDate as Mock).mockReturnValue(TEST_DATE);
     (randomFromSet as Mock)
       .mockReturnValueOnce("cat-food")
       .mockReturnValueOnce("cat-my-account")
@@ -132,28 +122,28 @@ describe("createRandomTransactions", () => {
       modifiedCount: 4,
     });
 
-    const result = await createRandomTransactions(ownerId, 5, session);
+    const result = await createRandomTransactions(TEST_OWNER_ID, 5, session);
 
     expect(getOrCreateCategory).toHaveBeenCalledTimes(7);
     expect(randomFromSet).toHaveBeenCalledTimes(3);
     expect(prepareRandomStandardTransaction).toHaveBeenCalledOnce();
     expect(prepareRandomStandardTransaction).toHaveBeenCalledWith(
-      ownerId,
-      date,
+      TEST_OWNER_ID,
+      TEST_DATE,
       0,
       "cat-food",
     );
     expect(prepareRandomTransferTransactionPair).toHaveBeenCalledOnce();
     expect(prepareRandomTransferTransactionPair).toHaveBeenCalledWith(
-      ownerId,
-      date,
+      TEST_OWNER_ID,
+      TEST_DATE,
       1,
       "cat-my-account",
     );
     expect(prepareRandomExchangeTransactionPair).toHaveBeenCalledOnce();
     expect(prepareRandomExchangeTransactionPair).toHaveBeenCalledWith(
-      ownerId,
-      date,
+      TEST_OWNER_ID,
+      TEST_DATE,
       3,
       "cat-exchange",
     );
@@ -196,46 +186,45 @@ describe("createRandomTransactions", () => {
   });
 
   it("throws AppError when not all inserted ids are returned", async () => {
-    const date = new Date("2020-01-01");
     const standardTransaction = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 0,
       amount: 20,
       categoryId: "cat-food",
       type: "expense",
       title: "Food expense",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const transferExpense = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 1,
       sourceRefIndex: 2,
       amount: 50,
       categoryId: "cat-my-account",
       type: "expense",
       title: "Transfer out",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const transferIncome = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 2,
       sourceRefIndex: 1,
       amount: 50,
       categoryId: "cat-my-account",
       type: "income",
       title: "Transfer in",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
 
     (getOrCreateCategory as Mock)
-      .mockResolvedValueOnce(categories[0])
-      .mockResolvedValueOnce(categories[1])
-      .mockResolvedValueOnce(categories[2])
-      .mockResolvedValueOnce(categories[3])
-      .mockResolvedValueOnce(categories[4])
-      .mockResolvedValueOnce(categories[5])
-      .mockResolvedValueOnce(categories[6]);
-    (randomDate as Mock).mockReturnValue(date);
+      .mockResolvedValueOnce(TEST_CATEGORIES[0])
+      .mockResolvedValueOnce(TEST_CATEGORIES[1])
+      .mockResolvedValueOnce(TEST_CATEGORIES[2])
+      .mockResolvedValueOnce(TEST_CATEGORIES[3])
+      .mockResolvedValueOnce(TEST_CATEGORIES[4])
+      .mockResolvedValueOnce(TEST_CATEGORIES[5])
+      .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (randomDate as Mock).mockReturnValue(TEST_DATE);
     (randomFromSet as Mock)
       .mockReturnValueOnce("cat-food")
       .mockReturnValueOnce("cat-my-account");
@@ -249,7 +238,7 @@ describe("createRandomTransactions", () => {
       insertedCount: 2,
     });
 
-    const resultPromise = createRandomTransactions(ownerId, 3);
+    const resultPromise = createRandomTransactions(TEST_OWNER_ID, 3);
     await expect(resultPromise).rejects.toThrow(AppError);
     await expect(resultPromise).rejects.toThrow(
       "Not all provided transactions were inserted",
@@ -259,46 +248,45 @@ describe("createRandomTransactions", () => {
   });
 
   it("throws AppError when not all expected paired transactions are updated with refId", async () => {
-    const date = new Date("2020-01-01");
     const standardTransaction = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 0,
       amount: 20,
       categoryId: "cat-food",
       type: "expense",
       title: "Food expense",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const transferExpense = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 1,
       sourceRefIndex: 2,
       amount: 50,
       categoryId: "cat-my-account",
       type: "expense",
       title: "Transfer out",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
     const transferIncome = {
-      ownerId,
+      ownerId: TEST_OWNER_ID,
       sourceIndex: 2,
       sourceRefIndex: 1,
       amount: 50,
       categoryId: "cat-my-account",
       type: "income",
       title: "Transfer in",
-      transactionDate: date,
+      transactionDate: TEST_DATE,
     };
 
     (getOrCreateCategory as Mock)
-      .mockResolvedValueOnce(categories[0])
-      .mockResolvedValueOnce(categories[1])
-      .mockResolvedValueOnce(categories[2])
-      .mockResolvedValueOnce(categories[3])
-      .mockResolvedValueOnce(categories[4])
-      .mockResolvedValueOnce(categories[5])
-      .mockResolvedValueOnce(categories[6]);
-    (randomDate as Mock).mockReturnValue(date);
+      .mockResolvedValueOnce(TEST_CATEGORIES[0])
+      .mockResolvedValueOnce(TEST_CATEGORIES[1])
+      .mockResolvedValueOnce(TEST_CATEGORIES[2])
+      .mockResolvedValueOnce(TEST_CATEGORIES[3])
+      .mockResolvedValueOnce(TEST_CATEGORIES[4])
+      .mockResolvedValueOnce(TEST_CATEGORIES[5])
+      .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (randomDate as Mock).mockReturnValue(TEST_DATE);
     (randomFromSet as Mock)
       .mockReturnValueOnce("cat-food")
       .mockReturnValueOnce("cat-my-account");
@@ -315,7 +303,7 @@ describe("createRandomTransactions", () => {
       modifiedCount: 1,
     });
 
-    const resultPromise = createRandomTransactions(ownerId, 3);
+    const resultPromise = createRandomTransactions(TEST_OWNER_ID, 3);
     await expect(resultPromise).rejects.toThrow(AppError);
     await expect(resultPromise).rejects.toThrow(
       "Not all expected transctions were updated with reference id",
