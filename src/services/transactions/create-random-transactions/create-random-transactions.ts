@@ -1,9 +1,8 @@
 import { ClientSession } from "mongoose";
 import { AppError } from "@utils/errors";
 import { RandomTransaction } from "./types";
-import { findCategoryByName } from "@db/categories";
-import { createCategory } from "@services/categories";
 import { randomDate, randomFromSet } from "@utils/random";
+import { getOrCreateCategory } from "@services/categories";
 import { TransactionModel } from "@models/transaction-model";
 import {
   prepareRandomStandardTransaction,
@@ -11,16 +10,6 @@ import {
   prepareRandomTransferTransactionPair,
 } from "./prepare-random-transaction";
 
-
-const createOrGetCategory = async (ownerId: string, name: string) => {
-  try {
-    return await createCategory(ownerId, { name });
-  } catch {
-    try {
-      return await findCategoryByName(name)
-    } catch {}
-  } 
-}
 
 export async function createRandomTransactions(
   ownerId: string,
@@ -42,7 +31,7 @@ export async function createRandomTransactions(
     "myAccount",  // system category
   ];
   const categories = (await Promise.all(
-    testCategoryNames.map(name => createOrGetCategory(ownerId, name))
+    testCategoryNames.map(name => getOrCreateCategory(ownerId, name))
   )).filter(c => c != undefined);
   const categoryIds = categories.map(c => c.id);
   const categoryNamesMap = Object.fromEntries(categories.map(c => [c.id, c.name]));

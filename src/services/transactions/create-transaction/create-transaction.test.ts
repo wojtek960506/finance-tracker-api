@@ -1,9 +1,11 @@
 import * as dbCategories from "@db/categories";
 import * as dbTransactions from "@db/transactions";
+import * as serializers from "@schemas/serializers";
 import { getNextSourceIndex } from "@services/transactions";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import {
+  CategoryNotFoundError,
   SystemCategoryHasOwner,
   SystemCategoryWrongType,
   SystemCategoryNotAllowed,
@@ -78,11 +80,14 @@ describe("createStandardTransaction", async () => {
       .mockResolvedValueOnce(EXCHANGE_TXN_EXPENSE_SRC_IDX)
       .mockResolvedValueOnce(EXCHANGE_TXN_INCOME_SRC_IDX);
     vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(exchangeCategory as any);
+    vi.spyOn(serializers, "serializeCategory").mockReturnValue(exchangeCategory as any);
     
     const result = await createExchangeTransaction(exchangeDTO, USER_ID_STR);
 
     expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
     expect(dbCategories.findCategoryByName).toHaveBeenCalledWith(EXCHANGE_CATEGORY_NAME);
+    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
+    expect(serializers.serializeCategory).toHaveBeenCalledWith(exchangeCategory);
     expect(dbTransactions.persistTransactionPair).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID_STR);
@@ -98,11 +103,14 @@ describe("createStandardTransaction", async () => {
       .mockResolvedValueOnce(TRANSFER_TXN_EXPENSE_SRC_IDX)
       .mockResolvedValueOnce(TRANSFER_TXN_INCOME_SRC_IDX);
     vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(transferCategory as any);
+    vi.spyOn(serializers, "serializeCategory").mockReturnValue(transferCategory as any);
     
     const result = await createTransferTransaction(transferDTO, USER_ID_STR);
 
     expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
     expect(dbCategories.findCategoryByName).toHaveBeenCalledWith(TRANSFER_CATEGORY_NAME);
+    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
+    expect(serializers.serializeCategory).toHaveBeenCalledWith(transferCategory);
     expect(dbTransactions.persistTransactionPair).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID_STR);
@@ -127,8 +135,8 @@ describe("createStandardTransaction", async () => {
   });
 
   it("should throw error when creating transaction pair with user category", async () => {
-
-    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(exchangeCategory as any);
+    vi.spyOn(serializers, "serializeCategory").mockReturnValue(
       { ...exchangeCategory, type: CATEGORY_TYPE_USER } as any
     );
     vi.spyOn(dbTransactions, "persistTransactionPair");
@@ -138,6 +146,7 @@ describe("createStandardTransaction", async () => {
     );
 
     expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
     expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
     expect(getNextSourceIndex).not.toHaveBeenCalled();
   });
@@ -145,7 +154,8 @@ describe("createStandardTransaction", async () => {
   it(
     "should throw error when creating transaction pair with system category with owner",
     async () => {
-      vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(
+      vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(transferCategory as any);
+      vi.spyOn(serializers, "serializeCategory").mockReturnValue(
         { ...transferCategory, ownerId: USER_ID_STR } as any
       );
       vi.spyOn(dbTransactions, "persistTransactionPair");
@@ -155,7 +165,26 @@ describe("createStandardTransaction", async () => {
       );
 
       expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+      expect(serializers.serializeCategory).toHaveBeenCalledOnce();
       expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
       expect(getNextSourceIndex).not.toHaveBeenCalled();
   });
+
+  it(
+    "should throw error when category not found by name for creating transaction pair",
+    async () => {
+      vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(null);
+      vi.spyOn(serializers, "serializeCategory");
+      vi.spyOn(dbTransactions, "persistTransactionPair");
+
+      await expect(createTransferTransaction(transferDTO, USER_ID_STR)).rejects.toThrow(
+        CategoryNotFoundError
+      );
+
+      expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+      expect(serializers.serializeCategory).not.toHaveBeenCalled();
+      expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
+      expect(getNextSourceIndex).not.toHaveBeenCalled();
+    }
+  )
 });

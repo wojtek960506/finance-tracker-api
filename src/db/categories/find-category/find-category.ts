@@ -1,7 +1,6 @@
 import { normalizeWhitespace } from "@utils/strings";
 import { CategoryNotFoundError } from "@utils/errors";
 import { CategoryModel } from "@models/category-model";
-import { serializeCategory } from "@schemas/serializers";
 
 
 export const findCategoryById = async (id: string) => {
@@ -10,12 +9,15 @@ export const findCategoryById = async (id: string) => {
   return category;
 }
 
-export const findCategoryByName = async (name: string) => {
-  const categoriesByName = await CategoryModel.find(
-    { nameNormalized: normalizeWhitespace(name).toLowerCase() }
-  );
-
-  if (categoriesByName.length === 0)
-    throw new CategoryNotFoundError(undefined, name);
-  return serializeCategory(categoriesByName[0]);
+export const findCategoryByName = async (
+  name: string,
+  ownerId?: string,
+) => {
+  return CategoryModel.findOne({
+    nameNormalized: normalizeWhitespace(name).toLowerCase(),
+    $or: [ 
+      { type: "system" },
+      { type: "user", ownerId },
+    ]
+  });
 }

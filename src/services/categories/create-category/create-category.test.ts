@@ -18,19 +18,14 @@ describe("createCategory", () => {
 
   afterEach(() => { vi.clearAllMocks() });
 
-  it.each([
-    ["undefined", false], ["error", true]
-  ])("create category - not found with %s", async (_, isError) => {
-    if (isError)
-      (findCategoryByName as Mock).mockRejectedValue(new CategoryNotFoundError());
-    else
-      (findCategoryByName as Mock).mockResolvedValue(undefined);
+  it("create category - not found with given name", async () => {
+    (findCategoryByName as Mock).mockResolvedValue(null);
     (persistCategory as Mock).mockResolvedValue(categoryResult);
 
     const result = await createCategory(USER_ID_STR, { name: FOOD_CATEGORY_NAME });
 
     expect(findCategoryByName).toHaveBeenCalledOnce();
-    expect(findCategoryByName).toHaveBeenCalledWith(FOOD_CATEGORY_NAME);
+    expect(findCategoryByName).toHaveBeenCalledWith(FOOD_CATEGORY_NAME, USER_ID_STR);
     expect(persistCategory).toHaveBeenCalledOnce();
     expect(persistCategory).toHaveBeenCalledWith({
       ownerId: USER_ID_STR,
@@ -49,7 +44,7 @@ describe("createCategory", () => {
     ).rejects.toThrow(CategoryAlreadyExistsError);
 
     expect(findCategoryByName).toHaveBeenCalledOnce();
-    expect(findCategoryByName).toHaveBeenCalledWith(FOOD_CATEGORY_NAME);
+    expect(findCategoryByName).toHaveBeenCalledWith(FOOD_CATEGORY_NAME, USER_ID_STR);
     expect(persistCategory).not.toHaveBeenCalled();
   });
 });

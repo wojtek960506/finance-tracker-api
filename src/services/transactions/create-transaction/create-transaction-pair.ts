@@ -1,8 +1,13 @@
 import { findCategoryByName } from "@db/categories";
+import { serializeCategory } from "@schemas/serializers";
 import { persistTransactionPair } from "@db/transactions";
 import { getNextSourceIndex } from "@services/transactions";
 import { TransactionResponseDTO } from "@schemas/transaction";
-import { SystemCategoryHasOwner, SystemCategoryWrongType } from "@utils/errors";
+import {
+  CategoryNotFoundError,
+  SystemCategoryHasOwner,
+  SystemCategoryWrongType,
+} from "@utils/errors";
 import {
   TransactionCreateProps,
   PreparedTransactionCreateProps,
@@ -22,7 +27,10 @@ export const createTransactionPair = async <
   ) => PreparedTransactionCreateProps<T>,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
 
-  const category = await findCategoryByName(systemCategoryName);
+  const categoryDB = await findCategoryByName(systemCategoryName);
+  if (!categoryDB) throw new CategoryNotFoundError(undefined, systemCategoryName);
+  
+  const category = serializeCategory(categoryDB);
   if (category.type !== "system")
     throw new SystemCategoryWrongType(category.id, systemCategoryName);
   if (category.ownerId)
