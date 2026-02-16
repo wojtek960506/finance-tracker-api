@@ -27,7 +27,7 @@ export const createTestTransactions = async (
       "Cannot add test transactions to a user which already owns some transactions",
     );
 
-  totalTransactions = totalTransactions ? totalTransactions : 200;
+  totalTransactions = totalTransactions ?? 200;
   return withSession(
     createTestTransactionsCore,
     ownerId,

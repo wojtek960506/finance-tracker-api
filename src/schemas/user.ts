@@ -49,7 +49,7 @@ export const TestUserCreateSchema = z.object({
   username: z.string().regex(/^[a-zA-Z0-9_]+$/, {
     message: "Only letters, digits and _ (uderscore) are allowed",
   }),
-  totalTransactions: z.number().min(1000).max(20000),
+  totalTransactions: z.number().min(200).max(20000).optional(),
 });
 
 export const TestUserCreateResponseSchema = z.object({

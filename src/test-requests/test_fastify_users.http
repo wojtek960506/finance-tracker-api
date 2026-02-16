@@ -81,6 +81,7 @@ DELETE {{baseUrl}}/users/{{newUserId}}
 ### CREATE TEST USER WITH RANDOM TRANSACTIONS
 
 POST {{baseUrl}}/users/test
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {

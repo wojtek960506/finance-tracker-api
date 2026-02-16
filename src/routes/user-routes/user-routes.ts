@@ -1,12 +1,12 @@
 import { startSession } from "mongoose";
 import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@utils/errors";
+import { ParamsJustId } from "../routes-types";
 import { UserModel } from "@models/user-model";
 import { validateBody } from "@utils/validation";
 import { serializeUser } from "@schemas/serializers";
 import { authorizeAccessToken } from "@services/auth";
 import { TransactionModel } from "@models/transaction-model";
-import { DeleteManyReply, ParamsJustId } from "../routes-types";
 import {
   getUserHandler,
   getUsersHandler,
@@ -38,14 +38,16 @@ export async function userRoutes(app: FastifyInstance) {
     "/",
     { preHandler: validateBody(UserCreateSchema) },
     createUserHandler,
-  )
+  );
 
   app.post<{ Body: TestUserCreateDTO, Reply: TestUserCreateResponseDTO }>(
     "/test",
-    { preHandler: validateBody(TestUserCreateSchema) },
+    { preHandler: [validateBody(TestUserCreateSchema), authorizeAccessToken()] },
     createTestUserHandler,
-  )
+  );
 
+  // Only authenticated user can delete itself. If there will be a need to delete other users,
+  // then additional authorization rules should be implemented (e.g. admin role)
   app.delete<{ Params: ParamsJustId, Reply: UserResponseDTO }>(
     "/:id",
     async (req, res) => {

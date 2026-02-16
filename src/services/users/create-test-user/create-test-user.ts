@@ -12,10 +12,11 @@ import {
 const createTestUserCore = async (
   session: ClientSession,
   dto: UserCreateDTO,
-  totalTransactions: number,
+  totalTransactions?: number,
 ): Promise<TestUserCreateResponseDTO> => {
   const { id: userId, email } = await createUser(dto, session);
 
+  totalTransactions = totalTransactions ?? 200;
   const insertedTransactionsCount = await createRandomTransactions(
     userId, totalTransactions, session,
   );
