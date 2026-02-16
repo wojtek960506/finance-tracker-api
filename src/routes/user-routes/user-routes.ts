@@ -72,10 +72,5 @@ export async function userRoutes(app: FastifyInstance) {
 
       return res.send(serializeUser(user));
     }
-  )
-
-  app.delete<{ Reply: DeleteManyReply }>("/", async (req, res) => {
-    const tmp = await UserModel.deleteMany();
-    return res.send(tmp);
-  })
+  );
 }
