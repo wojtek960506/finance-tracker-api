@@ -8,3 +8,19 @@ export class UserNotFoundError extends AppError {
     super(404, "User not found");
   }
 }
+
+export class UserNotAuthorizedToDeleteError extends AppError {
+  readonly code = "USER_NOT_AUTHORIZED_TO_DELETE_ERROR";
+
+  constructor(readonly userId: string, readonly authenticatedUserId: string) {
+    super(403, "User is not authorized to delete this user");
+  }
+}
+
+export class UserNotDeletedError extends AppError {
+  readonly code = "USER_NOT_DELETED_ERROR";
+
+  constructor(readonly userId: string) {
+    super(500, "User was not deleted");
+  }
+}

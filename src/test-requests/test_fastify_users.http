@@ -74,6 +74,7 @@ Authorization: Bearer {{accessToken}}
 ### Delete user by id
 @newUserId = {{createUser.response.body.id}}
 DELETE {{baseUrl}}/users/{{newUserId}}
+Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------

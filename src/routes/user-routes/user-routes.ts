@@ -1,16 +1,12 @@
-import { startSession } from "mongoose";
 import { FastifyInstance } from "fastify";
-import { NotFoundError } from "@utils/errors";
 import { ParamsJustId } from "../routes-types";
-import { UserModel } from "@models/user-model";
 import { validateBody } from "@utils/validation";
-import { serializeUser } from "@schemas/serializers";
 import { authorizeAccessToken } from "@services/auth";
-import { TransactionModel } from "@models/transaction-model";
 import {
   getUserHandler,
   getUsersHandler,
   createUserHandler,
+  deleteUserHandler,
   createTestUserHandler,
 } from "./handlers";
 import {
@@ -46,33 +42,9 @@ export async function userRoutes(app: FastifyInstance) {
     createTestUserHandler,
   );
 
-  // Only authenticated user can delete itself. If there will be a need to delete other users,
-  // then additional authorization rules should be implemented (e.g. admin role)
   app.delete<{ Params: ParamsJustId, Reply: UserResponseDTO }>(
     "/:id",
-    async (req, res) => {
-      const { id } = req.params;
-      const errorMessage = `User with ID '${id}' not found`;
-
-      const user = await UserModel.findById(id);
-      if (!user)
-        throw new NotFoundError(errorMessage);
-
-      const session = await startSession();
-
-      try {
-        await session.withTransaction(async () => {
-          await TransactionModel.deleteMany({ ownerId: id }, { session });
-
-          const { deletedCount } = await UserModel.deleteOne({ _id: id }, { session });
-          if (deletedCount !== 1)
-            throw new NotFoundError(errorMessage);
-        })
-      } finally {
-        session.endSession();
-      }
-
-      return res.send(serializeUser(user));
-    }
+    { preHandler: authorizeAccessToken() },
+    deleteUserHandler,
   );
 }
