@@ -1,4 +1,3 @@
-import * as serializers from "@schemas/serializers";
 import { CategoryNotFoundError } from "@utils/errors";
 import { CategoryModel } from "@models/category-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -10,7 +9,7 @@ import {
 
 
 vi.mock("@models/category-model", () => (
-  { CategoryModel: { findById: vi.fn(), find: vi.fn() } })
+  { CategoryModel: { findById: vi.fn(), findOne: vi.fn() } })
 );
 
 const userCategory = getUserCategoryResultSerialized();
@@ -43,26 +42,16 @@ describe("findCategoryByName", () => {
 
   afterEach(() => { vi.clearAllMocks() });
 
-  it("category exists", async () => {
-    vi.spyOn(serializers, "serializeCategory").mockReturnValue(userCategory);
-    (CategoryModel.find as Mock).mockReturnValue([userCategory]);
+  it("find category by name", async () => {
+    (CategoryModel.findOne as Mock).mockReturnValue(userCategory);
 
     const result = await findCategoryByName("  FooD  ");
 
-    expect(CategoryModel.find).toHaveBeenCalledOnce();
-    expect(CategoryModel.find).toHaveBeenCalledWith({ nameNormalized: "food" });
-    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
+    expect(CategoryModel.findOne).toHaveBeenCalledOnce();
+    expect(CategoryModel.findOne).toHaveBeenCalledWith({
+      nameNormalized: "food",
+      $or: [{ type: "system" }, { type: "user", ownerId: undefined }],
+    });
     expect(result).toEqual(userCategory);
-  });
-
-  it("category does not exist", async () => {
-    vi.spyOn(serializers, "serializeCategory");
-    (CategoryModel.find as Mock).mockReturnValue([]);
-
-    await expect(findCategoryByName(" a     B   c ")).rejects.toThrow(CategoryNotFoundError);
-
-    expect(CategoryModel.find).toHaveBeenCalledOnce();
-    expect(CategoryModel.find).toHaveBeenCalledWith({ nameNormalized: "a b c" });
-    expect(serializers.serializeCategory).not.toHaveBeenCalled();
   });
 });

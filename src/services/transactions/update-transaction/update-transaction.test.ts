@@ -1,8 +1,10 @@
 import * as dbCategories from "@db/categories";
 import * as dbTransactions from "@db/transactions";
+import * as serializers from "@schemas/serializers";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import {
+  CategoryNotFoundError,
   SystemCategoryHasOwner,
   SystemCategoryWrongType,
   SystemCategoryNotAllowed,
@@ -74,11 +76,13 @@ describe('update transaction', async () => {
       .mockResolvedValue(expectedResult as any);
     vi.spyOn(dbTransactions, "saveTransactionPairChanges")
       .mockResolvedValue(expectedResult as any);
-    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(category as any)
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(category as any);
+    vi.spyOn(serializers, "serializeCategory").mockReturnValue(category as any);
 
     const result = await updateFunc(TRANSFER_TXN_EXPENSE_ID_STR, USER_ID_STR, dto as any);
     
     expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
     expect(dbTransactions.loadTransactionWithReference).toHaveBeenCalledOnce();
     expect(dbTransactions.saveTransactionPairChanges).toHaveBeenCalledOnce();
     expect(result).toEqual(expectedResult);
@@ -100,8 +104,11 @@ describe('update transaction', async () => {
   });
 
   it("throws when updating transaction pair with not system category", async () => {
-    vi.spyOn(dbCategories, "findCategoryByName")
-      .mockResolvedValue({ ...exchangeCategory, type: CATEGORY_TYPE_USER } as any);
+    
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(exchangeCategory as any);
+    vi.spyOn(serializers, "serializeCategory").mockReturnValue(
+      { ...exchangeCategory, type: CATEGORY_TYPE_USER } as any
+    );
     vi.spyOn(dbTransactions, "loadTransactionWithReference");
     vi.spyOn(dbTransactions, "saveTransactionPairChanges");
 
@@ -110,13 +117,16 @@ describe('update transaction', async () => {
     ).rejects.toThrow(SystemCategoryWrongType);
 
     expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
     expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
     expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
   });
 
   it("throws when updating transaction pair with system category which has owner", async () => {
-    vi.spyOn(dbCategories, "findCategoryByName")
-      .mockResolvedValue({ ...transferCategory, ownerId: USER_ID_STR } as any);
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(transferCategory as any);
+    vi.spyOn(serializers, "serializeCategory").mockReturnValue(
+      { ...transferCategory, ownerId: USER_ID_STR } as any
+    );
     vi.spyOn(dbTransactions, "loadTransactionWithReference");
     vi.spyOn(dbTransactions, "saveTransactionPairChanges");
 
@@ -125,6 +135,22 @@ describe('update transaction', async () => {
     ).rejects.toThrow(SystemCategoryHasOwner);
 
     expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
+    expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
+    expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
+  });
+
+  it("throws when updating transaction pair with not existing category", async () => {
+    vi.spyOn(dbCategories, "findCategoryByName").mockResolvedValue(null);
+    vi.spyOn(dbTransactions, "loadTransactionWithReference");
+    vi.spyOn(dbTransactions, "saveTransactionPairChanges");
+
+    await expect(
+      updateTransferTransaction(TRANSFER_TXN_EXPENSE_ID_STR, USER_ID_STR, transferDTO)
+    ).rejects.toThrow(CategoryNotFoundError);
+
+    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+    expect(serializers.serializeCategory).not.toHaveBeenCalled();
     expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
     expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
   });

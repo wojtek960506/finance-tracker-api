@@ -2,7 +2,7 @@ import { normalizeWhitespace } from "@utils/strings";
 import { CategoryType } from "@models/category-model";
 import { CategoryDTO, CategoryResponseDTO } from "@schemas/category";
 import { findCategoryByName, persistCategory } from "@db/categories";
-import { CategoryAlreadyExistsError, CategoryNotFoundError } from "@utils/errors";
+import { CategoryAlreadyExistsError } from "@utils/errors";
 
 
 export const createCategory = async (
@@ -10,13 +10,9 @@ export const createCategory = async (
   dto: CategoryDTO,
 ): Promise<CategoryResponseDTO> => {
   const { name } = dto;
-  try {
-    const category = await findCategoryByName(name);
-    if (category) throw new CategoryAlreadyExistsError(category.nameNormalized);
-  } catch (error) {
-    // when category not found then it means that it can be created with given name
-    if (!(error instanceof CategoryNotFoundError)) throw error;
-  }
+  
+  const category = await findCategoryByName(name, ownerId);
+  if (category) throw new CategoryAlreadyExistsError(name);
 
   const props = {
     ownerId,

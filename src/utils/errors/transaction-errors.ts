@@ -2,7 +2,7 @@ import { AppError } from "@utils/errors/general-errors";
 
 
 export class TransactionNotFoundError extends AppError {
-  readonly code = 'TRANSACTION_NOT_FOUND';
+  readonly code = 'TRANSACTION_NOT_FOUND_ERROR';
 
   constructor(readonly transactionId: string) {
     super(404, "Transaction not found");

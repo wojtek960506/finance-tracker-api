@@ -1,4 +1,9 @@
-import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
+import {
+  DATE_OBJ,
+  DATE_STR,
+  USER_ID_OBJ,
+  USER_ID_STR,
+} from "@/test-utils/factories/general";
 import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_ID_OBJ,
@@ -6,8 +11,6 @@ import {
   FOOD_CATEGORY_NAME,
 } from "@/test-utils/factories/category";
 import {
-  DATE_STR,
-  DATE_OBJ,
   DESCRPTION,
   AMOUNT_EXPENSE,
   PAYMENT_METHOD,

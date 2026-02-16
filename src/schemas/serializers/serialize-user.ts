@@ -1,10 +1,11 @@
 import { IUser } from "@models/user-model";
 import { UserResponseDTO } from "@schemas/user"
 
+
 export const serializeUser = (user: IUser): UserResponseDTO => {
   const {
     passwordHash,
-    refreshTokenHashes,
+    refreshTokenHash,
     _id,
     __v,
     ...rest

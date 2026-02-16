@@ -1,27 +1,21 @@
 import argon2 from "argon2";
-import { FastifyRequest } from "fastify";
-import { ClientSession } from "mongoose";
 import { AppError } from "@utils/errors";
-import { UserCreateDTO } from "@schemas/user";
+import { ClientSession } from "mongoose";
 import { UserModel } from "@models/user-model";
 import { serializeUser } from "@schemas/serializers";
+import { UserCreateDTO, UserResponseDTO } from "@schemas/user";
 
 
-export async function createUserHandler(
-  req: FastifyRequest<{ Body: UserCreateDTO }>,
-  session?: ClientSession
-) {
-  const { password, ...rest } = req.body;
-  const passwordHash1 = await argon2.hash(password);
+export const createUser = async (
+  dto: UserCreateDTO,
+  session?: ClientSession,
+): Promise<UserResponseDTO> => {
+  const { password, ...rest } = dto;
+  const passwordHash = await argon2.hash(password);
   
   try {
     const [ newUser ] = await UserModel.create(
-      [
-        {
-          ...rest,
-          passwordHash: passwordHash1,
-        }
-      ],
+      [{ ...rest, passwordHash: passwordHash }],
       { session });
     return serializeUser(newUser);
   } catch (err) {

@@ -16,12 +16,40 @@ export interface ICategory extends CategoryAttributes, Document {
 
 const CategorySchema = new Schema<ICategory>(
   {
-    ownerId: { type: Schema.Types.ObjectId, ref: "User", required: false, index: true },
+    ownerId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [
+        function(this: ICategory) {
+          return this.type === "user";
+        },
+        "Invalid ownerId for catogory type",
+      ],
+      validate: {
+        validator: function (this: ICategory, value: any) {
+          if (this.type === "system") return !value; // must not exist for system categories
+          return true;
+        },
+        message: "Invalid ownerId for catogory type",
+      }
+    },
     type: { type: String, required: true,  enum: ["user", "system"] },
-    name: { type: String, required: true, minLength: 1, maxLength: 30, unique: true },
-    nameNormalized: { type: String, required: true, minLength: 1, maxLength: 30, unique: true },
+    name: { type: String, required: true, minLength: 1, maxLength: 30 },
+    nameNormalized: { type: String, required: true, minLength: 1, maxLength: 30 },
   },
   { timestamps: true }
+);
+
+// unique per user
+CategorySchema.index(
+  { ownerId: 1, nameNormalized: 1 },
+  { unique: true, partialFilterExpression: { type: "user" } },
+);
+
+// unique globally for system
+CategorySchema.index(
+  { nameNormalized: 1 },
+  { unique: true, partialFilterExpression: { type: "system" } },
 );
 
 export const CategoryModel = model<ICategory>("Category", CategorySchema);

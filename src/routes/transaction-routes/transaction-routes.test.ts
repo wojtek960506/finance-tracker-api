@@ -6,6 +6,7 @@ import { transactionRoutes } from "./transaction-routes";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { registerErrorHandler } from "@plugins/errorHandler";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import { TEST_USER_TOTAL_TRANSACTIONS } from "@/test-utils/factories/user";
 import { getCsvForTransactions } from "@/test-utils/get-csv-for-transactions";
 import {
   FOOD_CATEGORY_NAME,
@@ -160,6 +161,18 @@ describe("transaction routes", async () => {
     expect(serviceT.deleteTransactions).toHaveBeenCalledOnce();
     expect(serviceT.deleteTransactions).toHaveBeenCalledWith(USER_ID_STR);
     expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
+
+  it("should create test transactions for a given user - 'POST /test'", async () => {
+    const body = { totalTransactions: TEST_USER_TOTAL_TRANSACTIONS };
+    vi.spyOn(serviceT, "createTestTransactions").mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: "POST", url: "/test", body });
+    expect(serviceT.createTestTransactions).toHaveBeenCalledOnce();
+    expect(serviceT.createTestTransactions).toHaveBeenCalledWith(
+      USER_ID_STR, TEST_USER_TOTAL_TRANSACTIONS
+    );
+    expect(response.statusCode).toBe(201);
     expect(response.json()).toEqual(MOCKED_RESULT);
   });
 });

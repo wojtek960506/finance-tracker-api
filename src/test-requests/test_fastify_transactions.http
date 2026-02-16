@@ -253,6 +253,9 @@ Authorization: Bearer {{accessToken}}
 ### CREATE TEST TRANSACTIONS (only when user has no transactions)
 POST {{baseUrl}}/test
 Authorization: Bearer {{accessToken}}
+# Content-Type: application/json
+
+# { "totalTransactions": 300 }
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
