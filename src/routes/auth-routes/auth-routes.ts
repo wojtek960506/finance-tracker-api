@@ -6,8 +6,8 @@ import { UserModel } from "@models/user-model";
 import { UserResponseDTO } from "@schemas/user";
 import { validateBody } from "@utils/validation";
 import { serializeUser } from "@schemas/serializers";
-import { AuthenticatedRequest } from "./routes-types";
 import { AppError, NotFoundError } from "@utils/errors";
+import { AuthenticatedRequest } from "@routes/routes-types";
 import {
   getTokenHash,
   createAccessToken,
