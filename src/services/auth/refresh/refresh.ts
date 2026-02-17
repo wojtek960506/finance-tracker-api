@@ -11,7 +11,7 @@ import {
 } from "@services/auth/auth-tokens";
 
 
-export const refresh = async (refreshToken?: string): Promise<AccessRefreshTokens> => {
+export const refresh = async (refreshToken: string | undefined): Promise<AccessRefreshTokens> => {
 
   if (!refreshToken) throw new UnauthorizedMissingRefreshTokenError();
         
