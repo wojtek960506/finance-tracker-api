@@ -32,3 +32,19 @@ export class UnauthorizedUserNotFoundError extends AppError {
     super(401, `User with email '${email}' not found`);
   }
 };
+
+export class UnauthorizedMissingRefreshTokenError extends AppError {
+  readonly code = "UNAUTHORIZED_MISSING_REFRESH_TOKEN_ERROR";
+
+  constructor() {
+    super(401, "Missing refresh token");
+  }
+}
+
+export class UnauthorizedInvalidRefreshTokenError extends AppError {
+  readonly code = "UNAUTHORIZED_INVALID_REFRESH_TOKEN_ERROR";
+
+  constructor() {
+    super(401, "Invalid refresh token");
+  }
+}

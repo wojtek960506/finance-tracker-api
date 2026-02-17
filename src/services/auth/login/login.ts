@@ -1,6 +1,7 @@
 import argon2 from "argon2";
 import { LoginDTO } from "@schemas/auth";
 import { UserModel } from "@models/user-model";
+import { AccessRefreshTokens } from "@services/auth";
 import { createAccessToken, createRefreshToken } from "@services/auth";
 import { 
   UnauthorizedUserNotFoundError,
@@ -8,9 +9,7 @@ import {
 } from "@utils/errors";
 
 
-type LoginResult = { accessToken: string, refreshToken: string };
-
-export const login = async (dto: LoginDTO): Promise<LoginResult> => {
+export const login = async (dto: LoginDTO): Promise<AccessRefreshTokens> => {
   const { email, password } = dto;
   const user = await UserModel.findOne({ email });
   if (!user) throw new UnauthorizedUserNotFoundError(email);

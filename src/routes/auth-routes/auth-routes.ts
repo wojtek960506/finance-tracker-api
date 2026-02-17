@@ -1,20 +1,17 @@
 import jwt from "jsonwebtoken";
 import { FastifyInstance } from "fastify";
-import { loginHandler } from "./handlers";
+import { NotFoundError } from "@utils/errors";
 import { UserModel } from "@models/user-model";
 import { UserResponseDTO } from "@schemas/user";
 import { validateBody } from "@utils/validation";
 import { serializeUser } from "@schemas/serializers";
 import { LoginDTO, LoginSchema } from "@schemas/auth";
-import { AppError, NotFoundError } from "@utils/errors";
+import { authorizeAccessToken } from "@services/auth";
+import { loginHandler, refreshHandler } from "./handlers";
 import { AuthenticatedRequest } from "@routes/routes-types";
-import {
-  getTokenHash,
-  createAccessToken,
-  createRefreshToken,
-  authorizeAccessToken,
-} from "@services/auth";
 
+
+type AccessTokenResponse = { accessToken: string };
 
 const isProductionEnv = process.env.NODE_ENV === "production";
 const refreshCookieOptions = {
@@ -25,50 +22,13 @@ const refreshCookieOptions = {
 } as const;
 
 export async function authRoutes(app: FastifyInstance) {
-  app.post<{ Body: LoginDTO, Reply: { accessToken: string } }>(
+  app.post<{ Body: LoginDTO, Reply: AccessTokenResponse }>(
     "/login", 
     { preHandler: validateBody(LoginSchema) },
     loginHandler,
   )
 
-  app.get("/refresh", async (req, res) => {
-
-    const refreshToken = req.cookies["refreshToken"];
-    if (!refreshToken) {
-      return res.code(401).send({ "message": "Missing refresh token" });
-    }
-
-    const refreshTokenHash = getTokenHash(refreshToken);
-
-    // find user by refresh token hash
-    const user = await UserModel.findOne({
-      "refreshTokenHash.tokenHash": refreshTokenHash
-    });
-    
-    if (!user) throw new AppError(401, `Invalid refresh token`);
-
-    // Rotate refresh token (security best practice)
-    const { token: newRefreshToken, tokenHash: newRefreshTokenHash } = createRefreshToken();
-
-    // remove old hash, add new one
-    user.refreshTokenHash = { tokenHash: newRefreshTokenHash, createdAt: new Date() };
-    await user.save();
-
-    // set new cookie
-    const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
-    res.setCookie("refreshToken", newRefreshToken, {
-      ...refreshCookieOptions,
-      maxAge: 60 * 60 * 24 * refreshExpiresDays,
-    })
-
-    // issue new access token
-    const accessToken = createAccessToken({
-      userId: user._id.toString(),
-      email: user.email
-    });
-
-    return res.send({ accessToken });
-  })
+  app.get<{ Reply: AccessTokenResponse }>("/refresh", refreshHandler);
 
   app.post(
     "/logout",

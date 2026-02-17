@@ -11,11 +11,7 @@ export const loginHandler = async (
   const { accessToken, refreshToken } = await login(req.body);
 
   // set refresh token cookie (HttpOnly, Secure)
-  const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
-  res.setCookie("refreshToken", refreshToken, {
-    ...refreshCookieOptions,
-    maxAge: 60 * 60 * 24 * refreshExpiresDays,
-  })
+  res.setCookie("refreshToken", refreshToken, { ...refreshCookieOptions });
 
   return res.code(200).send({ accessToken });
 }
