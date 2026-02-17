@@ -8,3 +8,5 @@ export const LoginSchema = z.object({
 export const TokenSchema = z.object({
   accessToken: z.string()
 });
+
+export type LoginDTO = z.infer<typeof LoginSchema>;

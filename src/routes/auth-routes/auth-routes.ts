@@ -1,11 +1,11 @@
-import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { FastifyInstance } from "fastify";
-import { LoginSchema } from "@schemas/auth";
+import { loginHandler } from "./handlers";
 import { UserModel } from "@models/user-model";
 import { UserResponseDTO } from "@schemas/user";
 import { validateBody } from "@utils/validation";
 import { serializeUser } from "@schemas/serializers";
+import { LoginDTO, LoginSchema } from "@schemas/auth";
 import { AppError, NotFoundError } from "@utils/errors";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import {
@@ -25,41 +25,10 @@ const refreshCookieOptions = {
 } as const;
 
 export async function authRoutes(app: FastifyInstance) {
-  app.post(
+  app.post<{ Body: LoginDTO, Reply: { accessToken: string } }>(
     "/login", 
     { preHandler: validateBody(LoginSchema) },
-    async (req, res) => {
-      const { email, password } = req.body as { email: string, password: string };
-      const user = await UserModel.findOne({ email }).exec();
-      if (!user) 
-        throw new AppError(401, `User with email '${email}' not found`);
-
-      const valid = await argon2.verify(user.passwordHash, password);
-      if (!valid)
-        throw new AppError(401, `Invalid credentials`);
-
-      // create access token (include minimal claims)
-      const accessToken = createAccessToken({
-        userId: user._id.toString(),
-        email: user.email
-      });
-
-      // create refresh token and store hashed version
-      const { token: refreshToken, tokenHash } = createRefreshToken();
-
-      // append the refresh token hash to the user (rotate strategy)
-      user.refreshTokenHash = { tokenHash, createdAt: new Date() };
-      await user.save();
-
-      // set refresh token cookie (HttpOnly, Secure)
-      const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
-      res.setCookie("refreshToken", refreshToken, {
-        ...refreshCookieOptions,
-        maxAge: 60 * 60 * 24 * refreshExpiresDays,
-      })
-
-      return res.send({ accessToken });
-    }
+    loginHandler,
   )
 
   app.get("/refresh", async (req, res) => {
@@ -87,7 +56,6 @@ export async function authRoutes(app: FastifyInstance) {
 
     // set new cookie
     const refreshExpiresDays = parseInt(process.env.JWT_REFRESH_EXPIRES_DAYS || "30", 10);
-    const isProductionEnv = process.env.NODE_ENV === "production";
     res.setCookie("refreshToken", newRefreshToken, {
       ...refreshCookieOptions,
       maxAge: 60 * 60 * 24 * refreshExpiresDays,
