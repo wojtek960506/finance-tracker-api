@@ -11,13 +11,12 @@ async function loadAuthTokens() {
   return import("./auth-tokens");
 }
 
-
 describe("auth-tokens", () => {
   const envConfigSpy = vi.spyOn(config, "getEnv");
 
   afterEach(() => { vi.clearAllMocks() });
 
-  it("creates access token that can be verified", async () => {
+  it("creates access token that can be verified", async () => {    
     const { createAccessToken, verifyAccessToken } = await loadAuthTokens();
     const payload = { userId: "user-123", role: "user" };
 

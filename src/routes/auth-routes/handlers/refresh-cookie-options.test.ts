@@ -1,54 +1,43 @@
-import { afterAll, describe, expect, it } from "vitest";
+import * as config from "@/config";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { getRefreshCookieOptions } from "./refresh-cookie-options";
+import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from "@/test-utils/env-consts";
 
 
-const originalNodeEnv = process.env.NODE_ENV;
-const originalRefreshExpiresDays = process.env.JWT_REFRESH_EXPIRES_DAYS;
-
-afterAll(() => {
-  if (originalNodeEnv === undefined) {
-    delete process.env.NODE_ENV;
-    return;
-  }
-  process.env.NODE_ENV = originalNodeEnv;
-
-  if (originalRefreshExpiresDays === undefined) {
-    delete process.env.JWT_REFRESH_EXPIRES_DAYS;
-    return;
-  }
-  process.env.JWT_REFRESH_EXPIRES_DAYS = originalRefreshExpiresDays;
-});
+vi.mock("@/config", () => ({ getEnv: vi.fn() }));
 
 describe("getRefreshCookieOptions", () => {
+  const envConfigSpy = vi.spyOn(config, "getEnv");
+
+  afterEach(() => { vi.clearAllMocks() });
 
   it("should return correct options for production environment", () => {
-    process.env.NODE_ENV = "production";
-    process.env.JWT_REFRESH_EXPIRES_DAYS = "15";
+    envConfigSpy.mockReturnValue({ ...ENV_TEST_VALUES, nodeEnv: "production" } as any);
 
     const options = getRefreshCookieOptions();
 
+    expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(options).toEqual({
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 60 * 60 * 24 * 15,
+      maxAge: 60 * 60 * 24 * JWT_REFRESH_EXPIRES_DAYS_TEST,
       path: "/",
     });
   });
 
   it("should return correct options for non-production environment", () => {
-    process.env.NODE_ENV = "development";
-    delete process.env.JWT_REFRESH_EXPIRES_DAYS;
+    envConfigSpy.mockReturnValue({ ...ENV_TEST_VALUES } as any);
 
     const options = getRefreshCookieOptions();
 
+    expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(options).toEqual({
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: 60 * 60 * 24 * JWT_REFRESH_EXPIRES_DAYS_TEST,
       path: "/",
     });
-
   });
 });

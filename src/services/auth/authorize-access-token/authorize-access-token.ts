@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { getEnv } from "@/config";
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
   UnauthorizedInvalidTokenError,
@@ -13,7 +14,8 @@ export function authorizeAccessToken() {
 
     const accessToken = authHeader.split(" ")[1];
     try {
-      const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET!);
+      const { jwtAccessSecret } = getEnv();
+      const payload = jwt.verify(accessToken, jwtAccessSecret);
       const userId = (payload as { userId: string }).userId;
       (req as any).userId = userId;
     } catch {

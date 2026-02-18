@@ -3,6 +3,7 @@ import cookie from "@fastify/cookie";
 import * as serviceA from "@services/auth";
 import * as serviceU from "@services/users";
 import { authRoutes } from "./auth-routes";
+import { ENV_TEST_VALUES } from "@/test-utils/env-consts";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { registerErrorHandler } from "@plugins/errorHandler";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -13,6 +14,8 @@ const LOGIN_DTO = { email: "john@example.com", password: "secret-password" };
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
+
+vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 vi.mock("@services/auth", () => ({
   login: vi.fn(),
