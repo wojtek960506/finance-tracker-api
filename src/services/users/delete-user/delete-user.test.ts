@@ -43,6 +43,7 @@ describe("deleteUser", () => {
     vi.spyOn(CategoryModel, "deleteMany").mockResolvedValue({ deletedCount: 2 } as any);
     vi.spyOn(UserModel, "deleteOne").mockResolvedValue({ deletedCount: 1 } as any);
     vi.spyOn(serializers, "serializeUser").mockReturnValue(userSerialized as any);
+    const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
     const result = await deleteUser(USER_ID_STR, USER_ID_STR);
 
@@ -67,6 +68,7 @@ describe("deleteUser", () => {
     );
     expect(serializers.serializeUser).toHaveBeenCalledOnce();
     expect(serializers.serializeUser).toHaveBeenCalledWith(user);
+    expect(consoleLogSpy).toHaveBeenCalledTimes(5);
     expect(result).toEqual(userSerialized);
   });
 

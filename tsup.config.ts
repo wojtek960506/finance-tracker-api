@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/app.ts"],
+  entry: ["src/server.ts"],
   outDir: "dist",
   format: ["esm"],
   dts: true, // Generate .d.ts files

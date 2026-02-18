@@ -3,12 +3,12 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.ts",
+  "main": "src/server.ts",
   "packageManager": "pnpm@10.20.0",
   "scripts": {
-    "dev": "tsx watch src/app.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsup",
-    "start": "node dist/app.js",
+    "start": "node dist/server.js",
     "test": "vitest --run",
     "test:watch": "vitest"
   },

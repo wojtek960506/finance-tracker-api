@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import Fastify from "fastify";
 import cors from "@fastify/cors"
 import cookie from "@fastify/cookie";
@@ -27,10 +26,7 @@ import {
 //############################################################################################
 
 
-dotenv.config();
-const PORT = Number(process.env.PORT) || 5000;
-
-const buildApp = async () => {
+export const buildApp = async () => {
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
   // upsert system categories
@@ -72,10 +68,12 @@ const buildApp = async () => {
   return app;
 }
 
-const start = async () => {
+export const start = async () => {
+  
   await connectDB();
   const app = await buildApp();
   try {
+    const PORT = Number(process.env.PORT) || 5000;
     await app.listen({ port: PORT, host: "0.0.0.0" });
     console.log(`Server running on port ${PORT}`);
   } catch (err) {
@@ -83,5 +81,3 @@ const start = async () => {
     process.exit(1);
   }
 };
-
-start();
