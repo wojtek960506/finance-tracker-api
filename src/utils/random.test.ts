@@ -57,17 +57,32 @@ describe("weigthedRandomFromSet", () => {
     vi.restoreAllMocks();
   });
 
-  it("value with bigger weight is chosen more often", () => {
-    const values = new Set([1, 2, 3, 4]);
-    const weights = { 1: 32, 2: 16, 3: 8, 4: 4 }
+  it("maps random ranges to values according to weights", () => {
+    const values = new Set([1, 2, 3]);
+    const weights = { 1: 150, 2: 45, 3: 5,}
+    const totalWeight = 200;
 
-    const occurrences = new Map<number, number>();
+    vi.spyOn(Math, "random").mockReturnValue(149 / totalWeight);
+    expect(weightedRandomFromSet(values, weights)).toBe(1);
+    vi.spyOn(Math, "random").mockReturnValue(165 / totalWeight);
+    expect(weightedRandomFromSet(values, weights)).toBe(2);
+    vi.spyOn(Math, "random").mockReturnValue(199 / totalWeight);
+    expect(weightedRandomFromSet(values, weights)).toBe(3);
+  })
 
-    for (let i = 0; i < 100 ; i++) {
+  it("value with bigger weight tends to be chosen more often", () => {
+    const values = new Set([1, 2, 3]);
+    const weights = { 1: 150, 2: 45, 3: 5,}
+
+    const occurrences = new Map<number, number>([
+      [1, 0],
+      [2, 0],
+      [3, 0],
+    ]);
+
+    for (let i = 0; i < 10000 ; i++) {
       const result = weightedRandomFromSet(values, weights);
-      const occurence = occurrences.get(result);
-      if (occurence !== undefined) occurrences.set(result, occurence + 1);
-      else occurrences.set(result, 0);
+      occurrences.set(result, occurrences.get(result)! + 1);
     }
 
     const valuesSortedByWeight = Object.entries(weights)

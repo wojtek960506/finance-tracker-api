@@ -1,14 +1,15 @@
 import jwt from "jsonwebtoken";
-import { AppError } from "@utils/errors";
 import { FastifyReply, FastifyRequest } from "fastify";
+import {
+  UnauthorizedInvalidTokenError,
+  UnauthorizedMissingTokenError,
+} from "@utils/errors";
 
 
 export function authorizeAccessToken() {
   return async (req: FastifyRequest, _reply: FastifyReply) => {
     const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-      throw new AppError(401, "Missing token");
-    }
+    if (!authHeader?.startsWith("Bearer ")) throw new UnauthorizedMissingTokenError();
 
     const accessToken = authHeader.split(" ")[1];
     try {
@@ -16,7 +17,7 @@ export function authorizeAccessToken() {
       const userId = (payload as { userId: string }).userId;
       (req as any).userId = userId;
     } catch {
-      throw new AppError(401, "Invalid or expired token");
+      throw new UnauthorizedInvalidTokenError();
     }
   }
 }
