@@ -7,15 +7,18 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
+    includeSource: ["src/**/*.ts"],
     include: ["src/**/*.test.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
       reportsDirectory: "./coverage",
+      include: ["src/**/*.ts"],
       exclude: [
-        '**/test-utils/**',
-        '**/index.ts',
-        '**/types.ts',
+        'src/**/*.test.ts',
+        'src/**/test-utils/**',
+        'src/**/index.ts',
+        'src/**/*types*.ts',
       ]
     }
   },

@@ -3,11 +3,11 @@ import Fastify from "fastify";
 import cors from "@fastify/cors"
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
-import { mainRoute } from "@routes/main-route";
 import { upsertSystemCategories, connectDB } from "@/setup";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
 import {
+  mainRoutes,
   authRoutes,
   userRoutes,
   categoryRoutes,
@@ -41,20 +41,23 @@ const buildApp = async () => {
     secret: process.env.COOKIE_SECRET || undefined,
     parseOptions: {},
   });
+  
   // register jwt
   await app.register(fastifyJwt, {
     secret: process.env.JWT_ACCESS_SECRET!
   });
   
-  app.register(mainRoute, { prefix: "" });
+  // register routes
+  app.register(mainRoutes, { prefix: "" });
   app.register(authRoutes, { prefix: "/api/auth" });
   app.register(userRoutes, { prefix: "/api/users" });
   app.register(categoryRoutes, { prefix: "/api/categories" });
   app.register(transactionRoutes, { prefix: "/api/transactions" });
 
+  // register error handler
   await registerErrorHandler(app);
 
-  // Register CORS
+  // register CORS
   await app.register(cors, {
     origin: [
       "http://localhost:3000",
