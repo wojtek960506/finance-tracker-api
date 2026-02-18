@@ -1,6 +1,6 @@
 import { refresh } from "@services/auth";
-import { refreshCookieOptions } from "./consts";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { getRefreshCookieOptions } from "./refresh-cookie-options";
 
 
 export const refreshHandler = async (req: FastifyRequest, res: FastifyReply) => {
@@ -9,7 +9,7 @@ export const refreshHandler = async (req: FastifyRequest, res: FastifyReply) => 
     const { accessToken, refreshToken: newRefreshToken } = await refresh(refreshToken);
 
     // set new cookie
-    res.setCookie("refreshToken", newRefreshToken, { ...refreshCookieOptions });
+    res.setCookie("refreshToken", newRefreshToken, { ...getRefreshCookieOptions() });
 
     return res.send({ accessToken });
   }

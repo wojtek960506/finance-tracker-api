@@ -1,7 +1,7 @@
 import { login } from "@services/auth";
 import { LoginDTO } from "@schemas/auth";
-import { refreshCookieOptions } from "./consts";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { getRefreshCookieOptions } from "./refresh-cookie-options";
 
 
 export const loginHandler = async (
@@ -11,7 +11,7 @@ export const loginHandler = async (
   const { accessToken, refreshToken } = await login(req.body);
 
   // set refresh token cookie (HttpOnly, Secure)
-  res.setCookie("refreshToken", refreshToken, { ...refreshCookieOptions });
+  res.setCookie("refreshToken", refreshToken, { ...getRefreshCookieOptions() });
 
   return res.code(200).send({ accessToken });
 }

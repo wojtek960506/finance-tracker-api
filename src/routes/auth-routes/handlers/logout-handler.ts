@@ -1,6 +1,6 @@
 import { logout } from "@services/auth";
-import { refreshCookieOptions } from "./consts";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { getRefreshCookieOptions } from "./refresh-cookie-options";
 
 
 export const logoutHandler = async (req: FastifyRequest, res: FastifyReply) => {
@@ -8,7 +8,7 @@ export const logoutHandler = async (req: FastifyRequest, res: FastifyReply) => {
   // first clear refresh token
   // There is no refresh mechanism for logout. In case of present access token we remove
   // hash of refresh token for the given user from DB.
-  res.clearCookie("refreshToken", { ...refreshCookieOptions, maxAge: 0 });
+  res.clearCookie("refreshToken", { ...getRefreshCookieOptions(), maxAge: 0 });
 
   // There is not error thrown from this function. In the worst case the refresh token
   // hash is not cleared from DB, but as the cookie is cleared on the client side,
