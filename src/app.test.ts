@@ -1,3 +1,4 @@
+import * as config from "@/config";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   PORT_TEST,
@@ -66,11 +67,11 @@ vi.mock("@/routes", () => ({
   transactionRoutes: transactionRoutesMock,
 }));
 
-vi.mock("@/config", () => ({
-  getEnv: () => ({ ...ENV_TEST_VALUES }),
-}));
+
+vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 describe("app bootstrap", () => {
+  const envConfigSpy = vi.spyOn(config, "getEnv");
   const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
   beforeEach(() => {
@@ -86,6 +87,7 @@ describe("app bootstrap", () => {
 
     const result = await buildApp();
 
+    expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(fastifyMock).toHaveBeenCalledOnce();
     expect(fastifyMock).toHaveBeenCalledWith({ logger: true });
     expect(appMock.withTypeProvider).toHaveBeenCalledOnce();
@@ -128,6 +130,7 @@ describe("app bootstrap", () => {
 
     await start();
 
+    expect(envConfigSpy).toHaveBeenCalledTimes(2);
     expect(connectDBMock).toHaveBeenCalledOnce();
     expect(appMock.listen).toHaveBeenCalledOnce();
     expect(appMock.listen).toHaveBeenCalledWith({ port: PORT_TEST, host: "0.0.0.0" });
@@ -142,6 +145,7 @@ describe("app bootstrap", () => {
 
     await start();
 
+    expect(envConfigSpy).toHaveBeenCalledTimes(2);
     expect(appMock.log.error).toHaveBeenCalledOnce();
     expect(appMock.log.error).toHaveBeenCalledWith(error);
     expect(processExitSpy).toHaveBeenCalledOnce();
