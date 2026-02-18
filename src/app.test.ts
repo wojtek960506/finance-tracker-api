@@ -1,4 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  PORT_TEST,
+  ENV_TEST_VALUES,
+  COOKIE_SECRET_TEST,
+  JWT_ACCESS_SECRET_TEST,
+} from "@/test-utils/env-consts";
 
 
 const {
@@ -60,41 +66,22 @@ vi.mock("@/routes", () => ({
   transactionRoutes: transactionRoutesMock,
 }));
 
+vi.mock("@/config", () => ({
+  getEnv: () => ({ ...ENV_TEST_VALUES }),
+}));
+
 describe("app bootstrap", () => {
-  const originalNodeEnv = process.env.NODE_ENV;
-  const originalPort = process.env.PORT;
-  const originalCookieSecret = process.env.COOKIE_SECRET;
-  const originalJwtSecret = process.env.JWT_ACCESS_SECRET;
   const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
   beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
-    process.env.NODE_ENV = "test";
-    process.env.JWT_ACCESS_SECRET = "jwt-secret";
-    delete process.env.PORT;
-    delete process.env.COOKIE_SECRET;
     appMock.withTypeProvider.mockReturnValue(appMock);
     appMock.register.mockResolvedValue(undefined);
     appMock.listen.mockResolvedValue(undefined);
   });
-
-  afterEach(() => {
-    if (originalNodeEnv === undefined) delete process.env.NODE_ENV;
-    else process.env.NODE_ENV = originalNodeEnv;
-
-    if (originalPort === undefined) delete process.env.PORT;
-    else process.env.PORT = originalPort;
-
-    if (originalCookieSecret === undefined) delete process.env.COOKIE_SECRET;
-    else process.env.COOKIE_SECRET = originalCookieSecret;
-
-    if (originalJwtSecret === undefined) delete process.env.JWT_ACCESS_SECRET;
-    else process.env.JWT_ACCESS_SECRET = originalJwtSecret;
-  });
-
+  
   it("builds app and registers plugins/routes", async () => {
-    process.env.COOKIE_SECRET = "cookie-secret";
     const { buildApp } = await import("./app");
 
     const result = await buildApp();
@@ -104,11 +91,11 @@ describe("app bootstrap", () => {
     expect(appMock.withTypeProvider).toHaveBeenCalledOnce();
     expect(upsertSystemCategoriesMock).toHaveBeenCalledOnce();
     expect(appMock.register).toHaveBeenCalledWith(cookiePluginMock, {
-      secret: "cookie-secret",
+      secret: COOKIE_SECRET_TEST,
       parseOptions: {},
     });
     expect(appMock.register).toHaveBeenCalledWith(jwtPluginMock, {
-      secret: "jwt-secret",
+      secret: JWT_ACCESS_SECRET_TEST,
     });
     expect(appMock.register).toHaveBeenCalledWith(mainRoutesMock, { prefix: "" });
     expect(appMock.register).toHaveBeenCalledWith(authRoutesMock, { prefix: "/api/auth" });
@@ -137,15 +124,14 @@ describe("app bootstrap", () => {
   });
 
   it("starts server", async () => {
-    process.env.PORT = "7777";
     const { start } = await import("./app");
 
     await start();
 
     expect(connectDBMock).toHaveBeenCalledOnce();
     expect(appMock.listen).toHaveBeenCalledOnce();
-    expect(appMock.listen).toHaveBeenCalledWith({ port: 7777, host: "0.0.0.0" });
-    expect(consoleLogSpy).toHaveBeenCalledWith("Server running on port 7777");
+    expect(appMock.listen).toHaveBeenCalledWith({ port: PORT_TEST, host: "0.0.0.0" });
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Server running on port ${PORT_TEST}`);
   });
 
   it("logs and exits when listen fails", async () => {
