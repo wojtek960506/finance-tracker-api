@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
+import { getEnv } from "@/config";
 import { randomBytes, createHash } from "crypto";
 
 
-const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
-
 // create JWT access token
 export function createAccessToken(payload: object) {
-  return jwt.sign(payload, ACCESS_SECRET, { expiresIn: "30m" });
+  const { jwtAccessSecret } = getEnv();
+  return jwt.sign(payload, jwtAccessSecret, { expiresIn: "30m" });
 }
 
 // create secure random refresh token (opaque) and return both token and its hashed form
@@ -22,5 +22,6 @@ export function getTokenHash(token: string) {
 
 // verify access token (throws if invalid)
 export function verifyAccessToken(token: string) {
-  return jwt.verify(token, ACCESS_SECRET);
+  const { jwtAccessSecret } = getEnv();
+  return jwt.verify(token, jwtAccessSecret);
 }

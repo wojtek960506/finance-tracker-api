@@ -1,32 +1,32 @@
+import * as config from "@/config";
 import type { JwtPayload } from "jsonwebtoken";
-import { afterAll, describe, expect, it, vi } from "vitest";
+import { ENV_TEST_VALUES } from "@/test-utils/env-consts";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 
-const TEST_ACCESS_SECRET = "unit-test-access-secret";
-const originalAccessSecret = process.env.JWT_ACCESS_SECRET;
+vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 async function loadAuthTokens() {
   vi.resetModules();
-  process.env.JWT_ACCESS_SECRET = TEST_ACCESS_SECRET;
   return import("./auth-tokens");
 }
 
-afterAll(() => {
-  if (originalAccessSecret === undefined) {
-    delete process.env.JWT_ACCESS_SECRET;
-    return;
-  }
-  process.env.JWT_ACCESS_SECRET = originalAccessSecret;
-});
 
 describe("auth-tokens", () => {
+  const envConfigSpy = vi.spyOn(config, "getEnv");
+
+  afterEach(() => { vi.clearAllMocks() });
+
   it("creates access token that can be verified", async () => {
     const { createAccessToken, verifyAccessToken } = await loadAuthTokens();
     const payload = { userId: "user-123", role: "user" };
 
     const token = createAccessToken(payload);
+    expect(envConfigSpy).toHaveBeenCalledOnce();
+    
     const verified = verifyAccessToken(token) as JwtPayload;
-
+    expect(envConfigSpy).toHaveBeenCalledTimes(2);
+    
     expect(typeof token).toBe("string");
     expect(verified.userId).toBe(payload.userId);
     expect(verified.role).toBe(payload.role);
@@ -36,6 +36,7 @@ describe("auth-tokens", () => {
   it("throws when access token is invalid", async () => {
     const { verifyAccessToken } = await loadAuthTokens();
     expect(() => verifyAccessToken("invalid-token")).toThrow();
+    expect(envConfigSpy).toHaveBeenCalledOnce();
   });
 
   it("creates refresh token and matching token hash", async () => {

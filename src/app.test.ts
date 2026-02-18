@@ -130,7 +130,7 @@ describe("app bootstrap", () => {
 
     await start();
 
-    expect(envConfigSpy).toHaveBeenCalledTimes(2);
+    expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(connectDBMock).toHaveBeenCalledOnce();
     expect(appMock.listen).toHaveBeenCalledOnce();
     expect(appMock.listen).toHaveBeenCalledWith({ port: PORT_TEST, host: "0.0.0.0" });
@@ -145,7 +145,7 @@ describe("app bootstrap", () => {
 
     await start();
 
-    expect(envConfigSpy).toHaveBeenCalledTimes(2);
+    expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(appMock.log.error).toHaveBeenCalledOnce();
     expect(appMock.log.error).toHaveBeenCalledWith(error);
     expect(processExitSpy).toHaveBeenCalledOnce();

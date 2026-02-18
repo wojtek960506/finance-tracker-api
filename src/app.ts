@@ -27,8 +27,8 @@ import {
 //############################################################################################
 
 
-export const buildApp = async () => {
-  const { cookieSecret, jwtAccessSecret } = getEnv();
+export const buildApp = async (env = getEnv()) => {
+  const { cookieSecret, jwtAccessSecret } = env;
   
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
@@ -74,9 +74,10 @@ export const buildApp = async () => {
 export const start = async () => {
   
   await connectDB();
-  const app = await buildApp();
+  const env = getEnv();
+  const app = await buildApp(env);
   try {
-    const { port } = getEnv();
+    const { port } = env;
     await app.listen({ port, host: "0.0.0.0" });
     console.log(`Server running on port ${port}`);
   } catch (err) {
