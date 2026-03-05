@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { UserResponseDTO } from "@schemas/user";
+import { UserResponseDTO } from "@users/schema";
 import { validateBody } from "@utils/validation";
 import { LoginDTO, LoginSchema } from "@schemas/auth";
 import { authorizeAccessToken } from "@services/auth";

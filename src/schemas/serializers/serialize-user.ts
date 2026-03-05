@@ -1,5 +1,5 @@
-import { IUser } from "@models/user-model";
-import { UserResponseDTO } from "@schemas/user"
+import { IUser } from "@users/model";
+import { UserResponseDTO } from "@users/schema";
 
 
 export const serializeUser = (user: IUser): UserResponseDTO => {

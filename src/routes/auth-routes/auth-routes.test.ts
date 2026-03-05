@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
 import * as serviceA from "@services/auth";
-import * as serviceU from "@services/users";
+import * as serviceU from "@users/services";
 import { authRoutes } from "./auth-routes";
 import { ENV_TEST_VALUES } from "@/test-utils/env-consts";
 import { USER_ID_STR } from "@/test-utils/factories/general";

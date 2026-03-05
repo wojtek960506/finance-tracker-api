@@ -22,7 +22,8 @@
       "@plugins/*": ["plugins/*"],
       "@schemas/*": ["schemas/*"],
       "@services/*": ["services/*"],
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@users/*": ["users/*"],
     },
     "types": ["node", "vitest"]
   },

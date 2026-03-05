@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
 import { refresh } from "./refresh";
-import { UserModel } from "@models/user-model";
+import { UserModel } from "@users/model";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   UnauthorizedInvalidRefreshTokenError,
   UnauthorizedMissingRefreshTokenError,

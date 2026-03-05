@@ -1,5 +1,5 @@
 import { AppError } from "@utils/errors";
-import { UserModel } from "@models/user-model";
+import { UserModel } from "@users/model";
 import { removeTransactions } from "@db/transactions";
 import { DeleteManyReply } from "@routes/routes-types";
 

@@ -3,21 +3,22 @@ import cors from "@fastify/cors"
 import { getEnv } from "@/config";
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
+import { userRoutes } from "@users/routes";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
+import { registerErrorHandler } from "./plugins/errorHandler";
 import {
   connectDB,
   upsertSystemCategories,
   upsertSystemPaymentMethods,
 } from "@/setup";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { registerErrorHandler } from "./plugins/errorHandler";
 import {
   mainRoutes,
   authRoutes,
-  userRoutes,
   categoryRoutes,
   transactionRoutes,
   paymentMethodRoutes,
 } from "@/routes";
+
 
 
 //############################################################################################

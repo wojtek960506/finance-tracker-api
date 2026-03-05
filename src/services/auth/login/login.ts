@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import { LoginDTO } from "@schemas/auth";
-import { UserModel } from "@models/user-model";
+import { UserModel } from "@users/model";
 import { AccessRefreshTokens } from "@services/auth";
 import { createAccessToken, createRefreshToken } from "@services/auth";
 import { 

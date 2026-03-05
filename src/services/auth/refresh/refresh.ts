@@ -1,4 +1,4 @@
-import { UserModel } from "@models/user-model";
+import { UserModel } from "@users/model";
 import { AccessRefreshTokens } from "@services/auth";
 import {
   UnauthorizedInvalidRefreshTokenError,
