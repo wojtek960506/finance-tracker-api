@@ -4,7 +4,7 @@ import { RandomTransaction } from "./types";
 import { getOrCreateCategory } from "@category/services";
 import { randomDate, randomFromSet } from "@utils/random";
 import { TransactionModel } from "@models/transaction-model";
-import { getOrCreatePaymentMethod } from "@services/payment-methods";
+import { getOrCreatePaymentMethod } from "@payment-method/services";
 import {
   prepareRandomStandardTransaction,
   prepareRandomExchangeTransactionPair,

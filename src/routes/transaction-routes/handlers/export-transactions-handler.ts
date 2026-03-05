@@ -3,7 +3,7 @@ import { streamTransactions } from "@db/transactions";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prepareCategoriesMap } from '@category/services';
 import { AuthenticatedRequest } from "@routes/routes-types";
-import { preparePaymentMethodsMap } from "@services/payment-methods";
+import { preparePaymentMethodsMap } from "@payment-method/services";
 import {
   csvExportColumns,
   transactionToCsvRow,

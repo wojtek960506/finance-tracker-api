@@ -1,4 +1,4 @@
-import { PaymentMethodType } from "@models/payment-method-model";
+import { PaymentMethodType } from "@payment-method/model";
 import {
   PAYMENT_METHOD_CASH_NAME,
   PAYMENT_METHOD_TYPE_SYSTEM,

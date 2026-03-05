@@ -1,7 +1,7 @@
 import { checkOwner } from "@services/general";
 import { normalizeWhitespace } from "@utils/strings";
-import { PaymentMethodDTO, PaymentMethodResponseDTO } from "@schemas/payment-method";
-import { findPaymentMethodById, savePaymentMethodChanges } from "@db/payment-methods";
+import { PaymentMethodDTO, PaymentMethodResponseDTO } from "@payment-method/schema";
+import { findPaymentMethodById, savePaymentMethodChanges } from "@payment-method/db";
 import {
   UserPaymentMethodMissingOwner,
   SystemPaymentMethodUpdateNotAllowed,

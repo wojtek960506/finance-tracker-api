@@ -1,4 +1,4 @@
-import { PaymentMethodType } from "@models/payment-method-model";
+import { PaymentMethodType } from "@payment-method/model";
 import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
 import {
   PAYMENT_METHOD_CASH_NAME,

@@ -1,6 +1,6 @@
+import { IPaymentMethod } from "@payment-method/model";
 import { serializePaymentMethod } from "@schemas/serializers";
-import { IPaymentMethod } from "@models/payment-method-model";
-import { PaymentMethodResponseDTO } from "@schemas/payment-method";
+import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 
 export type PaymentMethodUpdateProps = Pick<PaymentMethodResponseDTO, "name" | "nameNormalized">;

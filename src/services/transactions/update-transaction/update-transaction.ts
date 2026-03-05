@@ -1,7 +1,7 @@
 import { checkOwner } from "@services/general";
 import { findCategoryById } from "@category/db";
 import { SystemCategoryNotAllowed } from "@utils/errors";
-import { findPaymentMethodById } from "@db/payment-methods";
+import { findPaymentMethodById } from "@payment-method/db";
 import { updateTransactionPair } from "./update-transaction-pair";
 import { findTransaction, saveTransactionChanges } from "@db/transactions";
 import { prepareExchangeProps, prepareTransferProps } from "@services/transactions";

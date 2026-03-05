@@ -1,8 +1,9 @@
 import { normalizeWhitespace } from "@utils/strings";
+import { PaymentMethodType } from "@payment-method/model";
 import { PaymentMethodAlreadyExistsError } from "@utils/errors";
-import { PaymentMethodType } from "@models/payment-method-model";
-import { PaymentMethodDTO, PaymentMethodResponseDTO } from "@schemas/payment-method";
-import { findPaymentMethodByName, persistPaymentMethod } from "@db/payment-methods";
+import { findPaymentMethodByName, persistPaymentMethod } from "@payment-method/db";
+import { PaymentMethodDTO, PaymentMethodResponseDTO } from "@payment-method/schema";
+
 
 
 export const createPaymentMethod = async (

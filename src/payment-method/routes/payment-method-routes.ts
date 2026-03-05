@@ -13,7 +13,7 @@ import {
   PaymentMethodSchema,
   PaymentMethodResponseDTO,
   PaymentMethodsResponseDTO,
-} from "@schemas/payment-method";
+} from "@payment-method/schema";
 
 
 export async function paymentMethodRoutes(

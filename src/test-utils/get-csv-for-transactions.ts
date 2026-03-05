@@ -1,6 +1,6 @@
 import { CategoryResponseDTO } from "@category/schema";
-import { PaymentMethodResponseDTO } from "@schemas/payment-method";
 import { TransactionResponseDTO } from "@schemas/transaction";
+import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 
 type GetCSVPayload = Omit<

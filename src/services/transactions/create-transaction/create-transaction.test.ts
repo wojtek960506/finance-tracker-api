@@ -1,7 +1,7 @@
 import * as dbCategories from "@category/db";
 import * as dbTransactions from "@db/transactions";
 import * as serializers from "@schemas/serializers";
-import * as dbPaymentMethods from "@db/payment-methods";
+import * as dbPaymentMethods from "@payment-method/db";
 import { getNextSourceIndex } from "@services/transactions";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";

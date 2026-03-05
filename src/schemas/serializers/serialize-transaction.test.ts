@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CategoryType } from "@category/model";
+import { PaymentMethodType } from "@payment-method/model";
 import { serializeTransaction } from "@schemas/serializers";
-import { PaymentMethodType } from "@models/payment-method-model";
 import {
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,

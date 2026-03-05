@@ -3,7 +3,7 @@ import { describe, expect, it, Mock, vi } from "vitest";
 import { getTransactions } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serializers";
 import { USER_ID_STR } from "@/test-utils/factories/general";
-import * as paymentMethodServices from "@services/payment-methods";
+import * as paymentMethodServices from "@payment-method/services";
 import { findTransactions, findTransactionsCount } from "@db/transactions";
 import {
   getStandardTransactionResultSerialized,

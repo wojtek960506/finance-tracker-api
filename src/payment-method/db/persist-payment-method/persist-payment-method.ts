@@ -1,6 +1,6 @@
+import { PaymentMethodModel } from "@payment-method/model";
 import { serializePaymentMethod } from "@schemas/serializers";
-import { PaymentMethodModel } from "@models/payment-method-model";
-import { PaymentMethodResponseDTO } from "@schemas/payment-method";
+import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 
 export type PaymentMethodCreateProps = Omit<PaymentMethodResponseDTO, "id" >;

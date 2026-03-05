@@ -3,8 +3,8 @@ import { prepareCategoriesMap } from "@category/services";
 import { serializeTransaction } from "@schemas/serializers";
 import { TransactionQuery } from "@schemas/transaction-query";
 import { TransactionsResponseDTO } from "@schemas/transaction";
+import { preparePaymentMethodsMap } from "@payment-method/services";
 import { buildTransactionFilterQuery } from "@services/transactions";
-import { preparePaymentMethodsMap } from "@services/payment-methods";
 import { findTransactions, findTransactionsCount } from "@db/transactions";
 
 

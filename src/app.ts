@@ -7,6 +7,7 @@ import { authRoutes } from "@auth/routes";
 import { userRoutes } from "@user/routes";
 import { categoryRoutes } from "@category/routes";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
+import { paymentMethodRoutes } from "@payment-method/routes";
 import { registerErrorHandler } from "./plugins/errorHandler";
 import {
   connectDB,
@@ -16,7 +17,6 @@ import {
 import {
   mainRoutes,
   transactionRoutes,
-  paymentMethodRoutes,
 } from "@/routes";
 
 

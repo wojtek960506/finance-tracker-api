@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { findPaymentMethods } from "@db/payment-methods";
+import { findPaymentMethods } from "@payment-method/db";
 import { AuthenticatedRequest } from "@routes/routes-types";
 import { serializePaymentMethod } from "@schemas/serializers";
 

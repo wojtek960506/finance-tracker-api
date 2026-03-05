@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getPaymentMethod } from "@services/payment-methods";
+import { getPaymentMethod } from "@payment-method/services";
 import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
 
 

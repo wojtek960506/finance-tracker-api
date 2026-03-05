@@ -1,5 +1,5 @@
-import { IPaymentMethod } from "@models/payment-method-model";
-import { PaymentMethodResponseDTO } from "@schemas/payment-method";
+import { IPaymentMethod } from "@payment-method/model";
+import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 
 export const serializePaymentMethod = (

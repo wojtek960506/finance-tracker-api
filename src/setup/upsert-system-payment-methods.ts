@@ -1,7 +1,7 @@
 import { ClientSession } from "mongoose";
 import { PAYMENT_METHODS } from "@utils/consts";
 import { withSession } from "@utils/with-session";
-import { PaymentMethodModel } from "@models/payment-method-model";
+import { PaymentMethodModel } from "@payment-method/model";
 
 
 const upsertSystemPaymentMethodsCore = async (session: ClientSession) => {

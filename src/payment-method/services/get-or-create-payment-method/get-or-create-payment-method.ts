@@ -1,6 +1,6 @@
-import { findPaymentMethodByName } from "@db/payment-methods";
+import { findPaymentMethodByName } from "@payment-method/db";
 import { serializePaymentMethod } from "@schemas/serializers";
-import { createPaymentMethod } from "@services/payment-methods";
+import { createPaymentMethod } from "@payment-method/services";
 
 
 export const getOrCreatePaymentMethod = async (ownerId: string, name: string) => {

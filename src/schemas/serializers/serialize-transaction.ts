@@ -1,7 +1,7 @@
 import { CategoriesMap } from "@category/services";
 import { ITransaction } from "@models/transaction-model";
+import { PaymentMethodsMap } from "@payment-method/services";
 import { TransactionResponseDTO } from "@schemas/transaction";
-import { PaymentMethodsMap } from "@services/payment-methods";
 
 
 export function serializeTransaction(transaction: ITransaction): TransactionResponseDTO;

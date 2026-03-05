@@ -1,6 +1,6 @@
 import { CategoriesMap } from "@category/services";
 import { ITransaction } from "@models/transaction-model";
-import { PaymentMethodsMap } from "@services/payment-methods";
+import { PaymentMethodsMap } from "@payment-method/services";
 
 
 export const transactionToCsvRow = (

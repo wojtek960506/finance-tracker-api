@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import * as serviceC from "@category/services";
 import * as serviceT from "@services/transactions";
 import { streamTransactions } from "@db/transactions";
-import * as servicePM from "@/services/payment-methods";
+import * as servicePM from "@payment-method/services";
 import { transactionRoutes } from "./transaction-routes";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { registerErrorHandler } from "@plugins/errorHandler";

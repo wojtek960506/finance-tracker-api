@@ -1,6 +1,6 @@
-import { findPaymentMethods } from "@db/payment-methods";
-import { PaymentMethodResponseDTO } from "@schemas/payment-method";
+import { findPaymentMethods } from "@payment-method/db";
 import { ITransaction } from "@models/transaction-model";
+import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 
 export type PaymentMethodsMap = Record<

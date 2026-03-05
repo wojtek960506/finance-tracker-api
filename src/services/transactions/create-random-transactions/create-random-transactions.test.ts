@@ -3,7 +3,7 @@ import { randomDate, randomFromSet } from "@utils/random";
 import { getOrCreateCategory } from "@category/services";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { getOrCreatePaymentMethod } from "@services/payment-methods";
+import { getOrCreatePaymentMethod } from "@payment-method/services";
 import { createRandomTransactions } from "./create-random-transactions";
 import { TEST_CATEGORIES, TEST_DATE, TEST_OWNER_ID } from "./test-fixtures";
 import {
@@ -13,12 +13,8 @@ import {
 } from "./prepare-random-transaction";
 
 
-vi.mock("@category/services", () => ({
-  getOrCreateCategory: vi.fn(),
-}));
-vi.mock("@services/payment-methods", () => ({
-  getOrCreatePaymentMethod: vi.fn(),
-}));
+vi.mock("@category/services", () => ({ getOrCreateCategory: vi.fn() }));
+vi.mock("@payment-method/services", () => ({ getOrCreatePaymentMethod: vi.fn() }));
 
 vi.mock("@utils/random", () => ({
   randomDate: vi.fn(),

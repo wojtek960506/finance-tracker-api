@@ -67,12 +67,12 @@ vi.mock("./plugins/errorHandler", () => ({
 vi.mock("@/routes", () => ({
   mainRoutes: mainRoutesMock,
   transactionRoutes: transactionRoutesMock,
-  paymentMethodRoutes: paymentMethodRoutesMock,
 }));
 
 vi.mock("@auth/routes", () => ({ authRoutes: authRoutesMock }));
 vi.mock("@user/routes", () => ({ userRoutes: userRoutesMock }));
 vi.mock("@category/routes", () => ({ categoryRoutes: categoryRoutesMock }));
+vi.mock("@payment-method/routes", () => ({ paymentMethodRoutes: paymentMethodRoutesMock }));
 
 
 vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CategoryResponseSchema } from "@category/schema";
-import { PaymentMethodResponseSchema } from "@schemas/payment-method";
+import { PaymentMethodResponseSchema } from "@payment-method/schema";
 import {
   ACCOUNTS,
   CURRENCIES,

@@ -1,7 +1,7 @@
 import { checkOwner } from "@services/general";
-import { findPaymentMethodById } from "@db/payment-methods";
-import { PaymentMethodResponseDTO } from "@schemas/payment-method";
+import { findPaymentMethodById } from "@payment-method/db";
 import { serializePaymentMethod } from "@schemas/serializers";
+import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 
 export const getPaymentMethod = async (
