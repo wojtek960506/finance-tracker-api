@@ -1,6 +1,6 @@
 import { AppError } from "@utils/errors";
 import { randomDate, randomFromSet } from "@utils/random";
-import { getOrCreateCategory } from "@services/categories";
+import { getOrCreateCategory } from "@category/services";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { getOrCreatePaymentMethod } from "@services/payment-methods";
@@ -13,7 +13,7 @@ import {
 } from "./prepare-random-transaction";
 
 
-vi.mock("@services/categories", () => ({
+vi.mock("@category/services", () => ({
   getOrCreateCategory: vi.fn(),
 }));
 vi.mock("@services/payment-methods", () => ({

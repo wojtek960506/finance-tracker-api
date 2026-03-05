@@ -1,4 +1,4 @@
-import { CategoryType } from "@models/category-model";
+import { CategoryType } from "@category/model";
 import {
   CATEGORY_TYPE_SYSTEM,
   EXCHANGE_CATEGORY_NAME,

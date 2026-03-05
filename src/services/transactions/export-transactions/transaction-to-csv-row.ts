@@ -1,5 +1,5 @@
+import { CategoriesMap } from "@category/services";
 import { ITransaction } from "@models/transaction-model";
-import { CategoriesMap } from "@services/categories";
 import { PaymentMethodsMap } from "@services/payment-methods";
 
 

@@ -1,9 +1,9 @@
 import { ClientSession } from "mongoose";
 import { UserModel } from "@users/model";
+import { CategoryModel } from "@category/model";
 import { UserResponseDTO } from "@users/schema";
 import { withSession } from "@utils/with-session";
 import { serializeUser } from "@schemas/serializers";
-import { CategoryModel } from "@models/category-model";
 import { TransactionModel } from "@models/transaction-model";
 import { PaymentMethodModel } from "@models/payment-method-model";
 import {

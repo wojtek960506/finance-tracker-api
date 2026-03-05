@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CategoryType } from "@models/category-model";
+import { CategoryType } from "@category/model";
 import { serializeTransaction } from "@schemas/serializers";
 import { PaymentMethodType } from "@models/payment-method-model";
 import {

@@ -1,4 +1,4 @@
-import { CategoriesMap } from "@services/categories";
+import { CategoriesMap } from "@category/services";
 import { ITransaction } from "@models/transaction-model";
 import { TransactionResponseDTO } from "@schemas/transaction";
 import { PaymentMethodsMap } from "@services/payment-methods";

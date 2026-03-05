@@ -1,4 +1,4 @@
-import { findCategoryByName } from "@db/categories";
+import { findCategoryByName } from "@category/db";
 import { serializeCategory } from "@schemas/serializers";
 import { persistTransactionPair } from "@db/transactions";
 import { getNextSourceIndex } from "@services/transactions";

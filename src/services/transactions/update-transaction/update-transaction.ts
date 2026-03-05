@@ -1,5 +1,5 @@
 import { checkOwner } from "@services/general";
-import { findCategoryById } from "@db/categories";
+import { findCategoryById } from "@category/db";
 import { SystemCategoryNotAllowed } from "@utils/errors";
 import { findPaymentMethodById } from "@db/payment-methods";
 import { updateTransactionPair } from "./update-transaction-pair";

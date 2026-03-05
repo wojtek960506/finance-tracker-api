@@ -1,5 +1,4 @@
-import * as services from "@services/categories";
-
+import * as services from "@category/services";
 import { describe, expect, it, Mock, vi } from "vitest";
 import { getTransactions } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serializers";

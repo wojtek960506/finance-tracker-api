@@ -1,4 +1,4 @@
-import { findCategoryByName } from "@db/categories";
+import { findCategoryByName } from "@category/db";
 import { serializeCategory } from "@schemas/serializers";
 import { TransactionResponseDTO } from "@schemas/transaction";
 import {

@@ -1,5 +1,5 @@
+import { CategoryModel } from "@category/model";
 import { withSession } from "@utils/with-session";
-import { CategoryModel } from "@models/category-model";
 import { upsertSystemCategories } from "./upsert-system-categories";
 import { afterEach, describe, expect, it, vi } from "vitest";
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CategoryResponseSchema } from "@schemas/category";
+import { CategoryResponseSchema } from "@category/schema";
 import { PaymentMethodResponseSchema } from "@schemas/payment-method";
 import {
   ACCOUNTS,

@@ -1,4 +1,4 @@
-import { CategoryType } from "@models/category-model";
+import { CategoryType } from "@category/model";
 import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
 import {
   FOOD_CATEGORY_NAME,
@@ -6,7 +6,6 @@ import {
   FOOD_CATEGORY_ID_STR,
   CATEGORY_TYPE_USER,
 } from "./category-consts";
-
 
 
 const commonProps = {

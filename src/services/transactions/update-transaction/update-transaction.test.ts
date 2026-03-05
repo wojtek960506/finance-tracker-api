@@ -1,4 +1,4 @@
-import * as dbCategories from "@db/categories";
+import * as dbCategories from "@category/db";
 import * as dbPaymentMethods from "@db/payment-methods";
 import * as dbTransactions from "@db/transactions";
 import * as serializers from "@schemas/serializers";

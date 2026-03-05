@@ -1,8 +1,8 @@
 import { ClientSession } from "mongoose";
 import { AppError } from "@utils/errors";
 import { RandomTransaction } from "./types";
+import { getOrCreateCategory } from "@category/services";
 import { randomDate, randomFromSet } from "@utils/random";
-import { getOrCreateCategory } from "@services/categories";
 import { TransactionModel } from "@models/transaction-model";
 import { getOrCreatePaymentMethod } from "@services/payment-methods";
 import {

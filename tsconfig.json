@@ -25,6 +25,7 @@
       "@/*": ["*"],
       "@auth/*": ["auth/*"],
       "@users/*": ["users/*"],
+      "@category/*": ["category/*"],
     },
     "types": ["node", "vitest"]
   },

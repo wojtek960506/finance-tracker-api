@@ -1,5 +1,5 @@
-import { ICategory } from "@models/category-model";
-import { CategoryResponseDTO } from "@schemas/category";
+import { ICategory } from "@category/model";
+import { CategoryResponseDTO } from "@category/schema";
 
 
 export const serializeCategory = (

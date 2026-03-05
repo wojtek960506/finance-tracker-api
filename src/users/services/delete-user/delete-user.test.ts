@@ -1,9 +1,9 @@
 import { UserModel } from "@users/model";
 import { deleteUser } from "./delete-user";
+import { CategoryModel } from "@category/model";
 import { withSession } from "@utils/with-session";
 import * as serializers from "@schemas/serializers";
 import { randomObjectIdString } from "@utils/random";
-import { CategoryModel } from "@models/category-model";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { USER_ID_STR } from "@/test-utils/factories/general";

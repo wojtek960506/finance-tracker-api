@@ -1,5 +1,5 @@
 import { FilteredResponse } from "@routes/routes-types";
-import { prepareCategoriesMap } from "@services/categories";
+import { prepareCategoriesMap } from "@category/services";
 import { serializeTransaction } from "@schemas/serializers";
 import { TransactionQuery } from "@schemas/transaction-query";
 import { TransactionsResponseDTO } from "@schemas/transaction";

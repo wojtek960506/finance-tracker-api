@@ -1,8 +1,8 @@
 import { stringify } from 'csv-stringify';
 import { streamTransactions } from "@db/transactions";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { prepareCategoriesMap } from '@category/services';
 import { AuthenticatedRequest } from "@routes/routes-types";
-import { prepareCategoriesMap } from '@services/categories';
 import { preparePaymentMethodsMap } from "@services/payment-methods";
 import {
   csvExportColumns,

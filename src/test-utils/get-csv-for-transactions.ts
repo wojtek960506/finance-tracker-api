@@ -1,4 +1,4 @@
-import { CategoryResponseDTO } from "@schemas/category";
+import { CategoryResponseDTO } from "@category/schema";
 import { PaymentMethodResponseDTO } from "@schemas/payment-method";
 import { TransactionResponseDTO } from "@schemas/transaction";
 

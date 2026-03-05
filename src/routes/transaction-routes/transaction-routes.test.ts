@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import * as serviceC from "@/services/categories";
+import * as serviceC from "@category/services";
 import * as serviceT from "@services/transactions";
 import { streamTransactions } from "@db/transactions";
 import * as servicePM from "@/services/payment-methods";
