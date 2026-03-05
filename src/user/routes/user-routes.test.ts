@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import { userRoutes } from "./user-routes";
-import * as serviceU from "@users/services";
+import * as serviceU from "@user/services";
 import { getUserDTO } from "@/test-utils/factories/user";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { registerErrorHandler } from "@plugins/errorHandler";

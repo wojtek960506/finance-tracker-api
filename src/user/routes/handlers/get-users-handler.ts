@@ -1,4 +1,4 @@
-import { getUsers } from "@users/services";
+import { getUsers } from "@user/services";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 

@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import { login } from "./login";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createAccessToken, createRefreshToken } from "@auth/services";
 import {

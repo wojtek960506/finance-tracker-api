@@ -1,5 +1,5 @@
 import { refresh } from "./refresh";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   UnauthorizedInvalidRefreshTokenError,

@@ -1,5 +1,5 @@
-import { createUser } from "@users/services";
-import { UserCreateDTO } from "@users/schema";
+import { createUser } from "@user/services";
+import { UserCreateDTO } from "@user/schema";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 

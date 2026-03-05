@@ -5,7 +5,7 @@ vi.mock("argon2", () => ({ default: { hash: vi.fn() }}));
 
 import argon2 from "argon2";
 import { AppError } from "@utils/errors";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { createUser } from "./create-user";
 import * as serializers from "@schemas/serializers";
 import {

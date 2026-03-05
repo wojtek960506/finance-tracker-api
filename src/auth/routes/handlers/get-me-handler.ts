@@ -1,4 +1,4 @@
-import { getUser } from "@users/services";
+import { getUser } from "@user/services";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
 

@@ -1,12 +1,12 @@
 import { ClientSession } from "mongoose";
-import { createUser } from "@users/services";
+import { createUser } from "@user/services";
 import { withSession } from "@utils/with-session";
 import { createRandomTransactions } from "@services/transactions";
 import {
   UserCreateDTO,
   TestUserCreateDTO,
   TestUserCreateResponseDTO,
-} from "@users/schema";
+} from "@user/schema";
 
 
 const createTestUserCore = async (

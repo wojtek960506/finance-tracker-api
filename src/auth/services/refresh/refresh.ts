@@ -1,4 +1,4 @@
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import {
   UnauthorizedInvalidRefreshTokenError,
   UnauthorizedMissingRefreshTokenError,

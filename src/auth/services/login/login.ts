@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import { LoginDTO } from "@auth/schema";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { 
   UnauthorizedUserNotFoundError,
   UnauthorizedInvalidCredentialsError,

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getEnv } from "@/config";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 
 
 export const logout = async (authHeader: string | undefined): Promise<void> => {

@@ -17,7 +17,7 @@ import {
   TestUserCreateDTO,
   TestUserCreateSchema,
   TestUserCreateResponseDTO,
-} from "@users/schema";
+} from "@user/schema";
 
 
 export async function userRoutes(app: FastifyInstance) {

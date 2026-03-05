@@ -1,5 +1,5 @@
 import { findUser } from "./find-user";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { UserNotFoundError } from "@utils/errors/user-errors";

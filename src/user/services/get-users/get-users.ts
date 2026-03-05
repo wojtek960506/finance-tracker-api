@@ -1,5 +1,5 @@
-import { UserModel } from "@users/model";
-import { UserResponseDTO } from "@users/schema";
+import { UserModel } from "@user/model";
+import { UserResponseDTO } from "@user/schema";
 import { serializeUser } from "@schemas/serializers";
 
 

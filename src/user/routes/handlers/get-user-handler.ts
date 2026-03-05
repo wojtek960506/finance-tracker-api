@@ -1,13 +1,14 @@
-import { deleteUser } from "@users/services";
+import { getUser } from "@user/services";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
 
 
-export const deleteUserHandler = async (
+export const getUserHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
   res: FastifyReply,
 ) => {
-  const authenticatedId = (req as AuthenticatedRequest).userId;
-  const result = await deleteUser(req.params.id, authenticatedId)
+  const userId = (req as AuthenticatedRequest).userId;
+  const { id } = req.params;
+  const result = await getUser(id, userId);
   return res.code(200).send(result);
 }

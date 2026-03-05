@@ -71,7 +71,7 @@ vi.mock("@/routes", () => ({
 }));
 
 vi.mock("@auth/routes", () => ({ authRoutes: authRoutesMock }));
-vi.mock("@users/routes", () => ({ userRoutes: userRoutesMock }));
+vi.mock("@user/routes", () => ({ userRoutes: userRoutesMock }));
 vi.mock("@category/routes", () => ({ categoryRoutes: categoryRoutesMock }));
 
 

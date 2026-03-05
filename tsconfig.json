@@ -24,7 +24,7 @@
       "@services/*": ["services/*"],
       "@/*": ["*"],
       "@auth/*": ["auth/*"],
-      "@users/*": ["users/*"],
+      "@user/*": ["user/*"],
       "@category/*": ["category/*"],
     },
     "types": ["node", "vitest"]

@@ -1,4 +1,4 @@
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { deleteUser } from "./delete-user";
 import { CategoryModel } from "@category/model";
 import { withSession } from "@utils/with-session";

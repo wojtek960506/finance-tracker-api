@@ -1,5 +1,5 @@
 import { getUsers } from "./get-users";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { describe, expect, it, vi } from "vitest";
 import * as serializers from "@schemas/serializers";
 import {

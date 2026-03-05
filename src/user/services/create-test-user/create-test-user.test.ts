@@ -1,5 +1,5 @@
 import { createTestUser } from "./create-test-user";
-import { createUser } from "@users/services";
+import { createUser } from "@user/services";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { createRandomTransactions } from "@services/transactions";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -12,7 +12,7 @@ vi.mock("@utils/with-session", () => ({
     async (func, ...args) => { return await func(sessionMock, ...args) }
   ),
 }));
-vi.mock("@users/services", () => ({ createUser: vi.fn() }));
+vi.mock("@user/services", () => ({ createUser: vi.fn() }));
 vi.mock("@services/transactions", () => ({ createRandomTransactions: vi.fn() }));
 
 describe("createTestUser", () => {

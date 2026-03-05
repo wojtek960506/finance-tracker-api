@@ -1,6 +1,6 @@
 
 import { AppError } from "@utils/errors";
-import { UserModel } from "@users/model";
+import { UserModel } from "@user/model";
 import { deleteTransactions } from "./delete-transactions";
 import { TransactionModel } from "@models/transaction-model";
 import { USER_ID_STR } from "@/test-utils/factories/general";
