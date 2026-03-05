@@ -1,12 +1,12 @@
 import { ValidationError } from "./errors";
 import { describe, expect, it } from "vitest";
 import { validateBody, validateQuery } from "./validation";
-import { TransactionStandardSchema } from "@schemas/transaction";
+import { TransactionStandardSchema } from "@transaction/schema";
 import { getStandardTransactionDTO } from "@/test-utils/factories/transaction";
 import {
   TransactionFiltersQuerySchema,
   TransactionStatisticsQuerySchema,
-} from "@schemas/transaction-query";
+} from "@transaction/schema";
 
 
 const expectValidationError = async (promise: Promise<unknown>) => {

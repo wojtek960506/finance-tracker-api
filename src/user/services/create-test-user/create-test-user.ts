@@ -1,7 +1,7 @@
 import { ClientSession } from "mongoose";
 import { createUser } from "@user/services";
 import { withSession } from "@utils/with-session";
-import { createRandomTransactions } from "@services/transactions";
+import { createRandomTransactions } from "@transaction/services";
 import {
   UserCreateDTO,
   TestUserCreateDTO,

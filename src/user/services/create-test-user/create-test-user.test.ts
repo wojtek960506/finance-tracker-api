@@ -1,7 +1,7 @@
 import { createTestUser } from "./create-test-user";
 import { createUser } from "@user/services";
 import { USER_ID_STR } from "@/test-utils/factories/general";
-import { createRandomTransactions } from "@services/transactions";
+import { createRandomTransactions } from "@transaction/services";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 
 
@@ -13,7 +13,7 @@ vi.mock("@utils/with-session", () => ({
   ),
 }));
 vi.mock("@user/services", () => ({ createUser: vi.fn() }));
-vi.mock("@services/transactions", () => ({ createRandomTransactions: vi.fn() }));
+vi.mock("@transaction/services", () => ({ createRandomTransactions: vi.fn() }));
 
 describe("createTestUser", () => {
   const USERNAME = "testUser";

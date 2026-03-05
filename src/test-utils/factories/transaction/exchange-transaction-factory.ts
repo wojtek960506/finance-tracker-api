@@ -1,9 +1,9 @@
-import { TransactionExchangeDTO } from "@schemas/transaction";
+import { TransactionExchangeDTO } from "@transaction/schema";
 import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
 import {
   TransactionExchangeCreateProps,
   TransactionExchangeUpdateProps,
-} from "@db/transactions";
+} from "@transaction/db";
 import {
   CATEGORY_TYPE_SYSTEM,
   EXCHANGE_CATEGORY_NAME,

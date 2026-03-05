@@ -1,5 +1,5 @@
 import { CategoryResponseDTO } from "@category/schema";
-import { TransactionResponseDTO } from "@schemas/transaction";
+import { TransactionResponseDTO } from "@transaction/schema";
 import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 

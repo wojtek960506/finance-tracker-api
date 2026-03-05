@@ -5,7 +5,7 @@ import { UserResponseDTO } from "@user/schema";
 import { withSession } from "@utils/with-session";
 import { serializeUser } from "@schemas/serializers";
 import { PaymentMethodModel } from "@payment-method/model";
-import { TransactionModel } from "@models/transaction-model";
+import { TransactionModel } from "@transaction/model";
 import {
   UserNotFoundError,
   UserNotDeletedError,

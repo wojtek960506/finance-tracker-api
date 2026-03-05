@@ -1,5 +1,5 @@
 import { findPaymentMethods } from "@payment-method/db";
-import { ITransaction } from "@models/transaction-model";
+import { ITransaction } from "@transaction/model";
 import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 
