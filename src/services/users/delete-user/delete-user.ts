@@ -5,6 +5,7 @@ import { withSession } from "@utils/with-session";
 import { serializeUser } from "@schemas/serializers";
 import { CategoryModel } from "@models/category-model";
 import { TransactionModel } from "@models/transaction-model";
+import { PaymentMethodModel } from "@models/payment-method-model";
 import {
   UserNotFoundError,
   UserNotDeletedError,
@@ -28,6 +29,10 @@ const deleteUserCore = async (
   const {
     deletedCount: deletedCategoriesCount
   } = await CategoryModel.deleteMany({ ownerId: id }, { session });
+  // delete all payment methods of the user
+  const {
+    deletedCount: deletedPaymentMethodsCount
+  } = await PaymentMethodModel.deleteMany({ ownerId: id }, { session });
 
   const { deletedCount } = await UserModel.deleteOne({ _id: id }, { session });
   if (deletedCount !== 1) throw new UserNotDeletedError(id);
@@ -36,6 +41,7 @@ const deleteUserCore = async (
   console.log('Deleted user with id:', id);
   console.log('Deleted transactions count:', deletedTransactionsCount);
   console.log('Deleted categories count:', deletedCategoriesCount);
+  console.log('Deleted payment methods count:', deletedPaymentMethodsCount);
   console.log('------------------------------------------------');
 
   return serializeUser(user);

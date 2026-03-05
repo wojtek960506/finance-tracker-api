@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import * as serviceC from "@/services/categories";
 import * as serviceT from "@services/transactions";
 import { streamTransactions } from "@db/transactions";
+import * as servicePM from "@/services/payment-methods";
 import { transactionRoutes } from "./transaction-routes";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { registerErrorHandler } from "@plugins/errorHandler";
@@ -13,6 +14,11 @@ import {
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
 } from "@/test-utils/factories/category";
+import {
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method";
 import {
   getExchangeTransactionDTO,
   getStandardTransactionDTO,
@@ -62,11 +68,15 @@ describe("transaction routes", async () => {
     vi.spyOn(serviceC, "prepareCategoriesMap").mockResolvedValue(
       { [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } as any }
     );
+    vi.spyOn(servicePM, "preparePaymentMethodsMap").mockResolvedValue(
+      { [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: { name: PAYMENT_METHOD_BANK_TRANSFER_NAME } as any }
+    );
     (streamTransactions as Mock).mockReturnValue(
       mockAsyncCursor([{
         ...standardSerialized,
         date: new Date(standardSerialized.date),
         categoryId: FOOD_CATEGORY_ID_OBJ,
+        paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
       }])
     );
 

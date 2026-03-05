@@ -2,7 +2,6 @@ import { Schema, model, Document, Types } from "mongoose";
 import {
   ACCOUNTS,
   CURRENCIES,
-  PAYMENT_METHODS,
   TRANSACTION_TYPES
 } from "@utils/consts";
 
@@ -13,8 +12,8 @@ export interface TransactionAttributes {
   amount: number;
   currency: string;
   categoryId: Types.ObjectId;
+  paymentMethodId: Types.ObjectId;
   transactionType: "income" | "expense";
-  paymentMethod: string;
   account: string;
   createdAt: Date;
   updatedAt: Date;
@@ -45,8 +44,13 @@ const transactionSchema = new Schema<ITransaction>(
       enums: [...CURRENCIES]
     },
     categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true, index: true },
+    paymentMethodId: {
+      type: Schema.Types.ObjectId,
+      ref: "PaymentMethod",
+      required: true,
+      index: true,
+    },
     transactionType: { type: String, required: true, enum: [...TRANSACTION_TYPES] },
-    paymentMethod: { type: String, required: true, enum: [...PAYMENT_METHODS] },
     account: { type: String, required: true, enum: [...ACCOUNTS] },
     exchangeRate: { type: Number, required: false },
     currencies: { type: String, required: false },

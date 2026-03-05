@@ -31,11 +31,12 @@ export function prepareExchangeProps(
   const { description, currencies, exchangeRate } = prepareExchangeSpecificProps(dto);
   const { categoryId } = objectIds;
 
+  // TODO - probably paymentMethodId has to be placed in 'objectIds`
   const commonTransactionProps = {
     categoryId,
     date: dto.date,
     account: dto.account,
-    paymentMethod: dto.paymentMethod,
+    paymentMethodId: dto.paymentMethodId,
     description,
     currencies,
     exchangeRate,

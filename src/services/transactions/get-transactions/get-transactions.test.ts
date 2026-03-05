@@ -1,8 +1,10 @@
 import * as services from "@services/categories";
+
 import { describe, expect, it, Mock, vi } from "vitest";
 import { getTransactions } from "@services/transactions";
 import { serializeTransaction } from "@schemas/serializers";
 import { USER_ID_STR } from "@/test-utils/factories/general";
+import * as paymentMethodServices from "@services/payment-methods";
 import { findTransactions, findTransactionsCount } from "@db/transactions";
 import {
   getStandardTransactionResultSerialized,
@@ -23,6 +25,7 @@ describe('getTransactionsTest', () => {
   it("get transactions", async () => {
     const total = 3;
     const tmpCategoriesMap = { "key": "value" } as any;
+    const tmpPaymentMethodsMap = { "key2": "value2" } as any;
 
     const transactionNotPopulatedJSON = getStandardTransactionNotPopulatedResultJSON();
     const {
@@ -46,7 +49,9 @@ describe('getTransactionsTest', () => {
       .mockReturnValueOnce(transactionSerialized)
       .mockReturnValueOnce(expenseTransactionSerialized)
       .mockReturnValueOnce(incomeTransactionSerialized);
-    vi.spyOn(services, "prepareCategoriesMap").mockResolvedValue(tmpCategoriesMap)
+    vi.spyOn(services, "prepareCategoriesMap").mockResolvedValue(tmpCategoriesMap);
+    vi.spyOn(paymentMethodServices, "preparePaymentMethodsMap")
+      .mockResolvedValue(tmpPaymentMethodsMap);
 
     const result = await getTransactions(query, USER_ID_STR);
     
@@ -54,13 +59,13 @@ describe('getTransactionsTest', () => {
     expect(findTransactionsCount).toHaveBeenCalledOnce();
     expect(serializeTransaction).toHaveBeenCalledTimes(total);
     expect(serializeTransaction).toHaveBeenNthCalledWith(
-      1, transactionNotPopulatedJSON, tmpCategoriesMap
+      1, transactionNotPopulatedJSON, tmpCategoriesMap, tmpPaymentMethodsMap
     );
     expect(serializeTransaction).toHaveBeenNthCalledWith(
-      2, expenseTransactionNotPopulatedJSON, tmpCategoriesMap
+      2, expenseTransactionNotPopulatedJSON, tmpCategoriesMap, tmpPaymentMethodsMap
     );
     expect(serializeTransaction).toHaveBeenNthCalledWith(
-      3, incomeTransactionNotPopulatedJSON, tmpCategoriesMap
+      3, incomeTransactionNotPopulatedJSON, tmpCategoriesMap, tmpPaymentMethodsMap
     );
     expect(result).toEqual({
       page: query.page,

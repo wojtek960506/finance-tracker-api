@@ -3,7 +3,11 @@ import cors from "@fastify/cors"
 import { getEnv } from "@/config";
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
-import { upsertSystemCategories, connectDB } from "@/setup";
+import {
+  connectDB,
+  upsertSystemCategories,
+  upsertSystemPaymentMethods,
+} from "@/setup";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
 import {
@@ -12,6 +16,7 @@ import {
   userRoutes,
   categoryRoutes,
   transactionRoutes,
+  paymentMethodRoutes,
 } from "@/routes";
 
 
@@ -34,6 +39,7 @@ export const buildApp = async (env = getEnv()) => {
 
   // upsert system categories
   await upsertSystemCategories();
+  await upsertSystemPaymentMethods();
   
   // register cookie
   await app.register(cookie, {
@@ -51,6 +57,7 @@ export const buildApp = async (env = getEnv()) => {
   app.register(authRoutes, { prefix: "/api/auth" });
   app.register(userRoutes, { prefix: "/api/users" });
   app.register(categoryRoutes, { prefix: "/api/categories" });
+  app.register(paymentMethodRoutes, { prefix: "/api/paymentMethods" });
   app.register(transactionRoutes, { prefix: "/api/transactions" });
 
   // register error handler

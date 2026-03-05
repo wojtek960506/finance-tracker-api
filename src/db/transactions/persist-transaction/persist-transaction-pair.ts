@@ -27,6 +27,7 @@ const persistTransactionPairCore = async <
     { session, new: true }
   ).populate([
     { path: 'categoryId', select: '_id type name' },
+    { path: "paymentMethodId", select: "_id type name" },
   ]);
   const incomeTransaction = await TransactionModel.findOneAndUpdate(
     { _id: incomeTransactionId },
@@ -34,6 +35,7 @@ const persistTransactionPairCore = async <
     { session, new: true }
   ).populate([
     { path: 'categoryId', select: '_id type name' },
+    { path: "paymentMethodId", select: "_id type name" },
   ]);
 
   return [

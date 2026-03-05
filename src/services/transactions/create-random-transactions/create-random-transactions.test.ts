@@ -3,6 +3,7 @@ import { randomDate, randomFromSet } from "@utils/random";
 import { getOrCreateCategory } from "@services/categories";
 import { TransactionModel } from "@models/transaction-model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import { getOrCreatePaymentMethod } from "@services/payment-methods";
 import { createRandomTransactions } from "./create-random-transactions";
 import { TEST_CATEGORIES, TEST_DATE, TEST_OWNER_ID } from "./test-fixtures";
 import {
@@ -14,6 +15,9 @@ import {
 
 vi.mock("@services/categories", () => ({
   getOrCreateCategory: vi.fn(),
+}));
+vi.mock("@services/payment-methods", () => ({
+  getOrCreatePaymentMethod: vi.fn(),
 }));
 
 vi.mock("@utils/random", () => ({
@@ -40,7 +44,9 @@ describe("createRandomTransactions", () => {
   });
 
   it("creates random transactions and links reference ids for paired transactions", async () => {
+    // TODO - create some constant for these values (probably similar as TEST_CATEGORIES)
     const session = {} as any;
+    const paymentMethod = { id: "pm-bank-transfer", name: "bankTransfer" };
     const standardTransaction = {
       ownerId: TEST_OWNER_ID,
       sourceIndex: 0,
@@ -100,11 +106,19 @@ describe("createRandomTransactions", () => {
       .mockResolvedValueOnce(TEST_CATEGORIES[4])
       .mockResolvedValueOnce(TEST_CATEGORIES[5])
       .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (getOrCreatePaymentMethod as Mock)
+      .mockResolvedValueOnce(paymentMethod)
+      .mockResolvedValueOnce({ id: "pm-cash", name: "cash" })
+      .mockResolvedValueOnce({ id: "pm-card", name: "card" })
+      .mockResolvedValueOnce({ id: "pm-blik", name: "blik" });
     (randomDate as Mock).mockReturnValue(TEST_DATE);
     (randomFromSet as Mock)
       .mockReturnValueOnce("cat-food")
+      .mockReturnValueOnce("pm-bank-transfer")
       .mockReturnValueOnce("cat-my-account")
-      .mockReturnValueOnce("cat-exchange");
+      .mockReturnValueOnce("pm-bank-transfer")
+      .mockReturnValueOnce("cat-exchange")
+      .mockReturnValueOnce("pm-bank-transfer");
     (prepareRandomStandardTransaction as Mock).mockReturnValue(standardTransaction);
     (prepareRandomTransferTransactionPair as Mock).mockReturnValue([
       transferExpense,
@@ -125,13 +139,14 @@ describe("createRandomTransactions", () => {
     const result = await createRandomTransactions(TEST_OWNER_ID, 5, session);
 
     expect(getOrCreateCategory).toHaveBeenCalledTimes(7);
-    expect(randomFromSet).toHaveBeenCalledTimes(3);
+    expect(randomFromSet).toHaveBeenCalledTimes(6);
     expect(prepareRandomStandardTransaction).toHaveBeenCalledOnce();
     expect(prepareRandomStandardTransaction).toHaveBeenCalledWith(
       TEST_OWNER_ID,
       TEST_DATE,
       0,
       "cat-food",
+      "pm-bank-transfer",
     );
     expect(prepareRandomTransferTransactionPair).toHaveBeenCalledOnce();
     expect(prepareRandomTransferTransactionPair).toHaveBeenCalledWith(
@@ -139,6 +154,7 @@ describe("createRandomTransactions", () => {
       TEST_DATE,
       1,
       "cat-my-account",
+      "pm-bank-transfer",
     );
     expect(prepareRandomExchangeTransactionPair).toHaveBeenCalledOnce();
     expect(prepareRandomExchangeTransactionPair).toHaveBeenCalledWith(
@@ -146,6 +162,7 @@ describe("createRandomTransactions", () => {
       TEST_DATE,
       3,
       "cat-exchange",
+      "pm-bank-transfer",
     );
     expect(TransactionModel.insertMany).toHaveBeenCalledOnce();
     expect(TransactionModel.insertMany).toHaveBeenCalledWith(
@@ -186,6 +203,7 @@ describe("createRandomTransactions", () => {
   });
 
   it("throws AppError when not all inserted ids are returned", async () => {
+    const paymentMethod = { id: "pm-bank-transfer", name: "bankTransfer" };
     const standardTransaction = {
       ownerId: TEST_OWNER_ID,
       sourceIndex: 0,
@@ -224,10 +242,17 @@ describe("createRandomTransactions", () => {
       .mockResolvedValueOnce(TEST_CATEGORIES[4])
       .mockResolvedValueOnce(TEST_CATEGORIES[5])
       .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (getOrCreatePaymentMethod as Mock)
+      .mockResolvedValueOnce(paymentMethod)
+      .mockResolvedValueOnce({ id: "pm-cash", name: "cash" })
+      .mockResolvedValueOnce({ id: "pm-card", name: "card" })
+      .mockResolvedValueOnce({ id: "pm-blik", name: "blik" });
     (randomDate as Mock).mockReturnValue(TEST_DATE);
     (randomFromSet as Mock)
       .mockReturnValueOnce("cat-food")
-      .mockReturnValueOnce("cat-my-account");
+      .mockReturnValueOnce("pm-bank-transfer")
+      .mockReturnValueOnce("cat-my-account")
+      .mockReturnValueOnce("pm-bank-transfer");
     (prepareRandomStandardTransaction as Mock).mockReturnValue(standardTransaction);
     (prepareRandomTransferTransactionPair as Mock).mockReturnValue([
       transferExpense,
@@ -248,6 +273,7 @@ describe("createRandomTransactions", () => {
   });
 
   it("throws AppError when not all expected paired transactions are updated with refId", async () => {
+    const paymentMethod = { id: "pm-bank-transfer", name: "bankTransfer" };
     const standardTransaction = {
       ownerId: TEST_OWNER_ID,
       sourceIndex: 0,
@@ -286,10 +312,17 @@ describe("createRandomTransactions", () => {
       .mockResolvedValueOnce(TEST_CATEGORIES[4])
       .mockResolvedValueOnce(TEST_CATEGORIES[5])
       .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (getOrCreatePaymentMethod as Mock)
+      .mockResolvedValueOnce(paymentMethod)
+      .mockResolvedValueOnce({ id: "pm-cash", name: "cash" })
+      .mockResolvedValueOnce({ id: "pm-card", name: "card" })
+      .mockResolvedValueOnce({ id: "pm-blik", name: "blik" });
     (randomDate as Mock).mockReturnValue(TEST_DATE);
     (randomFromSet as Mock)
       .mockReturnValueOnce("cat-food")
-      .mockReturnValueOnce("cat-my-account");
+      .mockReturnValueOnce("pm-bank-transfer")
+      .mockReturnValueOnce("cat-my-account")
+      .mockReturnValueOnce("pm-bank-transfer");
     (prepareRandomStandardTransaction as Mock).mockReturnValue(standardTransaction);
     (prepareRandomTransferTransactionPair as Mock).mockReturnValue([
       transferExpense,

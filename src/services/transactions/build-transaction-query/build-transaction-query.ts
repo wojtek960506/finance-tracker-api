@@ -18,7 +18,7 @@ export const buildTransactionFilterQuery = (
 
   if (q.transactionType) query.transactionType = q.transactionType;
   if (q.currency) query.currency = q.currency;
-  if (q.paymentMethod) query.paymentMethod = q.paymentMethod;
+  if (q.paymentMethodId) query.paymentMethodId = new Types.ObjectId(q.paymentMethodId);
   if (q.account) query.account = q.account;
 
   if (q.categoryId) query.categoryId = new Types.ObjectId(q.categoryId);

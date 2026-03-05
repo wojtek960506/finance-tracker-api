@@ -12,11 +12,14 @@ import {
   TRANSFER_CATEGORY_ID_STR,
 } from "@/test-utils/factories/category";
 import {
-  PAYMENT_METHOD,
   ACCOUNT_EXPENSE,
   CURRENCY_EXPENSE,
   TRANSACTION_TYPE_EXPENSE,
 } from "@/test-utils/factories/transaction";
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method";
 
 
 const checkRequiredProps = (
@@ -99,12 +102,12 @@ describe('getStatisticsMatching', () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
       account: ACCOUNT_EXPENSE,
-      paymentMethod: PAYMENT_METHOD
+      paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR
     }
 
     const result = getStatisticsMatching(query, USER_ID_STR);
     checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
     expect(result.account).toEqual(ACCOUNT_EXPENSE);
-    expect(result.paymentMethod).toEqual(PAYMENT_METHOD);
+    expect(result.paymentMethodId).toEqual(BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ);
   });
 })

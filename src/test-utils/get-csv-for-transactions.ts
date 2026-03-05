@@ -1,11 +1,13 @@
 import { CategoryResponseDTO } from "@schemas/category";
+import { PaymentMethodResponseDTO } from "@schemas/payment-method";
 import { TransactionResponseDTO } from "@schemas/transaction";
 
 
 type GetCSVPayload = Omit<
   TransactionResponseDTO,
-  "ownerId" | "createdAt" | "updatedAt" | "id" | "refId" | "date" | "category"
+  "ownerId" | "createdAt" | "updatedAt" | "id" | "refId" | "date" | "category" | "paymentMethod"
 > & { date: string, category: Pick<CategoryResponseDTO, "name"> }
+  & { paymentMethod: Pick<PaymentMethodResponseDTO, "name"> }
 
 export function getCsvForTransactions(payload: GetCSVPayload) {
   let result = '';
@@ -13,9 +15,9 @@ export function getCsvForTransactions(payload: GetCSVPayload) {
     'account,exchangeRate,currencies,transactionType,sourceRefIndex\n';
   
     const getPropValue = (propName: keyof GetCSVPayload, isLast: boolean = false) => {
-    const value = propName === "category"
+    const value = propName === "category" || propName === "paymentMethod"
       ? payload[propName].name
-      : (payload[propName] ? payload[propName] : '')
+      : (payload[propName] ? payload[propName] : "")
 
 
     return value + (isLast ? '' : ',')

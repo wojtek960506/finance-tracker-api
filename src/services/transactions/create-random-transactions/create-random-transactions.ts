@@ -4,6 +4,7 @@ import { RandomTransaction } from "./types";
 import { randomDate, randomFromSet } from "@utils/random";
 import { getOrCreateCategory } from "@services/categories";
 import { TransactionModel } from "@models/transaction-model";
+import { getOrCreatePaymentMethod } from "@services/payment-methods";
 import {
   prepareRandomStandardTransaction,
   prepareRandomExchangeTransactionPair,
@@ -35,27 +36,36 @@ export async function createRandomTransactions(
   )).filter(c => c != undefined);
   const categoryIds = categories.map(c => c.id);
   const categoryNamesMap = Object.fromEntries(categories.map(c => [c.id, c.name]));
+  const paymentMethods = (await Promise.all(
+    ["cash", "card", "bankTransfer", "blik"].map(
+      name => getOrCreatePaymentMethod(ownerId, name)
+    )
+  )).filter(pm => pm != undefined);
+  const paymentMethodIds = paymentMethods.map(pm => pm.id);
 
   const randomTransactions: RandomTransaction[] = [];
   for (let i = 0; i < totalTransactions;) {
     const date = randomDate(startDate, endDate);
   
     const categoryId = randomFromSet(new Set(categoryIds));
+    const paymentMethodId = randomFromSet(new Set(paymentMethodIds));
 
     if (categoryNamesMap[categoryId] === "myAccount") {
       const [expense, income] = prepareRandomTransferTransactionPair(
-        ownerId, date, i, categoryId
+        ownerId, date, i, categoryId, paymentMethodId
       );
       randomTransactions.push(expense, income);
       i += 2;
     } else if (categoryNamesMap[categoryId] === "exchange") {
       const [expense, income] = prepareRandomExchangeTransactionPair(
-        ownerId, date, i, categoryId
+        ownerId, date, i, categoryId, paymentMethodId
       );
       randomTransactions.push(expense, income);
       i += 2;
     } else {
-      const transaction = prepareRandomStandardTransaction(ownerId, date, i, categoryId);
+      const transaction = prepareRandomStandardTransaction(
+        ownerId, date, i, categoryId, paymentMethodId
+      );
       randomTransactions.push(transaction);
       i += 1;
     }

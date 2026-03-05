@@ -4,6 +4,7 @@ import { serializeTransaction } from "@schemas/serializers";
 import { TransactionQuery } from "@schemas/transaction-query";
 import { TransactionsResponseDTO } from "@schemas/transaction";
 import { buildTransactionFilterQuery } from "@services/transactions";
+import { preparePaymentMethodsMap } from "@services/payment-methods";
 import { findTransactions, findTransactionsCount } from "@db/transactions";
 
 
@@ -20,7 +21,10 @@ export const getTransactions = async (
 
   const totalPages = Math.ceil(total / query.limit);
 
-  const categoriesMap = await prepareCategoriesMap(userId, transactions);
+  const [categoriesMap, paymentMethodsMap] = await Promise.all([
+    prepareCategoriesMap(userId, transactions),
+    preparePaymentMethodsMap(userId, transactions),
+  ]);
 
   return {
     page: query.page,
@@ -28,7 +32,7 @@ export const getTransactions = async (
     total,
     totalPages,
     items: transactions.map(
-      transaction => serializeTransaction(transaction, categoriesMap)
+      transaction => serializeTransaction(transaction, categoriesMap, paymentMethodsMap)
     )
   }
 }

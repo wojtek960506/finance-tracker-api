@@ -25,20 +25,21 @@ describe("prepareRandomStandardTransaction", () => {
     (randomNumber as Mock).mockReturnValue(123);
     (randomFromSet as Mock)
       .mockReturnValueOnce("PLN")
-      .mockReturnValueOnce("wallet")
-      .mockReturnValueOnce("cash");
+      .mockReturnValueOnce("wallet");
     (weightedRandomFromSet as Mock).mockReturnValue("expense");
 
+    // TODO - create some constant for these values (probably similar as TEST_CATEGORY)
     const result = prepareRandomStandardTransaction(
       TEST_OWNER_ID,
       TEST_DATE,
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
+      "pm-1",
     );
 
     expect(randomNumber).toHaveBeenCalledOnce();
     expect(randomNumber).toHaveBeenCalledWith(10, 10000);
-    expect(randomFromSet).toHaveBeenCalledTimes(3);
+    expect(randomFromSet).toHaveBeenCalledTimes(2);
     expect(weightedRandomFromSet).toHaveBeenCalledOnce();
     expect(weightedRandomFromSet).toHaveBeenCalledWith(
       TRANSACTION_TYPES,
@@ -51,7 +52,7 @@ describe("prepareRandomStandardTransaction", () => {
       ownerId: TEST_OWNER_ID,
       currency: "PLN",
       categoryId: TEST_CATEGORY_ID,
-      paymentMethod: "cash",
+      paymentMethodId: "pm-1",
       sourceIndex: TEST_SOURCE_INDEX,
       transactionType: "expense",
       description: "expense - 123 PLN - 2020-01-01",

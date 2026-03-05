@@ -4,16 +4,17 @@ import { randomFromSet, randomNumber } from "@utils/random";
 
 
 export const prepareRandomTransferTransactionPair = (
-  ownerId: string, date: Date, index: number, categoryId: string,
+  ownerId: string,
+  date: Date,
+  index: number,
+  categoryId: string,
+  paymentMethodId: string,
 ): RandomTransferTransactionPair => {
   const amount = randomNumber(10, 10000);
   const currency = randomFromSet(CURRENCIES);
   const accountExpense = randomFromSet(ACCOUNTS);
   const accountIncome = randomFromSet(ACCOUNTS);
 
-  // TODO - when some rules for corelation between payment method and account will be added
-  // then this have to be updated
-  const paymentMethod = randomFromSet(new Set(["bankTransfer", "cash", "card"]));
   const description = `Money Transfer: ${accountExpense} --> ${accountIncome}`;
 
   const commonProps = {
@@ -23,7 +24,7 @@ export const prepareRandomTransferTransactionPair = (
     currency,
     categoryId,
     description,
-    paymentMethod,
+    paymentMethodId,
   }
   const expense = {
     ...commonProps,

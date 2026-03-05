@@ -11,10 +11,15 @@ import {
   TRANSFER_CATEGORY_ID_STR,
 } from "@/test-utils/factories/category";
 import {
+  PAYMENT_METHOD_TYPE_SYSTEM,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method";
+import {
   DESCRPTION,
   ACCOUNT_INCOME,
   AMOUNT_EXPENSE,
-  PAYMENT_METHOD,
   ACCOUNT_EXPENSE,
   CURRENCY_EXPENSE,
   TRANSACTION_TYPE_INCOME,
@@ -32,10 +37,10 @@ export const getTransferTransactionDTO = () => ({
   date: DATE_OBJ,
   amount: AMOUNT_EXPENSE,
   currency: CURRENCY_EXPENSE,
-  paymentMethod: PAYMENT_METHOD,
   accountIncome: ACCOUNT_INCOME,
   accountExpense: ACCOUNT_EXPENSE,
   additionalDescription: DESCRPTION,
+  paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
 } as TransactionTransferDTO);
 
 export function getTransferTransactionProps(): {
@@ -51,7 +56,7 @@ export function getTransferTransactionProps(isCreate?: true) {
     date: DATE_OBJ,
     amount: AMOUNT_EXPENSE,
     currency: CURRENCY_EXPENSE,
-    paymentMethod: PAYMENT_METHOD,
+    paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
     categoryId: TRANSFER_CATEGORY_ID_STR,
     description: `${ACCOUNT_EXPENSE} --> ${ACCOUNT_INCOME} (${DESCRPTION})`,
   }
@@ -94,10 +99,24 @@ export function getTransferTransactionProps(isCreate?: true) {
 const tmpCategoryCommon = { type: CATEGORY_TYPE_SYSTEM, name: TRANSFER_CATEGORY_NAME }
 const categoryWithIdObj = { ...tmpCategoryCommon, _id: TRANSFER_CATEGORY_ID_OBJ }
 const categoryWithIdStr = { ...tmpCategoryCommon, id: TRANSFER_CATEGORY_ID_STR }
+const paymentMethodWithIdObj = {
+  _id: BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  type: PAYMENT_METHOD_TYPE_SYSTEM,
+  name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+};
+const paymentMethodWithIdStr = {
+  id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  type: PAYMENT_METHOD_TYPE_SYSTEM,
+  name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+};
 
 export const getTransferTransactionResultJSON = () => {
   const { expenseProps, incomeProps } = getTransferTransactionProps(true);
-  const commonJSON = { date: DATE_ISO_STR, categoryId: { ...categoryWithIdObj } };
+  const commonJSON = {
+    date: DATE_ISO_STR,
+    categoryId: { ...categoryWithIdObj },
+    paymentMethodId: { ...paymentMethodWithIdObj },
+  };
   const expenseTransactionJSON = {
     ...expenseProps,
     ...commonJSON, // order of unpacking dict is important due to overwriting `categoryId`
@@ -119,20 +138,26 @@ export const getTransferTransactionNotPopulatedResultJSON = () => {
     expenseTransactionNotPopulatedJSON: {
       ...expenseTransactionJSON,
       categoryId: expenseTransactionJSON.categoryId._id,
+      paymentMethodId: expenseTransactionJSON.paymentMethodId._id,
     },
     incomeTransactionNotPopulatedJSON: {
       ...incomeTransactionJSON,
       categoryId: incomeTransactionJSON.categoryId._id,
+      paymentMethodId: incomeTransactionJSON.paymentMethodId._id,
     }
   }
 }
 
 export const getTransferTransactionResultSerialized = () => {
   const { expenseProps, incomeProps } = getTransferTransactionProps(true);
-  const { categoryId: _1, ...expensePropsRest } = expenseProps;
-  const { categoryId: _2, ...incomePropsRest } = incomeProps;
+  const { categoryId: _1, paymentMethodId: _2, ...expensePropsRest } = expenseProps;
+  const { categoryId: _3, paymentMethodId: _4, ...incomePropsRest } = incomeProps;
 
-  const commonSerialized = { date: DATE_ISO_STR, category: { ...categoryWithIdStr } }
+  const commonSerialized = {
+    date: DATE_ISO_STR,
+    category: { ...categoryWithIdStr },
+    paymentMethod: { ...paymentMethodWithIdStr },
+  };
 
   const expenseTransactionSerialized = {
     ...expensePropsRest,

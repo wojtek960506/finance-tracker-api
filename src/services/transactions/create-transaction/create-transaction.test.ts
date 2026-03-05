@@ -1,6 +1,7 @@
 import * as dbCategories from "@db/categories";
 import * as dbTransactions from "@db/transactions";
 import * as serializers from "@schemas/serializers";
+import * as dbPaymentMethods from "@db/payment-methods";
 import { getNextSourceIndex } from "@services/transactions";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
@@ -25,6 +26,9 @@ import {
   CATEGORY_TYPE_SYSTEM,
   CATEGORY_TYPE_USER,
 } from "@/test-utils/factories/category";
+import {
+  getBankTransferPaymentMethodResultJSON
+} from "@/test-utils/factories/payment-method";
 import {
   STANDARD_TXN_SRC_IDX,
   getExchangeTransactionDTO,
@@ -54,6 +58,7 @@ describe("createStandardTransaction", async () => {
   const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getExchangeTransactionDTO();
   const transferDTO = getTransferTransactionDTO();
+  const paymentMethod = getBankTransferPaymentMethodResultJSON();
 
   it("should create standard transaction", async () => {
     const transaction = getStandardTransactionResultSerialized();
@@ -61,12 +66,14 @@ describe("createStandardTransaction", async () => {
     vi.spyOn(dbTransactions, "persistTransaction").mockResolvedValue(transaction as any);
     (getNextSourceIndex as Mock).mockResolvedValue(STANDARD_TXN_SRC_IDX);
     vi.spyOn(dbCategories, "findCategoryById").mockResolvedValue(foodCategory as any);
+    vi.spyOn(dbPaymentMethods, "findPaymentMethodById").mockResolvedValue(paymentMethod as any);
 
     const result = await createStandardTransaction(standardDTO, USER_ID_STR);
 
     expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
     expect(dbCategories.findCategoryById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
     expect(dbTransactions.persistTransaction).toHaveBeenCalledOnce();
+    expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledWith(USER_ID_STR);
     expect(result).toEqual(transaction);

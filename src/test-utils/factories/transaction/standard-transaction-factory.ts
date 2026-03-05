@@ -11,9 +11,14 @@ import {
   FOOD_CATEGORY_NAME,
 } from "@/test-utils/factories/category";
 import {
+  PAYMENT_METHOD_TYPE_SYSTEM,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method";
+import {
   DESCRPTION,
   AMOUNT_EXPENSE,
-  PAYMENT_METHOD,
   ACCOUNT_EXPENSE,
   CURRENCY_EXPENSE,
   STANDARD_TXN_ID_OBJ,
@@ -30,8 +35,8 @@ export const getStandardTransactionDTO = () => ({
   account: ACCOUNT_EXPENSE,
   currency: CURRENCY_EXPENSE,
   categoryId: FOOD_CATEGORY_ID_STR,
-  paymentMethod: PAYMENT_METHOD,
   transactionType: TRANSACTION_TYPE_EXPENSE,
+  paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
 });
 
 export const getStandardTransactionProps = () => ({
@@ -50,15 +55,20 @@ export const getStandardTransactionResultJSON = () => ({
     type: CATEGORY_TYPE_USER,
     name: FOOD_CATEGORY_NAME,
   },
+  paymentMethodId: {
+    _id: BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+    type: PAYMENT_METHOD_TYPE_SYSTEM,
+    name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  },
 });
 
 export const getStandardTransactionNotPopulatedResultJSON = () => {
-  const { categoryId, ...props } = getStandardTransactionResultJSON();
-  return { ...props, categoryId: categoryId._id }
+  const { categoryId, paymentMethodId, ...props } = getStandardTransactionResultJSON();
+  return { ...props, categoryId: categoryId._id, paymentMethodId: paymentMethodId._id }
 }
 
 export const getStandardTransactionResultSerialized = () => {
-  const { categoryId, ...props } = getStandardTransactionProps();
+  const { categoryId, paymentMethodId, ...props } = getStandardTransactionProps();
 
   return {
     ...props,
@@ -69,6 +79,11 @@ export const getStandardTransactionResultSerialized = () => {
       id: FOOD_CATEGORY_ID_STR,
       type: CATEGORY_TYPE_USER,
       name: FOOD_CATEGORY_NAME,
-    }
+    },
+    paymentMethod: {
+      id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+      type: PAYMENT_METHOD_TYPE_SYSTEM,
+      name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+    },
   }
 };

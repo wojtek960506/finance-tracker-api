@@ -2,11 +2,12 @@ import { stringify } from 'csv-stringify';
 import { streamTransactions } from "@db/transactions";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticatedRequest } from "@routes/routes-types";
+import { prepareCategoriesMap } from '@services/categories';
+import { preparePaymentMethodsMap } from "@services/payment-methods";
 import {
   csvExportColumns,
   transactionToCsvRow,
 } from "@services/transactions";
-import { prepareCategoriesMap } from '@services/categories';
 
 
 export async function exportTransacionsHandler (
@@ -29,10 +30,13 @@ export async function exportTransacionsHandler (
   // 4. Stream DB records into CSV
   const userId = (req as AuthenticatedRequest).userId;
   const cursor = streamTransactions(userId);
-  const categoriesMap = await prepareCategoriesMap(userId);
+  const [categoriesMap, paymentMethodsMap] = await Promise.all([
+    prepareCategoriesMap(userId),
+    preparePaymentMethodsMap(userId),
+  ]);
 
   for await (const transaction of cursor) {
-    csvStream.write(transactionToCsvRow(transaction, categoriesMap));
+    csvStream.write(transactionToCsvRow(transaction, categoriesMap, paymentMethodsMap));
   }
 
   // 5. End CSV stream
