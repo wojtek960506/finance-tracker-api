@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { authorizeAccessToken } from "@services/auth";
+import { authorizeAccessToken } from "@auth/services";
 import { validateBody, validateQuery } from "@utils/validation";
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
 import {

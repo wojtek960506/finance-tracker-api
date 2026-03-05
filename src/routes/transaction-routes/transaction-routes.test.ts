@@ -34,7 +34,7 @@ const MOCKED_RESULT = { result: "result" };
 
 const mockPreHandler = vi.fn(async (req, _res) => { (req as any).userId = USER_ID_STR });
 
-vi.mock("@services/auth", () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
+vi.mock("@auth/services", () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
 vi.mock("@db/transactions", () => ({ streamTransactions: vi.fn() }));
 vi.mock("@models/transaction-model", () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 

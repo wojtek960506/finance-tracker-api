@@ -66,12 +66,12 @@ vi.mock("./plugins/errorHandler", () => ({
 }));
 vi.mock("@/routes", () => ({
   mainRoutes: mainRoutesMock,
-  authRoutes: authRoutesMock,
   categoryRoutes: categoryRoutesMock,
   transactionRoutes: transactionRoutesMock,
   paymentMethodRoutes: paymentMethodRoutesMock,
 }));
 
+vi.mock("@auth/routes", () => ({ authRoutes: authRoutesMock }));
 vi.mock("@users/routes", () => ({ userRoutes: userRoutesMock }));
 
 

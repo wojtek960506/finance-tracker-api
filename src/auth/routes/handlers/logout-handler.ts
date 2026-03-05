@@ -1,4 +1,4 @@
-import { logout } from "@services/auth";
+import { logout } from "@auth/services";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getRefreshCookieOptions } from "./refresh-cookie-options";
 

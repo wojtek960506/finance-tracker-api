@@ -3,6 +3,7 @@ import cors from "@fastify/cors"
 import { getEnv } from "@/config";
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
+import { authRoutes } from "@auth/routes";
 import { userRoutes } from "@users/routes";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { registerErrorHandler } from "./plugins/errorHandler";
@@ -13,7 +14,6 @@ import {
 } from "@/setup";
 import {
   mainRoutes,
-  authRoutes,
   categoryRoutes,
   transactionRoutes,
   paymentMethodRoutes,

@@ -1,8 +1,8 @@
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
-import * as serviceA from "@services/auth";
-import * as serviceU from "@users/services";
 import { authRoutes } from "./auth-routes";
+import * as serviceA from "@auth/services";
+import * as serviceU from "@users/services";
 import { ENV_TEST_VALUES } from "@/test-utils/env-consts";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { registerErrorHandler } from "@plugins/errorHandler";
@@ -17,7 +17,7 @@ const mockPreHandler = vi.fn(async (req, _res) => {
 
 vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
-vi.mock("@services/auth", () => ({
+vi.mock("@auth/services", () => ({
   login: vi.fn(),
   refresh: vi.fn(),
   logout: vi.fn(),

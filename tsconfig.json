@@ -23,6 +23,7 @@
       "@schemas/*": ["schemas/*"],
       "@services/*": ["services/*"],
       "@/*": ["*"],
+      "@auth/*": ["auth/*"],
       "@users/*": ["users/*"],
     },
     "types": ["node", "vitest"]

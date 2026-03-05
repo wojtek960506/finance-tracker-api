@@ -1,4 +1,4 @@
-import { refresh } from "@services/auth";
+import { refresh } from "@auth/services";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getRefreshCookieOptions } from "./refresh-cookie-options";
 

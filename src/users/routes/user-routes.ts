@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { validateBody } from "@utils/validation";
 import { ParamsJustId } from "@routes/routes-types";
-import { authorizeAccessToken } from "@services/auth";
+import { authorizeAccessToken } from "@auth/services";
 import {
   getUserHandler,
   getUsersHandler,

@@ -6,13 +6,13 @@ import {
   UnauthorizedMissingRefreshTokenError,
 } from "@utils/errors";
 import {
+  getTokenHash,
   createAccessToken,
   createRefreshToken,
-  getTokenHash,
-} from "@services/auth/auth-tokens";
+} from "@auth/services";
 
 
-vi.mock("@services/auth/auth-tokens", () => ({
+vi.mock("@auth/services", () => ({
   createAccessToken: vi.fn(),
   createRefreshToken: vi.fn(),
   getTokenHash: vi.fn(),
