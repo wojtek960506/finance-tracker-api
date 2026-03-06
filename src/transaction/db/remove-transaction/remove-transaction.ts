@@ -1,9 +1,9 @@
-import { ClientSession } from "mongoose"
-import { NotFoundError } from "@utils/errors"
-import { DeleteManyReply } from "@shared/http"
-import { withSession } from "@utils/with-session"
-import { TransactionModel } from "@transaction/model"
+import { ClientSession } from 'mongoose';
 
+import { DeleteManyReply } from '@shared/http';
+import { TransactionModel } from '@transaction/model';
+import { NotFoundError } from '@utils/errors';
+import { withSession } from '@utils/with-session';
 
 export const removeTransactionCore = async (
   session: ClientSession,
@@ -12,23 +12,21 @@ export const removeTransactionCore = async (
 ): Promise<DeleteManyReply> => {
   const idsToDelete = refId ? [id, refId] : [id];
   const result = await TransactionModel.deleteMany(
-    { _id: { $in: idsToDelete }},
-    { session }
-  )
+    { _id: { $in: idsToDelete } },
+    { session },
+  );
 
   if (result.deletedCount !== idsToDelete.length) {
     throw new NotFoundError(
       `Transaction(s) deleted - ${result.deletedCount}. ` +
-      `Expected to be deleted - ${idsToDelete.length}.`
+        `Expected to be deleted - ${idsToDelete.length}.`,
     );
   }
 
   return result;
-}
+};
 
 export const removeTransaction = async (
   id: string,
-  refId?: string
-): Promise<DeleteManyReply> => (
-  withSession(removeTransactionCore, id, refId)
-);
+  refId?: string,
+): Promise<DeleteManyReply> => withSession(removeTransactionCore, id, refId);

@@ -1,31 +1,30 @@
-import { withSession } from "@utils/with-session"
-import { saveTransactionPairChanges } from "@transaction/db"
-import { serializeTransaction } from "@transaction/serializers"
-import { it, vi, Mock, expect, describe, afterEach } from "vitest"
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import { saveTransactionPairChanges } from '@transaction/db';
+import { serializeTransaction } from '@transaction/serializers';
+import { withSession } from '@utils/with-session';
+
 import {
   getExchangeTransactionProps,
   getExchangeTransactionResultSerialized,
-} from "@/test-utils/factories/transaction"
+} from '@/test-utils/factories/transaction';
 
-
-vi.mock("@utils/with-session", () => ({
-  withSession: vi.fn().mockImplementation(
-    async (func, ...args) => { return await func({}, ...args) }
-  ),
+vi.mock('@utils/with-session', () => ({
+  withSession: vi.fn().mockImplementation(async (func, ...args) => {
+    return await func({}, ...args);
+  }),
 }));
 
-vi.mock("@transaction/serializers", () => ({ serializeTransaction: vi.fn() }));
+vi.mock('@transaction/serializers', () => ({ serializeTransaction: vi.fn() }));
 
-describe("saveTransactionPairChanges", () => {
+describe('saveTransactionPairChanges', () => {
   const [saveMock1, saveMock2] = [vi.fn(), vi.fn()];
   const [populateMock1, populateMock2] = [vi.fn(), vi.fn()];
 
   const { expenseProps, incomeProps } = getExchangeTransactionProps();
 
-  const {
-    expenseTransactionSerialized,
-    incomeTransactionSerialized,
-  } = getExchangeTransactionResultSerialized();
+  const { expenseTransactionSerialized, incomeTransactionSerialized } =
+    getExchangeTransactionResultSerialized();
 
   const transactionExpense = {
     ...expenseTransactionSerialized,
@@ -40,16 +39,20 @@ describe("saveTransactionPairChanges", () => {
     populate: populateMock2,
   } as any;
 
-  afterEach( () => { vi.clearAllMocks(); } );
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-  it("reference transaction is an income", async () => {
-    
+  it('reference transaction is an income', async () => {
     (serializeTransaction as Mock)
       .mockReturnValueOnce(transactionExpense)
       .mockReturnValueOnce(transactionIncome);
 
     const result = await saveTransactionPairChanges(
-      transactionExpense, transactionIncome, expenseProps, incomeProps
+      transactionExpense,
+      transactionIncome,
+      expenseProps,
+      incomeProps,
     );
 
     expect(serializeTransaction).toHaveBeenCalledTimes(2);
@@ -61,10 +64,9 @@ describe("saveTransactionPairChanges", () => {
     expect(populateMock2).toHaveBeenCalledOnce();
     expect(withSession).toHaveBeenCalledOnce();
     expect(result).toEqual([transactionExpense, transactionIncome]);
-  })
+  });
 
-  it("reference transaction is an expense", async () => {
-
+  it('reference transaction is an expense', async () => {
     const mainTransactionIsIncome = {
       ...incomeTransactionSerialized,
       ...incomeProps,
@@ -84,7 +86,10 @@ describe("saveTransactionPairChanges", () => {
       .mockReturnValueOnce(refTransactionIsExpense);
 
     const result = await saveTransactionPairChanges(
-      mainTransactionIsIncome, refTransactionIsExpense, expenseProps, incomeProps
+      mainTransactionIsIncome,
+      refTransactionIsExpense,
+      expenseProps,
+      incomeProps,
     );
 
     expect(serializeTransaction).toHaveBeenCalledTimes(2);

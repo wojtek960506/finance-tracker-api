@@ -1,31 +1,31 @@
-import { AuthenticatedRequest } from "@shared/http"
-import { FastifyReply, FastifyRequest } from "fastify"
+import { FastifyReply, FastifyRequest } from 'fastify';
+
+import { AuthenticatedRequest } from '@shared/http';
 import {
   TransactionExchangeDTO,
   TransactionStandardDTO,
   TransactionTransferDTO,
-} from "@transaction/schema"
+} from '@transaction/schema';
 import {
   createExchangeTransaction,
   createStandardTransaction,
   createTransferTransaction,
-} from "@transaction/services"
-
+} from '@transaction/services';
 
 export const createTransactionHandler = async (
   req: FastifyRequest<{
-    Body: TransactionStandardDTO | TransactionExchangeDTO | TransactionTransferDTO
+    Body: TransactionStandardDTO | TransactionExchangeDTO | TransactionTransferDTO;
   }>,
-  res: FastifyReply
+  res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
   const dto = req.body;
 
-  if ("currencyExpense" in dto) {
+  if ('currencyExpense' in dto) {
     return res.code(201).send(await createExchangeTransaction(dto, userId));
-  } else if ("accountExpense" in dto) {
+  } else if ('accountExpense' in dto) {
     return res.code(201).send(await createTransferTransaction(dto, userId));
   } else {
     return res.code(201).send(await createStandardTransaction(dto, userId));
   }
-}
+};

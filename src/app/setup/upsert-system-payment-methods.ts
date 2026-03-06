@@ -1,8 +1,8 @@
-import { ClientSession } from "mongoose"
-import { PAYMENT_METHODS } from "@utils/consts"
-import { withSession } from "@utils/with-session"
-import { PaymentMethodModel } from "@payment-method/model"
+import { ClientSession } from 'mongoose';
 
+import { PaymentMethodModel } from '@payment-method/model';
+import { PAYMENT_METHODS } from '@utils/consts';
+import { withSession } from '@utils/with-session';
 
 const upsertSystemPaymentMethodsCore = async (session: ClientSession) => {
   // TODO think whether all values from PAYMENT_METHODS should be of type "system"
@@ -10,15 +10,17 @@ const upsertSystemPaymentMethodsCore = async (session: ClientSession) => {
   // from my private spreadsheets
   for (const paymentMethodName of PAYMENT_METHODS) {
     const doc = {
-      type: "system",
+      type: 'system',
       name: paymentMethodName,
       nameNormalized: paymentMethodName.toLowerCase(),
     };
-    await PaymentMethodModel.updateOne(doc, { $setOnInsert: doc }, { upsert: true, session });
+    await PaymentMethodModel.updateOne(
+      doc,
+      { $setOnInsert: doc },
+      { upsert: true, session },
+    );
   }
 };
 
-export const upsertSystemPaymentMethods = async () => (
-  withSession(upsertSystemPaymentMethodsCore)
-);
-
+export const upsertSystemPaymentMethods = async () =>
+  withSession(upsertSystemPaymentMethodsCore);

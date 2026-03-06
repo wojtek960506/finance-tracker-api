@@ -1,1 +1,1 @@
-export * from "./find-transaction-totals";
+export * from './find-transaction-totals';

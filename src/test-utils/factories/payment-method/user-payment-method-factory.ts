@@ -1,12 +1,13 @@
-import { PaymentMethodType } from "@payment-method/model"
-import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general"
+import { PaymentMethodType } from '@payment-method/model';
+
 import {
-  PAYMENT_METHOD_CASH_NAME,
-  PAYMENT_METHOD_TYPE_USER,
   CASH_PAYMENT_METHOD_ID_OBJ,
   CASH_PAYMENT_METHOD_ID_STR,
-} from "./payment-method-consts"
+  PAYMENT_METHOD_CASH_NAME,
+  PAYMENT_METHOD_TYPE_USER,
+} from './payment-method-consts';
 
+import { USER_ID_OBJ, USER_ID_STR } from '@/test-utils/factories/general';
 
 const commonProps = {
   type: PAYMENT_METHOD_TYPE_USER as PaymentMethodType,
@@ -32,4 +33,3 @@ export const getUserPaymentMethodResultSerialized = () => ({
   ownerId: USER_ID_STR,
   id: CASH_PAYMENT_METHOD_ID_STR,
 });
-

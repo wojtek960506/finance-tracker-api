@@ -1,50 +1,49 @@
-import { AppError } from "./general-errors"
-
+import { AppError } from './general-errors';
 
 export class UnauthorizedMissingTokenError extends AppError {
-  readonly code = "UNAUTHORIZED_MISSING_TOKEN_ERROR";
+  readonly code = 'UNAUTHORIZED_MISSING_TOKEN_ERROR';
 
   constructor() {
-    super(401, "Missing token");
+    super(401, 'Missing token');
   }
 }
 
 export class UnauthorizedInvalidTokenError extends AppError {
-  readonly code = "UNAUTHORIZED_INVALID_TOKEN_ERROR";
+  readonly code = 'UNAUTHORIZED_INVALID_TOKEN_ERROR';
 
   constructor() {
-    super(401, "Invalid or expired token");
+    super(401, 'Invalid or expired token');
   }
 }
 
 export class UnauthorizedInvalidCredentialsError extends AppError {
-  readonly code = "UNAUTHORIZED_INVALID_CREDENTIALS_ERROR";
+  readonly code = 'UNAUTHORIZED_INVALID_CREDENTIALS_ERROR';
 
   constructor() {
-    super(401, "Invalid credentials");
+    super(401, 'Invalid credentials');
   }
 }
 
 export class UnauthorizedUserNotFoundError extends AppError {
-  readonly code = "UNAUTHORIZED_USER_NOT_FOUND_ERROR";
+  readonly code = 'UNAUTHORIZED_USER_NOT_FOUND_ERROR';
 
   constructor(email: string) {
     super(401, `User with email '${email}' not found`);
   }
-};
+}
 
 export class UnauthorizedMissingRefreshTokenError extends AppError {
-  readonly code = "UNAUTHORIZED_MISSING_REFRESH_TOKEN_ERROR";
+  readonly code = 'UNAUTHORIZED_MISSING_REFRESH_TOKEN_ERROR';
 
   constructor() {
-    super(401, "Missing refresh token");
+    super(401, 'Missing refresh token');
   }
 }
 
 export class UnauthorizedInvalidRefreshTokenError extends AppError {
-  readonly code = "UNAUTHORIZED_INVALID_REFRESH_TOKEN_ERROR";
+  readonly code = 'UNAUTHORIZED_INVALID_REFRESH_TOKEN_ERROR';
 
   constructor() {
-    super(401, "Invalid refresh token");
+    super(401, 'Invalid refresh token');
   }
 }

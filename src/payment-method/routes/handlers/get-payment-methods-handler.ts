@@ -1,8 +1,8 @@
-import { AuthenticatedRequest } from "@shared/http"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { findPaymentMethods } from "@payment-method/db"
-import { serializePaymentMethod } from "@payment-method/serializers"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { findPaymentMethods } from '@payment-method/db';
+import { serializePaymentMethod } from '@payment-method/serializers';
+import { AuthenticatedRequest } from '@shared/http';
 
 export const getPaymentMethodsHandler = async (
   req: FastifyRequest,
@@ -10,5 +10,5 @@ export const getPaymentMethodsHandler = async (
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
   const result = await findPaymentMethods(userId);
-  return res.code(200).send(result.map(c => serializePaymentMethod(c)));
-}
+  return res.code(200).send(result.map((c) => serializePaymentMethod(c)));
+};

@@ -1,1 +1,1 @@
-export * from "./prepare-payment-methods-map";
+export * from './prepare-payment-methods-map';

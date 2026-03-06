@@ -1,30 +1,32 @@
-import { UserModel } from "@user/model"
-import { deleteUser } from "./delete-user"
-import { CategoryModel } from "@category/model"
-import * as serializers from "@user/serializers"
-import { withSession } from "@utils/with-session"
-import { randomObjectIdString } from "@utils/random"
-import { TransactionModel } from "@transaction/model"
-import { PaymentMethodModel } from "@payment-method/model"
-import { it, vi, expect, describe, afterEach } from "vitest"
-import { USER_ID_STR } from "@/test-utils/factories/general"
-import { getUserResultJSON, getUserResultSerialized } from "@/test-utils/factories/user"
-import {
-  UserNotFoundError,
-  UserNotDeletedError,
-  UserNotAuthorizedToDeleteError,
-} from "@utils/errors/user-errors"
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { CategoryModel } from '@category/model';
+import { PaymentMethodModel } from '@payment-method/model';
+import { TransactionModel } from '@transaction/model';
+import { UserModel } from '@user/model';
+import * as serializers from '@user/serializers';
+import {
+  UserNotAuthorizedToDeleteError,
+  UserNotDeletedError,
+  UserNotFoundError,
+} from '@utils/errors/user-errors';
+import { randomObjectIdString } from '@utils/random';
+import { withSession } from '@utils/with-session';
+
+import { deleteUser } from './delete-user';
+
+import { USER_ID_STR } from '@/test-utils/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@/test-utils/factories/user';
 
 const sessionMock = {} as any;
 
-vi.mock("@utils/with-session", () => ({
-  withSession: vi.fn().mockImplementation(
-    async (func, ...args) => await func(sessionMock, ...args)
-  ),
+vi.mock('@utils/with-session', () => ({
+  withSession: vi
+    .fn()
+    .mockImplementation(async (func, ...args) => await func(sessionMock, ...args)),
 }));
 
-describe("deleteUser", () => {
+describe('deleteUser', () => {
   const user = getUserResultJSON();
   const userSerialized = getUserResultSerialized();
   const anotherUserId = randomObjectIdString();
@@ -33,16 +35,20 @@ describe("deleteUser", () => {
     vi.clearAllMocks();
   });
 
-  it("deletes authenticated user", async () => {
-    vi.spyOn(UserModel, "findById")
+  it('deletes authenticated user', async () => {
+    vi.spyOn(UserModel, 'findById')
       .mockResolvedValueOnce(user as any)
       .mockResolvedValueOnce(user as any);
-    vi.spyOn(TransactionModel, "deleteMany").mockResolvedValue({ deletedCount: 3 } as any);
-    vi.spyOn(CategoryModel, "deleteMany").mockResolvedValue({ deletedCount: 2 } as any);
-    vi.spyOn(PaymentMethodModel, "deleteMany").mockResolvedValue({ deletedCount: 1 } as any);
-    vi.spyOn(UserModel, "deleteOne").mockResolvedValue({ deletedCount: 1 } as any);
-    vi.spyOn(serializers, "serializeUser").mockReturnValue(userSerialized as any);
-    const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(TransactionModel, 'deleteMany').mockResolvedValue({
+      deletedCount: 3,
+    } as any);
+    vi.spyOn(CategoryModel, 'deleteMany').mockResolvedValue({ deletedCount: 2 } as any);
+    vi.spyOn(PaymentMethodModel, 'deleteMany').mockResolvedValue({
+      deletedCount: 1,
+    } as any);
+    vi.spyOn(UserModel, 'deleteOne').mockResolvedValue({ deletedCount: 1 } as any);
+    vi.spyOn(serializers, 'serializeUser').mockReturnValue(userSerialized as any);
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     const result = await deleteUser(USER_ID_STR, USER_ID_STR);
 
@@ -76,33 +82,39 @@ describe("deleteUser", () => {
     expect(result).toEqual(userSerialized);
   });
 
-  it("throws when authenticated user does not exist", async () => {
-    vi.spyOn(UserModel, "findById").mockResolvedValue(null);
+  it('throws when authenticated user does not exist', async () => {
+    vi.spyOn(UserModel, 'findById').mockResolvedValue(null);
 
     await expect(deleteUser(USER_ID_STR, USER_ID_STR)).rejects.toThrow(UserNotFoundError);
 
     expect(withSession).not.toHaveBeenCalled();
   });
 
-  it("throws when user is not authorized to delete another user", async () => {
-    vi.spyOn(UserModel, "findById").mockResolvedValue(user as any);
+  it('throws when user is not authorized to delete another user', async () => {
+    vi.spyOn(UserModel, 'findById').mockResolvedValue(user as any);
 
-    await expect(deleteUser(anotherUserId, USER_ID_STR)).rejects.toThrow(UserNotAuthorizedToDeleteError);
+    await expect(deleteUser(anotherUserId, USER_ID_STR)).rejects.toThrow(
+      UserNotAuthorizedToDeleteError,
+    );
 
     expect(withSession).not.toHaveBeenCalled();
   });
 
-  it("allows special test user to delete another user", async () => {
-    const specialUser = { ...user, email: "test1@test.com" };
+  it('allows special test user to delete another user', async () => {
+    const specialUser = { ...user, email: 'test1@test.com' };
 
-    vi.spyOn(UserModel, "findById")
+    vi.spyOn(UserModel, 'findById')
       .mockResolvedValueOnce(specialUser as any)
       .mockResolvedValueOnce(user as any);
-    vi.spyOn(TransactionModel, "deleteMany").mockResolvedValue({ deletedCount: 10 } as any);
-    vi.spyOn(CategoryModel, "deleteMany").mockResolvedValue({ deletedCount: 4 } as any);
-    vi.spyOn(PaymentMethodModel, "deleteMany").mockResolvedValue({ deletedCount: 3 } as any);
-    vi.spyOn(UserModel, "deleteOne").mockResolvedValue({ deletedCount: 1 } as any);
-    vi.spyOn(serializers, "serializeUser").mockReturnValue(userSerialized as any);
+    vi.spyOn(TransactionModel, 'deleteMany').mockResolvedValue({
+      deletedCount: 10,
+    } as any);
+    vi.spyOn(CategoryModel, 'deleteMany').mockResolvedValue({ deletedCount: 4 } as any);
+    vi.spyOn(PaymentMethodModel, 'deleteMany').mockResolvedValue({
+      deletedCount: 3,
+    } as any);
+    vi.spyOn(UserModel, 'deleteOne').mockResolvedValue({ deletedCount: 1 } as any);
+    vi.spyOn(serializers, 'serializeUser').mockReturnValue(userSerialized as any);
 
     const result = await deleteUser(anotherUserId, USER_ID_STR);
 
@@ -112,15 +124,15 @@ describe("deleteUser", () => {
     expect(result).toEqual(userSerialized);
   });
 
-  it("throws when user to delete does not exist", async () => {
-    vi.spyOn(UserModel, "findById")
+  it('throws when user to delete does not exist', async () => {
+    vi.spyOn(UserModel, 'findById')
       .mockResolvedValueOnce(user as any)
       .mockResolvedValueOnce(null);
-    vi.spyOn(TransactionModel, "deleteMany");
-    vi.spyOn(CategoryModel, "deleteMany");
-    vi.spyOn(PaymentMethodModel, "deleteMany");
-    vi.spyOn(UserModel, "deleteOne");
-    vi.spyOn(serializers, "serializeUser");
+    vi.spyOn(TransactionModel, 'deleteMany');
+    vi.spyOn(CategoryModel, 'deleteMany');
+    vi.spyOn(PaymentMethodModel, 'deleteMany');
+    vi.spyOn(UserModel, 'deleteOne');
+    vi.spyOn(serializers, 'serializeUser');
 
     await expect(deleteUser(USER_ID_STR, USER_ID_STR)).rejects.toThrow(UserNotFoundError);
 
@@ -131,17 +143,23 @@ describe("deleteUser", () => {
     expect(serializers.serializeUser).not.toHaveBeenCalled();
   });
 
-  it("throws when user was not deleted", async () => {
-    vi.spyOn(UserModel, "findById")
+  it('throws when user was not deleted', async () => {
+    vi.spyOn(UserModel, 'findById')
       .mockResolvedValueOnce(user as any)
       .mockResolvedValueOnce(user as any);
-    vi.spyOn(TransactionModel, "deleteMany").mockResolvedValue({ deletedCount: 10 } as any);
-    vi.spyOn(CategoryModel, "deleteMany").mockResolvedValue({ deletedCount: 4 } as any);
-    vi.spyOn(PaymentMethodModel, "deleteMany").mockResolvedValue({ deletedCount: 3 } as any);
-    vi.spyOn(UserModel, "deleteOne").mockResolvedValue({ deletedCount: 0 } as any);
-    vi.spyOn(serializers, "serializeUser");
+    vi.spyOn(TransactionModel, 'deleteMany').mockResolvedValue({
+      deletedCount: 10,
+    } as any);
+    vi.spyOn(CategoryModel, 'deleteMany').mockResolvedValue({ deletedCount: 4 } as any);
+    vi.spyOn(PaymentMethodModel, 'deleteMany').mockResolvedValue({
+      deletedCount: 3,
+    } as any);
+    vi.spyOn(UserModel, 'deleteOne').mockResolvedValue({ deletedCount: 0 } as any);
+    vi.spyOn(serializers, 'serializeUser');
 
-    await expect(deleteUser(USER_ID_STR, USER_ID_STR)).rejects.toThrow(UserNotDeletedError);
+    await expect(deleteUser(USER_ID_STR, USER_ID_STR)).rejects.toThrow(
+      UserNotDeletedError,
+    );
 
     expect(serializers.serializeUser).not.toHaveBeenCalled();
   });

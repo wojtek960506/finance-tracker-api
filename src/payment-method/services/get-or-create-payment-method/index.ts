@@ -1,1 +1,1 @@
-export * from "./get-or-create-payment-method";
+export * from './get-or-create-payment-method';

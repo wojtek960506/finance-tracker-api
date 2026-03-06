@@ -1,1 +1,1 @@
-export * from "./serialize-payment-method";
+export * from './serialize-payment-method';

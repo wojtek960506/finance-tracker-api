@@ -1,10 +1,10 @@
-import { AuthenticatedRequest } from "@shared/http"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { TransactionQuery } from "@transaction/schema"
-import { getTransactions } from "@transaction/services"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { AuthenticatedRequest } from '@shared/http';
+import { TransactionQuery } from '@transaction/schema';
+import { getTransactions } from '@transaction/services';
 
-export async function getTransactionsHandler (
+export async function getTransactionsHandler(
   req: FastifyRequest<{ Querystring: TransactionQuery }>,
   res: FastifyReply,
 ) {

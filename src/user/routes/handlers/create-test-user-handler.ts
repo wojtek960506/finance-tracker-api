@@ -1,7 +1,7 @@
-import { createTestUser } from "@user/services"
-import { TestUserCreateDTO } from "@user/schema"
-import { FastifyReply, FastifyRequest } from "fastify"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { TestUserCreateDTO } from '@user/schema';
+import { createTestUser } from '@user/services';
 
 export const createTestUserHandler = async (
   req: FastifyRequest<{ Body: TestUserCreateDTO }>,
@@ -9,4 +9,4 @@ export const createTestUserHandler = async (
 ) => {
   const result = await createTestUser(req.body);
   return res.code(201).send(result);
-}
+};

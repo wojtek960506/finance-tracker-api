@@ -1,7 +1,7 @@
-import { AuthenticatedRequest } from "@shared/http"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { deleteTransactions } from "@transaction/services"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { AuthenticatedRequest } from '@shared/http';
+import { deleteTransactions } from '@transaction/services';
 
 export const deleteTransactionsHandler = async (
   req: FastifyRequest,
@@ -10,4 +10,4 @@ export const deleteTransactionsHandler = async (
   const ownerId = (req as AuthenticatedRequest).userId;
   const result = await deleteTransactions(ownerId);
   return res.code(200).send(result);
-}
+};

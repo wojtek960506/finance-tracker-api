@@ -1,16 +1,16 @@
-import { Types, FilterQuery } from "mongoose"
-import { ValidationError } from "@utils/errors"
-import { ITransaction } from "@transaction/model"
-import { TransactionFiltersQuery } from "@transaction/schema"
+import { FilterQuery, Types } from 'mongoose';
 
+import { ITransaction } from '@transaction/model';
+import { TransactionFiltersQuery } from '@transaction/schema';
+import { ValidationError } from '@utils/errors';
 
 export const buildTransactionFilterQuery = (
-  q: TransactionFiltersQuery, ownerId: string
+  q: TransactionFiltersQuery,
+  ownerId: string,
 ): FilterQuery<ITransaction> => {
-
   if (q.categoryId && q.excludeCategoryIds) {
     throw new ValidationError(
-      `'categoryId' and 'excludeCategoryIds' cannot be provided together in query`
+      `'categoryId' and 'excludeCategoryIds' cannot be provided together in query`,
     );
   }
 
@@ -22,9 +22,10 @@ export const buildTransactionFilterQuery = (
   if (q.account) query.account = q.account;
 
   if (q.categoryId) query.categoryId = new Types.ObjectId(q.categoryId);
-  if (q.excludeCategoryIds) query.categoryId = {
-    $nin: q.excludeCategoryIds.map(id => new Types.ObjectId(id))
-  }
+  if (q.excludeCategoryIds)
+    query.categoryId = {
+      $nin: q.excludeCategoryIds.map((id) => new Types.ObjectId(id)),
+    };
 
   if (q.minAmount || q.maxAmount) {
     query.amount = {};
@@ -39,7 +40,7 @@ export const buildTransactionFilterQuery = (
   }
 
   // always fitler transactions by query id
-  query.ownerId = new Types.ObjectId(ownerId)
+  query.ownerId = new Types.ObjectId(ownerId);
 
   return query;
-}
+};

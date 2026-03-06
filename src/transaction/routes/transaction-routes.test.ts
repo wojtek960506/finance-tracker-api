@@ -1,45 +1,52 @@
-import Fastify from "fastify"
-import * as serviceC from "@category/services"
-import * as serviceT from "@transaction/services"
-import { streamTransactions } from "@transaction/db"
-import * as servicePM from "@payment-method/services"
-import { transactionRoutes } from "./transaction-routes"
-import { registerErrorHandler } from "@plugins/errorHandler"
-import { USER_ID_STR } from "@/test-utils/factories/general"
-import { it, vi, Mock, expect, describe, afterEach } from "vitest"
-import { TEST_USER_TOTAL_TRANSACTIONS } from "@/test-utils/factories/user"
-import { getCsvForTransactions } from "@/test-utils/get-csv-for-transactions"
+import Fastify from 'fastify';
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import * as serviceC from '@category/services';
+import * as servicePM from '@payment-method/services';
+import { registerErrorHandler } from '@plugins/errorHandler';
+import { streamTransactions } from '@transaction/db';
+import * as serviceT from '@transaction/services';
+
+import { transactionRoutes } from './transaction-routes';
+
 import {
-  FOOD_CATEGORY_NAME,
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
-} from "@/test-utils/factories/category"
+  FOOD_CATEGORY_NAME,
+} from '@/test-utils/factories/category';
+import { USER_ID_STR } from '@/test-utils/factories/general';
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+} from '@/test-utils/factories/payment-method';
 import {
   getExchangeTransactionDTO,
   getStandardTransactionDTO,
+  getStandardTransactionResultSerialized,
   getTransferTransactionDTO,
   STANDARD_TXN_ID_STR as T_ID,
-  getStandardTransactionResultSerialized,
-} from "@/test-utils/factories/transaction"
-import {
-  PAYMENT_METHOD_BANK_TRANSFER_NAME,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method"
+} from '@/test-utils/factories/transaction';
+import { TEST_USER_TOTAL_TRANSACTIONS } from '@/test-utils/factories/user';
+import { getCsvForTransactions } from '@/test-utils/get-csv-for-transactions';
 
+async function* mockAsyncCursor<T>(items: T[]) {
+  for (const item of items) {
+    yield item;
+  }
+}
 
-async function* mockAsyncCursor<T>(items: T[]) { for (const item of items) { yield item; } }
+const MOCKED_RESULT = { result: 'result' };
 
-const MOCKED_RESULT = { result: "result" };
+const mockPreHandler = vi.fn(async (req, _res) => {
+  (req as any).userId = USER_ID_STR;
+});
 
-const mockPreHandler = vi.fn(async (req, _res) => { (req as any).userId = USER_ID_STR });
+vi.mock('@auth/services', () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
+vi.mock('@transaction/db', () => ({ streamTransactions: vi.fn() }));
+vi.mock('@transaction/model', () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
-vi.mock("@auth/services", () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
-vi.mock("@transaction/db", () => ({ streamTransactions: vi.fn() }));
-vi.mock("@transaction/model", () => ({ TransactionModel: { deleteMany: vi.fn() } }));
-
-describe("transaction routes", async () => {
-
+describe('transaction routes', async () => {
   const app = Fastify();
   app.register(transactionRoutes);
   await registerErrorHandler(app);
@@ -48,117 +55,137 @@ describe("transaction routes", async () => {
   const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getExchangeTransactionDTO();
   const transferDTO = getTransferTransactionDTO();
-  
-  afterEach(() => { vi.clearAllMocks() });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("should get transactions - 'GET /'", async () => {
-    vi.spyOn(serviceT, "getTransactions").mockResolvedValue(MOCKED_RESULT as any);
-    const response = await app.inject({ method: "GET", url: "/" });
+    vi.spyOn(serviceT, 'getTransactions').mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: 'GET', url: '/' });
     expect(serviceT.getTransactions).toHaveBeenCalledOnce();
     expect(serviceT.getTransactions).toHaveBeenCalledWith(
-      { page: 1, limit: 20, sortBy: "date", sortOrder: "desc" },
-      USER_ID_STR
+      { page: 1, limit: 20, sortBy: 'date', sortOrder: 'desc' },
+      USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);
   });
 
   it("should export transactions - 'GET /export'", async () => {
-    
-    vi.spyOn(serviceC, "prepareCategoriesMap").mockResolvedValue(
-      { [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } as any }
-    );
-    vi.spyOn(servicePM, "preparePaymentMethodsMap").mockResolvedValue(
-      { [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: { name: PAYMENT_METHOD_BANK_TRANSFER_NAME } as any }
-    );
+    vi.spyOn(serviceC, 'prepareCategoriesMap').mockResolvedValue({
+      [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } as any,
+    });
+    vi.spyOn(servicePM, 'preparePaymentMethodsMap').mockResolvedValue({
+      [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: {
+        name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+      } as any,
+    });
     (streamTransactions as Mock).mockReturnValue(
-      mockAsyncCursor([{
-        ...standardSerialized,
-        date: new Date(standardSerialized.date),
-        categoryId: FOOD_CATEGORY_ID_OBJ,
-        paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
-      }])
+      mockAsyncCursor([
+        {
+          ...standardSerialized,
+          date: new Date(standardSerialized.date),
+          categoryId: FOOD_CATEGORY_ID_OBJ,
+          paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+        },
+      ]),
     );
 
-    const response = await app.inject({ method: "GET", url: "/export" });
-    
+    const response = await app.inject({ method: 'GET', url: '/export' });
+
     expect(streamTransactions).toHaveBeenCalledOnce();
     expect(streamTransactions).toHaveBeenCalledWith(USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toContain("text/csv");
-    expect(response.headers["content-disposition"]).toContain("transactions-backup");
-    expect(response.payload).toEqual(getCsvForTransactions(
-      { ...standardSerialized, date: standardSerialized.date.slice(0, 10) }
-    ));
+    expect(response.headers['content-type']).toContain('text/csv');
+    expect(response.headers['content-disposition']).toContain('transactions-backup');
+    expect(response.payload).toEqual(
+      getCsvForTransactions({
+        ...standardSerialized,
+        date: standardSerialized.date.slice(0, 10),
+      }),
+    );
   });
 
-   it.each<[
-    "totals" | "statistics",
-    "totals" | "statistics",
-    "getTransactionTotals" | "getTransactionStatistics"
-  ]>([
-    ["totals", "totals", "getTransactionTotals"],
-    ["statistics", "statistics", "getTransactionStatistics"],
+  it.each<
+    [
+      'totals' | 'statistics',
+      'totals' | 'statistics',
+      'getTransactionTotals' | 'getTransactionStatistics',
+    ]
+  >([
+    ['totals', 'totals', 'getTransactionTotals'],
+    ['statistics', 'statistics', 'getTransactionStatistics'],
   ])("should get %s of transaction - 'GET /%s'", async (kind, _, serviceName) => {
     vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
-    const query = { transactionType: "expense", currency: "PLN" };
-    const response = await app.inject({ method: "GET", url: `/${kind}`, query });
+    const query = { transactionType: 'expense', currency: 'PLN' };
+    const response = await app.inject({ method: 'GET', url: `/${kind}`, query });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();
     expect(serviceT[serviceName]).toHaveBeenCalledWith(query, USER_ID_STR);
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);
   });
 
-  it("should get transaction - `GET /:id`", async () => {
-    vi.spyOn(serviceT, "getTransaction").mockResolvedValue(MOCKED_RESULT as any);
-    const response = await app.inject({ method: "GET", url: `/${T_ID}` });
+  it('should get transaction - `GET /:id`', async () => {
+    vi.spyOn(serviceT, 'getTransaction').mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: 'GET', url: `/${T_ID}` });
     expect(serviceT.getTransaction).toHaveBeenCalledOnce();
     expect(serviceT.getTransaction).toHaveBeenCalledWith(T_ID, USER_ID_STR);
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);
   });
 
-  it.each<[
-    "standard" | "exchange" | "transfer",
-    "standard" | "exchange" | "transfer",
-    "createStandardTransaction" | "createExchangeTransaction" | "createTransferTransaction",
-    any
-  ]>([
-    ["standard", "standard", "createStandardTransaction", standardDTO],
-    ["exchange", "exchange", "createExchangeTransaction", exchangeDTO],
-    ["transfer", "transfer", "createTransferTransaction", transferDTO],
+  it.each<
+    [
+      'standard' | 'exchange' | 'transfer',
+      'standard' | 'exchange' | 'transfer',
+      (
+        | 'createStandardTransaction'
+        | 'createExchangeTransaction'
+        | 'createTransferTransaction'
+      ),
+      any,
+    ]
+  >([
+    ['standard', 'standard', 'createStandardTransaction', standardDTO],
+    ['exchange', 'exchange', 'createExchangeTransaction', exchangeDTO],
+    ['transfer', 'transfer', 'createTransferTransaction', transferDTO],
   ])("should create %s transaction - 'POST /%s'", async (kind, _, serviceName, body) => {
-      vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
-      const response = await app.inject({ method: "POST", url: `/${kind}`, body });
-      expect(serviceT[serviceName]).toHaveBeenCalledOnce();
-      expect(serviceT[serviceName]).toHaveBeenCalledWith(body, USER_ID_STR);
-      expect(response.statusCode).toBe(201);
-      expect(response.json()).toEqual(MOCKED_RESULT);
-    }
-  );
+    vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: 'POST', url: `/${kind}`, body });
+    expect(serviceT[serviceName]).toHaveBeenCalledOnce();
+    expect(serviceT[serviceName]).toHaveBeenCalledWith(body, USER_ID_STR);
+    expect(response.statusCode).toBe(201);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
 
-  it.each<[
-    "standard" | "exchange" | "transfer",
-    "standard" | "exchange" | "transfer",
-    "updateStandardTransaction" | "updateExchangeTransaction" | "updateTransferTransaction",
-    any
-  ]>([
-    ["standard", "standard", "updateStandardTransaction", standardDTO],
-    ["exchange", "exchange", "updateExchangeTransaction", exchangeDTO],
-    ["transfer", "transfer", "updateTransferTransaction", transferDTO],
+  it.each<
+    [
+      'standard' | 'exchange' | 'transfer',
+      'standard' | 'exchange' | 'transfer',
+      (
+        | 'updateStandardTransaction'
+        | 'updateExchangeTransaction'
+        | 'updateTransferTransaction'
+      ),
+      any,
+    ]
+  >([
+    ['standard', 'standard', 'updateStandardTransaction', standardDTO],
+    ['exchange', 'exchange', 'updateExchangeTransaction', exchangeDTO],
+    ['transfer', 'transfer', 'updateTransferTransaction', transferDTO],
   ])("should update %s transaction - 'PUT /%s'", async (kind, _, serviceName, body) => {
-      vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
-      const response = await app.inject({ method: "PUT", url: `/${kind}/${T_ID}`, body });
-      expect(serviceT[serviceName]).toHaveBeenCalledOnce();
-      expect(serviceT[serviceName]).toHaveBeenCalledWith(T_ID, USER_ID_STR, body);
-      expect(response.statusCode).toBe(200);
-      expect(response.json()).toEqual(MOCKED_RESULT);
-    }
-  );
+    vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: 'PUT', url: `/${kind}/${T_ID}`, body });
+    expect(serviceT[serviceName]).toHaveBeenCalledOnce();
+    expect(serviceT[serviceName]).toHaveBeenCalledWith(T_ID, USER_ID_STR, body);
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
 
   it("should delete transaction - 'DELETE /:id'", async () => {
-    vi.spyOn(serviceT, "deleteTransaction").mockResolvedValue(MOCKED_RESULT as any);
-    const response = await app.inject({ method: "DELETE", url: `/${T_ID}`});
+    vi.spyOn(serviceT, 'deleteTransaction').mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: 'DELETE', url: `/${T_ID}` });
     expect(serviceT.deleteTransaction).toHaveBeenCalledOnce();
     expect(serviceT.deleteTransaction).toHaveBeenCalledWith(T_ID, USER_ID_STR);
     expect(response.statusCode).toBe(200);
@@ -166,8 +193,8 @@ describe("transaction routes", async () => {
   });
 
   it("should delete all transactions of given user - 'DELETE /'", async () => {
-    vi.spyOn(serviceT, "deleteTransactions").mockResolvedValue(MOCKED_RESULT as any);
-    const response = await app.inject({ method: "DELETE", url: "/" });
+    vi.spyOn(serviceT, 'deleteTransactions').mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: 'DELETE', url: '/' });
     expect(serviceT.deleteTransactions).toHaveBeenCalledOnce();
     expect(serviceT.deleteTransactions).toHaveBeenCalledWith(USER_ID_STR);
     expect(response.statusCode).toBe(200);
@@ -176,11 +203,12 @@ describe("transaction routes", async () => {
 
   it("should create test transactions for a given user - 'POST /test'", async () => {
     const body = { totalTransactions: TEST_USER_TOTAL_TRANSACTIONS };
-    vi.spyOn(serviceT, "createTestTransactions").mockResolvedValue(MOCKED_RESULT as any);
-    const response = await app.inject({ method: "POST", url: "/test", body });
+    vi.spyOn(serviceT, 'createTestTransactions').mockResolvedValue(MOCKED_RESULT as any);
+    const response = await app.inject({ method: 'POST', url: '/test', body });
     expect(serviceT.createTestTransactions).toHaveBeenCalledOnce();
     expect(serviceT.createTestTransactions).toHaveBeenCalledWith(
-      USER_ID_STR, TEST_USER_TOTAL_TRANSACTIONS
+      USER_ID_STR,
+      TEST_USER_TOTAL_TRANSACTIONS,
     );
     expect(response.statusCode).toBe(201);
     expect(response.json()).toEqual(MOCKED_RESULT);

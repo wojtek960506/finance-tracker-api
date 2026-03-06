@@ -1,47 +1,51 @@
-import { AppError } from "./general-errors"
-
+import { AppError } from './general-errors';
 
 export class PaymentMethodNotFoundError extends AppError {
-  readonly code = "PAYMENT_METHOD_NOT_FOUND";
+  readonly code = 'PAYMENT_METHOD_NOT_FOUND';
 
-  constructor(readonly paymentMethodId?: string, readonly paymentMethodName?: string) {
-    super(404, "Payment method not found");
+  constructor(
+    readonly paymentMethodId?: string,
+    readonly paymentMethodName?: string,
+  ) {
+    super(404, 'Payment method not found');
   }
 }
 
 export class PaymentMethodOwnershipError extends AppError {
-  readonly code = "PAYMENT_METHOD_OWNERSHIP_VIOLATION";
+  readonly code = 'PAYMENT_METHOD_OWNERSHIP_VIOLATION';
 
   constructor(
     readonly wrongUserId: string,
     readonly paymentMethodId: string,
     readonly paymentMethodOwnerId: string,
   ) {
-    super(403, "Payment method does not belong to the current user");
+    super(403, 'Payment method does not belong to the current user');
   }
 }
 
 export class PaymentMethodAlreadyExistsError extends AppError {
-  readonly code = "PAYMENT_METHOD_ALREADY_EXISTS";
+  readonly code = 'PAYMENT_METHOD_ALREADY_EXISTS';
 
   constructor(readonly paymentMethodName: string) {
-    super(409, `Payment method with normalized name '${paymentMethodName}' already exists`);
+    super(
+      409,
+      `Payment method with normalized name '${paymentMethodName}' already exists`,
+    );
   }
 }
 
 export class SystemPaymentMethodUpdateNotAllowed extends AppError {
-  readonly code = "SYSTEM_PAYMENT_METHOD_UPDATE_NOT_ALLOWED";
+  readonly code = 'SYSTEM_PAYMENT_METHOD_UPDATE_NOT_ALLOWED';
 
   constructor(readonly paymentMethodId: string) {
-    super(403, "Updating system payment method not allowed");
+    super(403, 'Updating system payment method not allowed');
   }
 }
 
 export class UserPaymentMethodMissingOwner extends AppError {
-  readonly code = "USER_PAYMENT_METHOD_MISSING_OWNER";
+  readonly code = 'USER_PAYMENT_METHOD_MISSING_OWNER';
 
   constructor(readonly paymentMethodId: string) {
-    super(500, "Invalid payment method state - user payment method is missing owner");
+    super(500, 'Invalid payment method state - user payment method is missing owner');
   }
 }
-

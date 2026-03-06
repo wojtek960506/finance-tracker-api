@@ -1,13 +1,14 @@
-import { ClientSession } from "mongoose"
-import { ITransaction } from "@transaction/model"
-import { withSession } from "@utils/with-session"
-import { TransactionResponseDTO } from "@transaction/schema"
-import { serializeTransaction } from "@transaction/serializers"
-import { TransactionExchangeUpdateProps, TransactionTransferUpdateProps } from "./types"
+import { ClientSession } from 'mongoose';
 
+import { ITransaction } from '@transaction/model';
+import { TransactionResponseDTO } from '@transaction/schema';
+import { serializeTransaction } from '@transaction/serializers';
+import { withSession } from '@utils/with-session';
+
+import { TransactionExchangeUpdateProps, TransactionTransferUpdateProps } from './types';
 
 export const saveTransactionPairChangesCore = async <
-  T extends TransactionExchangeUpdateProps | TransactionTransferUpdateProps
+  T extends TransactionExchangeUpdateProps | TransactionTransferUpdateProps,
 >(
   session: ClientSession,
   transaction: ITransaction,
@@ -15,7 +16,7 @@ export const saveTransactionPairChangesCore = async <
   expenseTransactionProps: T,
   incomeTransactionProps: T,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-  if (transaction.transactionType === "expense") {
+  if (transaction.transactionType === 'expense') {
     Object.assign(transaction, expenseTransactionProps);
     Object.assign(transactionRef, incomeTransactionProps);
   } else {
@@ -25,42 +26,38 @@ export const saveTransactionPairChangesCore = async <
   await transaction.save({ session });
   await transactionRef.save({ session });
 
-  console.log("before populate");
-  console.log("transaction", transaction);
-  console.log("transactionRef", transactionRef);
+  console.log('before populate');
+  console.log('transaction', transaction);
+  console.log('transactionRef', transactionRef);
 
   await transaction.populate([
-    { path: "categoryId", select: '_id type name' },
-    { path: "paymentMethodId", select: "_id type name" },
+    { path: 'categoryId', select: '_id type name' },
+    { path: 'paymentMethodId', select: '_id type name' },
   ]);
   await transactionRef.populate([
-    { path: "categoryId", select: '_id type name' },
-    { path: "paymentMethodId", select: "_id type name" },
+    { path: 'categoryId', select: '_id type name' },
+    { path: 'paymentMethodId', select: '_id type name' },
   ]);
 
-  console.log("after populate");
-  console.log("transaction", transaction);
-  console.log("transactionRef", transactionRef);
+  console.log('after populate');
+  console.log('transaction', transaction);
+  console.log('transactionRef', transactionRef);
 
-  return [
-    serializeTransaction(transaction),
-    serializeTransaction(transactionRef),
-  ];
-}
+  return [serializeTransaction(transaction), serializeTransaction(transactionRef)];
+};
 
 export const saveTransactionPairChanges = async <
-  T extends TransactionExchangeUpdateProps | TransactionTransferUpdateProps
+  T extends TransactionExchangeUpdateProps | TransactionTransferUpdateProps,
 >(
   transaction: ITransaction,
   transactionRef: ITransaction,
   expenseTransactionProps: T,
   incomeTransactionProps: T,
-): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => (
+): Promise<[TransactionResponseDTO, TransactionResponseDTO]> =>
   withSession(
     saveTransactionPairChangesCore,
     transaction,
     transactionRef,
     expenseTransactionProps,
     incomeTransactionProps,
-  )
-);
+  );

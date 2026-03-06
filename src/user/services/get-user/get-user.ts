@@ -1,16 +1,15 @@
-import { findUser } from "@user/db"
-import { AppError } from "@utils/errors"
-import { UserResponseDTO } from "@user/schema"
-import { serializeUser } from "@user/serializers"
-
+import { findUser } from '@user/db';
+import { UserResponseDTO } from '@user/schema';
+import { serializeUser } from '@user/serializers';
+import { AppError } from '@utils/errors';
 
 export const getUser = async (
   userId: string,
   authenticatedUserId: string,
 ): Promise<UserResponseDTO> => {
   if (userId !== authenticatedUserId) {
-    throw new AppError(401, "Cannot get info about different user.")
+    throw new AppError(401, 'Cannot get info about different user.');
   }
 
   return serializeUser(await findUser(userId));
-}
+};

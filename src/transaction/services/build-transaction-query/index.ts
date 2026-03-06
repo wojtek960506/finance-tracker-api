@@ -1,1 +1,1 @@
-export * from "./build-transaction-query";
+export * from './build-transaction-query';

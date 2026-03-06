@@ -1,34 +1,32 @@
-import { TransactionStatisticsQuery } from "@transaction/schema"
 import {
-  YearResult,
+  MonthlyResultItemServer,
   NoYearResult,
   TotalAmountAndItems,
   TotalAmountAndItemsObj,
-  YearlyResultItemServer,
-  MonthlyResultItemServer,
   TransactionStatisticsResponse,
-} from "@transaction/routes/types"
-
+  YearlyResultItemServer,
+  YearResult,
+} from '@transaction/routes/types';
+import { TransactionStatisticsQuery } from '@transaction/schema';
 
 const getTotalAmountAndItems = (
-  resultItem: TotalAmountAndItems | undefined
+  resultItem: TotalAmountAndItems | undefined,
 ): TotalAmountAndItems => {
   if (!resultItem) return { totalAmount: 0, totalItems: 0 };
   return {
     totalAmount: resultItem.totalAmount,
     totalItems: resultItem.totalItems,
-  }
+  };
 };
 
 export const parseStatisticsResult = (
   result: any[] | undefined,
-  q: Pick<TransactionStatisticsQuery, "year" | "month">,
+  q: Pick<TransactionStatisticsQuery, 'year' | 'month'>,
 ): TransactionStatisticsResponse => {
-
   if (!result || result.length === 0) return { totalAmount: 0, totalItems: 0 };
 
   const data = result![0];
- 
+
   if (q.year) {
     if (q.month) {
       return getTotalAmountAndItems(data);
@@ -58,4 +56,4 @@ export const parseStatisticsResult = (
 
     return returnData;
   }
-}
+};

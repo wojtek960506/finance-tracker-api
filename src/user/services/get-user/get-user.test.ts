@@ -1,28 +1,29 @@
-import * as db from "@user/db"
-import { getUser } from "./get-user"
-import { AppError } from "@utils/errors"
-import * as serializers from "@user/serializers"
-import { it, vi, expect, describe } from "vitest"
-import { USER_ID_STR } from "@/test-utils/factories/general"
-import { getUserResultJSON, getUserResultSerialized } from "@/test-utils/factories/user"
+import { describe, expect, it, vi } from 'vitest';
 
+import * as db from '@user/db';
+import * as serializers from '@user/serializers';
+import { AppError } from '@utils/errors';
 
-describe("getUser", () => {
+import { getUser } from './get-user';
 
-  it("get not authenticated user", async () => {
-    vi.spyOn(db, "findUser");
-    vi.spyOn(serializers, "serializeUser");
-    await expect(getUser(USER_ID_STR, "123")).rejects.toThrow(AppError);
+import { USER_ID_STR } from '@/test-utils/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@/test-utils/factories/user';
+
+describe('getUser', () => {
+  it('get not authenticated user', async () => {
+    vi.spyOn(db, 'findUser');
+    vi.spyOn(serializers, 'serializeUser');
+    await expect(getUser(USER_ID_STR, '123')).rejects.toThrow(AppError);
     expect(db.findUser).not.toHaveBeenCalled();
     expect(serializers.serializeUser).not.toHaveBeenCalled();
   });
 
-  it("get authenticated user", async () => {
+  it('get authenticated user', async () => {
     const userJSON = getUserResultJSON();
     const userSerialized = getUserResultSerialized();
 
-    vi.spyOn(db, "findUser").mockResolvedValue(userJSON as any);
-    vi.spyOn(serializers, "serializeUser").mockResolvedValue(userSerialized as any);
+    vi.spyOn(db, 'findUser').mockResolvedValue(userJSON as any);
+    vi.spyOn(serializers, 'serializeUser').mockResolvedValue(userSerialized as any);
 
     const result = await getUser(USER_ID_STR, USER_ID_STR);
 

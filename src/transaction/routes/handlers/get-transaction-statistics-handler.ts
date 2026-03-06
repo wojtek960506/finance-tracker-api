@@ -1,17 +1,17 @@
-import { AuthenticatedRequest } from "@shared/http"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { getTransactionStatistics } from "@transaction/services"
-import { TransactionStatisticsQuery } from "@transaction/schema"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { AuthenticatedRequest } from '@shared/http';
+import { TransactionStatisticsQuery } from '@transaction/schema';
+import { getTransactionStatistics } from '@transaction/services';
 
 // it is possible to group by
-  // - just month (then we get all time statistics for month and grouped by a year)
-  // - just year (then we get all statistics from given year and grouped by month in a given year)
-  // - year and month - then we get all statistics from a given month of the given year
-  // additionally we can filter it by category or payment method or account
+// - just month (then we get all time statistics for month and grouped by a year)
+// - just year (then we get all statistics from given year and grouped by month in a given year)
+// - year and month - then we get all statistics from a given month of the given year
+// additionally we can filter it by category or payment method or account
 export async function getTransactionStatisticsHandler(
   req: FastifyRequest<{ Querystring: TransactionStatisticsQuery }>,
-  res: FastifyReply
+  res: FastifyReply,
 ) {
   const userId = (req as AuthenticatedRequest).userId;
   const result = await getTransactionStatistics(req.query, userId);

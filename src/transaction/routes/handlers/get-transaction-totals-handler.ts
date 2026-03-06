@@ -1,12 +1,12 @@
-import { AuthenticatedRequest } from "@shared/http"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { getTransactionTotals } from "@transaction/services"
-import { TransactionFiltersQuery } from "@transaction/schema"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { AuthenticatedRequest } from '@shared/http';
+import { TransactionFiltersQuery } from '@transaction/schema';
+import { getTransactionTotals } from '@transaction/services';
 
 export async function getTransactionTotalsHandler(
   req: FastifyRequest<{ Querystring: TransactionFiltersQuery }>,
-  res: FastifyReply
+  res: FastifyReply,
 ) {
   const userId = (req as AuthenticatedRequest).userId;
   const result = await getTransactionTotals(req.query, userId);

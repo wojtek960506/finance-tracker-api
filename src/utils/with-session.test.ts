@@ -1,33 +1,36 @@
-import { startSession } from "mongoose"
-import { withSession } from "@utils/with-session"
-import { it, vi, expect, describe, afterEach } from "vitest"
+import { startSession } from 'mongoose';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { withSession } from '@utils/with-session';
 
 const withTransactionMock = vi.fn();
 const endSessionMock = vi.fn();
 
-vi.mock("mongoose", async () => {
-  const actual = await vi.importActual("mongoose");
+vi.mock('mongoose', async () => {
+  const actual = await vi.importActual('mongoose');
 
   return {
     ...actual,
     startSession: vi.fn(async () => ({
       withTransaction: withTransactionMock,
       endSession: endSessionMock,
-    }))
-  }
+    })),
+  };
 });
 
-const testResult = "some result"
+const testResult = 'some result';
 const funcMock = vi.fn().mockResolvedValue(testResult);
 
-describe("withSession", () => {
-  
-  afterEach(() => { vi.clearAllMocks() });
+describe('withSession', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-  it("function is properly executed inside session", async () => {
-    withTransactionMock.mockImplementation(async (fn) => { await fn() });
-    const [arg1, arg2] = ["a", "b"];
+  it('function is properly executed inside session', async () => {
+    withTransactionMock.mockImplementation(async (fn) => {
+      await fn();
+    });
+    const [arg1, arg2] = ['a', 'b'];
 
     const result = await withSession(funcMock, arg1, arg2);
 
@@ -39,8 +42,10 @@ describe("withSession", () => {
     expect(result).toEqual(testResult);
   });
 
-  it("session is ended even when the error occured within `withTransaction`", async () => {
-    withTransactionMock.mockImplementation(async (_) => { throw new Error() });
+  it('session is ended even when the error occured within `withTransaction`', async () => {
+    withTransactionMock.mockImplementation(async (_) => {
+      throw new Error();
+    });
 
     await expect(withSession(funcMock)).rejects.toThrow(Error);
 

@@ -1,1 +1,1 @@
-export * from "./authorize-access-token";
+export * from './authorize-access-token';

@@ -1,22 +1,26 @@
-import jwt from "jsonwebtoken"
-import * as config from "@app/config"
-import { it, vi, expect, describe, afterEach } from "vitest"
-import { authorizeAccessToken } from "./authorize-access-token"
-import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from "@/test-utils/env-consts"
+import jwt from 'jsonwebtoken';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import * as config from '@app/config';
 import {
   UnauthorizedInvalidTokenError,
   UnauthorizedMissingTokenError,
-} from "@utils/errors"
+} from '@utils/errors';
 
+import { authorizeAccessToken } from './authorize-access-token';
 
-vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@/test-utils/env-consts';
 
-describe("authorizeAccessToken", () => {
-  afterEach(() => { vi.clearAllMocks() });
-  const jwtSpy = vi.spyOn(jwt, "verify")
-  const envConfigSpy = vi.spyOn(config, "getEnv");
+vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
-  it("throws missing token error when authorization header is not present", async () => {
+describe('authorizeAccessToken', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+  const jwtSpy = vi.spyOn(jwt, 'verify');
+  const envConfigSpy = vi.spyOn(config, 'getEnv');
+
+  it('throws missing token error when authorization header is not present', async () => {
     const preHandler = authorizeAccessToken();
     const req = { headers: {} } as any;
 
@@ -26,9 +30,9 @@ describe("authorizeAccessToken", () => {
     expect(envConfigSpy).not.toHaveBeenCalled();
   });
 
-  it("throws missing token error when authorization header is not Bearer", async () => {
+  it('throws missing token error when authorization header is not Bearer', async () => {
     const preHandler = authorizeAccessToken();
-    const req = { headers: { authorization: "Basic 123" } } as any;
+    const req = { headers: { authorization: 'Basic 123' } } as any;
 
     await expect(preHandler(req, {} as any)).rejects.toBeInstanceOf(
       UnauthorizedMissingTokenError,
@@ -36,32 +40,32 @@ describe("authorizeAccessToken", () => {
     expect(envConfigSpy).not.toHaveBeenCalled();
   });
 
-  it("throws invalid token error when jwt verification fails", async () => {
+  it('throws invalid token error when jwt verification fails', async () => {
     jwtSpy.mockImplementation(() => {
-      throw new Error("jwt verification failed");
+      throw new Error('jwt verification failed');
     });
 
     const preHandler = authorizeAccessToken();
-    const req = { headers: { authorization: "Bearer invalid-token" } } as any;
+    const req = { headers: { authorization: 'Bearer invalid-token' } } as any;
 
     await expect(preHandler(req, {} as any)).rejects.toBeInstanceOf(
       UnauthorizedInvalidTokenError,
     );
     expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(jwt.verify).toHaveBeenCalledOnce();
-    expect(jwt.verify).toHaveBeenCalledWith("invalid-token", JWT_ACCESS_SECRET_TEST);
+    expect(jwt.verify).toHaveBeenCalledWith('invalid-token', JWT_ACCESS_SECRET_TEST);
   });
 
-  it("assigns userId to request when token is valid", async () => {
-    jwtSpy.mockReturnValue({ userId: "user-123" } as any);
+  it('assigns userId to request when token is valid', async () => {
+    jwtSpy.mockReturnValue({ userId: 'user-123' } as any);
 
     const preHandler = authorizeAccessToken();
-    const req = { headers: { authorization: "Bearer valid-token" } } as any;
+    const req = { headers: { authorization: 'Bearer valid-token' } } as any;
 
     await expect(preHandler(req, {} as any)).resolves.toBeUndefined();
     expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(jwt.verify).toHaveBeenCalledOnce();
-    expect(jwt.verify).toHaveBeenCalledWith("valid-token", JWT_ACCESS_SECRET_TEST);
-    expect(req.userId).toBe("user-123");
+    expect(jwt.verify).toHaveBeenCalledWith('valid-token', JWT_ACCESS_SECRET_TEST);
+    expect(req.userId).toBe('user-123');
   });
 });

@@ -1,4 +1,4 @@
-import { FastifyRequest } from "fastify"
+import { FastifyRequest } from 'fastify';
 
 export interface ParamsJustId {
   id: string;
@@ -10,13 +10,13 @@ export interface DeleteManyReply {
 }
 
 export type AuthenticatedRequest = FastifyRequest & {
-  userId: string
-}
+  userId: string;
+};
 
 export type FilteredResponse<T> = {
   page: number;
   limit: number;
   total: number;
   totalPages: number;
-  items: T
-}
+  items: T;
+};

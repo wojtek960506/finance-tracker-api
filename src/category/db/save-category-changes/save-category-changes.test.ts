@@ -1,18 +1,18 @@
-import { it, vi, expect, describe } from "vitest"
-import { saveCategoryChanges } from "@category/db"
-import * as serializers from "@category/serializers"
-import { getUserCategoryResultJSON } from "@/test-utils/factories/category"
+import { describe, expect, it, vi } from 'vitest';
 
+import { saveCategoryChanges } from '@category/db';
+import * as serializers from '@category/serializers';
 
-describe("saveCategoryChanges", () => {
+import { getUserCategoryResultJSON } from '@/test-utils/factories/category';
 
+describe('saveCategoryChanges', () => {
   const save = vi.fn();
-  const newProps = { name: "FooD 123", nameNormalized: "food 123" };
+  const newProps = { name: 'FooD 123', nameNormalized: 'food 123' };
   const iCategory = { ...getUserCategoryResultJSON(), save };
-  const updatedCategory = { ...iCategory, name: "FooD 123", nameNormalized: "food 123" };
+  const updatedCategory = { ...iCategory, name: 'FooD 123', nameNormalized: 'food 123' };
 
-  it("save category changes", async () => {
-    vi.spyOn(serializers, "serializeCategory").mockReturnValue(updatedCategory as any);
+  it('save category changes', async () => {
+    vi.spyOn(serializers, 'serializeCategory').mockReturnValue(updatedCategory as any);
 
     const result = await saveCategoryChanges(iCategory as any, newProps);
 

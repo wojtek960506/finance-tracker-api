@@ -1,19 +1,21 @@
-import { TransactionStandardDTO } from "@transaction/schema"
-
+import { TransactionStandardDTO } from '@transaction/schema';
 
 export type RandomStandardTransaction = TransactionStandardDTO & {
   ownerId: string;
-  sourceIndex: number
-  sourceRefIndex?: number,
+  sourceIndex: number;
+  sourceRefIndex?: number;
 };
 
-export type RandomTransferTransaction = Omit<RandomStandardTransaction, "sourceRefIndex"> & { 
+export type RandomTransferTransaction = Omit<
+  RandomStandardTransaction,
+  'sourceRefIndex'
+> & {
   sourceRefIndex: number;
 };
 
 export type RandomTransferTransactionPair = [
   RandomTransferTransaction,
-  RandomTransferTransaction
+  RandomTransferTransaction,
 ];
 
 export type RandomExchangeTransaction = RandomTransferTransaction & {
@@ -23,8 +25,10 @@ export type RandomExchangeTransaction = RandomTransferTransaction & {
 
 export type RandomExchangeTransactionPair = [
   RandomExchangeTransaction,
-  RandomExchangeTransaction
+  RandomExchangeTransaction,
 ];
 
-export type RandomTransaction = RandomStandardTransaction | RandomExchangeTransaction |
-  RandomTransferTransaction;
+export type RandomTransaction =
+  | RandomStandardTransaction
+  | RandomExchangeTransaction
+  | RandomTransferTransaction;

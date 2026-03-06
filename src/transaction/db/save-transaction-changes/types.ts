@@ -1,10 +1,11 @@
-import { TransactionStandardDTO } from "@transaction/schema"
+import { TransactionStandardDTO } from '@transaction/schema';
 
 export type TransactionTransferUpdateProps = Omit<
-  TransactionStandardDTO, "category" | "transactionType"
+  TransactionStandardDTO,
+  'category' | 'transactionType'
 >;
 
 export type TransactionExchangeUpdateProps = TransactionTransferUpdateProps & {
-  currencies: string,
-  exchangeRate: number,
-}
+  currencies: string;
+  exchangeRate: number;
+};

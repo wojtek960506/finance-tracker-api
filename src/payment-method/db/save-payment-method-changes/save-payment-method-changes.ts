@@ -1,9 +1,11 @@
-import { IPaymentMethod } from "@payment-method/model"
-import { PaymentMethodResponseDTO } from "@payment-method/schema"
-import { serializePaymentMethod } from "@payment-method/serializers"
+import { IPaymentMethod } from '@payment-method/model';
+import { PaymentMethodResponseDTO } from '@payment-method/schema';
+import { serializePaymentMethod } from '@payment-method/serializers';
 
-
-export type PaymentMethodUpdateProps = Pick<PaymentMethodResponseDTO, "name" | "nameNormalized">;
+export type PaymentMethodUpdateProps = Pick<
+  PaymentMethodResponseDTO,
+  'name' | 'nameNormalized'
+>;
 
 export const savePaymentMethodChanges = async (
   paymentMethod: IPaymentMethod,
@@ -13,4 +15,4 @@ export const savePaymentMethodChanges = async (
   await paymentMethod.save();
 
   return serializePaymentMethod(paymentMethod);
-}
+};

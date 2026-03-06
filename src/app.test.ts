@@ -1,12 +1,13 @@
-import * as config from "@app/config"
-import { it, vi, expect, describe, beforeEach } from "vitest"
-import {
-  PORT_TEST,
-  ENV_TEST_VALUES,
-  COOKIE_SECRET_TEST,
-  JWT_ACCESS_SECRET_TEST,
-} from "@/test-utils/env-consts"
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as config from '@app/config';
+
+import {
+  COOKIE_SECRET_TEST,
+  ENV_TEST_VALUES,
+  JWT_ACCESS_SECRET_TEST,
+  PORT_TEST,
+} from '@/test-utils/env-consts';
 
 const {
   appMock,
@@ -52,34 +53,35 @@ const {
   };
 });
 
-vi.mock("fastify", () => ({ default: fastifyMock }));
-vi.mock("@fastify/cookie", () => ({ default: cookiePluginMock }));
-vi.mock("@fastify/jwt", () => ({ default: jwtPluginMock }));
-vi.mock("@fastify/cors", () => ({ default: corsPluginMock }));
-vi.mock("@app/setup", () => ({
+vi.mock('fastify', () => ({ default: fastifyMock }));
+vi.mock('@fastify/cookie', () => ({ default: cookiePluginMock }));
+vi.mock('@fastify/jwt', () => ({ default: jwtPluginMock }));
+vi.mock('@fastify/cors', () => ({ default: corsPluginMock }));
+vi.mock('@app/setup', () => ({
   upsertSystemCategories: upsertSystemCategoriesMock,
   upsertSystemPaymentMethods: upsertSystemPaymentMethodsMock,
   connectDB: connectDBMock,
 }));
-vi.mock("./plugins/errorHandler", () => ({
+vi.mock('./plugins/errorHandler', () => ({
   registerErrorHandler: registerErrorHandlerMock,
 }));
-vi.mock("@app/routes", () => ({
+vi.mock('@app/routes', () => ({
   mainRoutes: mainRoutesMock,
 }));
 
-vi.mock("@auth/routes", () => ({ authRoutes: authRoutesMock }));
-vi.mock("@user/routes", () => ({ userRoutes: userRoutesMock }));
-vi.mock("@category/routes", () => ({ categoryRoutes: categoryRoutesMock }));
-vi.mock("@payment-method/routes", () => ({ paymentMethodRoutes: paymentMethodRoutesMock }));
-vi.mock("@transaction/routes", () => ({ transactionRoutes: transactionRoutesMock }));
+vi.mock('@auth/routes', () => ({ authRoutes: authRoutesMock }));
+vi.mock('@user/routes', () => ({ userRoutes: userRoutesMock }));
+vi.mock('@category/routes', () => ({ categoryRoutes: categoryRoutesMock }));
+vi.mock('@payment-method/routes', () => ({
+  paymentMethodRoutes: paymentMethodRoutesMock,
+}));
+vi.mock('@transaction/routes', () => ({ transactionRoutes: transactionRoutesMock }));
 
+vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
-vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
-
-describe("app bootstrap", () => {
-  const envConfigSpy = vi.spyOn(config, "getEnv");
-  const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+describe('app bootstrap', () => {
+  const envConfigSpy = vi.spyOn(config, 'getEnv');
+  const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
   beforeEach(() => {
     vi.resetModules();
@@ -88,9 +90,9 @@ describe("app bootstrap", () => {
     appMock.register.mockResolvedValue(undefined);
     appMock.listen.mockResolvedValue(undefined);
   });
-  
-  it("builds app and registers plugins/routes", async () => {
-    const { buildApp } = await import("./app");
+
+  it('builds app and registers plugins/routes', async () => {
+    const { buildApp } = await import('./app');
 
     const result = await buildApp();
 
@@ -107,18 +109,22 @@ describe("app bootstrap", () => {
     expect(appMock.register).toHaveBeenCalledWith(jwtPluginMock, {
       secret: JWT_ACCESS_SECRET_TEST,
     });
-    expect(appMock.register).toHaveBeenCalledWith(mainRoutesMock, { prefix: "" });
-    expect(appMock.register).toHaveBeenCalledWith(authRoutesMock, { prefix: "/api/auth" });
-    expect(appMock.register).toHaveBeenCalledWith(userRoutesMock, { prefix: "/api/users" });
-    expect(appMock.register).toHaveBeenCalledWith(
-      categoryRoutesMock, { prefix: "/api/categories" }
-    );
-    expect(appMock.register).toHaveBeenCalledWith(
-      paymentMethodRoutesMock, { prefix: "/api/paymentMethods" }
-    );
-    expect(appMock.register).toHaveBeenCalledWith(
-      transactionRoutesMock, { prefix: "/api/transactions" }
-    );
+    expect(appMock.register).toHaveBeenCalledWith(mainRoutesMock, { prefix: '' });
+    expect(appMock.register).toHaveBeenCalledWith(authRoutesMock, {
+      prefix: '/api/auth',
+    });
+    expect(appMock.register).toHaveBeenCalledWith(userRoutesMock, {
+      prefix: '/api/users',
+    });
+    expect(appMock.register).toHaveBeenCalledWith(categoryRoutesMock, {
+      prefix: '/api/categories',
+    });
+    expect(appMock.register).toHaveBeenCalledWith(paymentMethodRoutesMock, {
+      prefix: '/api/paymentMethods',
+    });
+    expect(appMock.register).toHaveBeenCalledWith(transactionRoutesMock, {
+      prefix: '/api/transactions',
+    });
     expect(registerErrorHandlerMock).toHaveBeenCalledOnce();
     expect(registerErrorHandlerMock).toHaveBeenCalledWith(appMock);
     expect(appMock.register).toHaveBeenCalledWith(
@@ -130,29 +136,31 @@ describe("app bootstrap", () => {
     expect(result).toBe(appMock);
   });
 
-  it("does not auto-start on app module import", async () => {
-    await import("./app");
+  it('does not auto-start on app module import', async () => {
+    await import('./app');
 
     expect(connectDBMock).not.toHaveBeenCalled();
   });
 
-  it("starts server", async () => {
-    const { start } = await import("./app");
+  it('starts server', async () => {
+    const { start } = await import('./app');
 
     await start();
 
     expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(connectDBMock).toHaveBeenCalledOnce();
     expect(appMock.listen).toHaveBeenCalledOnce();
-    expect(appMock.listen).toHaveBeenCalledWith({ port: PORT_TEST, host: "0.0.0.0" });
+    expect(appMock.listen).toHaveBeenCalledWith({ port: PORT_TEST, host: '0.0.0.0' });
     expect(consoleLogSpy).toHaveBeenCalledWith(`Server running on port ${PORT_TEST}`);
   });
 
-  it("logs and exits when listen fails", async () => {
-    const error = new Error("listen failed");
+  it('logs and exits when listen fails', async () => {
+    const error = new Error('listen failed');
     appMock.listen.mockRejectedValue(error);
-    const processExitSpy = vi.spyOn(process, "exit").mockImplementation(() => undefined as never);
-    const { start } = await import("./app");
+    const processExitSpy = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(() => undefined as never);
+    const { start } = await import('./app');
 
     await start();
 

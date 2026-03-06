@@ -1,20 +1,21 @@
-import { randomObjectIdString } from "@utils/random"
-import { TransactionModel } from "@transaction/model"
-import { it, vi, Mock, expect, describe } from "vitest"
-import { streamTransactions } from "./stream-transactions"
+import { describe, expect, it, Mock, vi } from 'vitest';
 
+import { TransactionModel } from '@transaction/model';
+import { randomObjectIdString } from '@utils/random';
 
-const mockResult = "cursor";
+import { streamTransactions } from './stream-transactions';
+
+const mockResult = 'cursor';
 const mockQuery = {
   find: vi.fn().mockReturnThis(),
   sort: vi.fn().mockReturnThis(),
   cursor: vi.fn().mockReturnValue(mockResult),
-}
+};
 
-vi.mock("@transaction/model", () => ({ TransactionModel: { find: vi.fn() } }));
+vi.mock('@transaction/model', () => ({ TransactionModel: { find: vi.fn() } }));
 
-describe("streamTransactions", () => {
-  it("stream transactions", () => {
+describe('streamTransactions', () => {
+  it('stream transactions', () => {
     const OWNER_ID = randomObjectIdString();
     (TransactionModel.find as Mock).mockReturnValue(mockQuery);
 
@@ -26,5 +27,5 @@ describe("streamTransactions", () => {
     expect(mockQuery.sort).toHaveBeenCalledWith({ sourceIndex: 1 });
     expect(mockQuery.cursor).toHaveBeenCalledOnce();
     expect(result).toEqual(mockResult);
-  })
-})
+  });
+});

@@ -1,12 +1,10 @@
-import { FilteredResponse } from "@shared/http"
-import { TransactionQuery } from "@transaction/schema"
-import { prepareCategoriesMap } from "@category/services"
-import { TransactionsResponseDTO } from "@transaction/schema"
-import { serializeTransaction } from "@transaction/serializers"
-import { buildTransactionFilterQuery } from "@transaction/services"
-import { preparePaymentMethodsMap } from "@payment-method/services"
-import { findTransactions, findTransactionsCount } from "@transaction/db"
-
+import { prepareCategoriesMap } from '@category/services';
+import { preparePaymentMethodsMap } from '@payment-method/services';
+import { FilteredResponse } from '@shared/http';
+import { findTransactions, findTransactionsCount } from '@transaction/db';
+import { TransactionQuery, TransactionsResponseDTO } from '@transaction/schema';
+import { serializeTransaction } from '@transaction/serializers';
+import { buildTransactionFilterQuery } from '@transaction/services';
 
 export const getTransactions = async (
   query: TransactionQuery,
@@ -31,8 +29,8 @@ export const getTransactions = async (
     limit: query.limit,
     total,
     totalPages,
-    items: transactions.map(
-      transaction => serializeTransaction(transaction, categoriesMap, paymentMethodsMap)
-    )
-  }
-}
+    items: transactions.map((transaction) =>
+      serializeTransaction(transaction, categoriesMap, paymentMethodsMap),
+    ),
+  };
+};

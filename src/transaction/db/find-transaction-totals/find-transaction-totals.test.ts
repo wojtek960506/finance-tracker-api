@@ -1,20 +1,23 @@
-import { TransactionModel } from "@transaction/model"
-import { it, vi, Mock, expect, describe, afterEach } from "vitest"
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import { TransactionModel } from '@transaction/model';
+
 import {
-  findTransactionTotalsOverall,
   findTransactionTotalsByCurrency,
-} from "./find-transaction-totals"
+  findTransactionTotalsOverall,
+} from './find-transaction-totals';
 
-
-vi.mock("@transaction/model", () => ({
-  TransactionModel: { aggregate: vi.fn() }
+vi.mock('@transaction/model', () => ({
+  TransactionModel: { aggregate: vi.fn() },
 }));
 
-describe("find transaction totals", () => {
-  const RESULT = "result";
-  const FILTER = { year: 2026 }
+describe('find transaction totals', () => {
+  const RESULT = 'result';
+  const FILTER = { year: 2026 };
 
-  afterEach(() => { vi.clearAllMocks() });
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('find transaction totals overall', async () => {
     (TransactionModel.aggregate as Mock).mockResolvedValue(RESULT);
@@ -25,12 +28,14 @@ describe("find transaction totals", () => {
     expect(TransactionModel.aggregate).toHaveBeenCalledOnce();
     expect(TransactionModel.aggregate).toHaveBeenCalledWith([
       { $match: FILTER },
-      { $group: { 
-        _id: { transactionType: "$transactionType" },
-        totalItems: { $sum: 1 },
-      }},
-      { $sort: {"_id.transactionType": 1 } },
-    ])
+      {
+        $group: {
+          _id: { transactionType: '$transactionType' },
+          totalItems: { $sum: 1 },
+        },
+      },
+      { $sort: { '_id.transactionType': 1 } },
+    ]);
   });
 
   it('find transaction totals overall', async () => {
@@ -42,15 +47,17 @@ describe("find transaction totals", () => {
     expect(TransactionModel.aggregate).toHaveBeenCalledOnce();
     expect(TransactionModel.aggregate).toHaveBeenCalledWith([
       { $match: FILTER },
-      { $group: { 
-        _id: { currency: "$currency", transactionType: "$transactionType" },
-        totalAmount: { $sum: "$amount" },
-        totalItems: { $sum: 1 },
-        averageAmount: { $avg: "$amount" },
-        maxAmount: { $max: "$amount" },
-        minAmount: { $min: "$amount" },
-      }},
-      { $sort: { "_id.currency": 1, "_id.transactionType": 1 } },
-    ])
+      {
+        $group: {
+          _id: { currency: '$currency', transactionType: '$transactionType' },
+          totalAmount: { $sum: '$amount' },
+          totalItems: { $sum: 1 },
+          averageAmount: { $avg: '$amount' },
+          maxAmount: { $max: '$amount' },
+          minAmount: { $min: '$amount' },
+        },
+      },
+      { $sort: { '_id.currency': 1, '_id.transactionType': 1 } },
+    ]);
   });
-})
+});

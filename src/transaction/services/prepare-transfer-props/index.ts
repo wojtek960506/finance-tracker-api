@@ -1,1 +1,1 @@
-export * from "./prepare-transfer-props";
+export * from './prepare-transfer-props';

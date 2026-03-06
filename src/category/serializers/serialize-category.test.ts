@@ -1,34 +1,35 @@
-import { it, expect, describe } from "vitest"
-import { serializeCategory } from "./serialize-category"
+import { describe, expect, it } from 'vitest';
+
+import { serializeCategory } from './serialize-category';
+
 import {
-  getUserCategoryResultJSON,
   getExchangeCategoryResultJSON,
-  getUserCategoryResultSerialized,
   getExchangeCategoryResultSerialized,
-} from "@/test-utils/factories/category"
+  getUserCategoryResultJSON,
+  getUserCategoryResultSerialized,
+} from '@/test-utils/factories/category';
 
-
-describe("serializeCategory", () => {
+describe('serializeCategory', () => {
   const userCategoryJSON = getUserCategoryResultJSON();
   const userCategorySerialized = getUserCategoryResultSerialized();
   const iCategoryUser = {
     ...userCategoryJSON,
     toObject: () => ({ ...userCategoryJSON, __v: 1 }),
-  }
+  };
 
   const systemCategoryJSON = getExchangeCategoryResultJSON();
   const systemCategorySerialized = getExchangeCategoryResultSerialized();
   const iCategorySystem = {
     ...systemCategoryJSON,
     toObject: () => ({ ...systemCategoryJSON, __v: 1 }),
-  }
+  };
 
-  it("serialize category with owner", () => {
+  it('serialize category with owner', () => {
     const result = serializeCategory(iCategoryUser as any);
     expect(result).toEqual(userCategorySerialized);
   });
 
-  it("serialize category without owner", () => {
+  it('serialize category without owner', () => {
     const result = serializeCategory(iCategorySystem as any);
     expect(result).toEqual(systemCategorySerialized);
   });

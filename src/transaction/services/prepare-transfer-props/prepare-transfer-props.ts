@@ -1,30 +1,29 @@
-import { TransactionTransferDTO } from "@transaction/schema"
 import {
   TransactionTransferCreateProps,
   TransactionTransferUpdateProps,
-} from "@transaction/db"
+} from '@transaction/db';
+import { TransactionTransferDTO } from '@transaction/schema';
 import {
   PrepareTransactionPropsContext,
   PrepareTransactionPropsObjectIds,
-} from "@transaction/services/types"
-
+} from '@transaction/services/types';
 
 export function prepareTransferProps(
   body: TransactionTransferDTO,
   objectIds: PrepareTransactionPropsObjectIds,
   additionalProps: PrepareTransactionPropsContext,
 ): {
-  expenseTransactionProps: TransactionTransferCreateProps,
-  incomeTransactionProps: TransactionTransferCreateProps,
-}
+  expenseTransactionProps: TransactionTransferCreateProps;
+  incomeTransactionProps: TransactionTransferCreateProps;
+};
 export function prepareTransferProps(
   body: TransactionTransferDTO,
   objectIds: PrepareTransactionPropsObjectIds,
 ): {
-  expenseTransactionProps: TransactionTransferUpdateProps,
-  incomeTransactionProps: TransactionTransferUpdateProps,
-}
-export function prepareTransferProps (
+  expenseTransactionProps: TransactionTransferUpdateProps;
+  incomeTransactionProps: TransactionTransferUpdateProps;
+};
+export function prepareTransferProps(
   body: TransactionTransferDTO,
   objectIds: PrepareTransactionPropsObjectIds,
   additionalProps?: PrepareTransactionPropsContext,
@@ -44,17 +43,17 @@ export function prepareTransferProps (
     currency: body.currency,
     paymentMethodId: body.paymentMethodId,
     description,
-  }
-  
+  };
+
   const commonExpenseTransactionProps = {
     ...commonTransactionProps,
-    transactionType: "expense",
+    transactionType: 'expense',
     account: body.accountExpense,
   };
 
   const commonIncomeTransactionProps = {
     ...commonTransactionProps,
-    transactionType: "income",
+    transactionType: 'income',
     account: body.accountIncome,
   };
 
@@ -72,12 +71,14 @@ export function prepareTransferProps (
         ownerId,
         sourceIndex: sourceIndexIncome,
         sourceRefIndex: sourceIndexExpense,
-      }
-    }
+      },
+    };
   } else {
     return {
-      expenseTransactionProps: commonExpenseTransactionProps as TransactionTransferUpdateProps,
-      incomeTransactionProps: commonIncomeTransactionProps as TransactionTransferUpdateProps,
-    }
+      expenseTransactionProps:
+        commonExpenseTransactionProps as TransactionTransferUpdateProps,
+      incomeTransactionProps:
+        commonIncomeTransactionProps as TransactionTransferUpdateProps,
+    };
   }
 }

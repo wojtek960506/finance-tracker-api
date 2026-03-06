@@ -1,7 +1,7 @@
-import { ACCOUNTS, CURRENCIES } from "@utils/consts"
-import { RandomExchangeTransactionPair } from "../types"
-import { randomNumber, randomFromSet } from "@utils/random"
+import { ACCOUNTS, CURRENCIES } from '@utils/consts';
+import { randomFromSet, randomNumber } from '@utils/random';
 
+import { RandomExchangeTransactionPair } from '../types';
 
 export const prepareRandomExchangeTransactionPair = (
   ownerId: string,
@@ -10,9 +10,9 @@ export const prepareRandomExchangeTransactionPair = (
   categoryId: string,
   paymentMethodId: string,
 ): RandomExchangeTransactionPair => {
-  const amountExpense = randomNumber(10,10000);
+  const amountExpense = randomNumber(10, 10000);
   const currencyExpense = randomFromSet(CURRENCIES);
-  const amountIncome = randomNumber(10,10000);
+  const amountIncome = randomNumber(10, 10000);
   const currencyIncome = randomFromSet(CURRENCIES);
   const account = randomFromSet(ACCOUNTS);
 
@@ -36,22 +36,22 @@ export const prepareRandomExchangeTransactionPair = (
     description,
     exchangeRate,
     paymentMethodId,
-  }
+  };
   const expense = {
     ...commonProps,
     sourceIndex: index,
     amount: amountExpense,
     currency: currencyExpense,
     sourceRefIndex: index + 1,
-    transactionType: "expense",
-  }
+    transactionType: 'expense',
+  };
   const income = {
     ...commonProps,
     amount: amountIncome,
     sourceRefIndex: index,
     sourceIndex: index + 1,
     currency: currencyIncome,
-    transactionType: "income",
-  }
+    transactionType: 'income',
+  };
   return [expense, income];
-}
+};

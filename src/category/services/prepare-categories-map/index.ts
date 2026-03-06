@@ -1,1 +1,1 @@
-export * from "./prepare-categories-map";
+export * from './prepare-categories-map';

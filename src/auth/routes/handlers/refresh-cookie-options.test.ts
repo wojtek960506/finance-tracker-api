@@ -1,18 +1,22 @@
-import * as config from "@app/config"
-import { it, vi, expect, describe, afterEach } from "vitest"
-import { getRefreshCookieOptions } from "./refresh-cookie-options"
-import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from "@/test-utils/env-consts"
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as config from '@app/config';
 
-vi.mock("@app/config", () => ({ getEnv: vi.fn() }));
+import { getRefreshCookieOptions } from './refresh-cookie-options';
 
-describe("getRefreshCookieOptions", () => {
-  const envConfigSpy = vi.spyOn(config, "getEnv");
+import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from '@/test-utils/env-consts';
 
-  afterEach(() => { vi.clearAllMocks() });
+vi.mock('@app/config', () => ({ getEnv: vi.fn() }));
 
-  it("should return correct options for production environment", () => {
-    envConfigSpy.mockReturnValue({ ...ENV_TEST_VALUES, nodeEnv: "production" } as any);
+describe('getRefreshCookieOptions', () => {
+  const envConfigSpy = vi.spyOn(config, 'getEnv');
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should return correct options for production environment', () => {
+    envConfigSpy.mockReturnValue({ ...ENV_TEST_VALUES, nodeEnv: 'production' } as any);
 
     const options = getRefreshCookieOptions();
 
@@ -20,13 +24,13 @@ describe("getRefreshCookieOptions", () => {
     expect(options).toEqual({
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: 'none',
       maxAge: 60 * 60 * 24 * JWT_REFRESH_EXPIRES_DAYS_TEST,
-      path: "/",
+      path: '/',
     });
   });
 
-  it("should return correct options for non-production environment", () => {
+  it('should return correct options for non-production environment', () => {
     envConfigSpy.mockReturnValue({ ...ENV_TEST_VALUES } as any);
 
     const options = getRefreshCookieOptions();
@@ -35,9 +39,9 @@ describe("getRefreshCookieOptions", () => {
     expect(options).toEqual({
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * JWT_REFRESH_EXPIRES_DAYS_TEST,
-      path: "/",
+      path: '/',
     });
   });
 });

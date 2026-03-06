@@ -1,45 +1,47 @@
-import { it, expect, describe } from "vitest"
-import { ValidationError } from "@utils/errors"
-import { USER_ID_STR } from "@/test-utils/factories/general"
-import { buildTransactionFilterQuery } from "./build-transaction-query"
+import { describe, expect, it } from 'vitest';
+
+import { ValidationError } from '@utils/errors';
+
+import { buildTransactionFilterQuery } from './build-transaction-query';
+
 import {
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
-} from "@/test-utils/factories/category"
+} from '@/test-utils/factories/category';
+import { USER_ID_STR } from '@/test-utils/factories/general';
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from '@/test-utils/factories/payment-method';
 import {
   ACCOUNT_EXPENSE,
-  END_DATE_FILTER,
   CURRENCY_EXPENSE,
+  END_DATE_FILTER,
   MAX_AMOUNT_FILTER,
   MIN_AMOUNT_FILTER,
   START_DATE_FILTER,
   TRANSACTION_TYPE_EXPENSE,
-} from "@/test-utils/factories/transaction"
-import {
-  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method"
+} from '@/test-utils/factories/transaction';
 
-
-describe("build-transaction-query", () => {
+describe('build-transaction-query', () => {
   const basicFilters = {
     transactionType: TRANSACTION_TYPE_EXPENSE,
     currency: CURRENCY_EXPENSE,
     categoryId: FOOD_CATEGORY_ID_STR,
     paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
     account: ACCOUNT_EXPENSE,
-  }
-  const advancedFilters = {    
+  };
+  const advancedFilters = {
     startDate: START_DATE_FILTER,
     endDate: END_DATE_FILTER,
     minAmount: MIN_AMOUNT_FILTER,
     maxAmount: MAX_AMOUNT_FILTER,
     excludeCategoryIds: [FOOD_CATEGORY_ID_STR],
-  }
-  
-  it("build query with basic filters", () => {
+  };
+
+  it('build query with basic filters', () => {
     const query = buildTransactionFilterQuery(basicFilters, USER_ID_STR);
-    
+
     expect(query.transactionType).toBe(TRANSACTION_TYPE_EXPENSE);
     expect(query.currency).toBe(CURRENCY_EXPENSE);
     expect(query.paymentMethodId).toEqual(BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ);
@@ -49,9 +51,9 @@ describe("build-transaction-query", () => {
     expect(query.date).toBeUndefined();
   });
 
-  it("build query with advanced filters", () => {
+  it('build query with advanced filters', () => {
     const query = buildTransactionFilterQuery(advancedFilters, USER_ID_STR);
-    
+
     expect(query.transactionType).toBeUndefined();
     expect(query.currency).toBeUndefined();
     expect(query.paymentMethodId).toBeUndefined();
@@ -63,28 +65,40 @@ describe("build-transaction-query", () => {
     expect(query.date).toEqual({ $gte: START_DATE_FILTER, $lte: END_DATE_FILTER });
   });
 
-  it("build just part of advanced filters - startDate", () => {
-    const query = buildTransactionFilterQuery({ startDate: START_DATE_FILTER }, USER_ID_STR);
-    expect(query.date).toEqual({ $gte: START_DATE_FILTER} );
-  })
+  it('build just part of advanced filters - startDate', () => {
+    const query = buildTransactionFilterQuery(
+      { startDate: START_DATE_FILTER },
+      USER_ID_STR,
+    );
+    expect(query.date).toEqual({ $gte: START_DATE_FILTER });
+  });
 
-  it("build just part of advanced filters - endDate", () => {
+  it('build just part of advanced filters - endDate', () => {
     const query = buildTransactionFilterQuery({ endDate: END_DATE_FILTER }, USER_ID_STR);
-    expect(query.date).toEqual({ $lte: END_DATE_FILTER} );
-  })
+    expect(query.date).toEqual({ $lte: END_DATE_FILTER });
+  });
 
-  it("build just part of advanced filters - minAmount", () => {
-    const query = buildTransactionFilterQuery({ minAmount: MIN_AMOUNT_FILTER }, USER_ID_STR);
-    expect(query.amount).toEqual({ $gte: MIN_AMOUNT_FILTER} );
-  })
+  it('build just part of advanced filters - minAmount', () => {
+    const query = buildTransactionFilterQuery(
+      { minAmount: MIN_AMOUNT_FILTER },
+      USER_ID_STR,
+    );
+    expect(query.amount).toEqual({ $gte: MIN_AMOUNT_FILTER });
+  });
 
-  it("build just part of advanced filters - maxAmount", () => {
-    const query = buildTransactionFilterQuery({ maxAmount: MAX_AMOUNT_FILTER }, USER_ID_STR);
-    expect(query.amount).toEqual({ $lte: MAX_AMOUNT_FILTER } );
-  })
+  it('build just part of advanced filters - maxAmount', () => {
+    const query = buildTransactionFilterQuery(
+      { maxAmount: MAX_AMOUNT_FILTER },
+      USER_ID_STR,
+    );
+    expect(query.amount).toEqual({ $lte: MAX_AMOUNT_FILTER });
+  });
 
   it("throws when 'category' and 'excludeCategories' are provided together", () => {
-    const q = { categoryId: FOOD_CATEGORY_ID_STR, excludeCategoryIds: [FOOD_CATEGORY_ID_STR] }
+    const q = {
+      categoryId: FOOD_CATEGORY_ID_STR,
+      excludeCategoryIds: [FOOD_CATEGORY_ID_STR],
+    };
     expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
-  })
-})
+  });
+});

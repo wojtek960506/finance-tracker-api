@@ -1,1 +1,1 @@
-export type AccessRefreshTokens = { accessToken: string, refreshToken: string };
+export type AccessRefreshTokens = { accessToken: string; refreshToken: string };

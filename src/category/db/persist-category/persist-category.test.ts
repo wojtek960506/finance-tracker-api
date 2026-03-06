@@ -1,23 +1,23 @@
-import { persistCategory } from "@category/db"
-import { CategoryModel } from "@category/model"
-import { it, vi, expect, describe } from "vitest"
-import * as serializers from "@category/serializers"
+import { describe, expect, it, vi } from 'vitest';
+
+import { persistCategory } from '@category/db';
+import { CategoryModel } from '@category/model';
+import * as serializers from '@category/serializers';
+
 import {
   getUserCategoryProps,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category"
+} from '@/test-utils/factories/category';
 
-
-describe("persistCategory", () => {
-
+describe('persistCategory', () => {
   const categoryProps = getUserCategoryProps();
   const categoryJSON = getUserCategoryResultJSON();
   const categorySerialized = getUserCategoryResultSerialized();
 
-  it("persist category", async () => {
-    vi.spyOn(CategoryModel, "create").mockResolvedValue(categoryJSON as any);
-    vi.spyOn(serializers, "serializeCategory").mockReturnValue(categorySerialized as any);
+  it('persist category', async () => {
+    vi.spyOn(CategoryModel, 'create').mockResolvedValue(categoryJSON as any);
+    vi.spyOn(serializers, 'serializeCategory').mockReturnValue(categorySerialized as any);
 
     const result = await persistCategory(categoryProps);
 

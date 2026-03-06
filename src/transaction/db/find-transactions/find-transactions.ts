@@ -1,22 +1,20 @@
-import { FilterQuery } from "mongoose"
-import { TransactionQuery } from "@transaction/schema"
-import { ITransaction, TransactionModel } from "@transaction/model"
+import { FilterQuery } from 'mongoose';
 
+import { ITransaction, TransactionModel } from '@transaction/model';
+import { TransactionQuery } from '@transaction/schema';
 
 export const findTransactions = async (
   filter: FilterQuery<ITransaction>,
-  query: Pick<TransactionQuery, "page" | "limit" | "sortBy" | "sortOrder">,
+  query: Pick<TransactionQuery, 'page' | 'limit' | 'sortBy' | 'sortOrder'>,
 ) => {
-  return TransactionModel
-    .find(filter)
+  return TransactionModel.find(filter)
     .sort({
-      [query.sortBy]: query.sortOrder === "asc" ? 1 : -1,
-      sourceIndex: query.sortOrder === "asc" ? 1 : -1,
+      [query.sortBy]: query.sortOrder === 'asc' ? 1 : -1,
+      sourceIndex: query.sortOrder === 'asc' ? 1 : -1,
     })
     .skip((query.page - 1) * query.limit)
     .limit(query.limit);
-}
+};
 
-export const findTransactionsCount = async (
-  filter: FilterQuery<ITransaction>
-) => TransactionModel.countDocuments(filter);
+export const findTransactionsCount = async (filter: FilterQuery<ITransaction>) =>
+  TransactionModel.countDocuments(filter);

@@ -1,48 +1,45 @@
-import { withSession } from "@utils/with-session"
-import { TransactionModel } from "@transaction/model"
-import { serializeTransaction } from "@transaction/serializers"
-import { it, vi, Mock, expect, describe, afterEach } from "vitest"
-import { persistTransactionPair } from "./persist-transaction-pair"
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import { TransactionModel } from '@transaction/model';
+import { serializeTransaction } from '@transaction/serializers';
+import { withSession } from '@utils/with-session';
+
+import { persistTransactionPair } from './persist-transaction-pair';
+
 import {
-  EXCHANGE_TXN_INCOME_ID_OBJ,
   EXCHANGE_TXN_EXPENSE_ID_OBJ,
+  EXCHANGE_TXN_INCOME_ID_OBJ,
   getExchangeTransactionProps,
   getExchangeTransactionResultJSON,
   getExchangeTransactionResultSerialized,
-} from "@/test-utils/factories/transaction"
+} from '@/test-utils/factories/transaction';
 
-
-vi.mock("@utils/with-session", () => ({
-  withSession: vi.fn().mockImplementation(
-    async (func, ...args) => { return await func({}, ...args) }
-  ),
+vi.mock('@utils/with-session', () => ({
+  withSession: vi.fn().mockImplementation(async (func, ...args) => {
+    return await func({}, ...args);
+  }),
 }));
 
-vi.mock("@transaction/model", () => ({
-  TransactionModel: { create: vi.fn(), findOneAndUpdate: vi.fn() }
+vi.mock('@transaction/model', () => ({
+  TransactionModel: { create: vi.fn(), findOneAndUpdate: vi.fn() },
 }));
 
-vi.mock("@transaction/serializers", () => ({ serializeTransaction: vi.fn() }));
+vi.mock('@transaction/serializers', () => ({ serializeTransaction: vi.fn() }));
 
-describe("createTransactionPair", async () => {
-  const {
-    incomeProps,
-    expenseProps,
-  } = getExchangeTransactionProps(true);
+describe('createTransactionPair', async () => {
+  const { incomeProps, expenseProps } = getExchangeTransactionProps(true);
 
-  const {
-    incomeTransactionJSON,
-    expenseTransactionJSON,
-  } = getExchangeTransactionResultJSON();
+  const { incomeTransactionJSON, expenseTransactionJSON } =
+    getExchangeTransactionResultJSON();
 
-  const {
-    incomeTransactionSerialized,
-    expenseTransactionSerialized,
-  } = getExchangeTransactionResultSerialized();
+  const { incomeTransactionSerialized, expenseTransactionSerialized } =
+    getExchangeTransactionResultSerialized();
 
-  afterEach(() => { vi.clearAllMocks() });
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-  it("2 transactions are created and updated", async () => {
+  it('2 transactions are created and updated', async () => {
     (TransactionModel.create as Mock).mockResolvedValue([
       { _id: EXCHANGE_TXN_EXPENSE_ID_OBJ },
       { _id: EXCHANGE_TXN_INCOME_ID_OBJ },
@@ -62,10 +59,10 @@ describe("createTransactionPair", async () => {
 
     expect(TransactionModel.create).toHaveBeenCalledOnce();
     expect(TransactionModel.findOneAndUpdate).toHaveBeenCalledTimes(2);
-    expect(TransactionModel.create).toHaveBeenCalledWith(
-      [expenseProps, incomeProps],
-      { session: expect.anything(), ordered: true },
-    );
+    expect(TransactionModel.create).toHaveBeenCalledWith([expenseProps, incomeProps], {
+      session: expect.anything(),
+      ordered: true,
+    });
     expect(TransactionModel.findOneAndUpdate).toHaveBeenNthCalledWith(
       1,
       { _id: EXCHANGE_TXN_EXPENSE_ID_OBJ },
@@ -79,6 +76,6 @@ describe("createTransactionPair", async () => {
       { session: expect.anything(), new: true },
     );
     expect(withSession).toHaveBeenCalledOnce();
-    expect(result).toEqual([ expenseTransactionSerialized, incomeTransactionSerialized ]);
+    expect(result).toEqual([expenseTransactionSerialized, incomeTransactionSerialized]);
   });
 });

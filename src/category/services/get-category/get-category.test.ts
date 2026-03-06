@@ -1,30 +1,32 @@
-import * as db from "@category/db"
-import { getCategory } from "./get-category"
-import * as serializers from "@category/serializers"
-import { it, vi, expect, describe, afterEach } from "vitest"
-import { USER_ID_STR } from "@/test-utils/factories/general"
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import * as db from '@category/db';
+import * as serializers from '@category/serializers';
+
+import { getCategory } from './get-category';
+
 import {
-  FOOD_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_ID_STR,
-  getUserCategoryResultSerialized,
+  FOOD_CATEGORY_ID_STR,
   getExchangeCategoryResultSerialized,
-} from "@/test-utils/factories/category"
+  getUserCategoryResultSerialized,
+} from '@/test-utils/factories/category';
+import { USER_ID_STR } from '@/test-utils/factories/general';
 
-
-
-describe("getCategory", () => {
-
+describe('getCategory', () => {
   const systemCategory = getExchangeCategoryResultSerialized();
   const userCategory = getUserCategoryResultSerialized();
 
-  afterEach(() => { vi.clearAllMocks() });
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it.each([
-    ["system category without", systemCategory, EXCHANGE_CATEGORY_ID_STR],
-    ["user category with", userCategory, FOOD_CATEGORY_ID_STR],
-  ])("get %s checkout owner", async (_, category, categoryId) => {
-    vi.spyOn(serializers, "serializeCategory").mockReturnValue(category as any);
-    vi.spyOn(db, "findCategoryById").mockResolvedValue(category as any);
+    ['system category without', systemCategory, EXCHANGE_CATEGORY_ID_STR],
+    ['user category with', userCategory, FOOD_CATEGORY_ID_STR],
+  ])('get %s checkout owner', async (_, category, categoryId) => {
+    vi.spyOn(serializers, 'serializeCategory').mockReturnValue(category as any);
+    vi.spyOn(db, 'findCategoryById').mockResolvedValue(category as any);
 
     const result = await getCategory(categoryId, USER_ID_STR);
 

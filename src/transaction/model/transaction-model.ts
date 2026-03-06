@@ -1,6 +1,6 @@
-import { model, Types, Schema, Document } from "mongoose"
-import { ACCOUNTS, CURRENCIES, TRANSACTION_TYPES } from "@utils/consts"
+import { Document, model, Schema, Types } from 'mongoose';
 
+import { ACCOUNTS, CURRENCIES, TRANSACTION_TYPES } from '@utils/consts';
 
 export interface TransactionAttributes {
   date: Date;
@@ -9,7 +9,7 @@ export interface TransactionAttributes {
   currency: string;
   categoryId: Types.ObjectId;
   paymentMethodId: Types.ObjectId;
-  transactionType: "income" | "expense";
+  transactionType: 'income' | 'expense';
   account: string;
   createdAt: Date;
   updatedAt: Date;
@@ -20,29 +20,34 @@ export interface TransactionAttributes {
 }
 
 export interface ITransaction extends TransactionAttributes, Document {
-  _id: Types.ObjectId,
+  _id: Types.ObjectId;
   ownerId: Types.ObjectId;
   refId: Types.ObjectId;
 }
 
 const transactionSchema = new Schema<ITransaction>(
   {
-    ownerId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    ownerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     date: { type: Date, required: true },
     description: { type: String, required: true },
     amount: { type: Number, required: true },
-    currency: { 
+    currency: {
       type: String,
       required: true,
-      uppercase: true, 
+      uppercase: true,
       minlength: 3,
       maxlength: 3,
-      enums: [...CURRENCIES]
+      enums: [...CURRENCIES],
     },
-    categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true, index: true },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+      index: true,
+    },
     paymentMethodId: {
       type: Schema.Types.ObjectId,
-      ref: "PaymentMethod",
+      ref: 'PaymentMethod',
       required: true,
       index: true,
     },
@@ -52,14 +57,14 @@ const transactionSchema = new Schema<ITransaction>(
     currencies: { type: String, required: false },
     sourceIndex: { type: Number, required: true },
     sourceRefIndex: { type: Number, required: false },
-    refId: { 
+    refId: {
       type: Schema.Types.ObjectId,
-      ref: "Transaction",
+      ref: 'Transaction',
       required: false,
-      index: true
+      index: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export const TransactionModel = model<ITransaction>("Transaction", transactionSchema);
+export const TransactionModel = model<ITransaction>('Transaction', transactionSchema);

@@ -1,18 +1,15 @@
-import { TransactionExchangeDTO } from "@transaction/schema"
-
+import { TransactionExchangeDTO } from '@transaction/schema';
 
 type PropsType = Pick<
   TransactionExchangeDTO,
-  "amountExpense" |
-  "amountIncome" |
-  "currencyExpense" |
-  "currencyIncome" |
-  "additionalDescription"
->
+  | 'amountExpense'
+  | 'amountIncome'
+  | 'currencyExpense'
+  | 'currencyIncome'
+  | 'additionalDescription'
+>;
 
-export const prepareExchangeSpecificProps = (
-  props: PropsType,
-) => {
+export const prepareExchangeSpecificProps = (props: PropsType) => {
   const {
     amountExpense,
     amountIncome,
@@ -30,9 +27,9 @@ export const prepareExchangeSpecificProps = (
     exchangeRate = amountIncome / amountExpense;
     currencies = `${currencyExpense}/${currencyIncome}`;
   }
-  
+
   let description = `${currencyExpense} -> ${currencyIncome}`;
   if (additionalDescription) description += ` (${additionalDescription})`;
 
-  return { currencies, description, exchangeRate }
-}
+  return { currencies, description, exchangeRate };
+};

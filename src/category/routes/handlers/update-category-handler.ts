@@ -1,11 +1,11 @@
-import { CategoryDTO } from "@category/schema"
-import { updateCategory } from "@category/services"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { ParamsJustId, AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { CategoryDTO } from '@category/schema';
+import { updateCategory } from '@category/services';
+import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
 
 export const updateCategoryHandler = async (
-  req: FastifyRequest<{ Params: ParamsJustId, Body: CategoryDTO }>,
+  req: FastifyRequest<{ Params: ParamsJustId; Body: CategoryDTO }>,
   res: FastifyReply,
 ) => {
   const categoryId = req.params.id;
@@ -14,4 +14,4 @@ export const updateCategoryHandler = async (
 
   const result = await updateCategory(categoryId, userId, dto);
   res.code(200).send(result);
-}
+};

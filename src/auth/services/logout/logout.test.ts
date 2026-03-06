@@ -1,66 +1,67 @@
-import jwt from "jsonwebtoken"
-import { logout } from "./logout"
-import * as config from "@app/config"
-import { UserModel } from "@user/model"
-import { it, vi, expect, describe, afterEach } from "vitest"
-import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from "@/test-utils/env-consts"
+import jwt from 'jsonwebtoken';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as config from '@app/config';
+import { UserModel } from '@user/model';
 
-vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+import { logout } from './logout';
 
-describe("logout", () => {
+import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@/test-utils/env-consts';
+
+vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+
+describe('logout', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  const verifySpy = vi.spyOn(jwt, "verify");
-  const envConfigSpy = vi.spyOn(config, "getEnv");
+  const verifySpy = vi.spyOn(jwt, 'verify');
+  const envConfigSpy = vi.spyOn(config, 'getEnv');
 
-  it("returns when authorization header is missing", async () => {
-
+  it('returns when authorization header is missing', async () => {
     await expect(logout(undefined)).resolves.toBeUndefined();
     expect(envConfigSpy).not.toHaveBeenCalled();
     expect(verifySpy).not.toHaveBeenCalled();
   });
 
-  it("returns when authorization header is not Bearer", async () => {
-    await expect(logout("Basic token")).resolves.toBeUndefined();
+  it('returns when authorization header is not Bearer', async () => {
+    await expect(logout('Basic token')).resolves.toBeUndefined();
     expect(verifySpy).not.toHaveBeenCalled();
   });
 
-  it("returns when access token is invalid", async () => {
+  it('returns when access token is invalid', async () => {
     verifySpy.mockImplementation(() => {
-      throw new Error("invalid token");
+      throw new Error('invalid token');
     });
-    const findOneSpy = vi.spyOn(UserModel, "findOne");
+    const findOneSpy = vi.spyOn(UserModel, 'findOne');
 
-    await expect(logout("Bearer invalid-token")).resolves.toBeUndefined();
+    await expect(logout('Bearer invalid-token')).resolves.toBeUndefined();
     expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(jwt.verify).toHaveBeenCalledOnce();
-    expect(jwt.verify).toHaveBeenCalledWith("invalid-token", JWT_ACCESS_SECRET_TEST);
+    expect(jwt.verify).toHaveBeenCalledWith('invalid-token', JWT_ACCESS_SECRET_TEST);
     expect(findOneSpy).not.toHaveBeenCalled();
   });
 
-  it("returns when user from token payload is not found", async () => {
-    verifySpy.mockReturnValue({ userId: "user-123" } as any);
-    const findOneSpy = vi.spyOn(UserModel, "findOne").mockResolvedValue(null as any);
+  it('returns when user from token payload is not found', async () => {
+    verifySpy.mockReturnValue({ userId: 'user-123' } as any);
+    const findOneSpy = vi.spyOn(UserModel, 'findOne').mockResolvedValue(null as any);
 
-    await expect(logout("Bearer valid-token")).resolves.toBeUndefined();
+    await expect(logout('Bearer valid-token')).resolves.toBeUndefined();
     expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(findOneSpy).toHaveBeenCalledOnce();
-    expect(findOneSpy).toHaveBeenCalledWith({ _id: "user-123" });
+    expect(findOneSpy).toHaveBeenCalledWith({ _id: 'user-123' });
   });
 
-  it("clears refresh token hash and saves user", async () => {
-    verifySpy.mockReturnValue({ userId: "user-123" } as any);
+  it('clears refresh token hash and saves user', async () => {
+    verifySpy.mockReturnValue({ userId: 'user-123' } as any);
     const userSaveMock = vi.fn().mockResolvedValue(undefined);
     const user = {
-      refreshTokenHash: { tokenHash: "token-hash", createdAt: new Date() },
+      refreshTokenHash: { tokenHash: 'token-hash', createdAt: new Date() },
       save: userSaveMock,
     } as any;
-    vi.spyOn(UserModel, "findOne").mockResolvedValue(user);
+    vi.spyOn(UserModel, 'findOne').mockResolvedValue(user);
 
-    await expect(logout("Bearer valid-token")).resolves.toBeUndefined();
+    await expect(logout('Bearer valid-token')).resolves.toBeUndefined();
     expect(envConfigSpy).toHaveBeenCalledOnce();
     expect(user.refreshTokenHash).toBeUndefined();
     expect(userSaveMock).toHaveBeenCalledOnce();

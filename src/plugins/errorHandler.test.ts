@@ -1,8 +1,9 @@
-import { z } from "zod"
-import { AppError } from "@utils/errors"
-import { registerErrorHandler } from "./errorHandler"
-import { it, vi, Mock, expect, describe, afterEach } from "vitest"
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+import { z } from 'zod';
 
+import { AppError } from '@utils/errors';
+
+import { registerErrorHandler } from './errorHandler';
 
 const createReplyMock = () => {
   const send = vi.fn();
@@ -22,19 +23,19 @@ const getRegisteredHandler = async () => {
   return { app, handler, setErrorHandler };
 };
 
-describe("registerErrorHandler", () => {
+describe('registerErrorHandler', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it("registers error handler in fastify app", async () => {
+  it('registers error handler in fastify app', async () => {
     const { setErrorHandler } = await getRegisteredHandler();
     expect(setErrorHandler).toHaveBeenCalledOnce();
     expect(setErrorHandler).toHaveBeenCalledWith(expect.any(Function));
   });
 
-  it("returns app error status and payload for AppError", async () => {
-    const [message, details] = ["Some conflict", { key: "value" }];
+  it('returns app error status and payload for AppError', async () => {
+    const [message, details] = ['Some conflict', { key: 'value' }];
     const { handler, app } = await getRegisteredHandler();
     const res = createReplyMock();
     const error = new AppError(409, message, details);
@@ -48,15 +49,15 @@ describe("registerErrorHandler", () => {
     expect(res.send).toHaveBeenCalledWith({ message, details });
   });
 
-  it("returns validation payload for zod errors", async () => {
+  it('returns validation payload for zod errors', async () => {
     const { handler, app } = await getRegisteredHandler();
     const res = createReplyMock();
     const schema = z.object({
       user: z.object({ email: z.email() }),
     });
-    const parseResult = schema.safeParse({ user: { email: "wrong-email" } });
+    const parseResult = schema.safeParse({ user: { email: 'wrong-email' } });
     if (parseResult.success) {
-      throw new Error("Expected schema parsing to fail for test setup");
+      throw new Error('Expected schema parsing to fail for test setup');
     }
 
     handler(parseResult.error, {} as any, res as any);
@@ -66,15 +67,15 @@ describe("registerErrorHandler", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledOnce();
     expect(res.send).toHaveBeenCalledWith({
-      message: "Validation error",
-      details: [{ path: "user.email", message: expect.any(String) }],
+      message: 'Validation error',
+      details: [{ path: 'user.email', message: expect.any(String) }],
     });
   });
 
-  it("logs and returns 500 for unknown errors", async () => {
+  it('logs and returns 500 for unknown errors', async () => {
     const { handler, app } = await getRegisteredHandler();
     const res = createReplyMock();
-    const error = new Error("Unexpected");
+    const error = new Error('Unexpected');
 
     handler(error, {} as any, res as any);
 
@@ -84,7 +85,7 @@ describe("registerErrorHandler", () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.send).toHaveBeenCalledOnce();
     expect(res.send).toHaveBeenCalledWith({
-      message: "Internal server error",
+      message: 'Internal server error',
       details: error,
     });
   });

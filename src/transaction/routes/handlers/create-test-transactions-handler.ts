@@ -1,8 +1,8 @@
-import { AuthenticatedRequest } from "@shared/http"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { createTestTransactions } from "@transaction/services"
-import { TestTransactionsCreateDTO } from "@transaction/schema"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { AuthenticatedRequest } from '@shared/http';
+import { TestTransactionsCreateDTO } from '@transaction/schema';
+import { createTestTransactions } from '@transaction/services';
 
 export const createTestTransactionsHandler = async (
   req: FastifyRequest<{ Body?: TestTransactionsCreateDTO }>,
@@ -12,4 +12,4 @@ export const createTestTransactionsHandler = async (
   const totalTransactions = req.body?.totalTransactions;
   const result = await createTestTransactions(ownerId, totalTransactions);
   return res.code(201).send(result);
-}
+};

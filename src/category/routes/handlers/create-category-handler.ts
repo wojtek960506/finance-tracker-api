@@ -1,8 +1,8 @@
-import { CategoryDTO } from "@category/schema"
-import { AuthenticatedRequest } from "@shared/http"
-import { createCategory } from "@category/services"
-import { FastifyReply, FastifyRequest } from "fastify"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { CategoryDTO } from '@category/schema';
+import { createCategory } from '@category/services';
+import { AuthenticatedRequest } from '@shared/http';
 
 export const createCategoryHandler = async (
   req: FastifyRequest<{ Body: CategoryDTO }>,
@@ -11,4 +11,4 @@ export const createCategoryHandler = async (
   const ownerId = (req as AuthenticatedRequest).userId;
   const result = await createCategory(ownerId, req.body);
   return res.code(201).send(result);
-}
+};

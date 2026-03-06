@@ -1,20 +1,22 @@
-import { ITransaction } from "@transaction/model"
-import { findPaymentMethods } from "@payment-method/db"
-import { PaymentMethodResponseDTO } from "@payment-method/schema"
-
+import { findPaymentMethods } from '@payment-method/db';
+import { PaymentMethodResponseDTO } from '@payment-method/schema';
+import { ITransaction } from '@transaction/model';
 
 export type PaymentMethodsMap = Record<
   string,
-  Pick<PaymentMethodResponseDTO, "id" | "type" | "name">
+  Pick<PaymentMethodResponseDTO, 'id' | 'type' | 'name'>
 >;
 
 export const preparePaymentMethodsMap = async (
   ownerId: string,
-  transactions?: Pick<ITransaction, "paymentMethodId">[]
+  transactions?: Pick<ITransaction, 'paymentMethodId'>[],
 ) => {
-  const paymentMethodIds = transactions?.map(t => t.paymentMethodId.toString());
+  const paymentMethodIds = transactions?.map((t) => t.paymentMethodId.toString());
   const paymentMethods = await findPaymentMethods(ownerId, paymentMethodIds);
-  return Object.fromEntries(paymentMethods.map(
-    c => [c._id.toString(), { id: c._id.toString(), type: c.type, name: c.name }]
-  ));
-}
+  return Object.fromEntries(
+    paymentMethods.map((c) => [
+      c._id.toString(),
+      { id: c._id.toString(), type: c.type, name: c.name },
+    ]),
+  );
+};

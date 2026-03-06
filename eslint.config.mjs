@@ -1,7 +1,7 @@
-import js from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import importPlugin from 'eslint-plugin-import'
-import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import importPlugin from 'eslint-plugin-import';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default tseslint.config(
   {
@@ -19,6 +19,16 @@ export default tseslint.config(
       'sort-imports': 'off',
       'import/order': 'off',
       'import/no-duplicates': 'error',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
       'simple-import-sort/imports': [
         'error',
         {
@@ -26,7 +36,9 @@ export default tseslint.config(
             ['^node:'],
             ['^\\u0000'],
             ['^@?\\w'],
-            ['^(@app|@auth|@user|@category|@transaction|@payment-method|@shared|@plugins|@utils|@/)(/.*|$)'],
+            [
+              '^(@app|@auth|@user|@category|@transaction|@payment-method|@shared|@plugins|@utils|@/)(/.*|$)',
+            ],
             ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
             ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
           ],
@@ -40,4 +52,4 @@ export default tseslint.config(
       'no-undef': 'off',
     },
   },
-)
+);

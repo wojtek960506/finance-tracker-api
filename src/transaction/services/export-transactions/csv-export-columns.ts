@@ -11,4 +11,4 @@ export const csvExportColumns = [
   { key: 'currencies', header: 'currencies' },
   { key: 'transactionType', header: 'transactionType' },
   { key: 'sourceRefIndex', header: 'sourceRefIndex' },
-]
+];

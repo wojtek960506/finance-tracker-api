@@ -1,18 +1,23 @@
-import Fastify from "fastify"
-import cors from "@fastify/cors"
-import { getEnv } from "@app/config"
-import cookie from "@fastify/cookie"
-import fastifyJwt from "@fastify/jwt"
-import { mainRoutes } from "@app/routes"
-import { authRoutes } from "@auth/routes"
-import { userRoutes } from "@user/routes"
-import { categoryRoutes } from "@category/routes"
-import { transactionRoutes } from "@transaction/routes"
-import { ZodTypeProvider } from "fastify-type-provider-zod"
-import { paymentMethodRoutes } from "@payment-method/routes"
-import { registerErrorHandler } from "./plugins/errorHandler"
-import { connectDB, upsertSystemCategories, upsertSystemPaymentMethods } from "@app/setup"
+import cookie from '@fastify/cookie';
+import cors from '@fastify/cors';
+import fastifyJwt from '@fastify/jwt';
+import Fastify from 'fastify';
+import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
+import { getEnv } from '@app/config';
+import { mainRoutes } from '@app/routes';
+import {
+  connectDB,
+  upsertSystemCategories,
+  upsertSystemPaymentMethods,
+} from '@app/setup';
+import { authRoutes } from '@auth/routes';
+import { categoryRoutes } from '@category/routes';
+import { paymentMethodRoutes } from '@payment-method/routes';
+import { transactionRoutes } from '@transaction/routes';
+import { userRoutes } from '@user/routes';
+
+import { registerErrorHandler } from './plugins/errorHandler';
 
 //############################################################################################
 // TODOS                                                                                     #
@@ -25,34 +30,33 @@ import { connectDB, upsertSystemCategories, upsertSystemPaymentMethods } from "@
 //   transactions to have real IDs as references (FastAPI)                                   #
 //############################################################################################
 
-
 export const buildApp = async (env = getEnv()) => {
   const { cookieSecret, jwtAccessSecret } = env;
-  
+
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
   // upsert system categories
   await upsertSystemCategories();
   await upsertSystemPaymentMethods();
-  
+
   // register cookie
   await app.register(cookie, {
     secret: cookieSecret,
     parseOptions: {},
   });
-  
+
   // register jwt
   await app.register(fastifyJwt, {
     secret: jwtAccessSecret,
   });
-  
+
   // register routes
-  app.register(mainRoutes, { prefix: "" });
-  app.register(authRoutes, { prefix: "/api/auth" });
-  app.register(userRoutes, { prefix: "/api/users" });
-  app.register(categoryRoutes, { prefix: "/api/categories" });
-  app.register(paymentMethodRoutes, { prefix: "/api/paymentMethods" });
-  app.register(transactionRoutes, { prefix: "/api/transactions" });
+  app.register(mainRoutes, { prefix: '' });
+  app.register(authRoutes, { prefix: '/api/auth' });
+  app.register(userRoutes, { prefix: '/api/users' });
+  app.register(categoryRoutes, { prefix: '/api/categories' });
+  app.register(paymentMethodRoutes, { prefix: '/api/paymentMethods' });
+  app.register(transactionRoutes, { prefix: '/api/transactions' });
 
   // register error handler
   await registerErrorHandler(app);
@@ -60,27 +64,26 @@ export const buildApp = async (env = getEnv()) => {
   // register CORS
   await app.register(cors, {
     origin: [
-      "http://localhost:3000",
-      "http://192.168.0.244:3000",
-      "http://localhost:5173",
-      "https://finance-tracker-web-three.vercel.app",
+      'http://localhost:3000',
+      'http://192.168.0.244:3000',
+      'http://localhost:5173',
+      'https://finance-tracker-web-three.vercel.app',
     ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
 
   return app;
-}
+};
 
 export const start = async () => {
-  
   await connectDB();
   const env = getEnv();
   const app = await buildApp(env);
   try {
     const { port } = env;
-    await app.listen({ port, host: "0.0.0.0" });
+    await app.listen({ port, host: '0.0.0.0' });
     console.log(`Server running on port ${port}`);
   } catch (err) {
     app.log.error(err);

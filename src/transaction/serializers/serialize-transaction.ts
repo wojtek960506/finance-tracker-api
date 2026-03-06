@@ -1,8 +1,7 @@
-import { ITransaction } from "@transaction/model"
-import { CategoriesMap } from "@category/services"
-import { PaymentMethodsMap } from "@payment-method/services"
-import { TransactionResponseDTO } from "@transaction/schema"
-
+import { CategoriesMap } from '@category/services';
+import { PaymentMethodsMap } from '@payment-method/services';
+import { ITransaction } from '@transaction/model';
+import { TransactionResponseDTO } from '@transaction/schema';
 
 export function serializeTransaction(transaction: ITransaction): TransactionResponseDTO;
 export function serializeTransaction(
@@ -15,7 +14,8 @@ export function serializeTransaction(
   categoriesMap?: CategoriesMap,
   paymentMethodsMap?: PaymentMethodsMap,
 ): TransactionResponseDTO {
-  const { _id, __v, ownerId, refId, categoryId, paymentMethodId, ...rest } = transaction.toObject();
+  const { _id, __v, ownerId, refId, categoryId, paymentMethodId, ...rest } =
+    transaction.toObject();
 
   const category = categoriesMap
     ? categoriesMap[categoryId.toString()]
@@ -28,12 +28,12 @@ export function serializeTransaction(
         name: paymentMethodId.name,
       };
 
-  return { 
+  return {
     ...rest,
     id: _id.toString(),
     ownerId: ownerId.toString(),
     refId: refId?.toString(),
     category,
     paymentMethod,
-  }
+  };
 }

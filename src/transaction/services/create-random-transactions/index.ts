@@ -1,1 +1,1 @@
-export * from "./create-random-transactions";
+export * from './create-random-transactions';

@@ -1,1 +1,1 @@
-export * from "./persist-category";
+export * from './persist-category';

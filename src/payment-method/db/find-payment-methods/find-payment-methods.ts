@@ -1,17 +1,18 @@
-import { PaymentMethodModel } from "@payment-method/model"
-
+import { PaymentMethodModel } from '@payment-method/model';
 
 export const findPaymentMethods = async (
   ownerId?: string,
   paymentMethodIds?: string[],
 ) => {
-  
-  type OwnerSystemType<T extends string | undefined> = [{ ownerId: T }, { type: 'system' } ];
+  type OwnerSystemType<T extends string | undefined> = [
+    { ownerId: T },
+    { type: 'system' },
+  ];
   type Query = {
-    $or?: OwnerSystemType<string>,
-    $and?: OwnerSystemType<undefined>,
-    _id?: { $in: string[] },
-  }
+    $or?: OwnerSystemType<string>;
+    $and?: OwnerSystemType<undefined>;
+    _id?: { $in: string[] };
+  };
 
   const query: Query = {};
 
@@ -21,4 +22,4 @@ export const findPaymentMethods = async (
   if (paymentMethodIds) query._id = { $in: paymentMethodIds };
 
   return PaymentMethodModel.find(query);
-}
+};

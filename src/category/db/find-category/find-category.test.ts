@@ -1,24 +1,27 @@
-import { CategoryModel } from "@category/model"
-import { CategoryNotFoundError } from "@utils/errors"
-import { it, vi, Mock, expect, describe, afterEach } from "vitest"
-import { findCategoryById, findCategoryByName } from "./find-category"
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import { CategoryModel } from '@category/model';
+import { CategoryNotFoundError } from '@utils/errors';
+
+import { findCategoryById, findCategoryByName } from './find-category';
+
 import {
   FOOD_CATEGORY_ID_STR,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category"
+} from '@/test-utils/factories/category';
 
-
-vi.mock("@category/model", () => (
-  { CategoryModel: { findById: vi.fn(), findOne: vi.fn() } })
-);
+vi.mock('@category/model', () => ({
+  CategoryModel: { findById: vi.fn(), findOne: vi.fn() },
+}));
 
 const userCategory = getUserCategoryResultSerialized();
 
-describe("findCategoryById", () => {
+describe('findCategoryById', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-  afterEach(() => { vi.clearAllMocks() });
-
-  it("category exists", async () => {
+  it('category exists', async () => {
     (CategoryModel.findById as Mock).mockResolvedValue(userCategory);
 
     const result = await findCategoryById(FOOD_CATEGORY_ID_STR);
@@ -28,29 +31,32 @@ describe("findCategoryById", () => {
     expect(result).toEqual(userCategory);
   });
 
-  it("category does not exist", async () => {
+  it('category does not exist', async () => {
     (CategoryModel.findById as Mock).mockResolvedValue(undefined);
 
-    await expect(findCategoryById(FOOD_CATEGORY_ID_STR)).rejects.toThrow(CategoryNotFoundError);
+    await expect(findCategoryById(FOOD_CATEGORY_ID_STR)).rejects.toThrow(
+      CategoryNotFoundError,
+    );
 
     expect(CategoryModel.findById).toHaveBeenCalledOnce();
     expect(CategoryModel.findById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
   });
 });
 
-describe("findCategoryByName", () => {
+describe('findCategoryByName', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-  afterEach(() => { vi.clearAllMocks() });
-
-  it("find category by name", async () => {
+  it('find category by name', async () => {
     (CategoryModel.findOne as Mock).mockReturnValue(userCategory);
 
-    const result = await findCategoryByName("  FooD  ");
+    const result = await findCategoryByName('  FooD  ');
 
     expect(CategoryModel.findOne).toHaveBeenCalledOnce();
     expect(CategoryModel.findOne).toHaveBeenCalledWith({
-      nameNormalized: "food",
-      $or: [{ type: "system" }, { type: "user", ownerId: undefined }],
+      nameNormalized: 'food',
+      $or: [{ type: 'system' }, { type: 'user', ownerId: undefined }],
     });
     expect(result).toEqual(userCategory);
   });

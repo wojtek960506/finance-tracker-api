@@ -1,1 +1,1 @@
-export * from "./find-categories";
+export * from './find-categories';

@@ -1,1 +1,1 @@
-export * from "./update-transaction";
+export * from './update-transaction';

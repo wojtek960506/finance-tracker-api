@@ -1,1 +1,1 @@
-export * from "./delete-transaction";
+export * from './delete-transaction';

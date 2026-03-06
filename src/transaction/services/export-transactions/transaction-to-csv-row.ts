@@ -1,7 +1,6 @@
-import { ITransaction } from "@transaction/model"
-import { CategoriesMap } from "@category/services"
-import { PaymentMethodsMap } from "@payment-method/services"
-
+import { CategoriesMap } from '@category/services';
+import { PaymentMethodsMap } from '@payment-method/services';
+import { ITransaction } from '@transaction/model';
 
 export const transactionToCsvRow = (
   transaction: ITransaction,
@@ -9,7 +8,7 @@ export const transactionToCsvRow = (
   paymentMethodsMap: PaymentMethodsMap,
 ) => ({
   sourceIndex: transaction.sourceIndex,
-  date: transaction.date.toISOString().slice(0,10),
+  date: transaction.date.toISOString().slice(0, 10),
   description: transaction.description,
   amount: transaction.amount,
   currency: transaction.currency,
@@ -19,5 +18,5 @@ export const transactionToCsvRow = (
   exchangeRate: transaction.exchangeRate,
   currencies: transaction.currencies,
   transactionType: transaction.transactionType,
-  sourceRefIndex: transaction.sourceRefIndex
+  sourceRefIndex: transaction.sourceRefIndex,
 });

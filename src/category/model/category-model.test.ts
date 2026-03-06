@@ -1,15 +1,15 @@
-import { Types } from "mongoose"
-import { it, expect, describe } from "vitest"
-import { CategoryModel } from "@category/model"
+import { Types } from 'mongoose';
+import { describe, expect, it } from 'vitest';
 
+import { CategoryModel } from '@category/model';
 
-describe("CategoryModel ownerId validator", () => {
-  it("accepts user category with ownerId", () => {
+describe('CategoryModel ownerId validator', () => {
+  it('accepts user category with ownerId', () => {
     const doc = new CategoryModel({
-      type: "user",
+      type: 'user',
       ownerId: new Types.ObjectId(),
-      name: "Food",
-      nameNormalized: "food",
+      name: 'Food',
+      nameNormalized: 'food',
     });
 
     const error = doc.validateSync();
@@ -17,38 +17,38 @@ describe("CategoryModel ownerId validator", () => {
     expect(error).toBeUndefined();
   });
 
-  it("rejects user category when ownerId is null", () => {
+  it('rejects user category when ownerId is null', () => {
     const doc = new CategoryModel({
-      type: "user",
+      type: 'user',
       ownerId: null,
-      name: "Food",
-      nameNormalized: "food",
+      name: 'Food',
+      nameNormalized: 'food',
     });
 
     const error = doc.validateSync();
 
     expect(error?.errors.ownerId).toBeDefined();
-    expect(error?.errors.ownerId?.message).toContain("Invalid ownerId");
+    expect(error?.errors.ownerId?.message).toContain('Invalid ownerId');
   });
 
-  it("rejects user category without ownerId", () => {
+  it('rejects user category without ownerId', () => {
     const doc = new CategoryModel({
-      type: "user",
-      name: "Food",
-      nameNormalized: "food",
+      type: 'user',
+      name: 'Food',
+      nameNormalized: 'food',
     });
 
     const error = doc.validateSync();
 
     expect(error?.errors.ownerId).toBeDefined();
-    expect(error?.errors.ownerId?.message).toContain("Invalid ownerId");
+    expect(error?.errors.ownerId?.message).toContain('Invalid ownerId');
   });
 
-  it("accepts system category without ownerId", () => {
+  it('accepts system category without ownerId', () => {
     const doc = new CategoryModel({
-      type: "system",
-      name: "Transfer",
-      nameNormalized: "transfer",
+      type: 'system',
+      name: 'Transfer',
+      nameNormalized: 'transfer',
     });
 
     const error = doc.validateSync();
@@ -56,17 +56,17 @@ describe("CategoryModel ownerId validator", () => {
     expect(error).toBeUndefined();
   });
 
-  it("rejects system category with ownerId", () => {
+  it('rejects system category with ownerId', () => {
     const doc = new CategoryModel({
-      type: "system",
+      type: 'system',
       ownerId: new Types.ObjectId(),
-      name: "Transfer",
-      nameNormalized: "transfer",
+      name: 'Transfer',
+      nameNormalized: 'transfer',
     });
 
     const error = doc.validateSync();
 
     expect(error?.errors.ownerId).toBeDefined();
-    expect(error?.errors.ownerId?.message).toContain("Invalid ownerId");
+    expect(error?.errors.ownerId?.message).toContain('Invalid ownerId');
   });
 });

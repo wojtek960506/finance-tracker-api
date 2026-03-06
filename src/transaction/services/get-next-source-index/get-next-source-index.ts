@@ -1,14 +1,13 @@
-import { CounterModel } from "@transaction/model"
-
+import { CounterModel } from '@transaction/model';
 
 export async function getNextSourceIndex(userId: string) {
   const res = await CounterModel.findOneAndUpdate(
-    { _id: { type: "transactions", userId} },
+    { _id: { type: 'transactions', userId } },
     { $inc: { seq: 1 } },
     {
       upsert: true,
-      returnDocument: "after"
-    }
-  )
+      returnDocument: 'after',
+    },
+  );
   return res.seq;
 }

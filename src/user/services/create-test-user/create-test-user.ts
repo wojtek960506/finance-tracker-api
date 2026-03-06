@@ -1,9 +1,13 @@
-import { ClientSession } from "mongoose"
-import { createUser } from "@user/services"
-import { withSession } from "@utils/with-session"
-import { createRandomTransactions } from "@transaction/services"
-import { UserCreateDTO, TestUserCreateDTO, TestUserCreateResponseDTO } from "@user/schema"
+import { ClientSession } from 'mongoose';
 
+import { createRandomTransactions } from '@transaction/services';
+import {
+  TestUserCreateDTO,
+  TestUserCreateResponseDTO,
+  UserCreateDTO,
+} from '@user/schema';
+import { createUser } from '@user/services';
+import { withSession } from '@utils/with-session';
 
 const createTestUserCore = async (
   session: ClientSession,
@@ -14,11 +18,13 @@ const createTestUserCore = async (
 
   totalTransactions = totalTransactions ?? 200;
   const insertedTransactionsCount = await createRandomTransactions(
-    userId, totalTransactions, session,
+    userId,
+    totalTransactions,
+    session,
   );
 
-  return { userId, email, insertedTransactionsCount }
-}
+  return { userId, email, insertedTransactionsCount };
+};
 
 export const createTestUser = async (
   dto: TestUserCreateDTO,
@@ -33,4 +39,4 @@ export const createTestUser = async (
   };
 
   return withSession(createTestUserCore, newBody, totalTransactions);
-}
+};

@@ -1,7 +1,7 @@
-import { getCategory } from "@category/services"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { ParamsJustId, AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { getCategory } from '@category/services';
+import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
 
 export const getCategoryHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
@@ -11,4 +11,4 @@ export const getCategoryHandler = async (
   const userId = (req as AuthenticatedRequest).userId;
   const result = await getCategory(categoryId, userId);
   return res.code(200).send(result);
-}
+};

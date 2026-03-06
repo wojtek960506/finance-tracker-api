@@ -1,17 +1,15 @@
-import { CategoryModel } from "@category/model"
+import { CategoryModel } from '@category/model';
 
-
-export const findCategories = async (
-  ownerId?: string,
-  categoryIds?: string[],
-) => {
-  
-  type OwnerSystemType<T extends string | undefined> = [{ ownerId: T }, { type: 'system' } ];
+export const findCategories = async (ownerId?: string, categoryIds?: string[]) => {
+  type OwnerSystemType<T extends string | undefined> = [
+    { ownerId: T },
+    { type: 'system' },
+  ];
   type Query = {
-    $or?: OwnerSystemType<string>,
-    $and?: OwnerSystemType<undefined>,
-    _id?: { $in: string[] },
-  }
+    $or?: OwnerSystemType<string>;
+    $and?: OwnerSystemType<undefined>;
+    _id?: { $in: string[] };
+  };
 
   const query: Query = {};
 
@@ -21,4 +19,4 @@ export const findCategories = async (
   if (categoryIds) query._id = { $in: categoryIds };
 
   return CategoryModel.find(query);
-}
+};

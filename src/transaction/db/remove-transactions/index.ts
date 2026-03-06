@@ -1,1 +1,1 @@
-export * from "./remove-transactions";
+export * from './remove-transactions';

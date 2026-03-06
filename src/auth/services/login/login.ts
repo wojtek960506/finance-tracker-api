@@ -1,16 +1,16 @@
-import argon2 from "argon2"
-import { LoginDTO } from "@auth/schema"
-import { UserModel } from "@user/model"
+import argon2 from 'argon2';
+
+import { LoginDTO } from '@auth/schema';
 import {
-  UnauthorizedUserNotFoundError,
-  UnauthorizedInvalidCredentialsError,
-} from "@utils/errors"
-import {
+  type AccessRefreshTokens,
   createAccessToken,
   createRefreshToken,
-  type AccessRefreshTokens,
-} from "@auth/services"
-
+} from '@auth/services';
+import { UserModel } from '@user/model';
+import {
+  UnauthorizedInvalidCredentialsError,
+  UnauthorizedUserNotFoundError,
+} from '@utils/errors';
 
 export const login = async (dto: LoginDTO): Promise<AccessRefreshTokens> => {
   const { email, password } = dto;
@@ -34,4 +34,4 @@ export const login = async (dto: LoginDTO): Promise<AccessRefreshTokens> => {
   await user.save();
 
   return { accessToken, refreshToken };
-}
+};

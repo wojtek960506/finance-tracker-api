@@ -1,1 +1,1 @@
-export * from "./serialize-category";
+export * from './serialize-category';

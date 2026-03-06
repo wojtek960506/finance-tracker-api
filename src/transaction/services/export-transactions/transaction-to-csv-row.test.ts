@@ -1,23 +1,27 @@
-import { it, expect, describe } from "vitest"
-import { DATE_STR } from "@/test-utils/factories/general"
-import { transactionToCsvRow } from "./transaction-to-csv-row"
-import { getStandardTransactionProps } from "@/test-utils/factories/transaction"
-import { FOOD_CATEGORY_NAME, FOOD_CATEGORY_ID_STR } from "@/test-utils/factories/category"
+import { describe, expect, it } from 'vitest';
+
+import { transactionToCsvRow } from './transaction-to-csv-row';
+
 import {
-  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  FOOD_CATEGORY_ID_STR,
+  FOOD_CATEGORY_NAME,
+} from '@/test-utils/factories/category';
+import { DATE_STR } from '@/test-utils/factories/general';
+import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method"
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+} from '@/test-utils/factories/payment-method';
+import { getStandardTransactionProps } from '@/test-utils/factories/transaction';
 
-
-describe("transactionToCsvRow", () => {
-
-  const { ownerId, categoryId, paymentMethodId, ...transaction } = getStandardTransactionProps();
+describe('transactionToCsvRow', () => {
+  const { ownerId, categoryId, paymentMethodId, ...transaction } =
+    getStandardTransactionProps();
   const categoriesMap = { [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } };
   const paymentMethodsMap = {
     [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: { name: PAYMENT_METHOD_BANK_TRANSFER_NAME },
   };
 
-  it("transaction to csv row", () => {
+  it('transaction to csv row', () => {
     const result = transactionToCsvRow(
       { ...transaction, categoryId, paymentMethodId } as any,
       categoriesMap as any,
@@ -33,5 +37,5 @@ describe("transactionToCsvRow", () => {
       exchangeRate: undefined,
       sourceRefIndex: undefined,
     });
-  })
+  });
 });

@@ -1,14 +1,14 @@
-import { FastifyReply, FastifyRequest } from "fastify"
-import { getTransaction } from "@transaction/services"
-import { ParamsJustId, AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { getTransaction } from '@transaction/services';
 
 export const getTransactionHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
-  res: FastifyReply
+  res: FastifyReply,
 ) => {
   const transactionId = req.params.id;
   const userId = (req as AuthenticatedRequest).userId;
   const result = await getTransaction(transactionId, userId);
   return res.code(200).send(result);
-}
+};

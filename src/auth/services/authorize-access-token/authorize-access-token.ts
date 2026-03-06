@@ -1,18 +1,18 @@
-import jwt from "jsonwebtoken"
-import { getEnv } from "@app/config"
-import { FastifyReply, FastifyRequest } from "fastify"
+import { FastifyReply, FastifyRequest } from 'fastify';
+import jwt from 'jsonwebtoken';
+
+import { getEnv } from '@app/config';
 import {
   UnauthorizedInvalidTokenError,
   UnauthorizedMissingTokenError,
-} from "@utils/errors"
-
+} from '@utils/errors';
 
 export function authorizeAccessToken() {
   return async (req: FastifyRequest, _reply: FastifyReply) => {
     const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) throw new UnauthorizedMissingTokenError();
+    if (!authHeader?.startsWith('Bearer ')) throw new UnauthorizedMissingTokenError();
 
-    const accessToken = authHeader.split(" ")[1];
+    const accessToken = authHeader.split(' ')[1];
     try {
       const { jwtAccessSecret } = getEnv();
       const payload = jwt.verify(accessToken, jwtAccessSecret);
@@ -21,5 +21,5 @@ export function authorizeAccessToken() {
     } catch {
       throw new UnauthorizedInvalidTokenError();
     }
-  }
+  };
 }

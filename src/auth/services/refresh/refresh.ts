@@ -1,25 +1,25 @@
-import { UserModel } from "@user/model"
+import {
+  type AccessRefreshTokens,
+  createAccessToken,
+  createRefreshToken,
+  getTokenHash,
+} from '@auth/services';
+import { UserModel } from '@user/model';
 import {
   UnauthorizedInvalidRefreshTokenError,
   UnauthorizedMissingRefreshTokenError,
-} from "@utils/errors"
-import {
-  getTokenHash,
-  createAccessToken,
-  createRefreshToken,
-  type AccessRefreshTokens,
-} from "@auth/services"
+} from '@utils/errors';
 
-
-export const refresh = async (refreshToken: string | undefined): Promise<AccessRefreshTokens> => {
-
+export const refresh = async (
+  refreshToken: string | undefined,
+): Promise<AccessRefreshTokens> => {
   if (!refreshToken) throw new UnauthorizedMissingRefreshTokenError();
-        
+
   const refreshTokenHash = getTokenHash(refreshToken);
 
   // find user by refresh token hash
-  const user = await UserModel.findOne({ 
-    "refreshTokenHash.tokenHash": refreshTokenHash
+  const user = await UserModel.findOne({
+    'refreshTokenHash.tokenHash': refreshTokenHash,
   });
   if (!user) throw new UnauthorizedInvalidRefreshTokenError();
 
@@ -37,4 +37,4 @@ export const refresh = async (refreshToken: string | undefined): Promise<AccessR
   });
 
   return { accessToken, refreshToken: newRefreshToken };
-}
+};

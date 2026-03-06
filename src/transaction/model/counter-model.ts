@@ -1,11 +1,11 @@
-import { model, Types, Schema } from "mongoose"
+import { model, Schema, Types } from 'mongoose';
 
 export interface ICounter {
   _id: {
-    type: string,
-    userId: string,
-  },
-  seq: number,
+    type: string;
+    userId: string;
+  };
+  seq: number;
 }
 
 const counterIdSchema = new Schema(
@@ -13,15 +13,15 @@ const counterIdSchema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ["transactions"],
+      enum: ['transactions'],
     },
     userId: {
       type: Types.ObjectId,
       required: true,
     },
   },
-  { _id: false }
-)
+  { _id: false },
+);
 
 const counterSchema = new Schema<ICounter>({
   _id: {
@@ -34,4 +34,4 @@ const counterSchema = new Schema<ICounter>({
   },
 });
 
-export const CounterModel = model<ICounter>("Counter", counterSchema);
+export const CounterModel = model<ICounter>('Counter', counterSchema);

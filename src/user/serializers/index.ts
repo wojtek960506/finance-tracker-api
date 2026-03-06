@@ -1,1 +1,1 @@
-export * from "./serialize-user";
+export * from './serialize-user';

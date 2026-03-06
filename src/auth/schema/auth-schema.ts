@@ -1,12 +1,12 @@
-import { z } from "zod"
+import { z } from 'zod';
 
 export const LoginSchema = z.object({
   email: z.email(),
-  password: z.string().min(3)
+  password: z.string().min(3),
 });
 
 export const TokenSchema = z.object({
-  accessToken: z.string()
+  accessToken: z.string(),
 });
 
 export type LoginDTO = z.infer<typeof LoginSchema>;

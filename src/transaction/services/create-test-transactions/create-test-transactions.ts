@@ -1,9 +1,9 @@
-import { AppError } from "@utils/errors"
-import { ClientSession } from "mongoose"
-import { withSession } from "@utils/with-session"
-import { TransactionModel } from "@transaction/model"
-import { createRandomTransactions } from "@transaction/services"
+import { ClientSession } from 'mongoose';
 
+import { TransactionModel } from '@transaction/model';
+import { createRandomTransactions } from '@transaction/services';
+import { AppError } from '@utils/errors';
+import { withSession } from '@utils/with-session';
 
 const createTestTransactionsCore = async (
   session: ClientSession,
@@ -11,10 +11,12 @@ const createTestTransactionsCore = async (
   totalTransactions: number,
 ): Promise<{ insertedCount: number }> => {
   const insertedCount = await createRandomTransactions(
-    ownerId, totalTransactions, session,
+    ownerId,
+    totalTransactions,
+    session,
   );
   return { insertedCount };
-}
+};
 
 export const createTestTransactions = async (
   ownerId: string,
@@ -24,13 +26,9 @@ export const createTestTransactions = async (
   if (transactionsCount !== 0)
     throw new AppError(
       409,
-      "Cannot add test transactions to a user which already owns some transactions",
+      'Cannot add test transactions to a user which already owns some transactions',
     );
 
   totalTransactions = totalTransactions ?? 200;
-  return withSession(
-    createTestTransactionsCore,
-    ownerId,
-    totalTransactions,
-  );
-}
+  return withSession(createTestTransactionsCore, ownerId, totalTransactions);
+};

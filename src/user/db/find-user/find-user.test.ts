@@ -1,19 +1,22 @@
-import { findUser } from "./find-user"
-import { UserModel } from "@user/model"
-import { it, vi, expect, describe, afterEach } from "vitest"
-import { USER_ID_STR } from "@/test-utils/factories/general"
-import { UserNotFoundError } from "@utils/errors/user-errors"
-import { getUserResultJSON } from "@/test-utils/factories/user"
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { UserModel } from '@user/model';
+import { UserNotFoundError } from '@utils/errors/user-errors';
 
-describe("findUser", () => {
+import { findUser } from './find-user';
 
+import { USER_ID_STR } from '@/test-utils/factories/general';
+import { getUserResultJSON } from '@/test-utils/factories/user';
+
+describe('findUser', () => {
   const user = getUserResultJSON();
 
-  afterEach(() => { vi.clearAllMocks() });
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-  it("user exists", async () => {
-    vi.spyOn(UserModel, "findById").mockResolvedValue(user);
+  it('user exists', async () => {
+    vi.spyOn(UserModel, 'findById').mockResolvedValue(user);
 
     const result = await findUser(USER_ID_STR);
 
@@ -22,8 +25,8 @@ describe("findUser", () => {
     expect(result).toEqual(user);
   });
 
-  it("user does not exist", async () => {
-    vi.spyOn(UserModel, "findById").mockResolvedValue(undefined);
+  it('user does not exist', async () => {
+    vi.spyOn(UserModel, 'findById').mockResolvedValue(undefined);
 
     await expect(findUser(USER_ID_STR)).rejects.toThrow(UserNotFoundError);
 

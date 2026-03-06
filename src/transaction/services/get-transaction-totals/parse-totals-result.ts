@@ -1,14 +1,13 @@
 import {
-  TransactionTotalsOverall,
-  TransactionTotalsByCurrency,
   TransactionSubcategoryTotals,
-  TransactionTotalsOverallObjDb,
+  TransactionTotalsByCurrency,
   TransactionTotalsByCurrencyObjDb,
-} from "@transaction/routes/types"
-
+  TransactionTotalsOverall,
+  TransactionTotalsOverallObjDb,
+} from '@transaction/routes/types';
 
 export const parseTotalsByCurrencyResult = (
-  totalsObjDb: TransactionTotalsByCurrencyObjDb[]
+  totalsObjDb: TransactionTotalsByCurrencyObjDb[],
 ) => {
   const totalsByCurrencies: Record<string, TransactionTotalsByCurrency> = {};
 
@@ -19,29 +18,29 @@ export const parseTotalsByCurrencyResult = (
       averageAmount: 0,
       maxAmount: 0,
       minAmount: 0,
-    }
+    };
     const { currency, transactionType } = _id;
-    
+
     if (!totalsByCurrencies[currency]) {
       totalsByCurrencies[currency] = {
         totalItems: 0,
         expense: defaultSubcategoryTotals,
         income: defaultSubcategoryTotals,
-      }
+      };
     }
-    
-    totalsByCurrencies[currency][transactionType as "expense" | "income"] =
+
+    totalsByCurrencies[currency][transactionType as 'expense' | 'income'] =
       data as TransactionSubcategoryTotals;
-    
+
     const tmpTotalItems = totalsByCurrencies[currency].totalItems;
     totalsByCurrencies[currency].totalItems = tmpTotalItems + data.totalItems;
   });
 
   return totalsByCurrencies;
-}
+};
 
 export const parseTotalsOverallResult = (
-  totalsObjDb: TransactionTotalsOverallObjDb[]
+  totalsObjDb: TransactionTotalsOverallObjDb[],
 ) => {
   const totalsOverall = {
     totalItems: 0,
@@ -53,12 +52,10 @@ export const parseTotalsOverallResult = (
   totalsObjDb.forEach(({ _id, totalItems }: TransactionTotalsOverallObjDb) => {
     const { transactionType } = _id;
 
-
-    totalsOverall[transactionType as "expense" | "income"] = { totalItems };
+    totalsOverall[transactionType as 'expense' | 'income'] = { totalItems };
     total += totalItems;
-  })
+  });
 
   totalsOverall.totalItems = total;
   return totalsOverall;
-}
-
+};

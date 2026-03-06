@@ -1,15 +1,14 @@
-import { checkOwner } from "@shared/services"
-import { findTransaction } from "@transaction/db/find-transaction"
+import { checkOwner } from '@shared/services';
+import { findTransaction } from '@transaction/db/find-transaction';
 import {
-  TransactionWrongTypesError,
-  TransactionWrongReferenceError,
   TransactionExchangeCategoryError,
   TransactionMissingReferenceError,
   TransactionTransferCategoryError,
-} from "@utils/errors"
+  TransactionWrongReferenceError,
+  TransactionWrongTypesError,
+} from '@utils/errors';
 
-
-export type SystemCategoryName = "exchange" | "myAccount";
+export type SystemCategoryName = 'exchange' | 'myAccount';
 
 export const loadTransactionWithReference = async (
   transactionId: string,
@@ -18,29 +17,27 @@ export const loadTransactionWithReference = async (
   expectedCategoryName: SystemCategoryName,
 ) => {
   const transaction = await findTransaction(transactionId);
-  checkOwner(userId, transactionId, transaction.ownerId, "transaction");
+  checkOwner(userId, transactionId, transaction.ownerId, 'transaction');
 
   if (transaction.categoryId.toString() !== expectedCategoryId) {
-    if (expectedCategoryName === "myAccount")
+    if (expectedCategoryName === 'myAccount')
       throw new TransactionTransferCategoryError(transactionId);
-    else
-      throw new TransactionExchangeCategoryError(transactionId);
+    else throw new TransactionExchangeCategoryError(transactionId);
   }
-  
+
   if (transaction.refId === undefined)
     throw new TransactionMissingReferenceError(transactionId);
 
   const transactionRef = await findTransaction(transaction.refId!.toString());
-  
+
   const transactionRefId = transactionRef._id.toString();
-  
-  checkOwner(userId, transactionRefId, transactionRef.ownerId, "transaction");
+
+  checkOwner(userId, transactionRefId, transactionRef.ownerId, 'transaction');
 
   if (transactionRef.categoryId.toString() !== expectedCategoryId) {
-    if (expectedCategoryName === "myAccount")
+    if (expectedCategoryName === 'myAccount')
       throw new TransactionTransferCategoryError(transactionRefId);
-    else
-      throw new TransactionExchangeCategoryError(transactionRefId);
+    else throw new TransactionExchangeCategoryError(transactionRefId);
   }
 
   if (transactionRef.refId === undefined)
@@ -53,10 +50,7 @@ export const loadTransactionWithReference = async (
     );
 
   if (transactionRef.transactionType === transaction.transactionType)
-    throw new TransactionWrongTypesError(
-      transactionId,
-      transactionRefId,
-    );
+    throw new TransactionWrongTypesError(transactionId, transactionRefId);
 
-  return { transaction, transactionRef }
-}
+  return { transaction, transactionRef };
+};

@@ -1,1 +1,1 @@
-export * from "./transaction-routes";
+export * from './transaction-routes';

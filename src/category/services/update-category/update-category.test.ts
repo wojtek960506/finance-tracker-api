@@ -1,29 +1,30 @@
-import * as db from "@category/db"
-import { updateCategory } from "@category/services"
-import { it, vi, expect, describe, afterEach } from "vitest"
-import { USER_ID_STR } from "@/test-utils/factories/general"
-import { UserCategoryMissingOwner, SystemCategoryUpdateNotAllowed } from "@utils/errors"
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import * as db from '@category/db';
+import { updateCategory } from '@category/services';
+import { SystemCategoryUpdateNotAllowed, UserCategoryMissingOwner } from '@utils/errors';
+
 import {
-  FOOD_CATEGORY_ID_STR,
-  getUpdateCategoryProps,
   EXCHANGE_CATEGORY_ID_STR,
-  getUserCategoryResultSerialized,
+  FOOD_CATEGORY_ID_STR,
   getExchangeCategoryResultSerialized,
-} from "@/test-utils/factories/category"
+  getUpdateCategoryProps,
+  getUserCategoryResultSerialized,
+} from '@/test-utils/factories/category';
+import { USER_ID_STR } from '@/test-utils/factories/general';
 
-
-
-describe("updateCategory", () => {
-
+describe('updateCategory', () => {
   const userCategory = getUserCategoryResultSerialized();
   const systemCategory = getExchangeCategoryResultSerialized();
   const dto = getUpdateCategoryProps();
 
-  afterEach(() => { vi.clearAllMocks() });
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-  it("update category", async () => {
-    vi.spyOn(db, "findCategoryById").mockResolvedValue(userCategory as any);
-    vi.spyOn(db, "saveCategoryChanges").mockResolvedValue(userCategory as any);
+  it('update category', async () => {
+    vi.spyOn(db, 'findCategoryById').mockResolvedValue(userCategory as any);
+    vi.spyOn(db, 'saveCategoryChanges').mockResolvedValue(userCategory as any);
 
     const result = await updateCategory(FOOD_CATEGORY_ID_STR, USER_ID_STR, dto);
 
@@ -33,16 +34,21 @@ describe("updateCategory", () => {
   });
 
   it.each([
-    ["system category", systemCategory, EXCHANGE_CATEGORY_ID_STR, SystemCategoryUpdateNotAllowed],
     [
-      "user category without owner",
+      'system category',
+      systemCategory,
+      EXCHANGE_CATEGORY_ID_STR,
+      SystemCategoryUpdateNotAllowed,
+    ],
+    [
+      'user category without owner',
       { ...userCategory, ownerId: undefined },
       FOOD_CATEGORY_ID_STR,
       UserCategoryMissingOwner,
     ],
-  ])("throws error when updating %s", async (_, category, id, error) => {
-    vi.spyOn(db, "findCategoryById").mockResolvedValue(category as any);
-    vi.spyOn(db, "saveCategoryChanges");
+  ])('throws error when updating %s', async (_, category, id, error) => {
+    vi.spyOn(db, 'findCategoryById').mockResolvedValue(category as any);
+    vi.spyOn(db, 'saveCategoryChanges');
 
     await expect(updateCategory(id, USER_ID_STR, dto)).rejects.toThrow(error);
 

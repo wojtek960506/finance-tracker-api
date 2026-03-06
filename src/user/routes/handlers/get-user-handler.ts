@@ -1,7 +1,7 @@
-import { getUser } from "@user/services"
-import { FastifyReply, FastifyRequest } from "fastify"
-import { ParamsJustId, AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { getUser } from '@user/services';
 
 export const getUserHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
@@ -11,4 +11,4 @@ export const getUserHandler = async (
   const { id } = req.params;
   const result = await getUser(id, userId);
   return res.code(200).send(result);
-}
+};

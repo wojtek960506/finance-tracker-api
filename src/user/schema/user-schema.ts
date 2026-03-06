@@ -1,19 +1,18 @@
-import z from "zod"
+import z from 'zod';
 
 const UserCommonSchema = z.object({
-  firstName: z.string().min(2, "First name must have at least 2 characters."),
-  lastName: z.string().min(2, "Last name must have at least 2 characters."),
+  firstName: z.string().min(2, 'First name must have at least 2 characters.'),
+  lastName: z.string().min(2, 'Last name must have at least 2 characters.'),
   email: z.email(),
-})
+});
 
 /**
  * Create User Schema
  * used for POST /users
  */
 export const UserCreateSchema = UserCommonSchema.extend({
-  password: z.string().min(3, "Password must be at least 3 characters"),
-})
-
+  password: z.string().min(3, 'Password must be at least 3 characters'),
+});
 
 /**
  * Full Update Schema (PUT)
@@ -35,19 +34,21 @@ export const UserResponseSchema = UserCommonSchema.extend({
 
 export const UserSensitiveResponseSchema = UserResponseSchema.extend({
   passwordHash: z.string(),
-  refreshTokenHashes: z.array(
-    z.object({
-      tokenHash: z.string(),
-      createdAt: z.coerce.date(),
-    })
-  ).optional(),
-})
+  refreshTokenHashes: z
+    .array(
+      z.object({
+        tokenHash: z.string(),
+        createdAt: z.coerce.date(),
+      }),
+    )
+    .optional(),
+});
 
 export const UsersResponseSchema = z.array(UserResponseSchema);
 
 export const TestUserCreateSchema = z.object({
   username: z.string().regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Only letters, digits and _ (uderscore) are allowed",
+    message: 'Only letters, digits and _ (uderscore) are allowed',
   }),
   totalTransactions: z.number().min(200).max(20000).optional(),
 });

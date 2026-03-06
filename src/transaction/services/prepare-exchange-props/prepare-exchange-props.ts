@@ -1,32 +1,32 @@
-import { TransactionExchangeDTO } from "@transaction/schema"
-import { TransactionExchangeUpdateProps } from "@transaction/db"
-import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props"
-import { TransactionExchangeCreateProps } from "@transaction/db/persist-transaction"
+import { TransactionExchangeUpdateProps } from '@transaction/db';
+import { TransactionExchangeCreateProps } from '@transaction/db/persist-transaction';
+import { TransactionExchangeDTO } from '@transaction/schema';
 import {
   PrepareTransactionPropsContext,
   PrepareTransactionPropsObjectIds,
-} from "@transaction/services/types"
+} from '@transaction/services/types';
 
+import { prepareExchangeSpecificProps } from './prepare-exchange-specific-props';
 
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
   objectIds: PrepareTransactionPropsObjectIds,
-  additionalProps: PrepareTransactionPropsContext
+  additionalProps: PrepareTransactionPropsContext,
 ): {
-  expenseTransactionProps: TransactionExchangeCreateProps,
-  incomeTransactionProps: TransactionExchangeCreateProps,
-}
+  expenseTransactionProps: TransactionExchangeCreateProps;
+  incomeTransactionProps: TransactionExchangeCreateProps;
+};
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
   objectIds: PrepareTransactionPropsObjectIds,
 ): {
-  expenseTransactionProps: TransactionExchangeUpdateProps,
-  incomeTransactionProps: TransactionExchangeUpdateProps,
-}
+  expenseTransactionProps: TransactionExchangeUpdateProps;
+  incomeTransactionProps: TransactionExchangeUpdateProps;
+};
 export function prepareExchangeProps(
   dto: TransactionExchangeDTO,
   objectIds: PrepareTransactionPropsObjectIds,
-  additionalProps?: PrepareTransactionPropsContext
+  additionalProps?: PrepareTransactionPropsContext,
 ) {
   const { description, currencies, exchangeRate } = prepareExchangeSpecificProps(dto);
   const { categoryId } = objectIds;
@@ -40,21 +40,21 @@ export function prepareExchangeProps(
     description,
     currencies,
     exchangeRate,
-  }
+  };
 
   const commonExpenseTransactionProps = {
     ...commonTransactionProps,
-    transactionType: "expense",
+    transactionType: 'expense',
     amount: dto.amountExpense,
     currency: dto.currencyExpense,
-  }
+  };
 
   const commonIncomeTransactionProps = {
     ...commonTransactionProps,
-    transactionType: "income",
+    transactionType: 'income',
     amount: dto.amountIncome,
     currency: dto.currencyIncome,
-  }
+  };
 
   if (additionalProps) {
     const { ownerId, sourceIndexExpense, sourceIndexIncome } = additionalProps;
@@ -70,12 +70,14 @@ export function prepareExchangeProps(
         ownerId,
         sourceIndex: sourceIndexIncome,
         sourceRefIndex: sourceIndexExpense,
-      }
-    }
+      },
+    };
   } else {
     return {
-      expenseTransactionProps: commonExpenseTransactionProps as TransactionExchangeUpdateProps,
-      incomeTransactionProps: commonIncomeTransactionProps as TransactionExchangeUpdateProps,
-    }
+      expenseTransactionProps:
+        commonExpenseTransactionProps as TransactionExchangeUpdateProps,
+      incomeTransactionProps:
+        commonIncomeTransactionProps as TransactionExchangeUpdateProps,
+    };
   }
 }

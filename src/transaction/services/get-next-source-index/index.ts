@@ -1,1 +1,1 @@
-export * from "./get-next-source-index";
+export * from './get-next-source-index';
