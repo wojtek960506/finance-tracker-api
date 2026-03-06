@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { saveCategoryChanges } from '@category/db';
 import * as serializers from '@category/serializers';
 
-import { getUserCategoryResultJSON } from '@/test-utils/factories/category';
+import { getUserCategoryResultJSON } from '@/testing/factories/category';
 
 describe('saveCategoryChanges', () => {
   const save = vi.fn();

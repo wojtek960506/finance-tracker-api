@@ -6,8 +6,8 @@ import { AppError } from '@utils/errors';
 
 import { getUser } from './get-user';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
-import { getUserResultJSON, getUserResultSerialized } from '@/test-utils/factories/user';
+import { USER_ID_STR } from '@/testing/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@/testing/factories/user';
 
 describe('getUser', () => {
   it('get not authenticated user', async () => {

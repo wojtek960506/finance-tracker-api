@@ -5,7 +5,7 @@ import * as config from '@app/config';
 
 import { connectDB } from './connect-db';
 
-import { ENV_TEST_VALUES, MONGO_URI_TEST } from '@/test-utils/env-consts';
+import { ENV_TEST_VALUES, MONGO_URI_TEST } from '@/testing/env-consts';
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 

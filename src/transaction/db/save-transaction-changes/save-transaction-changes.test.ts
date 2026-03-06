@@ -7,7 +7,7 @@ import {
   getStandardTransactionDTO,
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/serializers', () => ({
   serializeTransaction: vi.fn(),

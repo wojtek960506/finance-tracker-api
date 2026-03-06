@@ -15,8 +15,8 @@ import { withSession } from '@utils/with-session';
 
 import { deleteUser } from './delete-user';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
-import { getUserResultJSON, getUserResultSerialized } from '@/test-utils/factories/user';
+import { USER_ID_STR } from '@/testing/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@/testing/factories/user';
 
 const sessionMock = {} as any;
 

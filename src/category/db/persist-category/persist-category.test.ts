@@ -8,7 +8,7 @@ import {
   getUserCategoryProps,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from '@/test-utils/factories/category';
+} from '@/testing/factories/category';
 
 describe('persistCategory', () => {
   const categoryProps = getUserCategoryProps();

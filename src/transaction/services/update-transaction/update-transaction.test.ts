@@ -23,9 +23,9 @@ import {
   getExchangeCategoryResultJSON,
   getTransferCategoryResultJSON,
   getUserCategoryResultJSON,
-} from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
-import { getBankTransferPaymentMethodResultJSON } from '@/test-utils/factories/payment-method';
+} from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
+import { getBankTransferPaymentMethodResultJSON } from '@/testing/factories/payment-method';
 import {
   EXCHANGE_TXN_EXPENSE_ID_STR,
   getExchangeTransactionDTO,
@@ -36,7 +36,7 @@ import {
   getTransferTransactionResultJSON,
   STANDARD_TXN_ID_STR,
   TRANSFER_TXN_EXPENSE_ID_STR,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 describe('update transaction', async () => {
   const standardDTO = getStandardTransactionDTO();

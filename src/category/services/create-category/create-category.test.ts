@@ -8,8 +8,8 @@ import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_NAME,
   getUserCategoryResultSerialized,
-} from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
+} from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 vi.mock('@category/db', () => ({
   findCategoryByName: vi.fn(),

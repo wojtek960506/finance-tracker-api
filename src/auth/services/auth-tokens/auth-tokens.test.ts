@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as config from '@app/config';
 
-import { ENV_TEST_VALUES } from '@/test-utils/env-consts';
+import { ENV_TEST_VALUES } from '@/testing/env-consts';
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 

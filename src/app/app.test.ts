@@ -7,7 +7,7 @@ import {
   ENV_TEST_VALUES,
   JWT_ACCESS_SECRET_TEST,
   PORT_TEST,
-} from '@/test-utils/env-consts';
+} from '@/testing/env-consts';
 
 const {
   appMock,

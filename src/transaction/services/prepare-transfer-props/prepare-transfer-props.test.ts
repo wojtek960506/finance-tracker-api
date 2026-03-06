@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest';
 
 import { prepareTransferProps } from './prepare-transfer-props';
 
-import { TRANSFER_CATEGORY_ID_STR } from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { TRANSFER_CATEGORY_ID_STR } from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
 import {
   getTransferTransactionDTO,
   getTransferTransactionProps,
   TRANSFER_TXN_EXPENSE_SRC_IDX,
   TRANSFER_TXN_INCOME_SRC_IDX,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 describe('prepareTransferProps', () => {
   it('prepare props for create', () => {

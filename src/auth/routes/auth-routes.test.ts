@@ -3,13 +3,13 @@ import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as serviceA from '@auth/services';
-import { registerErrorHandler } from '@plugins/errorHandler';
+import { registerErrorHandler } from '@app/plugins/errorHandler';
 import * as serviceU from '@user/services';
 
 import { authRoutes } from './auth-routes';
 
-import { ENV_TEST_VALUES } from '@/test-utils/env-consts';
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { ENV_TEST_VALUES } from '@/testing/env-consts';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 const MOCKED_RESULT = { result: 'result' };
 const LOGIN_DTO = { email: 'john@example.com', password: 'secret-password' };

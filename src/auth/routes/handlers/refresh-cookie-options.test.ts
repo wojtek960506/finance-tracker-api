@@ -4,7 +4,7 @@ import * as config from '@app/config';
 
 import { getRefreshCookieOptions } from './refresh-cookie-options';
 
-import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from '@/test-utils/env-consts';
+import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from '@/testing/env-consts';
 
 vi.mock('@app/config', () => ({ getEnv: vi.fn() }));
 

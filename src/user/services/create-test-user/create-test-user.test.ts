@@ -5,7 +5,7 @@ import { createUser } from '@user/services';
 
 import { createTestUser } from './create-test-user';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 const sessionMock = {} as any;
 

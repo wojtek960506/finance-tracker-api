@@ -27,9 +27,9 @@ import {
   getTransferCategoryResultJSON,
   getUserCategoryResultJSON,
   TRANSFER_CATEGORY_NAME,
-} from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
-import { getBankTransferPaymentMethodResultJSON } from '@/test-utils/factories/payment-method';
+} from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
+import { getBankTransferPaymentMethodResultJSON } from '@/testing/factories/payment-method';
 import {
   EXCHANGE_TXN_EXPENSE_SRC_IDX,
   EXCHANGE_TXN_INCOME_SRC_IDX,
@@ -42,7 +42,7 @@ import {
   STANDARD_TXN_SRC_IDX,
   TRANSFER_TXN_EXPENSE_SRC_IDX,
   TRANSFER_TXN_INCOME_SRC_IDX,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/services/get-next-source-index', () => ({
   getNextSourceIndex: vi.fn(),

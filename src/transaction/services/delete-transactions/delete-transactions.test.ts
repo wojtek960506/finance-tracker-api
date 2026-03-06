@@ -6,7 +6,7 @@ import { AppError } from '@utils/errors';
 
 import { deleteTransactions } from './delete-transactions';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 describe('deleteTransactions', () => {
   const deleteResult = { deletedCount: 100 };

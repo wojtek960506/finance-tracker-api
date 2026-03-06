@@ -9,7 +9,7 @@ import {
   getStandardTransactionProps,
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/model', () => ({
   TransactionModel: { create: vi.fn() },

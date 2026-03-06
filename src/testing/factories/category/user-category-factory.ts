@@ -7,7 +7,7 @@ import {
   FOOD_CATEGORY_NAME,
 } from './category-consts';
 
-import { USER_ID_OBJ, USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_OBJ, USER_ID_STR } from '@/testing/factories/general';
 
 const commonProps = {
   type: CATEGORY_TYPE_USER as CategoryType,

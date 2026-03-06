@@ -7,7 +7,7 @@ import {
   PAYMENT_METHOD_TYPE_USER,
 } from './payment-method-consts';
 
-import { USER_ID_OBJ, USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_OBJ, USER_ID_STR } from '@/testing/factories/general';
 
 const commonProps = {
   type: PAYMENT_METHOD_TYPE_USER as PaymentMethodType,

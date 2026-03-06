@@ -26,10 +26,6 @@ export const saveTransactionPairChangesCore = async <
   await transaction.save({ session });
   await transactionRef.save({ session });
 
-  console.log('before populate');
-  console.log('transaction', transaction);
-  console.log('transactionRef', transactionRef);
-
   await transaction.populate([
     { path: 'categoryId', select: '_id type name' },
     { path: 'paymentMethodId', select: '_id type name' },
@@ -38,10 +34,6 @@ export const saveTransactionPairChangesCore = async <
     { path: 'categoryId', select: '_id type name' },
     { path: 'paymentMethodId', select: '_id type name' },
   ]);
-
-  console.log('after populate');
-  console.log('transaction', transaction);
-  console.log('transactionRef', transactionRef);
 
   return [serializeTransaction(transaction), serializeTransaction(transactionRef)];
 };

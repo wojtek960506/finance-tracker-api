@@ -10,8 +10,8 @@ import {
   getExchangeCategoryResultSerialized,
   getUpdateCategoryProps,
   getUserCategoryResultSerialized,
-} from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
+} from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 describe('updateCategory', () => {
   const userCategory = getUserCategoryResultSerialized();

@@ -16,7 +16,7 @@ import {
   getUserResultJSON,
   getUserResultSerialized,
   USER_PASSWORD_HASH,
-} from '@/test-utils/factories/user';
+} from '@/testing/factories/user';
 
 describe('createUser', () => {
   const user = getUserResultJSON();

@@ -6,13 +6,13 @@ import { findTransactions, findTransactionsCount } from '@transaction/db';
 import { serializeTransaction } from '@transaction/serializers';
 import { getTransactions } from '@transaction/services';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_STR } from '@/testing/factories/general';
 import {
   getStandardTransactionNotPopulatedResultJSON,
   getStandardTransactionResultSerialized,
   getTransferTransactionNotPopulatedResultJSON,
   getTransferTransactionResultSerialized,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/db', () => ({
   findTransactions: vi.fn(),

@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as serviceC from '@category/services';
 import * as servicePM from '@payment-method/services';
-import { registerErrorHandler } from '@plugins/errorHandler';
+import { registerErrorHandler } from '@app/plugins/errorHandler';
 import { streamTransactions } from '@transaction/db';
 import * as serviceT from '@transaction/services';
 
@@ -13,22 +13,22 @@ import {
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
   FOOD_CATEGORY_NAME,
-} from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
+} from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
-} from '@/test-utils/factories/payment-method';
+} from '@/testing/factories/payment-method';
 import {
   getExchangeTransactionDTO,
   getStandardTransactionDTO,
   getStandardTransactionResultSerialized,
   getTransferTransactionDTO,
   STANDARD_TXN_ID_STR as T_ID,
-} from '@/test-utils/factories/transaction';
-import { TEST_USER_TOTAL_TRANSACTIONS } from '@/test-utils/factories/user';
-import { getCsvForTransactions } from '@/test-utils/get-csv-for-transactions';
+} from '@/testing/factories/transaction';
+import { TEST_USER_TOTAL_TRANSACTIONS } from '@/testing/factories/user';
+import { getCsvForTransactions } from '@/testing/get-csv-for-transactions';
 
 async function* mockAsyncCursor<T>(items: T[]) {
   for (const item of items) {

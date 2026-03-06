@@ -8,17 +8,17 @@ import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_ID_STR,
   FOOD_CATEGORY_NAME,
-} from '@/test-utils/factories/category';
+} from '@/testing/factories/category';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
   PAYMENT_METHOD_TYPE_SYSTEM,
-} from '@/test-utils/factories/payment-method';
+} from '@/testing/factories/payment-method';
 import {
   getStandardTransactionNotPopulatedResultJSON,
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 describe('serializeTransaction', () => {
   const transaction = getStandardTransactionResultJSON();

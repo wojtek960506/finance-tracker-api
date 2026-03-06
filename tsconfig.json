@@ -16,7 +16,7 @@
     "baseUrl": "./src",
     "paths": {
       "@utils/*": ["utils/*"],
-      "@plugins/*": ["plugins/*"],
+      "@plugins/*": ["app/plugins/*"],
       "@app/*": ["app/*"],
       "@shared/*": ["shared/*"],
       "@/*": ["*"],

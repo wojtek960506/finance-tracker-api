@@ -7,7 +7,7 @@ import { withSession } from '@utils/with-session';
 import {
   getExchangeTransactionProps,
   getExchangeTransactionResultSerialized,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@utils/with-session', () => ({
   withSession: vi.fn().mockImplementation(async (func, ...args) => {

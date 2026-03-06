@@ -5,7 +5,7 @@ import * as serializers from '@user/serializers';
 
 import { getUsers } from './get-users';
 
-import { getUserResultJSON, getUserResultSerialized } from '@/test-utils/factories/user';
+import { getUserResultJSON, getUserResultSerialized } from '@/testing/factories/user';
 
 describe('getUsers', () => {
   const user = getUserResultJSON();

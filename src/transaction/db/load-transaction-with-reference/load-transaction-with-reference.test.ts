@@ -17,15 +17,15 @@ import {
   FOOD_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_NAME,
-} from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
+} from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
 import {
   EXCHANGE_TXN_EXPENSE_ID_STR,
   EXCHANGE_TXN_INCOME_ID_STR,
   getExchangeTransactionNotPopulatedResultJSON,
   TRANSACTION_TYPE_EXPENSE,
   TRANSFER_TXN_EXPENSE_ID_STR,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/db/find-transaction', () => ({ findTransaction: vi.fn() }));
 

@@ -7,7 +7,7 @@ import {
   getExchangeCategoryResultSerialized,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from '@/test-utils/factories/category';
+} from '@/testing/factories/category';
 
 describe('serializeCategory', () => {
   const userCategoryJSON = getUserCategoryResultJSON();

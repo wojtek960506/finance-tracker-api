@@ -4,7 +4,7 @@ import { TransactionModel } from '@transaction/model';
 
 import { removeTransactions } from './remove-transactions';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 describe('removeTransactions', () => {
   const deleteResult = { deletedCount: 100 };

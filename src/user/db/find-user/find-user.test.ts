@@ -5,8 +5,8 @@ import { UserNotFoundError } from '@utils/errors/user-errors';
 
 import { findUser } from './find-user';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
-import { getUserResultJSON } from '@/test-utils/factories/user';
+import { USER_ID_STR } from '@/testing/factories/general';
+import { getUserResultJSON } from '@/testing/factories/user';
 
 describe('findUser', () => {
   const user = getUserResultJSON();

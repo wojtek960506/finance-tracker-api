@@ -5,13 +5,13 @@ import { transactionToCsvRow } from './transaction-to-csv-row';
 import {
   FOOD_CATEGORY_ID_STR,
   FOOD_CATEGORY_NAME,
-} from '@/test-utils/factories/category';
-import { DATE_STR } from '@/test-utils/factories/general';
+} from '@/testing/factories/category';
+import { DATE_STR } from '@/testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
-} from '@/test-utils/factories/payment-method';
-import { getStandardTransactionProps } from '@/test-utils/factories/transaction';
+} from '@/testing/factories/payment-method';
+import { getStandardTransactionProps } from '@/testing/factories/transaction';
 
 describe('transactionToCsvRow', () => {
   const { ownerId, categoryId, paymentMethodId, ...transaction } =

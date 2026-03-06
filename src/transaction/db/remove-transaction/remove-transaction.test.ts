@@ -9,7 +9,7 @@ import { removeTransaction } from './remove-transaction';
 import {
   getStandardTransactionResultSerialized,
   getTransferTransactionResultSerialized,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@utils/with-session', () => ({
   withSession: vi.fn().mockImplementation(async (func, ...args) => {

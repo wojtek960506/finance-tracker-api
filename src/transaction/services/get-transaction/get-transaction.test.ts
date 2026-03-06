@@ -4,12 +4,12 @@ import { findTransaction } from '@transaction/db';
 import { serializeTransaction } from '@transaction/serializers';
 import { getTransaction } from '@transaction/services';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_STR } from '@/testing/factories/general';
 import {
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
   STANDARD_TXN_ID_STR,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/db', () => ({ findTransaction: vi.fn() }));
 vi.mock('@transaction/serializers', () => ({ serializeTransaction: vi.fn() }));

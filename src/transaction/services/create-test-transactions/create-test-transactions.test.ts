@@ -6,7 +6,7 @@ import { AppError } from '@utils/errors';
 
 import { createTestTransactions } from './create-test-transactions';
 
-import { USER_ID_STR } from '@/test-utils/factories/general';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 const sessionMock = {} as any;
 

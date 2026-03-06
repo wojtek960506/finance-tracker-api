@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as dbC from '@category/db';
 import * as serviceC from '@category/services';
-import { registerErrorHandler } from '@plugins/errorHandler';
+import { registerErrorHandler } from '@app/plugins/errorHandler';
 
 import { categoryRoutes } from './category-routes';
 
@@ -12,8 +12,8 @@ import {
   getUpdateCategoryProps,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from '@/test-utils/factories/category';
-import { USER_ID_STR } from '@/test-utils/factories/general';
+} from '@/testing/factories/category';
+import { USER_ID_STR } from '@/testing/factories/general';
 
 const MOCKED_RESULT = { result: 'result' };
 const mockPreHandler = vi.fn(async (req, _res) => {

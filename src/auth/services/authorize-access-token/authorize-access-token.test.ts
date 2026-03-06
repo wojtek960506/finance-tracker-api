@@ -9,7 +9,7 @@ import {
 
 import { authorizeAccessToken } from './authorize-access-token';
 
-import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@/test-utils/env-consts';
+import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@/testing/env-consts';
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 

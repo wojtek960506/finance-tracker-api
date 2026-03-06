@@ -8,7 +8,7 @@ import { findTransaction } from './find-transaction';
 import {
   getStandardTransactionResultJSON,
   STANDARD_TXN_ID_STR,
-} from '@/test-utils/factories/transaction';
+} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/model', () => ({ TransactionModel: { findById: vi.fn() } }));
 

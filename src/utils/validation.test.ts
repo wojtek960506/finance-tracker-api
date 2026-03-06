@@ -9,7 +9,7 @@ import {
 import { ValidationError } from './errors';
 import { validateBody, validateQuery } from './validation';
 
-import { getStandardTransactionDTO } from '@/test-utils/factories/transaction';
+import { getStandardTransactionDTO } from '@/testing/factories/transaction';
 
 const expectValidationError = async (promise: Promise<unknown>) => {
   await expect(promise).rejects.toBeInstanceOf(ValidationError);

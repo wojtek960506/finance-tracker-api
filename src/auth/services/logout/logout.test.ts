@@ -6,7 +6,7 @@ import { UserModel } from '@user/model';
 
 import { logout } from './logout';
 
-import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@/test-utils/env-consts';
+import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@/testing/env-consts';
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
