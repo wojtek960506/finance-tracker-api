@@ -1,11 +1,11 @@
-import { PaymentMethodType } from "@payment-method/model";
-import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
+import { PaymentMethodType } from "@payment-method/model"
+import { USER_ID_OBJ, USER_ID_STR } from "@/test-utils/factories/general"
 import {
   PAYMENT_METHOD_CASH_NAME,
   PAYMENT_METHOD_TYPE_USER,
   CASH_PAYMENT_METHOD_ID_OBJ,
   CASH_PAYMENT_METHOD_ID_STR,
-} from "./payment-method-consts";
+} from "./payment-method-consts"
 
 
 const commonProps = {

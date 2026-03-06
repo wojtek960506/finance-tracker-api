@@ -1,18 +1,15 @@
-import * as db from "@category/db";
-import { updateCategory } from "@category/services";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import {
-  UserCategoryMissingOwner,
-  SystemCategoryUpdateNotAllowed,
-} from "@utils/errors";
+import * as db from "@category/db"
+import { updateCategory } from "@category/services"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { UserCategoryMissingOwner, SystemCategoryUpdateNotAllowed } from "@utils/errors"
 import {
   FOOD_CATEGORY_ID_STR,
   getUpdateCategoryProps,
   EXCHANGE_CATEGORY_ID_STR,
   getUserCategoryResultSerialized,
   getExchangeCategoryResultSerialized,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 
 
 

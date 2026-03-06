@@ -1,5 +1,5 @@
-import { TransactionNotFoundError } from "@utils/errors";
-import { TransactionModel } from "@transaction/model";
+import { TransactionModel } from "@transaction/model"
+import { TransactionNotFoundError } from "@utils/errors"
 
 
 export const findTransaction = async (id: string) => {

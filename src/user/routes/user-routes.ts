@@ -1,23 +1,23 @@
-import { FastifyInstance } from "fastify";
-import { validateBody } from "@utils/validation";
-import { ParamsJustId } from "@shared/http";
-import { authorizeAccessToken } from "@auth/services";
+import { FastifyInstance } from "fastify"
+import { ParamsJustId } from "@shared/http"
+import { validateBody } from "@utils/validation"
+import { authorizeAccessToken } from "@auth/services"
 import {
   getUserHandler,
   getUsersHandler,
   createUserHandler,
   deleteUserHandler,
   createTestUserHandler,
-} from "./handlers";
+} from "./handlers"
 import {
   UserCreateDTO,
   UserResponseDTO,
-  UsersResponseDTO,
   UserCreateSchema,
+  UsersResponseDTO,
   TestUserCreateDTO,
   TestUserCreateSchema,
   TestUserCreateResponseDTO,
-} from "@user/schema";
+} from "@user/schema"
 
 
 export async function userRoutes(app: FastifyInstance) {

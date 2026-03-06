@@ -1,4 +1,4 @@
-import { TransactionStatisticsQuery } from "@transaction/schema";
+import { TransactionStatisticsQuery } from "@transaction/schema"
 import {
   YearResult,
   NoYearResult,
@@ -7,7 +7,7 @@ import {
   YearlyResultItemServer,
   MonthlyResultItemServer,
   TransactionStatisticsResponse,
-} from "@transaction/routes/types";
+} from "@transaction/routes/types"
 
 
 const getTotalAmountAndItems = (

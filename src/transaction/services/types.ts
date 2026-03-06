@@ -3,7 +3,7 @@ import {
   TransactionExchangeUpdateProps,
   TransactionTransferCreateProps,
   TransactionTransferUpdateProps,
-} from "@transaction/db";
+} from "@transaction/db"
 
 export type TransactionCreateProps =
   TransactionExchangeCreateProps |

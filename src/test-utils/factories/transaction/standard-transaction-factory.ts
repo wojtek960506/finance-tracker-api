@@ -3,19 +3,13 @@ import {
   DATE_STR,
   USER_ID_OBJ,
   USER_ID_STR,
-} from "@/test-utils/factories/general";
+} from "@/test-utils/factories/general"
 import {
   CATEGORY_TYPE_USER,
+  FOOD_CATEGORY_NAME,
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
-  FOOD_CATEGORY_NAME,
-} from "@/test-utils/factories/category";
-import {
-  PAYMENT_METHOD_TYPE_SYSTEM,
-  PAYMENT_METHOD_BANK_TRANSFER_NAME,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method";
+} from "@/test-utils/factories/category"
 import {
   DESCRPTION,
   AMOUNT_EXPENSE,
@@ -24,8 +18,14 @@ import {
   STANDARD_TXN_ID_OBJ,
   STANDARD_TXN_ID_STR,
   STANDARD_TXN_SRC_IDX,
-  TRANSACTION_TYPE_EXPENSE,  
-} from "@/test-utils/factories/transaction";
+  TRANSACTION_TYPE_EXPENSE,
+} from "@/test-utils/factories/transaction"
+import {
+  PAYMENT_METHOD_TYPE_SYSTEM,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method"
 
 
 export const getStandardTransactionDTO = () => ({

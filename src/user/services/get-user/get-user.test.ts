@@ -1,13 +1,10 @@
-import * as db from "@user/db";
-import { getUser } from "./get-user";
-import { AppError } from "@utils/errors";
-import { describe, expect, it, vi } from "vitest";
-import * as serializers from "@user/serializers";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import {
-  getUserResultJSON,
-  getUserResultSerialized,
-} from "@/test-utils/factories/user";
+import * as db from "@user/db"
+import { getUser } from "./get-user"
+import { AppError } from "@utils/errors"
+import * as serializers from "@user/serializers"
+import { it, vi, expect, describe } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { getUserResultJSON, getUserResultSerialized } from "@/test-utils/factories/user"
 
 
 describe("getUser", () => {

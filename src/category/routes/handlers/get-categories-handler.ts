@@ -1,7 +1,7 @@
-import { findCategories } from "@category/db";
-import { serializeCategory } from "@category/serializers";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@shared/http";
+import { findCategories } from "@category/db"
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { serializeCategory } from "@category/serializers"
 
 
 export const getCategoriesHandler = async (

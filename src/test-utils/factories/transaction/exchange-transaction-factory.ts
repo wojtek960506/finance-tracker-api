@@ -1,15 +1,15 @@
-import { TransactionExchangeDTO } from "@transaction/schema";
-import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
+import { TransactionExchangeDTO } from "@transaction/schema"
+import { DATE_OBJ, USER_ID_STR, DATE_ISO_STR } from "@/test-utils/factories/general"
 import {
   TransactionExchangeCreateProps,
   TransactionExchangeUpdateProps,
-} from "@transaction/db";
+} from "@transaction/db"
 import {
   CATEGORY_TYPE_SYSTEM,
   EXCHANGE_CATEGORY_NAME,
   EXCHANGE_CATEGORY_ID_OBJ,
   EXCHANGE_CATEGORY_ID_STR,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 import {
   DESCRPTION,
   AMOUNT_INCOME,
@@ -19,19 +19,19 @@ import {
   CURRENCY_EXPENSE,
   TRANSACTION_TYPE_INCOME,
   TRANSACTION_TYPE_EXPENSE,
-  EXCHANGE_TXN_INCOME_ID_STR,
   EXCHANGE_TXN_INCOME_ID_OBJ,
-  EXCHANGE_TXN_EXPENSE_ID_STR,
+  EXCHANGE_TXN_INCOME_ID_STR,
   EXCHANGE_TXN_EXPENSE_ID_OBJ,
+  EXCHANGE_TXN_EXPENSE_ID_STR,
   EXCHANGE_TXN_INCOME_SRC_IDX,
   EXCHANGE_TXN_EXPENSE_SRC_IDX,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
 import {
   PAYMENT_METHOD_TYPE_SYSTEM,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method";
+} from "@/test-utils/factories/payment-method"
 
 
 export const getExchangeTransactionDTO = () => ({

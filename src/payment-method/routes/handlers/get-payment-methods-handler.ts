@@ -1,7 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { findPaymentMethods } from "@payment-method/db";
-import { AuthenticatedRequest } from "@shared/http";
-import { serializePaymentMethod } from "@payment-method/serializers";
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { findPaymentMethods } from "@payment-method/db"
+import { serializePaymentMethod } from "@payment-method/serializers"
 
 
 export const getPaymentMethodsHandler = async (

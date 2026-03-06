@@ -1,13 +1,13 @@
-import { PaymentMethodType } from "@payment-method/model";
+import { PaymentMethodType } from "@payment-method/model"
 import {
   PAYMENT_METHOD_CASH_NAME,
-  PAYMENT_METHOD_TYPE_SYSTEM,
   CASH_PAYMENT_METHOD_ID_OBJ,
   CASH_PAYMENT_METHOD_ID_STR,
+  PAYMENT_METHOD_TYPE_SYSTEM,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "./payment-method-consts";
+} from "./payment-method-consts"
 
 
 const commonProps = {

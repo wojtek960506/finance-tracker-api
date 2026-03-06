@@ -1,6 +1,6 @@
-import { RandomStandardTransaction } from "../types";
-import { randomFromSet, randomNumber, weightedRandomFromSet } from "@utils/random";
-import { ACCOUNTS, CURRENCIES, TRANSACTION_TYPES } from "@utils/consts";
+import { RandomStandardTransaction } from "../types"
+import { ACCOUNTS, CURRENCIES, TRANSACTION_TYPES } from "@utils/consts"
+import { randomNumber, randomFromSet, weightedRandomFromSet } from "@utils/random"
 
 
 export const prepareRandomStandardTransaction = (

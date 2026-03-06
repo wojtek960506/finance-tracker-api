@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { it, vi, expect, describe, afterEach } from "vitest"
 
 // mock BEFORE importing the file that uses argon2
 vi.mock("argon2", () => ({ default: { hash: vi.fn() }}));

@@ -1,7 +1,7 @@
-import * as config from "@app/config";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { getRefreshCookieOptions } from "./refresh-cookie-options";
-import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from "@/test-utils/env-consts";
+import * as config from "@app/config"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { getRefreshCookieOptions } from "./refresh-cookie-options"
+import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from "@/test-utils/env-consts"
 
 
 vi.mock("@app/config", () => ({ getEnv: vi.fn() }));

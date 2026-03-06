@@ -1,47 +1,47 @@
-import * as dbCategories from "@category/db";
-import * as dbTransactions from "@transaction/db";
-import * as serializers from "@category/serializers";
-import * as dbPaymentMethods from "@payment-method/db";
-import { getNextSourceIndex } from "@transaction/services";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { afterEach, describe, expect, it, Mock, vi } from "vitest";
+import * as dbCategories from "@category/db"
+import * as dbTransactions from "@transaction/db"
+import * as serializers from "@category/serializers"
+import * as dbPaymentMethods from "@payment-method/db"
+import { getNextSourceIndex } from "@transaction/services"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { it, vi, Mock, expect, describe, afterEach } from "vitest"
 import {
   CategoryNotFoundError,
   SystemCategoryHasOwner,
   SystemCategoryWrongType,
   SystemCategoryNotAllowed,
-} from "@utils/errors";
+} from "@utils/errors"
 import {
-  createStandardTransaction,
   createExchangeTransaction,
+  createStandardTransaction,
   createTransferTransaction,
-} from "./create-transaction";
+} from "./create-transaction"
 import {
+  CATEGORY_TYPE_USER,
+  CATEGORY_TYPE_SYSTEM,
   FOOD_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_NAME,
   TRANSFER_CATEGORY_NAME,
   getUserCategoryResultJSON,
   getExchangeCategoryResultJSON,
   getTransferCategoryResultJSON,
-  CATEGORY_TYPE_SYSTEM,
-  CATEGORY_TYPE_USER,
-} from "@/test-utils/factories/category";
-import {
-  getBankTransferPaymentMethodResultJSON
-} from "@/test-utils/factories/payment-method";
+} from "@/test-utils/factories/category"
 import {
   STANDARD_TXN_SRC_IDX,
   getExchangeTransactionDTO,
   getStandardTransactionDTO,
   getTransferTransactionDTO,
-  EXCHANGE_TXN_INCOME_SRC_IDX,  
+  EXCHANGE_TXN_INCOME_SRC_IDX,
   TRANSFER_TXN_INCOME_SRC_IDX,
-  TRANSFER_TXN_EXPENSE_SRC_IDX,
   EXCHANGE_TXN_EXPENSE_SRC_IDX,
+  TRANSFER_TXN_EXPENSE_SRC_IDX,
   getExchangeTransactionResultSerialized,
   getStandardTransactionResultSerialized,
   getTransferTransactionResultSerialized,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
+import {
+  getBankTransferPaymentMethodResultJSON,
+} from "@/test-utils/factories/payment-method"
 
 
 vi.mock("@transaction/services/get-next-source-index", () => ({

@@ -1,10 +1,10 @@
-import jwt from "jsonwebtoken";
-import { getEnv } from "@app/config";
-import { FastifyReply, FastifyRequest } from "fastify";
+import jwt from "jsonwebtoken"
+import { getEnv } from "@app/config"
+import { FastifyReply, FastifyRequest } from "fastify"
 import {
   UnauthorizedInvalidTokenError,
   UnauthorizedMissingTokenError,
-} from "@utils/errors";
+} from "@utils/errors"
 
 
 export function authorizeAccessToken() {

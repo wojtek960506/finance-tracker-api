@@ -1,12 +1,12 @@
-import { persistCategory } from "@category/db";
-import { CategoryModel } from "@category/model";
-import { describe, expect, it, vi } from "vitest";
-import * as serializers from "@category/serializers";
+import { persistCategory } from "@category/db"
+import { CategoryModel } from "@category/model"
+import { it, vi, expect, describe } from "vitest"
+import * as serializers from "@category/serializers"
 import {
   getUserCategoryProps,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 
 
 describe("persistCategory", () => {

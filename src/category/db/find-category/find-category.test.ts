@@ -1,11 +1,11 @@
-import { CategoryModel } from "@category/model";
-import { CategoryNotFoundError } from "@utils/errors";
-import { afterEach, describe, expect, it, Mock, vi } from "vitest";
-import { findCategoryById, findCategoryByName } from "./find-category";
+import { CategoryModel } from "@category/model"
+import { CategoryNotFoundError } from "@utils/errors"
+import { it, vi, Mock, expect, describe, afterEach } from "vitest"
+import { findCategoryById, findCategoryByName } from "./find-category"
 import {
   FOOD_CATEGORY_ID_STR,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 
 
 vi.mock("@category/model", () => (

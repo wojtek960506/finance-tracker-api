@@ -1,6 +1,6 @@
 
-import { describe, vi, beforeEach, it, expect } from "vitest";
-import { randomDate, randomFromSet, randomNumber, weightedRandomFromSet } from "./random";
+import { it, vi, expect, describe, beforeEach } from "vitest"
+import { randomDate, randomNumber, randomFromSet, weightedRandomFromSet } from "./random"
 
 describe("randomDate", () => {
   beforeEach(() => {

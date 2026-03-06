@@ -1,14 +1,14 @@
-import Fastify from "fastify";
-import { userRoutes } from "./user-routes";
-import * as serviceU from "@user/services";
-import { getUserDTO } from "@/test-utils/factories/user";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { registerErrorHandler } from "@plugins/errorHandler";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import Fastify from "fastify"
+import { userRoutes } from "./user-routes"
+import * as serviceU from "@user/services"
+import { getUserDTO } from "@/test-utils/factories/user"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { registerErrorHandler } from "@plugins/errorHandler"
+import { USER_ID_STR } from "@/test-utils/factories/general"
 import {
   TEST_USER_USERNAME,
   TEST_USER_TOTAL_TRANSACTIONS,
-} from "@/test-utils/factories/user";
+} from "@/test-utils/factories/user"
 
 
 const MOCKED_RESULT = { result: "result" };

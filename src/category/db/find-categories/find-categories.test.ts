@@ -1,13 +1,13 @@
-import { findCategories } from "@category/db";
-import { CategoryModel } from "@category/model";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { findCategories } from "@category/db"
+import { CategoryModel } from "@category/model"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
 import {
-  getUserCategoryResultSerialized,
-  getExchangeCategoryResultSerialized,
   FOOD_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_ID_STR,
-} from "@/test-utils/factories/category";
+  getUserCategoryResultSerialized,
+  getExchangeCategoryResultSerialized,
+} from "@/test-utils/factories/category"
 
 
 describe("findCategories", () => {

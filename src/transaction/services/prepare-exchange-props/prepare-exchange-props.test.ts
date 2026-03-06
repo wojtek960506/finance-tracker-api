@@ -1,13 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { prepareExchangeProps } from "./prepare-exchange-props";
-import { EXCHANGE_CATEGORY_ID_STR } from "@/test-utils/factories/category";
+import { it, expect, describe } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { prepareExchangeProps } from "./prepare-exchange-props"
+import { EXCHANGE_CATEGORY_ID_STR } from "@/test-utils/factories/category"
 import {
   getExchangeTransactionDTO,
-  getExchangeTransactionProps,
   EXCHANGE_TXN_INCOME_SRC_IDX,
+  getExchangeTransactionProps,
   EXCHANGE_TXN_EXPENSE_SRC_IDX,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
 
 
 describe("prepareExchangeProps", () => {

@@ -1,6 +1,6 @@
-import { refresh } from "@auth/services";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { getRefreshCookieOptions } from "./refresh-cookie-options";
+import { refresh } from "@auth/services"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { getRefreshCookieOptions } from "./refresh-cookie-options"
 
 
 export const refreshHandler = async (req: FastifyRequest, res: FastifyReply) => {

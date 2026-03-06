@@ -1,15 +1,15 @@
-import { ClientSession } from "mongoose";
-import { AppError } from "@utils/errors";
-import { RandomTransaction } from "./types";
-import { getOrCreateCategory } from "@category/services";
-import { randomDate, randomFromSet } from "@utils/random";
-import { TransactionModel } from "@transaction/model";
-import { getOrCreatePaymentMethod } from "@payment-method/services";
+import { AppError } from "@utils/errors"
+import { ClientSession } from "mongoose"
+import { RandomTransaction } from "./types"
+import { TransactionModel } from "@transaction/model"
+import { getOrCreateCategory } from "@category/services"
+import { randomDate, randomFromSet } from "@utils/random"
+import { getOrCreatePaymentMethod } from "@payment-method/services"
 import {
   prepareRandomStandardTransaction,
   prepareRandomExchangeTransactionPair,
   prepareRandomTransferTransactionPair,
-} from "./prepare-random-transaction";
+} from "./prepare-random-transaction"
 
 
 export async function createRandomTransactions(

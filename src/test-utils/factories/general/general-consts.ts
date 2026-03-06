@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
-import { randomObjectIdString } from "@utils/random";
+import { Types } from "mongoose"
+import { randomObjectIdString } from "@utils/random"
 
 
 export const USER_ID_STR = randomObjectIdString();

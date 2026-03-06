@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Types, Schema } from "mongoose"
 
 export interface ICounter {
   _id: {

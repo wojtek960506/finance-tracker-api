@@ -1,19 +1,19 @@
-import { FastifyInstance } from "fastify";
-import { validateBody } from "@utils/validation";
-import { ParamsJustId } from "@shared/http";
-import { authorizeAccessToken } from "@auth/services";
+import { FastifyInstance } from "fastify"
+import { ParamsJustId } from "@shared/http"
+import { validateBody } from "@utils/validation"
+import { authorizeAccessToken } from "@auth/services"
 import {
   getPaymentMethodHandler,
   getPaymentMethodsHandler,
   createPaymentMethodHandler,
   updatePaymentMethodHandler,
-} from "./handlers";
+} from "./handlers"
 import {
   PaymentMethodDTO,
   PaymentMethodSchema,
   PaymentMethodResponseDTO,
   PaymentMethodsResponseDTO,
-} from "@payment-method/schema";
+} from "@payment-method/schema"
 
 
 export async function paymentMethodRoutes(

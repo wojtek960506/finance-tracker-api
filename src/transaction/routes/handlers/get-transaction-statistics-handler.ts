@@ -1,7 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@shared/http";
-import { getTransactionStatistics } from "@transaction/services";
-import { TransactionStatisticsQuery } from "@transaction/schema";
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { getTransactionStatistics } from "@transaction/services"
+import { TransactionStatisticsQuery } from "@transaction/schema"
 
 
 // it is possible to group by

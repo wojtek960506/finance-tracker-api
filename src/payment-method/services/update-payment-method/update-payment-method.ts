@@ -1,11 +1,11 @@
-import { checkOwner } from "@shared/services";
-import { normalizeWhitespace } from "@utils/strings";
-import { PaymentMethodDTO, PaymentMethodResponseDTO } from "@payment-method/schema";
-import { findPaymentMethodById, savePaymentMethodChanges } from "@payment-method/db";
+import { checkOwner } from "@shared/services"
+import { normalizeWhitespace } from "@utils/strings"
+import { PaymentMethodDTO, PaymentMethodResponseDTO } from "@payment-method/schema"
+import { findPaymentMethodById, savePaymentMethodChanges } from "@payment-method/db"
 import {
   UserPaymentMethodMissingOwner,
   SystemPaymentMethodUpdateNotAllowed,
-} from "@utils/errors";
+} from "@utils/errors"
 
 
 export const updatePaymentMethod = async (

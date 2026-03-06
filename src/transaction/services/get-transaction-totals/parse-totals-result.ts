@@ -4,7 +4,7 @@ import {
   TransactionSubcategoryTotals,
   TransactionTotalsOverallObjDb,
   TransactionTotalsByCurrencyObjDb,
-} from "@transaction/routes/types";
+} from "@transaction/routes/types"
 
 
 export const parseTotalsByCurrencyResult = (

@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { getEnv } from "@app/config";
+import mongoose from "mongoose"
+import { getEnv } from "@app/config"
 
 
 export async function connectDB() {

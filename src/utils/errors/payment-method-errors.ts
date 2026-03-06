@@ -1,4 +1,4 @@
-import { AppError } from "./general-errors";
+import { AppError } from "./general-errors"
 
 
 export class PaymentMethodNotFoundError extends AppError {

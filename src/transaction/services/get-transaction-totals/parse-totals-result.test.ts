@@ -1,14 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { it, expect, describe } from "vitest"
 import {
   TOTALS_OVERALL,
   TOTALS_BY_CURRENCY,
   PARSED_TOTALS_OVERALL,
   PARSED_TOTALS_BY_CURRENCY,
-} from "./mocks";
+} from "./mocks"
 import {
   parseTotalsOverallResult,
   parseTotalsByCurrencyResult,
-} from "./parse-totals-result";
+} from "./parse-totals-result"
 
 
 describe("parse totals result", () => {

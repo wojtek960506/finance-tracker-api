@@ -1,5 +1,5 @@
-import { UserModel } from "./user-model";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { UserModel } from "./user-model"
+import { it, vi, expect, describe, afterEach } from "vitest"
 
 
 describe("UserModel refreshTokenHash.createdAt default", () => {

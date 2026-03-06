@@ -1,7 +1,7 @@
-import { AppError } from "@utils/errors";
-import { UserModel } from "@user/model";
-import { removeTransactions } from "@transaction/db";
-import { DeleteManyReply } from "@shared/http";
+import { UserModel } from "@user/model"
+import { AppError } from "@utils/errors"
+import { DeleteManyReply } from "@shared/http"
+import { removeTransactions } from "@transaction/db"
 
 
 export const deleteTransactions = async (ownerId: string): Promise<DeleteManyReply> => {

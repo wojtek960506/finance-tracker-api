@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
-import { describe, expect, it } from "vitest";
-import { CategoryModel } from "@category/model";
+import { Types } from "mongoose"
+import { it, expect, describe } from "vitest"
+import { CategoryModel } from "@category/model"
 
 
 describe("CategoryModel ownerId validator", () => {

@@ -1,6 +1,6 @@
-import { normalizeWhitespace } from "@utils/strings";
-import { PaymentMethodNotFoundError } from "@utils/errors";
-import { PaymentMethodModel } from "@payment-method/model";
+import { normalizeWhitespace } from "@utils/strings"
+import { PaymentMethodModel } from "@payment-method/model"
+import { PaymentMethodNotFoundError } from "@utils/errors"
 
 
 export const findPaymentMethodById = async (id: string) => {

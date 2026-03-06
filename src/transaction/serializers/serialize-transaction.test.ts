@@ -1,22 +1,22 @@
-import { describe, expect, it } from "vitest";
-import { CategoryType } from "@category/model";
-import { PaymentMethodType } from "@payment-method/model";
-import { serializeTransaction } from "@transaction/serializers";
+import { it, expect, describe } from "vitest"
+import { CategoryType } from "@category/model"
+import { PaymentMethodType } from "@payment-method/model"
+import { serializeTransaction } from "@transaction/serializers"
+import {
+  CATEGORY_TYPE_USER,
+  FOOD_CATEGORY_NAME,
+  FOOD_CATEGORY_ID_STR,
+} from "@/test-utils/factories/category"
 import {
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
   getStandardTransactionNotPopulatedResultJSON,
-} from "@/test-utils/factories/transaction";
-import {
-  FOOD_CATEGORY_NAME,
-  CATEGORY_TYPE_USER,
-  FOOD_CATEGORY_ID_STR,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/transaction"
 import {
   PAYMENT_METHOD_TYPE_SYSTEM,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,  
-} from "@/test-utils/factories/payment-method";
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method"
 
 
 describe("serializeTransaction", () => {

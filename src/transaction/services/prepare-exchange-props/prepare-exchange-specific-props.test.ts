@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
+import { it, expect, describe } from "vitest"
+import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props"
 
 
 describe("prepareExchangeSpecificProps", () => {

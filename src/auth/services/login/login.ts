@@ -1,15 +1,15 @@
-import argon2 from "argon2";
-import { LoginDTO } from "@auth/schema";
-import { UserModel } from "@user/model";
-import { 
+import argon2 from "argon2"
+import { LoginDTO } from "@auth/schema"
+import { UserModel } from "@user/model"
+import {
   UnauthorizedUserNotFoundError,
   UnauthorizedInvalidCredentialsError,
-} from "@utils/errors";
+} from "@utils/errors"
 import {
   createAccessToken,
   createRefreshToken,
   type AccessRefreshTokens,
-} from "@auth/services";
+} from "@auth/services"
 
 
 export const login = async (dto: LoginDTO): Promise<AccessRefreshTokens> => {

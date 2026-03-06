@@ -1,19 +1,19 @@
-import { FastifyInstance } from "fastify";
-import { validateBody } from "@utils/validation";
-import { ParamsJustId } from "@shared/http";
-import { authorizeAccessToken } from "@auth/services";
+import { FastifyInstance } from "fastify"
+import { ParamsJustId } from "@shared/http"
+import { validateBody } from "@utils/validation"
+import { authorizeAccessToken } from "@auth/services"
 import {
   getCategoryHandler,
   getCategoriesHandler,
   createCategoryHandler,
   updateCategoryHandler,
-} from "./handlers";
+} from "./handlers"
 import {
   CategoryDTO,
   CategorySchema,
   CategoryResponseDTO,
   CategoriesResponseDTO,
-} from "@category/schema";
+} from "@category/schema"
 
 
 export async function categoryRoutes(

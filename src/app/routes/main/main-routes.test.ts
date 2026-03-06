@@ -1,7 +1,7 @@
-import Fastify from "fastify";
-import { mainRoutes } from "./main-routes";
-import { WELCOME_MESSAGE } from "./consts";
-import { describe, expect, it } from "vitest";
+import Fastify from "fastify"
+import { mainRoutes } from "./main-routes"
+import { WELCOME_MESSAGE } from "./consts"
+import { it, expect, describe } from "vitest"
 
 
 describe("category routes", async () => {

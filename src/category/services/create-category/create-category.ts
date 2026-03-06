@@ -1,8 +1,8 @@
-import { CategoryType } from "@category/model";
-import { normalizeWhitespace } from "@utils/strings";
-import { CategoryAlreadyExistsError } from "@utils/errors";
-import { findCategoryByName, persistCategory } from "@category/db";
-import { CategoryDTO, CategoryResponseDTO } from "@category/schema";
+import { CategoryType } from "@category/model"
+import { normalizeWhitespace } from "@utils/strings"
+import { CategoryAlreadyExistsError } from "@utils/errors"
+import { persistCategory, findCategoryByName } from "@category/db"
+import { CategoryDTO, CategoryResponseDTO } from "@category/schema"
 
 
 export const createCategory = async (

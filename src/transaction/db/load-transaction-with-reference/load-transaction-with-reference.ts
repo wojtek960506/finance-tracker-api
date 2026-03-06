@@ -1,12 +1,12 @@
-import { checkOwner } from "@shared/services";
-import { findTransaction } from "@transaction/db/find-transaction";
+import { checkOwner } from "@shared/services"
+import { findTransaction } from "@transaction/db/find-transaction"
 import {
   TransactionWrongTypesError,
   TransactionWrongReferenceError,
   TransactionExchangeCategoryError,
   TransactionMissingReferenceError,
   TransactionTransferCategoryError,
-} from "@utils/errors";
+} from "@utils/errors"
 
 
 export type SystemCategoryName = "exchange" | "myAccount";

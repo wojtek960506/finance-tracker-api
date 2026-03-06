@@ -1,4 +1,4 @@
-import { CategoryType } from "@category/model";
+import { CategoryType } from "@category/model"
 import {
   CATEGORY_TYPE_SYSTEM,
   EXCHANGE_CATEGORY_NAME,
@@ -7,7 +7,7 @@ import {
   EXCHANGE_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_ID_OBJ,
   TRANSFER_CATEGORY_ID_STR,
-} from "./category-consts";
+} from "./category-consts"
 
 
 const commonProps = { type: CATEGORY_TYPE_SYSTEM as CategoryType, ownerId: undefined }

@@ -1,5 +1,5 @@
-import { excludeFromSet } from "./set";
-import { describe, expect, it } from "vitest";
+import { excludeFromSet } from "./set"
+import { it, expect, describe } from "vitest"
 
 
 describe("excludeFromSet", () => {

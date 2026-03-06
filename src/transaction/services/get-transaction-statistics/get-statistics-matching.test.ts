@@ -1,25 +1,25 @@
-import { FilterQuery, Types } from "mongoose";
-import { describe, expect, it } from "vitest";
-import { ValidationError } from "@utils/errors";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { getStatisticsMatching } from "./get-statistics-matching";
-import { TransactionStatisticsQuery } from "@transaction/schema";
+import { it, expect, describe } from "vitest"
+import { Types, FilterQuery } from "mongoose"
+import { ValidationError } from "@utils/errors"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { TransactionStatisticsQuery } from "@transaction/schema"
+import { getStatisticsMatching } from "./get-statistics-matching"
 import {
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_ID_OBJ,
   EXCHANGE_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_ID_STR,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 import {
   ACCOUNT_EXPENSE,
   CURRENCY_EXPENSE,
   TRANSACTION_TYPE_EXPENSE,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method";
+} from "@/test-utils/factories/payment-method"
 
 
 const checkRequiredProps = (

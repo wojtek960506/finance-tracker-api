@@ -1,15 +1,11 @@
-import { refresh } from "./refresh";
-import { UserModel } from "@user/model";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { refresh } from "./refresh"
+import { UserModel } from "@user/model"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { getTokenHash, createAccessToken, createRefreshToken } from "@auth/services"
 import {
   UnauthorizedInvalidRefreshTokenError,
   UnauthorizedMissingRefreshTokenError,
-} from "@utils/errors";
-import {
-  getTokenHash,
-  createAccessToken,
-  createRefreshToken,
-} from "@auth/services";
+} from "@utils/errors"
 
 
 vi.mock("@auth/services", () => ({

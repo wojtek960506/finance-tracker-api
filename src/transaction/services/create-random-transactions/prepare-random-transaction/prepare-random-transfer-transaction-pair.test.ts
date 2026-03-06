@@ -1,14 +1,14 @@
-import { randomFromSet, randomNumber } from "@utils/random";
-import { Mock, afterEach, describe, expect, it, vi } from "vitest";
+import { randomNumber, randomFromSet } from "@utils/random"
+import { it, vi, Mock, expect, describe, afterEach } from "vitest"
 import {
   TEST_DATE,
   TEST_OWNER_ID,
-  TEST_SOURCE_INDEX,
   TEST_CATEGORY_ID,
-} from "../test-fixtures";
+  TEST_SOURCE_INDEX,
+} from "../test-fixtures"
 import {
   prepareRandomTransferTransactionPair,
-} from "./prepare-random-transfer-transaction-pair";
+} from "./prepare-random-transfer-transaction-pair"
 
 
 vi.mock("@utils/random", () => ({

@@ -1,6 +1,6 @@
-import { createTestUser } from "@user/services";
-import { TestUserCreateDTO } from "@user/schema";
-import { FastifyReply, FastifyRequest } from "fastify";
+import { createTestUser } from "@user/services"
+import { TestUserCreateDTO } from "@user/schema"
+import { FastifyReply, FastifyRequest } from "fastify"
 
 
 export const createTestUserHandler = async (

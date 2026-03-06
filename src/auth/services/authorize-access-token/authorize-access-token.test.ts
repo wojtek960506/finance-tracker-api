@@ -1,12 +1,12 @@
-import jwt from "jsonwebtoken";
-import * as config from "@app/config";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { authorizeAccessToken } from "./authorize-access-token";
-import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from "@/test-utils/env-consts";
+import jwt from "jsonwebtoken"
+import * as config from "@app/config"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { authorizeAccessToken } from "./authorize-access-token"
+import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from "@/test-utils/env-consts"
 import {
   UnauthorizedInvalidTokenError,
   UnauthorizedMissingTokenError,
-} from "@utils/errors";
+} from "@utils/errors"
 
 
 vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));

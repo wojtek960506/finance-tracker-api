@@ -1,9 +1,9 @@
-import { findUser } from "./find-user";
-import { UserModel } from "@user/model";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { UserNotFoundError } from "@utils/errors/user-errors";
-import { getUserResultJSON } from "@/test-utils/factories/user";
+import { findUser } from "./find-user"
+import { UserModel } from "@user/model"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { UserNotFoundError } from "@utils/errors/user-errors"
+import { getUserResultJSON } from "@/test-utils/factories/user"
 
 
 describe("findUser", () => {

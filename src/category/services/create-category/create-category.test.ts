@@ -1,13 +1,13 @@
-import { createCategory } from "@category/services";
-import { CategoryAlreadyExistsError } from "@utils/errors";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { describe, expect, it, Mock, vi, afterEach } from "vitest";
-import { findCategoryByName, persistCategory } from "@category/db";
+import { createCategory } from "@category/services"
+import { CategoryAlreadyExistsError } from "@utils/errors"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { it, vi, Mock, expect, describe, afterEach } from "vitest"
+import { persistCategory, findCategoryByName } from "@category/db"
 import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_NAME,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 
 
 vi.mock("@category/db", () => ({ findCategoryByName: vi.fn(), persistCategory: vi.fn() }));

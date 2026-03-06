@@ -1,9 +1,5 @@
-import { Schema, model, Document, Types } from "mongoose";
-import {
-  ACCOUNTS,
-  CURRENCIES,
-  TRANSACTION_TYPES
-} from "@utils/consts";
+import { model, Types, Schema, Document } from "mongoose"
+import { ACCOUNTS, CURRENCIES, TRANSACTION_TYPES } from "@utils/consts"
 
 
 export interface TransactionAttributes {

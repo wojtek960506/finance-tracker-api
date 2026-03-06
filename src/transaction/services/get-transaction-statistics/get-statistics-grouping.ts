@@ -1,5 +1,5 @@
-import { PipelineStage } from "mongoose";
-import { TransactionStatisticsQuery } from "@transaction/schema";
+import { PipelineStage } from "mongoose"
+import { TransactionStatisticsQuery } from "@transaction/schema"
 
 
 const groupingByYear = { year: { $year: "$date" } } as const;

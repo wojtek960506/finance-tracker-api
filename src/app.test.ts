@@ -1,11 +1,11 @@
-import * as config from "@app/config";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as config from "@app/config"
+import { it, vi, expect, describe, beforeEach } from "vitest"
 import {
   PORT_TEST,
   ENV_TEST_VALUES,
   COOKIE_SECRET_TEST,
   JWT_ACCESS_SECRET_TEST,
-} from "@/test-utils/env-consts";
+} from "@/test-utils/env-consts"
 
 
 const {

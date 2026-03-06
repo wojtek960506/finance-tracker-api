@@ -1,21 +1,24 @@
-import { describe, expect, it } from "vitest";
-import { ValidationError } from "@utils/errors";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { buildTransactionFilterQuery } from "./build-transaction-query";
-import { FOOD_CATEGORY_ID_OBJ, FOOD_CATEGORY_ID_STR } from "@/test-utils/factories/category";
+import { it, expect, describe } from "vitest"
+import { ValidationError } from "@utils/errors"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { buildTransactionFilterQuery } from "./build-transaction-query"
+import {
+  FOOD_CATEGORY_ID_OBJ,
+  FOOD_CATEGORY_ID_STR,
+} from "@/test-utils/factories/category"
 import {
   ACCOUNT_EXPENSE,
   END_DATE_FILTER,
   CURRENCY_EXPENSE,
-  START_DATE_FILTER,
-  MIN_AMOUNT_FILTER,
   MAX_AMOUNT_FILTER,
+  MIN_AMOUNT_FILTER,
+  START_DATE_FILTER,
   TRANSACTION_TYPE_EXPENSE,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method";
+} from "@/test-utils/factories/payment-method"
 
 
 describe("build-transaction-query", () => {

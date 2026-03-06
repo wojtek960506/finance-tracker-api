@@ -1,6 +1,6 @@
-import { logout } from "@auth/services";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { getRefreshCookieOptions } from "./refresh-cookie-options";
+import { logout } from "@auth/services"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { getRefreshCookieOptions } from "./refresh-cookie-options"
 
 
 export const logoutHandler = async (req: FastifyRequest, res: FastifyReply) => {

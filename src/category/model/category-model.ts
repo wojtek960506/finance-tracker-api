@@ -1,4 +1,4 @@
-import { model, Schema, Types, Document } from "mongoose";
+import { model, Types, Schema, Document } from "mongoose"
 
 
 export type CategoryType = "user" | "system";

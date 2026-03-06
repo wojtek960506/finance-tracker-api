@@ -1,5 +1,5 @@
-import { UserModel } from "@user/model";
-import { UserNotFoundError } from "@utils/errors/user-errors";
+import { UserModel } from "@user/model"
+import { UserNotFoundError } from "@utils/errors/user-errors"
 
 
 export const findUser = async (id: string) => {

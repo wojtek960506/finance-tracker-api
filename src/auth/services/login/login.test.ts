@@ -1,12 +1,12 @@
-import argon2 from "argon2";
-import { login } from "./login";
-import { UserModel } from "@user/model";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { createAccessToken, createRefreshToken } from "@auth/services";
+import argon2 from "argon2"
+import { login } from "./login"
+import { UserModel } from "@user/model"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { createAccessToken, createRefreshToken } from "@auth/services"
 import {
   UnauthorizedUserNotFoundError,
   UnauthorizedInvalidCredentialsError,
-} from "@utils/errors";
+} from "@utils/errors"
 
 
 vi.mock("argon2", () => ({ default: { verify: vi.fn() } }));

@@ -1,7 +1,7 @@
-import { Types } from "mongoose";
-import { TransactionOwnershipError } from "@utils/errors";
-import { CategoryOwnershipError } from "@utils/errors/category-errors";
-import { PaymentMethodOwnershipError } from "@utils/errors/payment-method-errors";
+import { Types } from "mongoose"
+import { TransactionOwnershipError } from "@utils/errors"
+import { CategoryOwnershipError } from "@utils/errors/category-errors"
+import { PaymentMethodOwnershipError } from "@utils/errors/payment-method-errors"
 
 
 export type CheckOwnerType = "transaction" | "category" | "paymentMethod";

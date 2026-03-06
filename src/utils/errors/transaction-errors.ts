@@ -1,4 +1,4 @@
-import { AppError } from "@utils/errors/general-errors";
+import { AppError } from "@utils/errors/general-errors"
 
 
 export class TransactionNotFoundError extends AppError {

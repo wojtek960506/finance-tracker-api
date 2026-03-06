@@ -1,5 +1,5 @@
-import { DeleteManyReply } from "@shared/http";
-import { TransactionModel } from "@transaction/model";
+import { DeleteManyReply } from "@shared/http"
+import { TransactionModel } from "@transaction/model"
 
 
 type RemoveQuery = { ownerId?: string }

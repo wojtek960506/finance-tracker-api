@@ -1,5 +1,5 @@
-import z from "zod";
-import { OBJECT_ID_REGEX } from "@utils/consts";
+import z from "zod"
+import { OBJECT_ID_REGEX } from "@utils/consts"
 
 
 export const CategorySchema = z.object({

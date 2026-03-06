@@ -1,21 +1,15 @@
-import { TransactionTransferDTO } from "@transaction/schema";
-import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from "@/test-utils/factories/general";
+import { TransactionTransferDTO } from "@transaction/schema"
+import { DATE_OBJ, USER_ID_STR, DATE_ISO_STR } from "@/test-utils/factories/general"
 import {
   TransactionTransferCreateProps,
   TransactionTransferUpdateProps,
-} from "@transaction/db";
+} from "@transaction/db"
 import {
   CATEGORY_TYPE_SYSTEM,
   TRANSFER_CATEGORY_NAME,
   TRANSFER_CATEGORY_ID_OBJ,
   TRANSFER_CATEGORY_ID_STR,
-} from "@/test-utils/factories/category";
-import {
-  PAYMENT_METHOD_TYPE_SYSTEM,
-  PAYMENT_METHOD_BANK_TRANSFER_NAME,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from "@/test-utils/factories/payment-method";
+} from "@/test-utils/factories/category"
 import {
   DESCRPTION,
   ACCOUNT_INCOME,
@@ -30,7 +24,13 @@ import {
   TRANSFER_TXN_EXPENSE_ID_STR,
   TRANSFER_TXN_INCOME_SRC_IDX,
   TRANSFER_TXN_EXPENSE_SRC_IDX,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
+import {
+  PAYMENT_METHOD_TYPE_SYSTEM,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method"
 
 
 export const getTransferTransactionDTO = () => ({

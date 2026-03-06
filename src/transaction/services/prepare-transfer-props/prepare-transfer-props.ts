@@ -1,12 +1,12 @@
-import { TransactionTransferDTO } from "@transaction/schema";
+import { TransactionTransferDTO } from "@transaction/schema"
 import {
   TransactionTransferCreateProps,
   TransactionTransferUpdateProps,
-} from "@transaction/db";
+} from "@transaction/db"
 import {
   PrepareTransactionPropsContext,
   PrepareTransactionPropsObjectIds,
-} from "@transaction/services/types";
+} from "@transaction/services/types"
 
 
 export function prepareTransferProps(

@@ -1,5 +1,5 @@
-import { getUsers } from "@user/services";
-import { FastifyReply, FastifyRequest } from "fastify";
+import { getUsers } from "@user/services"
+import { FastifyReply, FastifyRequest } from "fastify"
 
 
 export const getUsersHandler = async (

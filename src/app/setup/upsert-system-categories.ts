@@ -1,6 +1,6 @@
-import { ClientSession } from "mongoose";
-import { CategoryModel } from "@category/model";
-import { withSession } from "@utils/with-session";
+import { ClientSession } from "mongoose"
+import { CategoryModel } from "@category/model"
+import { withSession } from "@utils/with-session"
 
 
 const SYSTEM_CATEGORY_NAMES = new Set(["exchange", "myAccount"]);

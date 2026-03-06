@@ -1,8 +1,8 @@
-import { ClientSession } from "mongoose";
-import { AppError } from "@utils/errors";
-import { withSession } from "@utils/with-session";
-import { TransactionModel } from "@transaction/model";
-import { createRandomTransactions } from "@transaction/services";
+import { AppError } from "@utils/errors"
+import { ClientSession } from "mongoose"
+import { withSession } from "@utils/with-session"
+import { TransactionModel } from "@transaction/model"
+import { createRandomTransactions } from "@transaction/services"
 
 
 const createTestTransactionsCore = async (

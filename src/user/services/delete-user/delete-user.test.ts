@@ -1,22 +1,19 @@
-import { UserModel } from "@user/model";
-import { deleteUser } from "./delete-user";
-import { CategoryModel } from "@category/model";
-import { withSession } from "@utils/with-session";
-import * as serializers from "@user/serializers";
-import { randomObjectIdString } from "@utils/random";
-import { PaymentMethodModel } from "@payment-method/model";
-import { TransactionModel } from "@transaction/model";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
+import { UserModel } from "@user/model"
+import { deleteUser } from "./delete-user"
+import { CategoryModel } from "@category/model"
+import * as serializers from "@user/serializers"
+import { withSession } from "@utils/with-session"
+import { randomObjectIdString } from "@utils/random"
+import { TransactionModel } from "@transaction/model"
+import { PaymentMethodModel } from "@payment-method/model"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { getUserResultJSON, getUserResultSerialized } from "@/test-utils/factories/user"
 import {
   UserNotFoundError,
   UserNotDeletedError,
   UserNotAuthorizedToDeleteError,
-} from "@utils/errors/user-errors";
-import {
-  getUserResultJSON,
-  getUserResultSerialized,
-} from "@/test-utils/factories/user";
+} from "@utils/errors/user-errors"
 
 
 const sessionMock = {} as any;

@@ -1,6 +1,6 @@
-import { TransactionStandardCreateProps } from "./types";
-import { serializeTransaction } from "@transaction/serializers";
-import { TransactionModel } from "@transaction/model";
+import { TransactionModel } from "@transaction/model"
+import { TransactionStandardCreateProps } from "./types"
+import { serializeTransaction } from "@transaction/serializers"
 
 
 export async function persistTransaction(props: TransactionStandardCreateProps) {

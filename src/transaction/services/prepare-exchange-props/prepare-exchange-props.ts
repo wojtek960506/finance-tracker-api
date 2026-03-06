@@ -1,11 +1,11 @@
-import { TransactionExchangeDTO } from "@transaction/schema";
-import { TransactionExchangeUpdateProps } from "@transaction/db";
-import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props";
-import { TransactionExchangeCreateProps } from "@transaction/db/persist-transaction";
+import { TransactionExchangeDTO } from "@transaction/schema"
+import { TransactionExchangeUpdateProps } from "@transaction/db"
+import { prepareExchangeSpecificProps } from "./prepare-exchange-specific-props"
+import { TransactionExchangeCreateProps } from "@transaction/db/persist-transaction"
 import {
   PrepareTransactionPropsContext,
   PrepareTransactionPropsObjectIds,
-} from "@transaction/services/types";
+} from "@transaction/services/types"
 
 
 export function prepareExchangeProps(

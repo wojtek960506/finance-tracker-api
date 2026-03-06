@@ -1,6 +1,6 @@
-import { CounterModel } from "@transaction/model";
-import { describe, expect, it, Mock, vi } from "vitest";
-import { getNextSourceIndex } from "./get-next-source-index";
+import { CounterModel } from "@transaction/model"
+import { it, vi, Mock, expect, describe } from "vitest"
+import { getNextSourceIndex } from "./get-next-source-index"
 
 
 vi.mock("@transaction/model", () => ({

@@ -1,10 +1,10 @@
 
-import { AppError } from "@utils/errors";
-import { UserModel } from "@user/model";
-import { deleteTransactions } from "./delete-transactions";
-import { TransactionModel } from "@transaction/model";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { UserModel } from "@user/model"
+import { AppError } from "@utils/errors"
+import { TransactionModel } from "@transaction/model"
+import { deleteTransactions } from "./delete-transactions"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
 
 
 describe("deleteTransactions", () => {

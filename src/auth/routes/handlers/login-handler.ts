@@ -1,7 +1,7 @@
-import { login } from "@auth/services";
-import { LoginDTO } from "@auth/schema";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { getRefreshCookieOptions } from "./refresh-cookie-options";
+import { login } from "@auth/services"
+import { LoginDTO } from "@auth/schema"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { getRefreshCookieOptions } from "./refresh-cookie-options"
 
 
 export const loginHandler = async (

@@ -1,6 +1,6 @@
-import { ACCOUNTS, CURRENCIES } from "@utils/consts";
-import { RandomTransferTransactionPair } from "../types";
-import { randomFromSet, randomNumber } from "@utils/random";
+import { ACCOUNTS, CURRENCIES } from "@utils/consts"
+import { RandomTransferTransactionPair } from "../types"
+import { randomNumber, randomFromSet } from "@utils/random"
 
 
 export const prepareRandomTransferTransactionPair = (

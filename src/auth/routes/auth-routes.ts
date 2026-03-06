@@ -1,14 +1,9 @@
-import { FastifyInstance } from "fastify";
-import { UserResponseDTO } from "@user/schema";
-import { validateBody } from "@utils/validation";
-import { LoginDTO, LoginSchema } from "@auth/schema";
-import { authorizeAccessToken } from "@auth/services";
-import {
-  getMeHandler,
-  loginHandler,
-  logoutHandler,
-  refreshHandler,
-} from "./handlers";
+import { FastifyInstance } from "fastify"
+import { UserResponseDTO } from "@user/schema"
+import { validateBody } from "@utils/validation"
+import { LoginDTO, LoginSchema } from "@auth/schema"
+import { authorizeAccessToken } from "@auth/services"
+import { getMeHandler, loginHandler, logoutHandler, refreshHandler } from "./handlers"
 
 
 type AccessTokenResponse = { accessToken: string };

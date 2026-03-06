@@ -1,5 +1,5 @@
-import { randomObjectIdString } from "@utils/random";
-import { Types } from "mongoose";
+import { Types } from "mongoose"
+import { randomObjectIdString } from "@utils/random"
 
 
 export const AMOUNT_EXPENSE = 423;

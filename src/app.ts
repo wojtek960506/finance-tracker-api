@@ -1,21 +1,17 @@
-import Fastify from "fastify";
+import Fastify from "fastify"
 import cors from "@fastify/cors"
-import { getEnv } from "@app/config";
-import cookie from "@fastify/cookie";
-import fastifyJwt from "@fastify/jwt";
-import { mainRoutes } from "@app/routes";
-import { authRoutes } from "@auth/routes";
-import { userRoutes } from "@user/routes";
-import { categoryRoutes } from "@category/routes";
-import { transactionRoutes } from "@transaction/routes";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { paymentMethodRoutes } from "@payment-method/routes";
-import { registerErrorHandler } from "./plugins/errorHandler";
-import {
-  connectDB,
-  upsertSystemCategories,
-  upsertSystemPaymentMethods,
-} from "@app/setup";
+import { getEnv } from "@app/config"
+import cookie from "@fastify/cookie"
+import fastifyJwt from "@fastify/jwt"
+import { mainRoutes } from "@app/routes"
+import { authRoutes } from "@auth/routes"
+import { userRoutes } from "@user/routes"
+import { categoryRoutes } from "@category/routes"
+import { transactionRoutes } from "@transaction/routes"
+import { ZodTypeProvider } from "fastify-type-provider-zod"
+import { paymentMethodRoutes } from "@payment-method/routes"
+import { registerErrorHandler } from "./plugins/errorHandler"
+import { connectDB, upsertSystemCategories, upsertSystemPaymentMethods } from "@app/setup"
 
 
 //############################################################################################

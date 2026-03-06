@@ -1,6 +1,6 @@
-import z from "zod";
-import { ValidationError } from "./errors";
-import { FastifyReply, FastifyRequest } from "fastify";
+import z from "zod"
+import { ValidationError } from "./errors"
+import { FastifyReply, FastifyRequest } from "fastify"
 
 
 export function validateBody<T extends z.ZodType>(schema: T) {

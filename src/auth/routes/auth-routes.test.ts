@@ -1,12 +1,12 @@
-import Fastify from "fastify";
-import cookie from "@fastify/cookie";
-import { authRoutes } from "./auth-routes";
-import * as serviceA from "@auth/services";
-import * as serviceU from "@user/services";
-import { ENV_TEST_VALUES } from "@/test-utils/env-consts";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { registerErrorHandler } from "@plugins/errorHandler";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import Fastify from "fastify"
+import cookie from "@fastify/cookie"
+import { authRoutes } from "./auth-routes"
+import * as serviceA from "@auth/services"
+import * as serviceU from "@user/services"
+import { ENV_TEST_VALUES } from "@/test-utils/env-consts"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { registerErrorHandler } from "@plugins/errorHandler"
+import { USER_ID_STR } from "@/test-utils/factories/general"
 
 
 const MOCKED_RESULT = { result: "result" };

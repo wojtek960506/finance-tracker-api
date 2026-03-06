@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { getStatisticsGrouping } from "./get-statistics-grouping";
+import { it, expect, describe } from "vitest"
+import { getStatisticsGrouping } from "./get-statistics-grouping"
 
 
 const getCommonGrouping = (_id: unknown) => ({

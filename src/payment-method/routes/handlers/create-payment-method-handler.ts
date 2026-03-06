@@ -1,7 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { PaymentMethodDTO } from "@payment-method/schema";
-import { AuthenticatedRequest } from "@shared/http";
-import { createPaymentMethod } from "@payment-method/services";
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { PaymentMethodDTO } from "@payment-method/schema"
+import { createPaymentMethod } from "@payment-method/services"
 
 
 export const createPaymentMethodHandler = async (

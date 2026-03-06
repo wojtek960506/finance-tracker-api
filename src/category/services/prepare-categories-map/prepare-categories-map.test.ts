@@ -1,19 +1,19 @@
-import * as db from "@category/db";
-import { describe, expect, it, vi } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { prepareCategoriesMap } from "./prepare-categories-map";
+import * as db from "@category/db"
+import { it, vi, expect, describe } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { prepareCategoriesMap } from "./prepare-categories-map"
 import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_NAME,
   CATEGORY_TYPE_SYSTEM,
-  FOOD_CATEGORY_ID_STR,
   FOOD_CATEGORY_ID_OBJ,
+  FOOD_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_NAME,
-  EXCHANGE_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_ID_OBJ,
+  EXCHANGE_CATEGORY_ID_STR,
   getUserCategoryResultJSON,
   getExchangeCategoryResultJSON,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 
 
 describe("prepareCategoriesMap", () => {

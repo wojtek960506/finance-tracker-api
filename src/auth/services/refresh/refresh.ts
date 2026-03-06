@@ -1,14 +1,14 @@
-import { UserModel } from "@user/model";
+import { UserModel } from "@user/model"
 import {
   UnauthorizedInvalidRefreshTokenError,
   UnauthorizedMissingRefreshTokenError,
-} from "@utils/errors";
+} from "@utils/errors"
 import {
   getTokenHash,
   createAccessToken,
   createRefreshToken,
   type AccessRefreshTokens,
-} from "@auth/services";
+} from "@auth/services"
 
 
 export const refresh = async (refreshToken: string | undefined): Promise<AccessRefreshTokens> => {

@@ -1,7 +1,7 @@
-import { CategoryDTO } from "@category/schema";
-import { updateCategory } from "@category/services";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest, ParamsJustId } from "@shared/http";
+import { CategoryDTO } from "@category/schema"
+import { updateCategory } from "@category/services"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { ParamsJustId, AuthenticatedRequest } from "@shared/http"
 
 
 export const updateCategoryHandler = async (

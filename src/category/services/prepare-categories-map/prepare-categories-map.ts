@@ -1,6 +1,6 @@
-import { findCategories } from "@category/db";
-import { CategoryResponseDTO } from "@category/schema";
-import { ITransaction } from "@transaction/model";
+import { findCategories } from "@category/db"
+import { ITransaction } from "@transaction/model"
+import { CategoryResponseDTO } from "@category/schema"
 
 
 export type CategoriesMap = Record<

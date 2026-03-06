@@ -1,7 +1,7 @@
-import * as config from "@app/config";
-import type { JwtPayload } from "jsonwebtoken";
-import { ENV_TEST_VALUES } from "@/test-utils/env-consts";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import * as config from "@app/config"
+import type { JwtPayload } from "jsonwebtoken"
+import { ENV_TEST_VALUES } from "@/test-utils/env-consts"
+import { it, vi, expect, describe, afterEach } from "vitest"
 
 
 vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));

@@ -1,12 +1,12 @@
-import { describe, it, expect } from "vitest";
-import { DATE_STR } from "@/test-utils/factories/general";
-import { transactionToCsvRow } from "./transaction-to-csv-row";
-import { getStandardTransactionProps } from "@/test-utils/factories/transaction";
-import { FOOD_CATEGORY_ID_STR, FOOD_CATEGORY_NAME } from "@/test-utils/factories/category";
+import { it, expect, describe } from "vitest"
+import { DATE_STR } from "@/test-utils/factories/general"
+import { transactionToCsvRow } from "./transaction-to-csv-row"
+import { getStandardTransactionProps } from "@/test-utils/factories/transaction"
+import { FOOD_CATEGORY_NAME, FOOD_CATEGORY_ID_STR } from "@/test-utils/factories/category"
 import {
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
-} from "@/test-utils/factories/payment-method";
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method"
 
 
 describe("transactionToCsvRow", () => {

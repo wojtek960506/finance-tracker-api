@@ -1,5 +1,5 @@
-import { getEnv } from "./env";
-import { afterEach, describe, expect, it } from "vitest";
+import { getEnv } from "./env"
+import { it, expect, describe, afterEach } from "vitest"
 
 
 describe("getEnv", () => {

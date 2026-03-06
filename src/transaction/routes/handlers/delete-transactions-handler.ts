@@ -1,6 +1,6 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@shared/http";
-import { deleteTransactions } from "@transaction/services";
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { deleteTransactions } from "@transaction/services"
 
 
 export const deleteTransactionsHandler = async (

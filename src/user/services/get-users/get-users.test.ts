@@ -1,11 +1,8 @@
-import { getUsers } from "./get-users";
-import { UserModel } from "@user/model";
-import { describe, expect, it, vi } from "vitest";
-import * as serializers from "@user/serializers";
-import {
-  getUserResultJSON,
-  getUserResultSerialized,
-} from "@/test-utils/factories/user";
+import { getUsers } from "./get-users"
+import { UserModel } from "@user/model"
+import * as serializers from "@user/serializers"
+import { it, vi, expect, describe } from "vitest"
+import { getUserResultJSON, getUserResultSerialized } from "@/test-utils/factories/user"
 
 
 describe("getUsers", () => {

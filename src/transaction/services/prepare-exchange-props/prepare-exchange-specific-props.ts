@@ -1,4 +1,4 @@
-import { TransactionExchangeDTO } from "@transaction/schema";
+import { TransactionExchangeDTO } from "@transaction/schema"
 
 
 type PropsType = Pick<

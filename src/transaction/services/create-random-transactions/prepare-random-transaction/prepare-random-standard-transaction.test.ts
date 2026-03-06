@@ -1,15 +1,13 @@
-import { TRANSACTION_TYPES } from "@utils/consts";
-import { Mock, afterEach, describe, expect, it, vi } from "vitest";
-import { randomFromSet, randomNumber, weightedRandomFromSet } from "@utils/random";
+import { TRANSACTION_TYPES } from "@utils/consts"
+import { it, vi, Mock, expect, describe, afterEach } from "vitest"
+import { randomNumber, randomFromSet, weightedRandomFromSet } from "@utils/random"
+import { prepareRandomStandardTransaction } from "./prepare-random-standard-transaction"
 import {
   TEST_DATE,
   TEST_OWNER_ID,
   TEST_CATEGORY_ID,
   TEST_SOURCE_INDEX,
-} from "../test-fixtures";
-import {
-  prepareRandomStandardTransaction,
-} from "./prepare-random-standard-transaction";
+} from "../test-fixtures"
 
 
 vi.mock("@utils/random", () => ({

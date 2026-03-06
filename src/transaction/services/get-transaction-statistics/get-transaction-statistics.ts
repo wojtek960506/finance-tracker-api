@@ -1,8 +1,8 @@
-import { TransactionModel } from "@transaction/model";
-import { parseStatisticsResult } from "./parse-statistics-result";
-import { getStatisticsGrouping } from "./get-statistics-grouping";
-import { getStatisticsMatching } from "./get-statistics-matching";
-import { TransactionStatisticsQuery } from "@transaction/schema";
+import { TransactionModel } from "@transaction/model"
+import { TransactionStatisticsQuery } from "@transaction/schema"
+import { getStatisticsGrouping } from "./get-statistics-grouping"
+import { getStatisticsMatching } from "./get-statistics-matching"
+import { parseStatisticsResult } from "./parse-statistics-result"
 
 
 export const getTransactionStatistics = async (

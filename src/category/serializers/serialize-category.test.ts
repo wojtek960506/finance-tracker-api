@@ -1,11 +1,11 @@
-import { describe, expect, it } from "vitest";
-import { serializeCategory } from "./serialize-category";
+import { it, expect, describe } from "vitest"
+import { serializeCategory } from "./serialize-category"
 import {
-  getExchangeCategoryResultJSON,
-  getExchangeCategoryResultSerialized,
   getUserCategoryResultJSON,
+  getExchangeCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category";
+  getExchangeCategoryResultSerialized,
+} from "@/test-utils/factories/category"
 
 
 describe("serializeCategory", () => {

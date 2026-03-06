@@ -1,6 +1,6 @@
-import { deleteUser } from "@user/services";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest, ParamsJustId } from "@shared/http";
+import { deleteUser } from "@user/services"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { ParamsJustId, AuthenticatedRequest } from "@shared/http"
 
 
 export const deleteUserHandler = async (

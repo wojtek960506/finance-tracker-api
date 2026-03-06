@@ -1,30 +1,30 @@
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { findTransaction } from "@transaction/db/find-transaction";
-import * as db from "@transaction/db";
-import { loadTransactionWithReference, SystemCategoryName } from "@transaction/db";
+import * as db from "@transaction/db"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { findTransaction } from "@transaction/db/find-transaction"
+import { it, vi, Mock, expect, describe, afterEach, beforeEach } from "vitest"
+import { SystemCategoryName, loadTransactionWithReference } from "@transaction/db"
 import {
   TransactionWrongTypesError,
   TransactionWrongReferenceError,
   TransactionExchangeCategoryError,
   TransactionMissingReferenceError,
   TransactionTransferCategoryError,
-} from "@utils/errors";
+} from "@utils/errors"
 import {
   FOOD_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_NAME,
+  TRANSFER_CATEGORY_NAME,
   EXCHANGE_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_ID_STR,
-  TRANSFER_CATEGORY_NAME,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 import {
   TRANSACTION_TYPE_EXPENSE,
   EXCHANGE_TXN_INCOME_ID_STR,
   EXCHANGE_TXN_EXPENSE_ID_STR,
-  getExchangeTransactionNotPopulatedResultJSON,
   TRANSFER_TXN_EXPENSE_ID_OBJ,
   TRANSFER_TXN_EXPENSE_ID_STR,
-} from "@/test-utils/factories/transaction";
+  getExchangeTransactionNotPopulatedResultJSON,
+} from "@/test-utils/factories/transaction"
 
 
 vi.mock("@transaction/db/find-transaction", () => ({ findTransaction: vi.fn() }));

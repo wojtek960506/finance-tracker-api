@@ -1,7 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@shared/http";
-import { getTransactionTotals } from "@transaction/services";
-import { TransactionFiltersQuery } from "@transaction/schema";
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { getTransactionTotals } from "@transaction/services"
+import { TransactionFiltersQuery } from "@transaction/schema"
 
 
 export async function getTransactionTotalsHandler(

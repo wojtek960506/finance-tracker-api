@@ -1,4 +1,4 @@
-import { Document, model, Schema, Types } from "mongoose";
+import { model, Types, Schema, Document } from "mongoose"
 
 
 export interface UserAttributes {

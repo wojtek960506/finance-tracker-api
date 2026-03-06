@@ -1,7 +1,7 @@
-import { CategoryModel } from "@category/model";
-import { withSession } from "@utils/with-session";
-import { upsertSystemCategories } from "./upsert-system-categories";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { CategoryModel } from "@category/model"
+import { withSession } from "@utils/with-session"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { upsertSystemCategories } from "./upsert-system-categories"
 
 
 const sessionMock = {} as any;

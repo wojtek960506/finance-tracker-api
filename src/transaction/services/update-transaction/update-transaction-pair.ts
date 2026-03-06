@@ -1,21 +1,21 @@
-import { findCategoryByName } from "@category/db";
-import { serializeCategory } from "@category/serializers";
-import { TransactionResponseDTO } from "@transaction/schema";
+import { findCategoryByName } from "@category/db"
+import { serializeCategory } from "@category/serializers"
+import { TransactionResponseDTO } from "@transaction/schema"
 import {
   CategoryNotFoundError,
   SystemCategoryHasOwner,
   SystemCategoryWrongType,
-} from "@utils/errors";
+} from "@utils/errors"
 import {
   SystemCategoryName,
   saveTransactionPairChanges,
   loadTransactionWithReference,
-} from "@transaction/db";
+} from "@transaction/db"
 import {
   TransactionUpdateProps,
   PreparedTransactionUpdateProps,
   PrepareTransactionPropsObjectIds,
-} from "@transaction/services/types";
+} from "@transaction/services/types"
 
 
 export const updateTransactionPair = async <

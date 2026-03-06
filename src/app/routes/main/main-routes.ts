@@ -1,5 +1,5 @@
-import { FastifyInstance } from "fastify";
-import { WELCOME_MESSAGE } from "./consts";
+import { FastifyInstance } from "fastify"
+import { WELCOME_MESSAGE } from "./consts"
 
 
 export async function mainRoutes(app: FastifyInstance) {

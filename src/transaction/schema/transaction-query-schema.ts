@@ -1,10 +1,5 @@
-import {
-  ACCOUNTS,
-  CURRENCIES,
-  OBJECT_ID_REGEX,
-  TRANSACTION_TYPES,
-} from "@utils/consts";
-import { z } from "zod";
+import { z } from "zod"
+import { ACCOUNTS, CURRENCIES, OBJECT_ID_REGEX, TRANSACTION_TYPES } from "@utils/consts"
 
 const TransactionCommonQuerySchema = z.object({
   categoryId: z.string()

@@ -1,5 +1,5 @@
-import { FilterQuery } from "mongoose";
-import { ITransaction, TransactionModel } from "@transaction/model";
+import { FilterQuery } from "mongoose"
+import { ITransaction, TransactionModel } from "@transaction/model"
 
 
 export const findTransactionTotalsOverall = async (

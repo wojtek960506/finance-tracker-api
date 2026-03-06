@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
-import { getEnv } from "@app/config";
-import { randomBytes, createHash } from "crypto";
+import jwt from "jsonwebtoken"
+import { getEnv } from "@app/config"
+import { createHash, randomBytes } from "crypto"
 
 
 // create JWT access token

@@ -1,16 +1,16 @@
-import Fastify from "fastify";
-import * as dbC from "@category/db";
-import * as serviceC from "@category/services";
-import { categoryRoutes } from "./category-routes";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { registerErrorHandler } from "@plugins/errorHandler";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { FOOD_CATEGORY_ID_STR } from "@/test-utils/factories/category";
+import Fastify from "fastify"
+import * as dbC from "@category/db"
+import * as serviceC from "@category/services"
+import { categoryRoutes } from "./category-routes"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { registerErrorHandler } from "@plugins/errorHandler"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { FOOD_CATEGORY_ID_STR } from "@/test-utils/factories/category"
 import {
   getUpdateCategoryProps,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 
 
 const MOCKED_RESULT = { result: "result" };

@@ -1,7 +1,7 @@
-import { CategoryDTO } from "@category/schema";
-import { createCategory } from "@category/services";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@shared/http";
+import { CategoryDTO } from "@category/schema"
+import { AuthenticatedRequest } from "@shared/http"
+import { createCategory } from "@category/services"
+import { FastifyReply, FastifyRequest } from "fastify"
 
 
 export const createCategoryHandler = async (

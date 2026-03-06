@@ -1,6 +1,6 @@
-import { FilterQuery, Types } from "mongoose";
-import { ValidationError } from "@utils/errors";
-import { TransactionStatisticsQuery } from "@transaction/schema";
+import { Types, FilterQuery } from "mongoose"
+import { ValidationError } from "@utils/errors"
+import { TransactionStatisticsQuery } from "@transaction/schema"
 
 
 export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: string) => {

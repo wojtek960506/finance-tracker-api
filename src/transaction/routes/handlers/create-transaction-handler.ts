@@ -1,15 +1,15 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@shared/http";
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
 import {
   TransactionExchangeDTO,
   TransactionStandardDTO,
   TransactionTransferDTO,
-} from "@transaction/schema";
+} from "@transaction/schema"
 import {
   createExchangeTransaction,
   createStandardTransaction,
   createTransferTransaction,
-} from "@transaction/services";
+} from "@transaction/services"
 
 
 export const createTransactionHandler = async (

@@ -1,6 +1,6 @@
-import { createUser } from "@user/services";
-import { UserCreateDTO } from "@user/schema";
-import { FastifyReply, FastifyRequest } from "fastify";
+import { createUser } from "@user/services"
+import { UserCreateDTO } from "@user/schema"
+import { FastifyReply, FastifyRequest } from "fastify"
 
 
 export async function createUserHandler(

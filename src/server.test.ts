@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { it, vi, expect, describe, beforeEach } from "vitest"
 
 
 const { dotenvConfigMock, startMock } = vi.hoisted(() => ({

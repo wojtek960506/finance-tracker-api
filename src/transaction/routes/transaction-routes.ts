@@ -1,37 +1,33 @@
-import { FastifyInstance } from "fastify";
-import { authorizeAccessToken } from "@auth/services";
-import { validateBody, validateQuery } from "@utils/validation";
-import { TransactionStatisticsResponse, TransactionTotalsResponse } from "./types";
+import { FastifyInstance } from "fastify"
+import { authorizeAccessToken } from "@auth/services"
+import { validateBody, validateQuery } from "@utils/validation"
+import { ParamsJustId, DeleteManyReply, FilteredResponse } from "@shared/http"
+import { TransactionTotalsResponse, TransactionStatisticsResponse } from "./types"
 import {
   getTransactionHandler,
   getTransactionsHandler,
+  createTransactionHandler,
   deleteTransactionHandler,
   exportTransacionsHandler,
-  createTransactionHandler,
   updateTransactionHandler,
-  getTransactionTotalsHandler,
   deleteTransactionsHandler,
+  getTransactionTotalsHandler,
   createTestTransactionsHandler,
   getTransactionStatisticsHandler,
-} from "./handlers";
+} from "./handlers"
 import {
+  TransactionExchangeDTO,
   TransactionResponseDTO,
   TransactionStandardDTO,
-  TransactionExchangeDTO,
   TransactionTransferDTO,
   TransactionsResponseDTO,
-  TransactionStandardSchema,
-  TransactionExchangeSchema,
-  TransactionTransferSchema,
   TestTransactionsCreateDTO,
+  TransactionExchangeSchema,
+  TransactionStandardSchema,
+  TransactionTransferSchema,
   TestTransactionsCreateSchema,
   TestTransactionsCreateResponse,
-} from "@transaction/schema";
-import {
-  ParamsJustId,
-  DeleteManyReply,
-  FilteredResponse,
-} from "@shared/http";
+} from "@transaction/schema"
 import {
   TransactionQuery,
   TransactionQuerySchema,
@@ -39,7 +35,7 @@ import {
   TransactionStatisticsQuery,
   TransactionFiltersQuerySchema,
   TransactionStatisticsQuerySchema,
-} from "@transaction/schema";
+} from "@transaction/schema"
 
 
 export async function transactionRoutes(

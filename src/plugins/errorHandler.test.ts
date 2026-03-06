@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { AppError } from "@utils/errors";
-import { registerErrorHandler } from "./errorHandler";
-import { Mock, afterEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod"
+import { AppError } from "@utils/errors"
+import { registerErrorHandler } from "./errorHandler"
+import { it, vi, Mock, expect, describe, afterEach } from "vitest"
 
 
 const createReplyMock = () => {

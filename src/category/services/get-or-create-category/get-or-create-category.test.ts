@@ -1,14 +1,14 @@
-import * as db from "@category/db";
-import * as service from "@category/services";
-import * as serializers from "@category/serializers";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { getOrCreateCategory } from "./get-or-create-category";
+import * as db from "@category/db"
+import * as service from "@category/services"
+import * as serializers from "@category/serializers"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { getOrCreateCategory } from "./get-or-create-category"
 import {
   FOOD_CATEGORY_NAME,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 
 
 describe("getOrCreateCategory", () => {

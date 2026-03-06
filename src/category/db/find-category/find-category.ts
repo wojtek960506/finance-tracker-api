@@ -1,6 +1,6 @@
-import { CategoryModel } from "@category/model";
-import { normalizeWhitespace } from "@utils/strings";
-import { CategoryNotFoundError } from "@utils/errors";
+import { CategoryModel } from "@category/model"
+import { normalizeWhitespace } from "@utils/strings"
+import { CategoryNotFoundError } from "@utils/errors"
 
 
 export const findCategoryById = async (id: string) => {

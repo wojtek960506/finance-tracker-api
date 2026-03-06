@@ -1,7 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@shared/http";
-import { createTestTransactions } from "@transaction/services";
-import { TestTransactionsCreateDTO } from "@transaction/schema";
+import { AuthenticatedRequest } from "@shared/http"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { createTestTransactions } from "@transaction/services"
+import { TestTransactionsCreateDTO } from "@transaction/schema"
 
 
 export const createTestTransactionsHandler = async (

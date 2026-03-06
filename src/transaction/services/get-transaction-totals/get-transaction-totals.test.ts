@@ -1,16 +1,16 @@
-import { randomObjectIdString } from "@utils/random";
-import { describe, expect, it, Mock, vi } from "vitest";
-import { getTransactionTotals } from "./get-transaction-totals";
+import { randomObjectIdString } from "@utils/random"
+import { it, vi, Mock, expect, describe } from "vitest"
+import { getTransactionTotals } from "./get-transaction-totals"
 import {
   TOTALS_OVERALL,
   TOTALS_BY_CURRENCY,
   PARSED_TOTALS_OVERALL,
   PARSED_TOTALS_BY_CURRENCY,
-} from "./mocks";
+} from "./mocks"
 import {
   findTransactionTotalsOverall,
   findTransactionTotalsByCurrency,
-} from "@transaction/db";
+} from "@transaction/db"
 
 
 vi.mock("@transaction/db", () => ({

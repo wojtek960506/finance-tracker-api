@@ -1,4 +1,4 @@
-import { TransactionStandardDTO } from "@transaction/schema";
+import { TransactionStandardDTO } from "@transaction/schema"
 
 export type TransactionStandardCreateProps = TransactionStandardDTO & {
   ownerId: string,

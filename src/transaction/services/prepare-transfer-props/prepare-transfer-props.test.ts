@@ -1,13 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
-import { prepareTransferProps } from "./prepare-transfer-props";
-import { TRANSFER_CATEGORY_ID_STR } from "@/test-utils/factories/category";
+import { it, expect, describe } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
+import { prepareTransferProps } from "./prepare-transfer-props"
+import { TRANSFER_CATEGORY_ID_STR } from "@/test-utils/factories/category"
 import {
   getTransferTransactionDTO,
   getTransferTransactionProps,
   TRANSFER_TXN_INCOME_SRC_IDX,
   TRANSFER_TXN_EXPENSE_SRC_IDX,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
 
 
 describe("prepareTransferProps", () => {

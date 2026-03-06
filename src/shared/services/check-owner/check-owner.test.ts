@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { checkOwner, CheckOwnerType } from "./check-owner";
-import { CategoryOwnershipError, TransactionOwnershipError } from "@utils/errors";
+import { it, expect, describe } from "vitest"
+import { checkOwner, CheckOwnerType } from "./check-owner"
+import { CategoryOwnershipError, TransactionOwnershipError } from "@utils/errors"
 
 
 describe("checkOwner", () => {

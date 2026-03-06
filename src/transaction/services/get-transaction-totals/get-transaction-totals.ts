@@ -1,13 +1,13 @@
-import { TransactionFiltersQuery } from "@transaction/schema";
-import { buildTransactionFilterQuery } from "@transaction/services";
+import { TransactionFiltersQuery } from "@transaction/schema"
+import { buildTransactionFilterQuery } from "@transaction/services"
 import {
   findTransactionTotalsOverall,
   findTransactionTotalsByCurrency,
-} from "@transaction/db";
+} from "@transaction/db"
 import {
   parseTotalsOverallResult,
   parseTotalsByCurrencyResult,
-} from "./parse-totals-result";
+} from "./parse-totals-result"
 
 
 export async function getTransactionTotals(

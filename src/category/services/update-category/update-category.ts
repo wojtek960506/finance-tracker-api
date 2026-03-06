@@ -1,8 +1,8 @@
-import { checkOwner } from "@shared/services";
-import { normalizeWhitespace } from "@utils/strings";
-import { CategoryDTO, CategoryResponseDTO } from "@category/schema";
-import { findCategoryById, saveCategoryChanges } from "@category/db";
-import { SystemCategoryUpdateNotAllowed, UserCategoryMissingOwner } from "@utils/errors";
+import { checkOwner } from "@shared/services"
+import { normalizeWhitespace } from "@utils/strings"
+import { CategoryDTO, CategoryResponseDTO } from "@category/schema"
+import { findCategoryById, saveCategoryChanges } from "@category/db"
+import { UserCategoryMissingOwner, SystemCategoryUpdateNotAllowed } from "@utils/errors"
 
 
 export const updateCategory = async (

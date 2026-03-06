@@ -1,20 +1,20 @@
-import * as dbCategories from "@category/db";
-import * as dbTransactions from "@transaction/db";
-import * as serializers from "@category/serializers";
-import * as dbPaymentMethods from "@payment-method/db";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { USER_ID_STR } from "@/test-utils/factories/general";
+import * as dbCategories from "@category/db"
+import * as dbTransactions from "@transaction/db"
+import * as serializers from "@category/serializers"
+import * as dbPaymentMethods from "@payment-method/db"
+import { it, vi, expect, describe, afterEach } from "vitest"
+import { USER_ID_STR } from "@/test-utils/factories/general"
 import {
   CategoryNotFoundError,
   SystemCategoryHasOwner,
   SystemCategoryWrongType,
   SystemCategoryNotAllowed,
-} from "@utils/errors";
+} from "@utils/errors"
 import {
-  updateStandardTransaction,
   updateExchangeTransaction,
+  updateStandardTransaction,
   updateTransferTransaction,
-} from "@transaction/services";
+} from "@transaction/services"
 import {
   CATEGORY_TYPE_USER,
   CATEGORY_TYPE_SYSTEM,
@@ -22,21 +22,21 @@ import {
   getUserCategoryResultJSON,
   getExchangeCategoryResultJSON,
   getTransferCategoryResultJSON,
-} from "@/test-utils/factories/category";
+} from "@/test-utils/factories/category"
 import {
   STANDARD_TXN_ID_STR,
   getExchangeTransactionDTO,
-  getTransferTransactionDTO,
   getStandardTransactionDTO,
-  TRANSFER_TXN_EXPENSE_ID_STR,
+  getTransferTransactionDTO,
   EXCHANGE_TXN_EXPENSE_ID_STR,
+  TRANSFER_TXN_EXPENSE_ID_STR,
   getExchangeTransactionResultJSON,
   getTransferTransactionResultJSON,
   getStandardTransactionNotPopulatedResultJSON,
-} from "@/test-utils/factories/transaction";
+} from "@/test-utils/factories/transaction"
 import {
-  getBankTransferPaymentMethodResultJSON
-} from "@/test-utils/factories/payment-method";
+  getBankTransferPaymentMethodResultJSON,
+} from "@/test-utils/factories/payment-method"
 
 
 describe('update transaction', async () => {

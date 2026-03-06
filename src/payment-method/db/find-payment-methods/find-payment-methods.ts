@@ -1,4 +1,4 @@
-import { PaymentMethodModel } from "@payment-method/model";
+import { PaymentMethodModel } from "@payment-method/model"
 
 
 export const findPaymentMethods = async (
