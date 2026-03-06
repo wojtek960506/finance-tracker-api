@@ -5,7 +5,7 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "test1@test.com",
+  "email": "w@z.pl",
   "password": "123"
 }
 
@@ -64,7 +64,9 @@ Authorization: Bearer {{accessToken}}
 
 # {{PLN}}&{{type}}&{{yearAndMonth}}&
 
-GET {{baseUrl}}/statistics?{{PLN}}&{{type}}&{{excludeCategoryIds}}
+# &{{excludeCategoryIds}}
+
+GET {{baseUrl}}/statistics?{{PLN}}&{{type}}
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -74,7 +76,7 @@ Authorization: Bearer {{accessToken}}
 # &startDate=2024-12-01&endDate=2024-12-31
 
 ### GET TOTALS FOR TRANSACTIONS
-GET {{baseUrl}}/totals?categoryId=69830737a0d0fb8f48f900cc
+GET {{baseUrl}}/totals?categoryId=69a9c24ee2c1284ee32aa406
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -101,8 +103,10 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
+# 
+# 69a9c2bce2c1284ee32aa422
 ### Get single transaction
-GET {{baseUrl}}/69830f15269a841a876428f0
+GET {{baseUrl}}/69a9c2bce2c1284ee32aa422
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -115,10 +119,12 @@ Authorization: Bearer {{accessToken}}
 
 ### Create new standard transaction
 
-# "categoryId": "69812ea8e6de6ef869bfba38", (food)
-# "category": "transport",
+# "categoryId": "69a9c24ee2c1284ee32aa406", (food)
 # "categoryId": "6980aef7f9f1739803300ef5", (exchange - system category)
 
+# "paymentMethodId": "69a7fb11e7e4554a4e559e19" (cash)
+# "paymentMethodId": "69a7fb1ae7e4554a4e559e1d" (bankTransfer)
+# "paymentMethodId": "69a7fb13e7e4554a4e559e1a" (blik)
 
 # @name createTransaction
 POST {{baseUrl}}/standard
@@ -130,9 +136,9 @@ Authorization: Bearer {{accessToken}}
   "description": "VERY NEW TRANSACTION",
   "amount": 1.70,
   "currency": "PLN",
-  "categoryId": "69812ea8e6de6ef869bfba38",
+  "categoryId": "69a9c24ee2c1284ee32aa406",
   "transactionType": "expense",
-  "paymentMethod": "card",
+  "paymentMethodId": "69a7fb11e7e4554a4e559e19",
   "account": "mBank"
 }
 
@@ -152,7 +158,7 @@ Authorization: Bearer {{accessToken}}
   "currencyExpense": "EUR",
   "currencyIncome": "PLN",
   "account": "revolut",
-  "paymentMethod": "bankTransfer"
+  "paymentMethodId": "69a7fb1ae7e4554a4e559e1d"
 }
 
 #--------------------------------------------------------------------------------------
@@ -170,7 +176,7 @@ Authorization: Bearer {{accessToken}}
   "currency": "PLN",
   "accountExpense": "mBank",
   "accountIncome": "aliorBank",
-  "paymentMethod": "bankTransfer"
+  "paymentMethodId": "69a7fb13e7e4554a4e559e1a"
 }
 
 #--------------------------------------------------------------------------------------
@@ -180,7 +186,7 @@ Authorization: Bearer {{accessToken}}
 # "categoryId": "69830737a0d0fb8f48f900cc" (transport)
 
 ### Update STANDARD transaction
-PUT {{baseUrl}}/standard/69830f15269a841a876428f0
+PUT {{baseUrl}}/standard/69a9c26ee2c1284ee32aa40b
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -189,9 +195,9 @@ Authorization: Bearer {{accessToken}}
   "description": "expense - food - 372.5971177941268 EUR - 2025-12-24",
   "amount": 372.5971177941268,
   "currency": "EUR",
-  "categoryId": "69830737a0d0fb8f48f900cc",
+  "categoryId": "69a9c24ee2c1284ee32aa406",
   "transactionType": "expense",
-  "paymentMethod": "card",
+  "paymentMethodId": "69a7fb1ae7e4554a4e559e1d",
   "account": "creditAgricole"
 }
 
@@ -199,7 +205,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 ### Update TRANSFER transaction
-PUT {{baseUrl}}/transfer/69830b42269a841a876428ba
+PUT {{baseUrl}}/transfer/69a9c2bce2c1284ee32aa422
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -208,7 +214,7 @@ Authorization: Bearer {{accessToken}}
   "additionalDescription": "abcdef",
   "amount": 1.70,
   "currency": "PLN",
-  "paymentMethod": "card",
+  "paymentMethodId": "69a7fb1ae7e4554a4e559e1d",
   "accountExpense": "mBank",
   "accountIncome": "veloBank"
 }
