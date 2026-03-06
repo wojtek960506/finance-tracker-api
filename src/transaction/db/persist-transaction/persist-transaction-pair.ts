@@ -1,6 +1,6 @@
 import { ClientSession } from "mongoose";
 import { withSession } from "@utils/with-session";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 import { TransactionModel } from "@transaction/model";
 import { TransactionResponseDTO } from "@transaction/schema";
 import { TransactionExchangeCreateProps, TransactionTransferCreateProps } from "./types";

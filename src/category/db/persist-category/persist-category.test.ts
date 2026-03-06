@@ -1,7 +1,7 @@
 import { persistCategory } from "@category/db";
 import { CategoryModel } from "@category/model";
 import { describe, expect, it, vi } from "vitest";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@category/serializers";
 import {
   getUserCategoryProps,
   getUserCategoryResultJSON,

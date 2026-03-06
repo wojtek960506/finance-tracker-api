@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@category/serializers";
 import { saveCategoryChanges } from "@category/db";
 import { getUserCategoryResultJSON } from "@/test-utils/factories/category";
 

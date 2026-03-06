@@ -1,6 +1,6 @@
 import { getUser } from "@user/services";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@routes/routes-types";
+import { AuthenticatedRequest } from "@shared/http";
 
 
 export const getMeHandler = async (req: FastifyRequest, res: FastifyReply) => {

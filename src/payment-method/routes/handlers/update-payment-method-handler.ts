@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PaymentMethodDTO } from "@payment-method/schema";
 import { updatePaymentMethod } from "@payment-method/services";
-import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
+import { AuthenticatedRequest, ParamsJustId } from "@shared/http";
 
 
 export const updatePaymentMethodHandler = async (

@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getTransactions } from "@transaction/services";
-import { AuthenticatedRequest } from "@routes/routes-types";
+import { AuthenticatedRequest } from "@shared/http";
 import { TransactionQuery } from "@transaction/schema";
 
 

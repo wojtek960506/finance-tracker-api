@@ -1,4 +1,4 @@
-import * as config from "@/config";
+import * as config from "@app/config";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   PORT_TEST,
@@ -56,7 +56,7 @@ vi.mock("fastify", () => ({ default: fastifyMock }));
 vi.mock("@fastify/cookie", () => ({ default: cookiePluginMock }));
 vi.mock("@fastify/jwt", () => ({ default: jwtPluginMock }));
 vi.mock("@fastify/cors", () => ({ default: corsPluginMock }));
-vi.mock("@/setup", () => ({
+vi.mock("@app/setup", () => ({
   upsertSystemCategories: upsertSystemCategoriesMock,
   upsertSystemPaymentMethods: upsertSystemPaymentMethodsMock,
   connectDB: connectDBMock,
@@ -64,7 +64,7 @@ vi.mock("@/setup", () => ({
 vi.mock("./plugins/errorHandler", () => ({
   registerErrorHandler: registerErrorHandlerMock,
 }));
-vi.mock("@/routes", () => ({
+vi.mock("@app/routes", () => ({
   mainRoutes: mainRoutesMock,
 }));
 
@@ -75,7 +75,7 @@ vi.mock("@payment-method/routes", () => ({ paymentMethodRoutes: paymentMethodRou
 vi.mock("@transaction/routes", () => ({ transactionRoutes: transactionRoutesMock }));
 
 
-vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 describe("app bootstrap", () => {
   const envConfigSpy = vi.spyOn(config, "getEnv");

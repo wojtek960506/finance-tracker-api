@@ -1,4 +1,4 @@
-import { checkOwner } from "@services/general";
+import { checkOwner } from "@shared/services";
 import { normalizeWhitespace } from "@utils/strings";
 import { PaymentMethodDTO, PaymentMethodResponseDTO } from "@payment-method/schema";
 import { findPaymentMethodById, savePaymentMethodChanges } from "@payment-method/db";

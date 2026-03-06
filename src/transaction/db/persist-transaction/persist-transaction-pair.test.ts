@@ -1,5 +1,5 @@
 import { withSession } from "@utils/with-session";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 import { TransactionModel } from "@transaction/model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import { persistTransactionPair } from "./persist-transaction-pair";
@@ -22,7 +22,7 @@ vi.mock("@transaction/model", () => ({
   TransactionModel: { create: vi.fn(), findOneAndUpdate: vi.fn() }
 }));
 
-vi.mock("@schemas/serializers", () => ({ serializeTransaction: vi.fn() }));
+vi.mock("@transaction/serializers", () => ({ serializeTransaction: vi.fn() }));
 
 describe("createTransactionPair", async () => {
   const {

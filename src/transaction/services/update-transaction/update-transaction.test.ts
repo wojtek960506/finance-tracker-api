@@ -1,6 +1,6 @@
 import * as dbCategories from "@category/db";
 import * as dbTransactions from "@transaction/db";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@category/serializers";
 import * as dbPaymentMethods from "@payment-method/db";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { USER_ID_STR } from "@/test-utils/factories/general";

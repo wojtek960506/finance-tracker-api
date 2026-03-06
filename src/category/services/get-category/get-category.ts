@@ -1,7 +1,7 @@
-import { checkOwner } from "@services/general";
+import { checkOwner } from "@shared/services";
 import { findCategoryById } from "@category/db";
 import { CategoryResponseDTO } from "@category/schema";
-import { serializeCategory } from "@schemas/serializers";
+import { serializeCategory } from "@category/serializers";
 
 
 export const getCategory = async (

@@ -1,6 +1,6 @@
 import { CategoryModel } from "@category/model";
 import { CategoryResponseDTO } from "@category/schema";
-import { serializeCategory } from "@schemas/serializers";
+import { serializeCategory } from "@category/serializers";
 
 
 export type CategoryCreateProps = Omit<CategoryResponseDTO, "id" >;

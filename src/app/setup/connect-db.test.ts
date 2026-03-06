@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import * as config from "@/config";
+import * as config from "@app/config";
 import { connectDB } from "./connect-db";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ENV_TEST_VALUES, MONGO_URI_TEST } from "@/test-utils/env-consts";
 
 
-vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 describe("connectDB", () => {
   const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});

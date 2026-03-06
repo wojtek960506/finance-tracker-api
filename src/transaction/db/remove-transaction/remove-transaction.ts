@@ -1,7 +1,7 @@
 import { ClientSession } from "mongoose";
 import { NotFoundError } from "@utils/errors";
 import { withSession } from "@utils/with-session";
-import { DeleteManyReply } from "@routes/routes-types";
+import { DeleteManyReply } from "@shared/http";
 import { TransactionModel } from "@transaction/model";
 
 

@@ -1,10 +1,10 @@
-import * as config from "@/config";
+import * as config from "@app/config";
 import type { JwtPayload } from "jsonwebtoken";
 import { ENV_TEST_VALUES } from "@/test-utils/env-consts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 
-vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 async function loadAuthTokens() {
   vi.resetModules();

@@ -1,9 +1,9 @@
-import { CounterModel } from "@models/counter-model";
+import { CounterModel } from "@transaction/model";
 import { describe, expect, it, Mock, vi } from "vitest";
 import { getNextSourceIndex } from "./get-next-source-index";
 
 
-vi.mock("@models/counter-model", () => ({
+vi.mock("@transaction/model", () => ({
   CounterModel: {
     findOneAndUpdate: vi.fn(),
   }

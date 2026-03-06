@@ -1,4 +1,4 @@
-import { checkOwner } from "@services/general";
+import { checkOwner } from "@shared/services";
 import { normalizeWhitespace } from "@utils/strings";
 import { CategoryDTO, CategoryResponseDTO } from "@category/schema";
 import { findCategoryById, saveCategoryChanges } from "@category/db";

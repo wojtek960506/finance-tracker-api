@@ -2,7 +2,7 @@ import { UserModel } from "@user/model";
 import { deleteUser } from "./delete-user";
 import { CategoryModel } from "@category/model";
 import { withSession } from "@utils/with-session";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@user/serializers";
 import { randomObjectIdString } from "@utils/random";
 import { PaymentMethodModel } from "@payment-method/model";
 import { TransactionModel } from "@transaction/model";

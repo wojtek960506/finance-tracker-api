@@ -1,4 +1,4 @@
-import { DeleteManyReply } from "@routes/routes-types";
+import { DeleteManyReply } from "@shared/http";
 import { TransactionModel } from "@transaction/model";
 
 

@@ -1,4 +1,4 @@
-import { getEnv } from "@/config";
+import { getEnv } from "@app/config";
 
 
 export const getRefreshCookieOptions = () => {

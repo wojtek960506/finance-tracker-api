@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getTransaction } from "@transaction/services";
-import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
+import { AuthenticatedRequest, ParamsJustId } from "@shared/http";
 
 
 export const getTransactionHandler = async (

@@ -1,4 +1,4 @@
-import { CounterModel } from "@models/counter-model";
+import { CounterModel } from "@transaction/model";
 
 
 export async function getNextSourceIndex(userId: string) {

@@ -1,5 +1,5 @@
 import { findPaymentMethodByName } from "@payment-method/db";
-import { serializePaymentMethod } from "@schemas/serializers";
+import { serializePaymentMethod } from "@payment-method/serializers";
 import { createPaymentMethod } from "@payment-method/services";
 
 

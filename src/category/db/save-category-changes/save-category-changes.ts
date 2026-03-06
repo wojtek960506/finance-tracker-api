@@ -1,6 +1,6 @@
 import { ICategory } from "@category/model";
 import { CategoryResponseDTO } from "@category/schema";
-import { serializeCategory } from "@schemas/serializers";
+import { serializeCategory } from "@category/serializers";
 
 
 export type CategoryUpdateProps = Pick<CategoryResponseDTO, "name" | "nameNormalized">;

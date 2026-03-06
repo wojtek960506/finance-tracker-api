@@ -1,9 +1,9 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors"
-import { getEnv } from "@/config";
+import { getEnv } from "@app/config";
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
-import { mainRoutes } from "@/routes";
+import { mainRoutes } from "@app/routes";
 import { authRoutes } from "@auth/routes";
 import { userRoutes } from "@user/routes";
 import { categoryRoutes } from "@category/routes";
@@ -15,7 +15,7 @@ import {
   connectDB,
   upsertSystemCategories,
   upsertSystemPaymentMethods,
-} from "@/setup";
+} from "@app/setup";
 
 
 //############################################################################################

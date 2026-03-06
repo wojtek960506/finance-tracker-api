@@ -1,5 +1,5 @@
 import { TransactionStandardCreateProps } from "./types";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 import { TransactionModel } from "@transaction/model";
 
 

@@ -1,5 +1,5 @@
 import { persistTransaction } from "./persist-transaction";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 import { TransactionModel } from "@transaction/model";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import {
@@ -13,7 +13,7 @@ vi.mock("@transaction/model", () => ({
   TransactionModel: { create: vi.fn() }
 }));
 
-vi.mock("@schemas/serializers", () => ({
+vi.mock("@transaction/serializers", () => ({
   serializeTransaction: vi.fn(),
 }))
 

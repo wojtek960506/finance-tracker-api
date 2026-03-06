@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import * as config from "@/config";
+import * as config from "@app/config";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { authorizeAccessToken } from "./authorize-access-token";
 import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from "@/test-utils/env-consts";
@@ -9,7 +9,7 @@ import {
 } from "@utils/errors";
 
 
-vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 describe("authorizeAccessToken", () => {
   afterEach(() => { vi.clearAllMocks() });

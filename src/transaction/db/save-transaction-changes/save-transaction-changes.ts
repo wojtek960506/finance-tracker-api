@@ -1,5 +1,5 @@
 import { ITransaction } from "@transaction/model";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 import { TransactionStandardDTO } from "@transaction/schema";
 
 

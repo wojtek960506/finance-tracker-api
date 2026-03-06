@@ -3,7 +3,7 @@ import { UserModel } from "@user/model";
 import { CategoryModel } from "@category/model";
 import { UserResponseDTO } from "@user/schema";
 import { withSession } from "@utils/with-session";
-import { serializeUser } from "@schemas/serializers";
+import { serializeUser } from "@user/serializers";
 import { PaymentMethodModel } from "@payment-method/model";
 import { TransactionModel } from "@transaction/model";
 import {

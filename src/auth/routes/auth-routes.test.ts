@@ -15,7 +15,7 @@ const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
 
-vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 vi.mock("@auth/services", () => ({
   login: vi.fn(),

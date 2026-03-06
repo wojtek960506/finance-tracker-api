@@ -1,6 +1,6 @@
 import { UserModel } from "@user/model";
 import { UserResponseDTO } from "@user/schema";
-import { serializeUser } from "@schemas/serializers";
+import { serializeUser } from "@user/serializers";
 
 
 export const getUsers = async (): Promise<UserResponseDTO[]> => {

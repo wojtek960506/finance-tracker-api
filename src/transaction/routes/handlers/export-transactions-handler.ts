@@ -2,7 +2,7 @@ import { stringify } from 'csv-stringify';
 import { streamTransactions } from "@transaction/db";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prepareCategoriesMap } from '@category/services';
-import { AuthenticatedRequest } from "@routes/routes-types";
+import { AuthenticatedRequest } from "@shared/http";
 import { preparePaymentMethodsMap } from "@payment-method/services";
 import {
   csvExportColumns,

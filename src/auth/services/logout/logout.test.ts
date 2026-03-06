@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 import { logout } from "./logout";
-import * as config from "@/config";
+import * as config from "@app/config";
 import { UserModel } from "@user/model";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from "@/test-utils/env-consts";
 
 
-vi.mock("@/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
+vi.mock("@app/config", () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
 describe("logout", () => {
   afterEach(() => {

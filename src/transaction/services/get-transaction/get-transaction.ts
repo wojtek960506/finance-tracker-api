@@ -1,6 +1,6 @@
-import { checkOwner } from "@services/general";
+import { checkOwner } from "@shared/services";
 import { findTransaction } from "@transaction/db";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 
 
 export const getTransaction = async (

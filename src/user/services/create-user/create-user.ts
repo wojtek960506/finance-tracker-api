@@ -2,7 +2,7 @@ import argon2 from "argon2";
 import { AppError } from "@utils/errors";
 import { ClientSession } from "mongoose";
 import { UserModel } from "@user/model";
-import { serializeUser } from "@schemas/serializers";
+import { serializeUser } from "@user/serializers";
 import { UserCreateDTO, UserResponseDTO } from "@user/schema";
 
 

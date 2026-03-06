@@ -1,5 +1,5 @@
 import { findCategoryByName } from "@category/db";
-import { serializeCategory } from "@schemas/serializers";
+import { serializeCategory } from "@category/serializers";
 import { persistTransactionPair } from "@transaction/db";
 import { getNextSourceIndex } from "@transaction/services";
 import { TransactionResponseDTO } from "@transaction/schema";

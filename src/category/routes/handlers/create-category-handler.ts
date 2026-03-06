@@ -1,7 +1,7 @@
 import { CategoryDTO } from "@category/schema";
 import { createCategory } from "@category/services";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest } from "@routes/routes-types";
+import { AuthenticatedRequest } from "@shared/http";
 
 
 export const createCategoryHandler = async (

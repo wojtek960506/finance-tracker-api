@@ -1,6 +1,6 @@
 import * as db from "@category/db";
 import * as service from "@category/services";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@category/serializers";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import { getOrCreateCategory } from "./get-or-create-category";

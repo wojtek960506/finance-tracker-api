@@ -1,7 +1,7 @@
 import { findTransaction } from "@transaction/db";
 import { describe, expect, it, Mock, vi } from "vitest";
 import { getTransaction } from "@transaction/services";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import {
   STANDARD_TXN_ID_STR,
@@ -11,7 +11,7 @@ import {
 
 
 vi.mock("@transaction/db", () => ({ findTransaction: vi.fn() }));
-vi.mock("@schemas/serializers", () => ({ serializeTransaction: vi.fn() }));
+vi.mock("@transaction/serializers", () => ({ serializeTransaction: vi.fn() }));
 
 describe("getTransaction", () => {
   it("get transaction", async () => {

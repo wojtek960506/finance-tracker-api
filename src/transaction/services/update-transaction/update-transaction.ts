@@ -1,4 +1,4 @@
-import { checkOwner } from "@services/general";
+import { checkOwner } from "@shared/services";
 import { findCategoryById } from "@category/db";
 import { SystemCategoryNotAllowed } from "@utils/errors";
 import { findPaymentMethodById } from "@payment-method/db";

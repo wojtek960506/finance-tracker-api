@@ -2,7 +2,7 @@ import * as db from "@user/db";
 import { getUser } from "./get-user";
 import { AppError } from "@utils/errors";
 import { describe, expect, it, vi } from "vitest";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@user/serializers";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import {
   getUserResultJSON,

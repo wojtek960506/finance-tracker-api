@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PaymentMethodDTO } from "@payment-method/schema";
-import { AuthenticatedRequest } from "@routes/routes-types";
+import { AuthenticatedRequest } from "@shared/http";
 import { createPaymentMethod } from "@payment-method/services";
 
 

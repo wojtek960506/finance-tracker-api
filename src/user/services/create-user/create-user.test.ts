@@ -7,7 +7,7 @@ import argon2 from "argon2";
 import { AppError } from "@utils/errors";
 import { UserModel } from "@user/model";
 import { createUser } from "./create-user";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@user/serializers";
 import {
   getUserDTO,
   getUserResultJSON,

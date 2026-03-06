@@ -1,6 +1,6 @@
 import { findCategoryByName } from "@category/db";
 import { createCategory } from "@category/services";
-import { serializeCategory } from "@schemas/serializers";
+import { serializeCategory } from "@category/serializers";
 
 
 export const getOrCreateCategory = async (ownerId: string, name: string) => {

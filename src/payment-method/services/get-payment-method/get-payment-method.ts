@@ -1,6 +1,6 @@
-import { checkOwner } from "@services/general";
+import { checkOwner } from "@shared/services";
 import { findPaymentMethodById } from "@payment-method/db";
-import { serializePaymentMethod } from "@schemas/serializers";
+import { serializePaymentMethod } from "@payment-method/serializers";
 import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 

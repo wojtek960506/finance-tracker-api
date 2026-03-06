@@ -31,7 +31,7 @@ import {
   ParamsJustId,
   DeleteManyReply,
   FilteredResponse,
-} from "@routes/routes-types";
+} from "@shared/http";
 import {
   TransactionQuery,
   TransactionQuerySchema,

@@ -1,10 +1,10 @@
-import * as config from "@/config";
+import * as config from "@app/config";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getRefreshCookieOptions } from "./refresh-cookie-options";
 import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from "@/test-utils/env-consts";
 
 
-vi.mock("@/config", () => ({ getEnv: vi.fn() }));
+vi.mock("@app/config", () => ({ getEnv: vi.fn() }));
 
 describe("getRefreshCookieOptions", () => {
   const envConfigSpy = vi.spyOn(config, "getEnv");

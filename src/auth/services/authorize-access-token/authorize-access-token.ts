@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { getEnv } from "@/config";
+import { getEnv } from "@app/config";
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
   UnauthorizedInvalidTokenError,

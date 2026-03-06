@@ -1,6 +1,6 @@
 import * as db from "@category/db";
 import { getCategory } from "./get-category";
-import * as serializers from "@schemas/serializers";
+import * as serializers from "@category/serializers";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { USER_ID_STR } from "@/test-utils/factories/general";
 import {

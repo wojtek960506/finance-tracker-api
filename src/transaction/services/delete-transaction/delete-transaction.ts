@@ -1,4 +1,4 @@
-import { checkOwner } from "@services/general";
+import { checkOwner } from "@shared/services";
 import { findTransaction, removeTransaction } from "@transaction/db";
 
 

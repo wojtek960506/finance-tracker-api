@@ -1,6 +1,6 @@
 import { getCategory } from "@category/services";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthenticatedRequest, ParamsJustId } from "@routes/routes-types";
+import { AuthenticatedRequest, ParamsJustId } from "@shared/http";
 
 
 export const getCategoryHandler = async (

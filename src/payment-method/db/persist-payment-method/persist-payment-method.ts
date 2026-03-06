@@ -1,5 +1,5 @@
 import { PaymentMethodModel } from "@payment-method/model";
-import { serializePaymentMethod } from "@schemas/serializers";
+import { serializePaymentMethod } from "@payment-method/serializers";
 import { PaymentMethodResponseDTO } from "@payment-method/schema";
 
 

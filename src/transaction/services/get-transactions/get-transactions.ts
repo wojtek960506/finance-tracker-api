@@ -1,6 +1,6 @@
-import { FilteredResponse } from "@routes/routes-types";
+import { FilteredResponse } from "@shared/http";
 import { prepareCategoriesMap } from "@category/services";
-import { serializeTransaction } from "@schemas/serializers";
+import { serializeTransaction } from "@transaction/serializers";
 import { TransactionQuery } from "@transaction/schema";
 import { TransactionsResponseDTO } from "@transaction/schema";
 import { preparePaymentMethodsMap } from "@payment-method/services";

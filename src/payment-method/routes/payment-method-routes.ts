@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { validateBody } from "@utils/validation";
-import { ParamsJustId } from "@routes/routes-types";
+import { ParamsJustId } from "@shared/http";
 import { authorizeAccessToken } from "@auth/services";
 import {
   getPaymentMethodHandler,
