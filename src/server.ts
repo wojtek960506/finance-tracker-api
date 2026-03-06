@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
-const { start } = await import("./app");
+const { start } = await import('./app');
 start();

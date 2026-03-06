@@ -15,14 +15,16 @@
     "noEmit": true,
     "baseUrl": "./src",
     "paths": {
-      "@db/*": ["db/*"],
       "@utils/*": ["utils/*"],
-      "@models/*": ["models/*"],
-      "@routes/*": ["routes/*"],
-      "@plugins/*": ["plugins/*"],
-      "@schemas/*": ["schemas/*"],
-      "@services/*": ["services/*"],
-      "@/*": ["*"]
+      "@plugins/*": ["app/plugins/*"],
+      "@app/*": ["app/*"],
+      "@shared/*": ["shared/*"],
+      "@/*": ["*"],
+      "@auth/*": ["auth/*"],
+      "@user/*": ["user/*"],
+      "@category/*": ["category/*"],
+      "@transaction/*": ["transaction/*"],
+      "@payment-method/*": ["payment-method/*"]
     },
     "types": ["node", "vitest"]
   },

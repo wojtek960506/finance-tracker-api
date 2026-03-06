@@ -1,5 +1,4 @@
-import { Types } from "mongoose";
-
+import { Types } from 'mongoose';
 
 export const randomDate = (from: Date, to: Date): Date => {
   const fromTime = from.getTime();
@@ -7,11 +6,11 @@ export const randomDate = (from: Date, to: Date): Date => {
 
   const randomTime = fromTime + Math.random() * (toTime - fromTime);
   return new Date(randomTime);
-}
+};
 
 export const randomNumber = (from: number, to: number) => {
   return from + Math.random() * (to - from);
-}
+};
 
 export function randomFromSet<T>(set: Set<T>): T {
   const values = Array.from(set);
@@ -21,9 +20,9 @@ export function randomFromSet<T>(set: Set<T>): T {
 
 export function weightedRandomFromSet<T extends string | number>(
   set: Set<T>,
-  weights: Record<T, number>
+  weights: Record<T, number>,
 ): T {
-  const weightsMap = new Map([...set].map(value => [value, weights[value]]));
+  const weightsMap = new Map([...set].map((value) => [value, weights[value]]));
   const totalWeight = [...weightsMap.values()].reduce((a, b) => a + b, 0);
 
   let random = Math.random() * totalWeight;
@@ -33,7 +32,7 @@ export function weightedRandomFromSet<T extends string | number>(
     if (random <= 0) return value;
   }
 
-  throw new Error("invalid weights");
+  throw new Error('invalid weights');
 }
 
 export const randomObjectIdString = () => new Types.ObjectId().toHexString();

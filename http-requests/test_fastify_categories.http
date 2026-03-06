@@ -1,0 +1,61 @@
+### LOGIN
+# @name loginReq
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "w@z.pl",
+  "password": "123"
+}
+
+###
+
+@baseUrl = http://localhost:5000/api/categories
+@accessToken = {{loginReq.response.body.accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### GET ALL CATEGORIES
+GET {{baseUrl}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### GET CATEGORY BY ID
+GET {{baseUrl}}/69812ea8e6de6ef869bfba38
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### CREATE NEW CATEGORY
+POST {{baseUrl}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "food"
+}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### UPDATE CATEGORY
+PUT {{baseUrl}}/69812ea8e6de6ef869bfba38
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Food"
+}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+###

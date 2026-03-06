@@ -1,11 +1,13 @@
-import { AppError } from "./general-errors";
-
+import { AppError } from './general-errors';
 
 export class CategoryNotFoundError extends AppError {
-  readonly code = "CATEGORY_NOT_FOUND";
+  readonly code = 'CATEGORY_NOT_FOUND';
 
-  constructor(readonly categoryId?: string, readonly categoryName?: string) {
-    super(404, "Category not found");
+  constructor(
+    readonly categoryId?: string,
+    readonly categoryName?: string,
+  ) {
+    super(404, 'Category not found');
   }
 }
 
@@ -41,18 +43,21 @@ export class UserCategoryMissingOwner extends AppError {
   readonly code = 'USER_CATEGORY_MISSING_OWNER';
 
   constructor(readonly categoryId: string) {
-    super(500, "Invalid category state - user category is missing owner");
+    super(500, 'Invalid category state - user category is missing owner');
   }
 }
 
 export class SystemCategoryWrongType extends AppError {
   readonly code = 'SYSTEM_CATEGORY_WRONG_TYPE';
 
-  constructor(readonly categoryId: string, readonly categoryName: string) {
+  constructor(
+    readonly categoryId: string,
+    readonly categoryName: string,
+  ) {
     super(
       500,
       `Invalid category state - category with name '${categoryName}' should be system category`,
-    )
+    );
   }
 }
 

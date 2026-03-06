@@ -1,0 +1,61 @@
+### LOGIN
+# @name loginReq
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "w@z.pl",
+  "password": "123"
+}
+
+###
+
+@baseUrl = http://localhost:5000/api/paymentMethods
+@accessToken = {{loginReq.response.body.accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### GET ALL PAYMENT METHODS
+GET {{baseUrl}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### GET PAYMENT METHOD BY ID
+GET {{baseUrl}}/69a7fd2144a779d2d3c6e6e4
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### CREATE NEW PAYMENT METHOD
+POST {{baseUrl}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "some Payment    mEthOd"
+}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### UPDATE PAYMENT METHOD
+PUT {{baseUrl}}/69a7fd2144a779d2d3c6e6e4
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "ome Payment    mEthOd"
+}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+###
