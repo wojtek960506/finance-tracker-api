@@ -1,4 +1,5 @@
 import * as dbCategories from "@db/categories";
+import * as dbPaymentMethods from "@db/payment-methods";
 import * as dbTransactions from "@db/transactions";
 import * as serializers from "@schemas/serializers";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -33,6 +34,9 @@ import {
   getTransferTransactionResultJSON,
   getStandardTransactionNotPopulatedResultJSON,
 } from "@/test-utils/factories/transaction";
+import {
+  getBankTransferPaymentMethodResultJSON
+} from "@/test-utils/factories/payment-method";
 
 
 describe('update transaction', async () => {
@@ -47,6 +51,7 @@ describe('update transaction', async () => {
   const foodCategory = getUserCategoryResultJSON();
   const transferCategory = getTransferCategoryResultJSON();
   const exchangeCategory = getExchangeCategoryResultJSON();
+  const paymentMethod = getBankTransferPaymentMethodResultJSON();
 
   afterEach(() => { vi.clearAllMocks() });
 
@@ -54,6 +59,7 @@ describe('update transaction', async () => {
     vi.spyOn(dbTransactions, "findTransaction").mockResolvedValue(transaction as any);
     vi.spyOn(dbTransactions, "saveTransactionChanges").mockResolvedValue(transaction as any);
     vi.spyOn(dbCategories, "findCategoryById").mockResolvedValue(foodCategory as any);
+    vi.spyOn(dbPaymentMethods, "findPaymentMethodById").mockResolvedValue(paymentMethod as any);
 
     const result = await updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO);
 
@@ -61,6 +67,7 @@ describe('update transaction', async () => {
     expect(dbCategories.findCategoryById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
     expect(dbTransactions.findTransaction).toHaveBeenCalledOnce();
     expect(dbTransactions.findTransaction).toHaveBeenCalledWith(STANDARD_TXN_ID_STR);
+    expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
     expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledOnce();
     expect(
       dbTransactions.saveTransactionChanges

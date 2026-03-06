@@ -14,7 +14,6 @@ import {
   DESCRPTION,
   AMOUNT_INCOME,
   AMOUNT_EXPENSE,
-  PAYMENT_METHOD,
   ACCOUNT_EXPENSE,
   CURRENCY_INCOME,
   CURRENCY_EXPENSE,
@@ -27,6 +26,12 @@ import {
   EXCHANGE_TXN_INCOME_SRC_IDX,
   EXCHANGE_TXN_EXPENSE_SRC_IDX,
 } from "@/test-utils/factories/transaction";
+import {
+  PAYMENT_METHOD_TYPE_SYSTEM,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method";
 
 
 export const getExchangeTransactionDTO = () => ({
@@ -34,10 +39,10 @@ export const getExchangeTransactionDTO = () => ({
   account: ACCOUNT_EXPENSE,
   amountIncome: AMOUNT_INCOME,
   amountExpense: AMOUNT_EXPENSE,
-  paymentMethod: PAYMENT_METHOD,
   currencyIncome: CURRENCY_INCOME,
   currencyExpense: CURRENCY_EXPENSE,
   additionalDescription: DESCRPTION,
+  paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
 } as TransactionExchangeDTO);
 
 export function getExchangeTransactionProps (): {
@@ -53,7 +58,7 @@ export function getExchangeTransactionProps (isCreate?: true) {
     categoryId: EXCHANGE_CATEGORY_ID_STR,
     date: DATE_OBJ,
     account: ACCOUNT_EXPENSE,
-    paymentMethod: PAYMENT_METHOD,
+    paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
     description: `${CURRENCY_EXPENSE} -> ${CURRENCY_INCOME} (${DESCRPTION})`,
     currencies: `${CURRENCY_INCOME}/${CURRENCY_EXPENSE}`,
     exchangeRate: AMOUNT_EXPENSE / AMOUNT_INCOME,
@@ -98,10 +103,24 @@ export function getExchangeTransactionProps (isCreate?: true) {
 const tmpCategoryCommon = { type: CATEGORY_TYPE_SYSTEM, name: EXCHANGE_CATEGORY_NAME }
 const categoryWithIdObj = { ...tmpCategoryCommon, _id: EXCHANGE_CATEGORY_ID_OBJ }
 const categoryWithIdStr = { ...tmpCategoryCommon, id: EXCHANGE_CATEGORY_ID_STR }
+const paymentMethodWithIdObj = {
+  _id: BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  type: PAYMENT_METHOD_TYPE_SYSTEM,
+  name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+};
+const paymentMethodWithIdStr = {
+  id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  type: PAYMENT_METHOD_TYPE_SYSTEM,
+  name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+};
 
 export const getExchangeTransactionResultJSON = () => {
   const { expenseProps, incomeProps } = getExchangeTransactionProps(true);
-  const commonJSON = { date: DATE_ISO_STR, categoryId: { ...categoryWithIdObj } };
+  const commonJSON = {
+    date: DATE_ISO_STR,
+    categoryId: { ...categoryWithIdObj },
+    paymentMethodId: { ...paymentMethodWithIdObj },
+  };
   const expenseTransactionJSON = {
     ...expenseProps,
     ...commonJSON, // order of unpacking dict is important due to overwriting `categoryId`
@@ -122,20 +141,26 @@ export const getExchangeTransactionNotPopulatedResultJSON = () => {
   return {
     expenseTransactionNotPopulatedJSON: {
       ...expenseTransactionJSON,
-      categoryId: expenseTransactionJSON.categoryId._id
+      categoryId: expenseTransactionJSON.categoryId._id,
+      paymentMethodId: expenseTransactionJSON.paymentMethodId._id,
     },
     incomeTransactionNotPopulatedJSON: {  
       ...incomeTransactionJSON,
-      categoryId: incomeTransactionJSON.categoryId._id
+      categoryId: incomeTransactionJSON.categoryId._id,
+      paymentMethodId: incomeTransactionJSON.paymentMethodId._id,
     }
   }
 }
 
 export const getExchangeTransactionResultSerialized = () => {
   const { expenseProps, incomeProps } = getExchangeTransactionProps(true);
-  const { categoryId: _1, ...expensePropsRest } = expenseProps;
-  const { categoryId: _2, ...incomePropsRest } = incomeProps;
-  const commonSerialized = { date: DATE_ISO_STR, category: { ...categoryWithIdStr } }
+  const { categoryId: _1, paymentMethodId: _2, ...expensePropsRest } = expenseProps;
+  const { categoryId: _3, paymentMethodId: _4, ...incomePropsRest } = incomeProps;
+  const commonSerialized = {
+    date: DATE_ISO_STR,
+    category: { ...categoryWithIdStr },
+    paymentMethod: { ...paymentMethodWithIdStr },
+  };
 
   const expenseTransactionSerialized = {
     ...expensePropsRest,

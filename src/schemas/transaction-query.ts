@@ -2,7 +2,6 @@ import {
   ACCOUNTS,
   CURRENCIES,
   OBJECT_ID_REGEX,
-  PAYMENT_METHODS,
   TRANSACTION_TYPES,
 } from "@utils/consts";
 import { z } from "zod";
@@ -11,7 +10,9 @@ const TransactionCommonQuerySchema = z.object({
   categoryId: z.string()
     .regex(OBJECT_ID_REGEX, "Invalid ObjectId format for `categoryId`")
     .optional(),
-  paymentMethod: z.enum([...PAYMENT_METHODS]).optional(),
+  paymentMethodId: z.string()
+    .regex(OBJECT_ID_REGEX, "Invalid ObjectId format for `paymentMethodId`")
+    .optional(),
   account: z.enum([...ACCOUNTS]).optional(),
   excludeCategoryIds: z.string()
     .transform(value => value.split(","))

@@ -24,26 +24,27 @@ describe("prepareRandomTransferTransactionPair", () => {
     (randomFromSet as Mock)
       .mockReturnValueOnce("EUR")
       .mockReturnValueOnce("wallet")
-      .mockReturnValueOnce("bank")
-      .mockReturnValueOnce("bankTransfer");
+      .mockReturnValueOnce("bank");
 
+    // TODO - create some constant for these values (probably similar as TEST_CATEGORY_ID)
     const [expense, income] = prepareRandomTransferTransactionPair(
       TEST_OWNER_ID,
       TEST_DATE,
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
+      "pm-1",
     );
 
     expect(randomNumber).toHaveBeenCalledOnce();
     expect(randomNumber).toHaveBeenCalledWith(10, 10000);
-    expect(randomFromSet).toHaveBeenCalledTimes(4);
+    expect(randomFromSet).toHaveBeenCalledTimes(3);
     expect(expense).toEqual({
       date: TEST_DATE,
       amount: 250,
       ownerId: TEST_OWNER_ID,
       currency: "EUR",
       categoryId: TEST_CATEGORY_ID,
-      paymentMethod: "bankTransfer",
+      paymentMethodId: "pm-1",
       account: "wallet",
       sourceIndex: TEST_SOURCE_INDEX,
       sourceRefIndex: TEST_SOURCE_INDEX + 1,
@@ -56,7 +57,7 @@ describe("prepareRandomTransferTransactionPair", () => {
       ownerId: TEST_OWNER_ID,
       currency: "EUR",
       categoryId: TEST_CATEGORY_ID,
-      paymentMethod: "bankTransfer",
+      paymentMethodId: "pm-1",
       account: "bank",
       sourceRefIndex: TEST_SOURCE_INDEX,
       sourceIndex: TEST_SOURCE_INDEX + 1,

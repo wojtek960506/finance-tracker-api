@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { CategoryResponseSchema } from "@schemas/category";
+import { PaymentMethodResponseSchema } from "@schemas/payment-method";
 import {
   ACCOUNTS,
   CURRENCIES,
   OBJECT_ID_REGEX,
-  PAYMENT_METHODS,
   TRANSACTION_TYPES,
 } from "@utils/consts";
 
@@ -22,7 +22,10 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
   amount: z.number().positive("Amount must be positive"),
   currency: z.enum([...CURRENCIES]),
   categoryId: z.string().regex(OBJECT_ID_REGEX, "Invalid ObjectId format for `categoryId`"),
-  paymentMethod: z.enum([...PAYMENT_METHODS]),
+  paymentMethodId: z.string().regex(
+    OBJECT_ID_REGEX,
+    "Invalid ObjectId format for `paymentMethodId`",
+  ),
   account: z.enum([...ACCOUNTS]),
   transactionType: z.enum([...TRANSACTION_TYPES]),
 });
@@ -38,7 +41,10 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
   currencyExpense: z.enum([...CURRENCIES]),
   currencyIncome: z.enum([...CURRENCIES]),
   account: z.enum([...ACCOUNTS]),
-  paymentMethod: z.enum(["bankTransfer", "cash"]),
+  paymentMethodId: z.string().regex(
+    OBJECT_ID_REGEX,
+    "Invalid ObjectId format for `paymentMethodId`",
+  ),
 })
 
 /**
@@ -51,11 +57,14 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
   currency: z.enum([...CURRENCIES]),
   accountExpense: z.enum([...ACCOUNTS]),
   accountIncome: z.enum([...ACCOUNTS]),
-  paymentMethod: z.enum(["bankTransfer", "cash", "card"]),
+  paymentMethodId: z.string().regex(
+    OBJECT_ID_REGEX,
+    "Invalid ObjectId format for `paymentMethodId`",
+  ),
 })
 
 export const TransactionResponseSchema = TransactionStandardSchema
-  .omit({ categoryId: true })
+  .omit({ categoryId: true, paymentMethodId: true })
   .extend({
     id: z.string(),
     ownerId: z.string().regex(OBJECT_ID_REGEX, "Invalid ObjectId format for `ownerId`"),
@@ -71,6 +80,7 @@ export const TransactionResponseSchema = TransactionStandardSchema
     .max(7, "'currencies' must be in format 'XXX/XXX'").optional(),
     exchangeRate: z.number().optional(),
     category: CategoryResponseSchema.pick({ id: true, type: true, name: true }),
+    paymentMethod: PaymentMethodResponseSchema.pick({ id: true, type: true, name: true }),
   }
 )
 

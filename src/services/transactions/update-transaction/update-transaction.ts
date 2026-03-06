@@ -1,6 +1,7 @@
 import { checkOwner } from "@services/general";
 import { findCategoryById } from "@db/categories";
 import { SystemCategoryNotAllowed } from "@utils/errors";
+import { findPaymentMethodById } from "@db/payment-methods";
 import { updateTransactionPair } from "./update-transaction-pair";
 import { findTransaction, saveTransactionChanges } from "@db/transactions";
 import { prepareExchangeProps, prepareTransferProps } from "@services/transactions";
@@ -21,6 +22,9 @@ export const updateStandardTransaction = async (
   const category = await findCategoryById(dto.categoryId);
   if (category.type === "system")
     throw new SystemCategoryNotAllowed(category.id);
+  const paymentMethod = await findPaymentMethodById(dto.paymentMethodId);
+  if (paymentMethod.type !== "system")
+    checkOwner(userId, paymentMethod.id, paymentMethod.ownerId!, "paymentMethod");
 
   const transaction = await findTransaction(transactionId);
   checkOwner(userId, transactionId, transaction.ownerId, "transaction");

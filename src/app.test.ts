@@ -20,8 +20,10 @@ const {
   cookiePluginMock,
   categoryRoutesMock,
   transactionRoutesMock,
+  paymentMethodRoutesMock,
   registerErrorHandlerMock,
   upsertSystemCategoriesMock,
+  upsertSystemPaymentMethodsMock,
 } = vi.hoisted(() => {
   const app = {
     register: vi.fn().mockResolvedValue(undefined),
@@ -36,11 +38,13 @@ const {
     fastifyMock: vi.fn(() => app),
     upsertSystemCategoriesMock: vi.fn(),
     connectDBMock: vi.fn(),
+    upsertSystemPaymentMethodsMock: vi.fn(),
     registerErrorHandlerMock: vi.fn(),
     mainRoutesMock: vi.fn(),
     authRoutesMock: vi.fn(),
     userRoutesMock: vi.fn(),
     categoryRoutesMock: vi.fn(),
+    paymentMethodRoutesMock: vi.fn(),
     transactionRoutesMock: vi.fn(),
     cookiePluginMock: vi.fn(),
     jwtPluginMock: vi.fn(),
@@ -54,6 +58,7 @@ vi.mock("@fastify/jwt", () => ({ default: jwtPluginMock }));
 vi.mock("@fastify/cors", () => ({ default: corsPluginMock }));
 vi.mock("@/setup", () => ({
   upsertSystemCategories: upsertSystemCategoriesMock,
+  upsertSystemPaymentMethods: upsertSystemPaymentMethodsMock,
   connectDB: connectDBMock,
 }));
 vi.mock("./plugins/errorHandler", () => ({
@@ -65,6 +70,7 @@ vi.mock("@/routes", () => ({
   userRoutes: userRoutesMock,
   categoryRoutes: categoryRoutesMock,
   transactionRoutes: transactionRoutesMock,
+  paymentMethodRoutes: paymentMethodRoutesMock,
 }));
 
 
@@ -92,6 +98,7 @@ describe("app bootstrap", () => {
     expect(fastifyMock).toHaveBeenCalledWith({ logger: true });
     expect(appMock.withTypeProvider).toHaveBeenCalledOnce();
     expect(upsertSystemCategoriesMock).toHaveBeenCalledOnce();
+    expect(upsertSystemPaymentMethodsMock).toHaveBeenCalledOnce();
     expect(appMock.register).toHaveBeenCalledWith(cookiePluginMock, {
       secret: COOKIE_SECRET_TEST,
       parseOptions: {},
@@ -104,6 +111,9 @@ describe("app bootstrap", () => {
     expect(appMock.register).toHaveBeenCalledWith(userRoutesMock, { prefix: "/api/users" });
     expect(appMock.register).toHaveBeenCalledWith(
       categoryRoutesMock, { prefix: "/api/categories" }
+    );
+    expect(appMock.register).toHaveBeenCalledWith(
+      paymentMethodRoutesMock, { prefix: "/api/paymentMethods" }
     );
     expect(appMock.register).toHaveBeenCalledWith(
       transactionRoutesMock, { prefix: "/api/transactions" }

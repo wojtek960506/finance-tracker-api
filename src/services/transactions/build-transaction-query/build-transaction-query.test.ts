@@ -4,7 +4,6 @@ import { USER_ID_STR } from "@/test-utils/factories/general";
 import { buildTransactionFilterQuery } from "./build-transaction-query";
 import { FOOD_CATEGORY_ID_OBJ, FOOD_CATEGORY_ID_STR } from "@/test-utils/factories/category";
 import {
-  PAYMENT_METHOD,
   ACCOUNT_EXPENSE,
   END_DATE_FILTER,
   CURRENCY_EXPENSE,
@@ -13,6 +12,10 @@ import {
   MAX_AMOUNT_FILTER,
   TRANSACTION_TYPE_EXPENSE,
 } from "@/test-utils/factories/transaction";
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from "@/test-utils/factories/payment-method";
 
 
 describe("build-transaction-query", () => {
@@ -20,7 +23,7 @@ describe("build-transaction-query", () => {
     transactionType: TRANSACTION_TYPE_EXPENSE,
     currency: CURRENCY_EXPENSE,
     categoryId: FOOD_CATEGORY_ID_STR,
-    paymentMethod: PAYMENT_METHOD,
+    paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
     account: ACCOUNT_EXPENSE,
   }
   const advancedFilters = {    
@@ -36,7 +39,7 @@ describe("build-transaction-query", () => {
     
     expect(query.transactionType).toBe(TRANSACTION_TYPE_EXPENSE);
     expect(query.currency).toBe(CURRENCY_EXPENSE);
-    expect(query.paymentMethod).toBe(PAYMENT_METHOD);
+    expect(query.paymentMethodId).toEqual(BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ);
     expect(query.account).toBe(ACCOUNT_EXPENSE);
     expect(query.categoryId).toEqual(FOOD_CATEGORY_ID_OBJ);
     expect(query.amount).toBeUndefined();
@@ -48,7 +51,7 @@ describe("build-transaction-query", () => {
     
     expect(query.transactionType).toBeUndefined();
     expect(query.currency).toBeUndefined();
-    expect(query.paymentMethod).toBeUndefined();
+    expect(query.paymentMethodId).toBeUndefined();
     expect(query.account).toBeUndefined();
 
     expect(query.categoryId).toEqual({ $nin: [FOOD_CATEGORY_ID_OBJ] });

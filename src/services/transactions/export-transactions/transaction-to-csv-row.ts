@@ -1,10 +1,12 @@
 import { ITransaction } from "@models/transaction-model";
 import { CategoriesMap } from "@services/categories";
+import { PaymentMethodsMap } from "@services/payment-methods";
 
 
 export const transactionToCsvRow = (
   transaction: ITransaction,
   categoriesMap: CategoriesMap,
+  paymentMethodsMap: PaymentMethodsMap,
 ) => ({
   sourceIndex: transaction.sourceIndex,
   date: transaction.date.toISOString().slice(0,10),
@@ -12,7 +14,7 @@ export const transactionToCsvRow = (
   amount: transaction.amount,
   currency: transaction.currency,
   category: categoriesMap[transaction.categoryId.toString()].name,
-  paymentMethod: transaction.paymentMethod,
+  paymentMethod: paymentMethodsMap[transaction.paymentMethodId.toString()].name,
   account: transaction.account,
   exchangeRate: transaction.exchangeRate,
   currencies: transaction.currencies,

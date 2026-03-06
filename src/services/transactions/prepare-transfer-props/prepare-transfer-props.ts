@@ -36,12 +36,13 @@ export function prepareTransferProps (
   let description = `${body.accountExpense} --> ${body.accountIncome}`;
   if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
+  // TODO - probably paymentMethodId has to be placed in 'objectIds`
   const commonTransactionProps = {
     categoryId,
     date: body.date,
     amount: body.amount,
     currency: body.currency,
-    paymentMethod: body.paymentMethod,
+    paymentMethodId: body.paymentMethodId,
     description,
   }
   

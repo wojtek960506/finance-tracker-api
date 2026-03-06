@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CategoryType } from "@models/category-model";
 import { serializeTransaction } from "@schemas/serializers";
+import { PaymentMethodType } from "@models/payment-method-model";
 import {
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
@@ -11,6 +12,11 @@ import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_ID_STR,
 } from "@/test-utils/factories/category";
+import {
+  PAYMENT_METHOD_TYPE_SYSTEM,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,  
+} from "@/test-utils/factories/payment-method";
 
 
 describe("serializeTransaction", () => {
@@ -33,6 +39,13 @@ describe("serializeTransaction", () => {
       name: FOOD_CATEGORY_NAME,
     }
   }
+  const paymentMethodsMap = {
+    [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: {
+      id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+      type: PAYMENT_METHOD_TYPE_SYSTEM as PaymentMethodType,
+      name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+    }
+  };
 
   it("serialize transaction with populated category", () => {
     const result = serializeTransaction(iTransaction as any);
@@ -40,7 +53,11 @@ describe("serializeTransaction", () => {
   });
 
   it("serialize transaction without populated category", () => {
-    const result = serializeTransaction(iTransactionNotPopulated as any, categoriesMap);
+    const result = serializeTransaction(
+      iTransactionNotPopulated as any,
+      categoriesMap,
+      paymentMethodsMap,
+    );
     expect(result).toEqual(transactionSerialized);
   });
 });

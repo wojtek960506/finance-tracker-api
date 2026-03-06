@@ -4,14 +4,17 @@ import { randomFromSet, randomNumber } from "@utils/random";
 
 
 export const prepareRandomExchangeTransactionPair = (
-  ownerId: string, date: Date, index: number, categoryId: string,
+  ownerId: string,
+  date: Date,
+  index: number,
+  categoryId: string,
+  paymentMethodId: string,
 ): RandomExchangeTransactionPair => {
   const amountExpense = randomNumber(10,10000);
   const currencyExpense = randomFromSet(CURRENCIES);
   const amountIncome = randomNumber(10,10000);
   const currencyIncome = randomFromSet(CURRENCIES);
   const account = randomFromSet(ACCOUNTS);
-  const paymentMethod = randomFromSet(new Set(["cash", "bankTransfer"]));
 
   let currencies;
   let exchangeRate;
@@ -32,7 +35,7 @@ export const prepareRandomExchangeTransactionPair = (
     categoryId,
     description,
     exchangeRate,
-    paymentMethod,
+    paymentMethodId,
   }
   const expense = {
     ...commonProps,

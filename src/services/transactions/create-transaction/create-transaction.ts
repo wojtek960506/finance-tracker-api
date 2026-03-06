@@ -1,6 +1,8 @@
+import { checkOwner } from "@services/general";
 import { findCategoryById } from "@db/categories";
 import { persistTransaction } from "@db/transactions";
 import { SystemCategoryNotAllowed } from "@utils/errors";
+import { findPaymentMethodById } from "@db/payment-methods";
 import { createTransactionPair } from "./create-transaction-pair";
 import {
   TransactionResponseDTO,
@@ -23,6 +25,9 @@ export const createStandardTransaction = async (
   const category = await findCategoryById(dto.categoryId);
   if (category.type === "system")
     throw new SystemCategoryNotAllowed(category.id);
+  const paymentMethod = await findPaymentMethodById(dto.paymentMethodId);
+  if (paymentMethod.type !== "system")
+    checkOwner(ownerId, paymentMethod.id, paymentMethod.ownerId!, "paymentMethod");
 
   const sourceIndex = await getNextSourceIndex(ownerId);  
   return persistTransaction({ ...dto, ownerId, sourceIndex });

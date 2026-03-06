@@ -26,20 +26,21 @@ describe("prepareRandomExchangeTransactionPair", () => {
     (randomFromSet as Mock)
       .mockReturnValueOnce("PLN")
       .mockReturnValueOnce("USD")
-      .mockReturnValueOnce("bank")
-      .mockReturnValueOnce("cash");
+      .mockReturnValueOnce("bank");
 
+    // TODO - create some constant for these values (probably similar as TEST_CATEGORY_ID)
     const [expense, income] = prepareRandomExchangeTransactionPair(
       TEST_OWNER_ID,
       TEST_DATE,
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
+      "pm-1",
     );
 
     expect(randomNumber).toHaveBeenCalledTimes(2);
     expect(randomNumber).toHaveBeenNthCalledWith(1, 10, 10000);
     expect(randomNumber).toHaveBeenNthCalledWith(2, 10, 10000);
-    expect(randomFromSet).toHaveBeenCalledTimes(4);
+    expect(randomFromSet).toHaveBeenCalledTimes(3);
     expect(expense).toEqual({
       date: TEST_DATE,
       amount: 100,
@@ -47,7 +48,7 @@ describe("prepareRandomExchangeTransactionPair", () => {
       ownerId: TEST_OWNER_ID,
       currency: "PLN",
       categoryId: TEST_CATEGORY_ID,
-      paymentMethod: "cash",
+      paymentMethodId: "pm-1",
       sourceIndex: TEST_SOURCE_INDEX,
       sourceRefIndex: TEST_SOURCE_INDEX + 1,
       transactionType: "expense",
@@ -62,7 +63,7 @@ describe("prepareRandomExchangeTransactionPair", () => {
       ownerId: TEST_OWNER_ID,
       currency: "USD",
       categoryId: TEST_CATEGORY_ID,
-      paymentMethod: "cash",
+      paymentMethodId: "pm-1",
       sourceRefIndex: TEST_SOURCE_INDEX,
       sourceIndex: TEST_SOURCE_INDEX + 1,
       transactionType: "income",
@@ -79,7 +80,6 @@ describe("prepareRandomExchangeTransactionPair", () => {
     (randomFromSet as Mock)
       .mockReturnValueOnce("EUR")
       .mockReturnValueOnce("GBP")
-      .mockReturnValueOnce("wallet")
       .mockReturnValueOnce("bankTransfer");
 
     const [expense, income] = prepareRandomExchangeTransactionPair(
@@ -87,6 +87,7 @@ describe("prepareRandomExchangeTransactionPair", () => {
       TEST_DATE,
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
+      "pm-2",
     );
 
     expect(expense.exchangeRate).toBe(0.2);
