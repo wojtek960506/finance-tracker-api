@@ -1,5 +1,6 @@
 import { findPaymentMethods } from '@payment-method/db';
 import { PaymentMethodResponseDTO } from '@payment-method/schema';
+import { prepareNamedResourcesMap } from '@shared/named-resource';
 import { ITransaction } from '@transaction/model';
 
 export type PaymentMethodsMap = Record<
@@ -13,10 +14,5 @@ export const preparePaymentMethodsMap = async (
 ) => {
   const paymentMethodIds = transactions?.map((t) => t.paymentMethodId.toString());
   const paymentMethods = await findPaymentMethods(ownerId, paymentMethodIds);
-  return Object.fromEntries(
-    paymentMethods.map((c) => [
-      c._id.toString(),
-      { id: c._id.toString(), type: c.type, name: c.name },
-    ]),
-  );
+  return prepareNamedResourcesMap(paymentMethods);
 };

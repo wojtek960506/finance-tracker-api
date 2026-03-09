@@ -1,16 +1,13 @@
 import { CategoryModel } from '@category/model';
+import { findNamedResourceById, findNamedResourceByName } from '@shared/named-resource';
 import { CategoryNotFoundError } from '@utils/errors';
-import { normalizeWhitespace } from '@utils/strings';
 
 export const findCategoryById = async (id: string) => {
-  const category = await CategoryModel.findById(id);
-  if (!category) throw new CategoryNotFoundError(id);
-  return category;
+  return findNamedResourceById(CategoryModel, id, (categoryId) => {
+    return new CategoryNotFoundError(categoryId);
+  });
 };
 
 export const findCategoryByName = async (name: string, ownerId?: string) => {
-  return CategoryModel.findOne({
-    nameNormalized: normalizeWhitespace(name).toLowerCase(),
-    $or: [{ type: 'system' }, { type: 'user', ownerId }],
-  });
+  return findNamedResourceByName(CategoryModel, name, ownerId);
 };

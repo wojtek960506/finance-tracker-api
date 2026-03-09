@@ -1,16 +1,13 @@
 import { PaymentMethodModel } from '@payment-method/model';
+import { findNamedResourceById, findNamedResourceByName } from '@shared/named-resource';
 import { PaymentMethodNotFoundError } from '@utils/errors';
-import { normalizeWhitespace } from '@utils/strings';
 
 export const findPaymentMethodById = async (id: string) => {
-  const paymentMethod = await PaymentMethodModel.findById(id);
-  if (!paymentMethod) throw new PaymentMethodNotFoundError(id);
-  return paymentMethod;
+  return findNamedResourceById(PaymentMethodModel, id, (paymentMethodId) => {
+    return new PaymentMethodNotFoundError(paymentMethodId);
+  });
 };
 
 export const findPaymentMethodByName = async (name: string, ownerId?: string) => {
-  return PaymentMethodModel.findOne({
-    nameNormalized: normalizeWhitespace(name).toLowerCase(),
-    $or: [{ type: 'system' }, { type: 'user', ownerId }],
-  });
+  return findNamedResourceByName(PaymentMethodModel, name, ownerId);
 };

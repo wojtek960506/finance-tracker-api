@@ -2,8 +2,8 @@ import cookie from '@fastify/cookie';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import * as serviceA from '@auth/services';
 import { registerErrorHandler } from '@app/plugins/errorHandler';
+import * as serviceA from '@auth/services';
 import * as serviceU from '@user/services';
 
 import { authRoutes } from './auth-routes';

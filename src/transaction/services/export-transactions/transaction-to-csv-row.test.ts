@@ -2,10 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { transactionToCsvRow } from './transaction-to-csv-row';
 
-import {
-  FOOD_CATEGORY_ID_STR,
-  FOOD_CATEGORY_NAME,
-} from '@/testing/factories/category';
+import { FOOD_CATEGORY_ID_STR, FOOD_CATEGORY_NAME } from '@/testing/factories/category';
 import { DATE_STR } from '@/testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,

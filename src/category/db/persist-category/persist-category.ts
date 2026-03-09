@@ -1,10 +1,11 @@
 import { CategoryModel } from '@category/model';
 import { CategoryResponseDTO } from '@category/schema';
 import { serializeCategory } from '@category/serializers';
+import { NamedResourceCreateProps, persistNamedResource } from '@shared/named-resource';
 
-export type CategoryCreateProps = Omit<CategoryResponseDTO, 'id'>;
+export type CategoryCreateProps = NamedResourceCreateProps &
+  Omit<CategoryResponseDTO, 'id'>;
 
 export const persistCategory = async (props: CategoryCreateProps) => {
-  const newCategory = await CategoryModel.create(props);
-  return serializeCategory(newCategory);
+  return persistNamedResource(CategoryModel, props, serializeCategory);
 };

@@ -1,23 +1,16 @@
 import { findPaymentMethodByName, persistPaymentMethod } from '@payment-method/db';
-import { PaymentMethodType } from '@payment-method/model';
 import { PaymentMethodDTO, PaymentMethodResponseDTO } from '@payment-method/schema';
+import { createNamedResource } from '@shared/named-resource';
 import { PaymentMethodAlreadyExistsError } from '@utils/errors';
-import { normalizeWhitespace } from '@utils/strings';
 
-export const createPaymentMethod = async (
+export const createPaymentMethod: (
   ownerId: string,
   dto: PaymentMethodDTO,
-): Promise<PaymentMethodResponseDTO> => {
-  const { name } = dto;
-
-  const paymentMethod = await findPaymentMethodByName(name, ownerId);
-  if (paymentMethod) throw new PaymentMethodAlreadyExistsError(name);
-
-  const props = {
-    ownerId,
-    type: 'user' as PaymentMethodType,
-    name: normalizeWhitespace(name),
-    nameNormalized: normalizeWhitespace(name).toLowerCase(),
-  };
-  return persistPaymentMethod(props);
-};
+) => Promise<PaymentMethodResponseDTO> = createNamedResource<
+  PaymentMethodDTO,
+  PaymentMethodResponseDTO
+>({
+  findByName: findPaymentMethodByName,
+  persist: persistPaymentMethod,
+  alreadyExistsErrorFactory: (name) => new PaymentMethodAlreadyExistsError(name),
+});

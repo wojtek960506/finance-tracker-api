@@ -1,9 +1,9 @@
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { registerErrorHandler } from '@app/plugins/errorHandler';
 import * as dbC from '@category/db';
 import * as serviceC from '@category/services';
-import { registerErrorHandler } from '@app/plugins/errorHandler';
 
 import { categoryRoutes } from './category-routes';
 

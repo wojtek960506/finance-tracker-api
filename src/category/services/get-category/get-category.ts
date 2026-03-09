@@ -1,14 +1,13 @@
 import { findCategoryById } from '@category/db';
+import { ICategory } from '@category/model';
 import { CategoryResponseDTO } from '@category/schema';
 import { serializeCategory } from '@category/serializers';
-import { checkOwner } from '@shared/services';
+import { getNamedResource } from '@shared/named-resource';
 
-export const getCategory = async (
-  categoryId: string,
-  ownerId: string,
-): Promise<CategoryResponseDTO> => {
-  const category = await findCategoryById(categoryId);
-  if (category.type !== 'system')
-    checkOwner(ownerId, categoryId, category.ownerId!, 'category');
-  return serializeCategory(category);
+export const getCategory = (categoryId: string, ownerId: string) => {
+  return getNamedResource<ICategory, CategoryResponseDTO>({
+    findById: findCategoryById,
+    serialize: serializeCategory,
+    ownerType: 'category',
+  })(categoryId, ownerId);
 };

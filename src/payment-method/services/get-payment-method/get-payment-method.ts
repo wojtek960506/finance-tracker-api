@@ -1,14 +1,13 @@
 import { findPaymentMethodById } from '@payment-method/db';
+import { IPaymentMethod } from '@payment-method/model';
 import { PaymentMethodResponseDTO } from '@payment-method/schema';
 import { serializePaymentMethod } from '@payment-method/serializers';
-import { checkOwner } from '@shared/services';
+import { getNamedResource } from '@shared/named-resource';
 
-export const getPaymentMethod = async (
-  paymentMethodId: string,
-  ownerId: string,
-): Promise<PaymentMethodResponseDTO> => {
-  const paymentMethod = await findPaymentMethodById(paymentMethodId);
-  if (paymentMethod.type !== 'system')
-    checkOwner(ownerId, paymentMethodId, paymentMethod.ownerId!, 'paymentMethod');
-  return serializePaymentMethod(paymentMethod);
+export const getPaymentMethod = (paymentMethodId: string, ownerId: string) => {
+  return getNamedResource<IPaymentMethod, PaymentMethodResponseDTO>({
+    findById: findPaymentMethodById,
+    serialize: serializePaymentMethod,
+    ownerType: 'paymentMethod',
+  })(paymentMethodId, ownerId);
 };

@@ -14,6 +14,8 @@ import {
   TOTALS_OVERALL,
 } from './mocks';
 
+import { FOOD_CATEGORY_ID_STR } from '@/testing/factories/category';
+
 vi.mock('@transaction/db', () => ({
   findTransactionTotalsOverall: vi.fn(),
   findTransactionTotalsByCurrency: vi.fn(),
@@ -25,7 +27,7 @@ describe('getTransactionTotals', () => {
     (findTransactionTotalsOverall as Mock).mockResolvedValue(TOTALS_OVERALL);
 
     const result = await getTransactionTotals(
-      { category: 'food' },
+      { categoryId: FOOD_CATEGORY_ID_STR },
       randomObjectIdString(),
     );
 

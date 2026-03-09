@@ -1,5 +1,6 @@
 import { findCategories } from '@category/db';
 import { CategoryResponseDTO } from '@category/schema';
+import { prepareNamedResourcesMap } from '@shared/named-resource';
 import { ITransaction } from '@transaction/model';
 
 export type CategoriesMap = Record<
@@ -13,10 +14,5 @@ export const prepareCategoriesMap = async (
 ) => {
   const categoryIds = transactions?.map((t) => t.categoryId.toString());
   const categories = await findCategories(ownerId, categoryIds);
-  return Object.fromEntries(
-    categories.map((c) => [
-      c._id.toString(),
-      { id: c._id.toString(), type: c.type, name: c.name },
-    ]),
-  );
+  return prepareNamedResourcesMap(categories);
 };

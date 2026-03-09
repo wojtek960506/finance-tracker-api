@@ -1,9 +1,9 @@
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import { registerErrorHandler } from '@app/plugins/errorHandler';
 import * as serviceC from '@category/services';
 import * as servicePM from '@payment-method/services';
-import { registerErrorHandler } from '@app/plugins/errorHandler';
 import { streamTransactions } from '@transaction/db';
 import * as serviceT from '@transaction/services';
 

@@ -1,28 +1,26 @@
 import { findPaymentMethodById, savePaymentMethodChanges } from '@payment-method/db';
+import { IPaymentMethod } from '@payment-method/model';
 import { PaymentMethodDTO, PaymentMethodResponseDTO } from '@payment-method/schema';
-import { checkOwner } from '@shared/services';
+import { updateNamedResource } from '@shared/named-resource';
 import {
   SystemPaymentMethodUpdateNotAllowed,
   UserPaymentMethodMissingOwner,
 } from '@utils/errors';
-import { normalizeWhitespace } from '@utils/strings';
 
-export const updatePaymentMethod = async (
+export const updatePaymentMethod = (
   paymentMethodId: string,
   ownerId: string,
   dto: PaymentMethodDTO,
-): Promise<PaymentMethodResponseDTO> => {
-  const paymentMethod = await findPaymentMethodById(paymentMethodId);
-  if (paymentMethod.type === 'system')
-    throw new SystemPaymentMethodUpdateNotAllowed(paymentMethodId);
-  if (!paymentMethod.ownerId) throw new UserPaymentMethodMissingOwner(paymentMethodId);
-  checkOwner(ownerId, paymentMethodId, paymentMethod.ownerId!, 'paymentMethod');
-
-  const { name } = dto;
-  const newProps = {
-    name: normalizeWhitespace(name),
-    nameNormalized: normalizeWhitespace(name).toLowerCase(),
-  };
-
-  return savePaymentMethodChanges(paymentMethod, newProps);
+) => {
+  return updateNamedResource<IPaymentMethod, PaymentMethodResponseDTO>({
+    findById: findPaymentMethodById,
+    saveChanges: savePaymentMethodChanges,
+    ownerType: 'paymentMethod',
+    systemUpdateNotAllowedFactory: (resourceId) => {
+      return new SystemPaymentMethodUpdateNotAllowed(resourceId);
+    },
+    userMissingOwnerFactory: (resourceId) => {
+      return new UserPaymentMethodMissingOwner(resourceId);
+    },
+  })(paymentMethodId, ownerId, dto);
 };
