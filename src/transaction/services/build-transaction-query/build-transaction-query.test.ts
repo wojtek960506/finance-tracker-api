@@ -4,10 +4,7 @@ import { ValidationError } from '@utils/errors';
 
 import { buildTransactionFilterQuery } from './build-transaction-query';
 
-import {
-  FOOD_CATEGORY_ID_OBJ,
-  FOOD_CATEGORY_ID_STR,
-} from '@/testing/factories/category';
+import { FOOD_CATEGORY_ID_OBJ, FOOD_CATEGORY_ID_STR } from '@/testing/factories/category';
 import { USER_ID_STR } from '@/testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,

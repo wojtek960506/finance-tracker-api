@@ -1,55 +1,50 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import * as db from '@category/db';
-import * as serializers from '@category/serializers';
-import * as service from '@category/services';
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import { getOrCreateCategory } from './get-or-create-category';
 
-import {
-  FOOD_CATEGORY_NAME,
-  getUserCategoryResultJSON,
-  getUserCategoryResultSerialized,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
+import * as db from '@/category/db';
+import { serializeCategory } from '@/category/serializers';
+import * as services from '@/category/services';
+import * as namedResource from '@/shared/named-resource';
 
-describe('getOrCreateCategory', () => {
-  const categoryJSON = getUserCategoryResultJSON();
-  const categorySerialized = getUserCategoryResultSerialized();
+const getOrCreateImpl = vi.fn();
 
+vi.mock('@category/db', () => ({
+  findCategoryByName: vi.fn(),
+}));
+
+vi.mock('@category/serializers', () => ({
+  serializeCategory: vi.fn(),
+}));
+
+vi.mock('@category/services', () => ({
+  createCategory: vi.fn(),
+}));
+
+vi.mock('@shared/named-resource', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@shared/named-resource')>();
+  return {
+    ...actual,
+    getOrCreateNamedResource: vi.fn(() => getOrCreateImpl),
+  };
+});
+
+describe('getOrCreateCategory wiring', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it('returns existing category if found', async () => {
-    vi.spyOn(db, 'findCategoryByName').mockResolvedValue(categoryJSON as any);
-    vi.spyOn(serializers, 'serializeCategory').mockReturnValue(categorySerialized);
-    vi.spyOn(service, 'createCategory');
+  it('delegates to getOrCreateNamedResource with category deps', async () => {
+    getOrCreateImpl.mockResolvedValue({ id: '1' });
 
-    const result = await getOrCreateCategory(USER_ID_STR, FOOD_CATEGORY_NAME);
+    const result = await getOrCreateCategory('u1', 'Food');
 
-    expect(db.findCategoryByName).toHaveBeenCalledOnce();
-    expect(db.findCategoryByName).toHaveBeenCalledWith(FOOD_CATEGORY_NAME, USER_ID_STR);
-    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
-    expect(serializers.serializeCategory).toHaveBeenCalledWith(categoryJSON);
-    expect(service.createCategory).not.toHaveBeenCalled();
-    expect(result).toEqual(categorySerialized);
-  });
-
-  it('creates and returns new category if not found', async () => {
-    vi.spyOn(db, 'findCategoryByName').mockResolvedValue(null);
-    vi.spyOn(serializers, 'serializeCategory');
-    vi.spyOn(service, 'createCategory').mockResolvedValue(categorySerialized as any);
-
-    const result = await getOrCreateCategory(USER_ID_STR, FOOD_CATEGORY_NAME);
-
-    expect(db.findCategoryByName).toHaveBeenCalledOnce();
-    expect(db.findCategoryByName).toHaveBeenCalledWith(FOOD_CATEGORY_NAME, USER_ID_STR);
-    expect(serializers.serializeCategory).not.toHaveBeenCalled();
-    expect(service.createCategory).toHaveBeenCalledOnce();
-    expect(service.createCategory).toHaveBeenCalledWith(USER_ID_STR, {
-      name: FOOD_CATEGORY_NAME,
-    });
-    expect(result).toEqual(categorySerialized);
+    expect(namedResource.getOrCreateNamedResource).toHaveBeenCalledOnce();
+    const [deps] = (namedResource.getOrCreateNamedResource as Mock).mock.calls[0];
+    expect(deps.findByName).toBe(db.findCategoryByName);
+    expect(deps.serialize).toBe(serializeCategory);
+    expect(deps.create).toBe(services.createCategory);
+    expect(getOrCreateImpl).toHaveBeenCalledWith('u1', 'Food');
+    expect(result).toEqual({ id: '1' });
   });
 });

@@ -274,74 +274,78 @@ describe('createRandomTransactions', () => {
     expect(TransactionModel.bulkWrite).not.toHaveBeenCalled();
   });
 
-  it('throws AppError when not all expected paired transactions are updated with refId', async () => {
-    const paymentMethod = { id: 'pm-bank-transfer', name: 'bankTransfer' };
-    const standardTransaction = {
-      ownerId: TEST_OWNER_ID,
-      sourceIndex: 0,
-      amount: 20,
-      categoryId: 'cat-food',
-      type: 'expense',
-      title: 'Food expense',
-      transactionDate: TEST_DATE,
-    };
-    const transferExpense = {
-      ownerId: TEST_OWNER_ID,
-      sourceIndex: 1,
-      sourceRefIndex: 2,
-      amount: 50,
-      categoryId: 'cat-my-account',
-      type: 'expense',
-      title: 'Transfer out',
-      transactionDate: TEST_DATE,
-    };
-    const transferIncome = {
-      ownerId: TEST_OWNER_ID,
-      sourceIndex: 2,
-      sourceRefIndex: 1,
-      amount: 50,
-      categoryId: 'cat-my-account',
-      type: 'income',
-      title: 'Transfer in',
-      transactionDate: TEST_DATE,
-    };
+  // prettier-ignore
+  it(
+    'throws AppError when not all expected paired transactions are updated with refId',
+    async () => {
+      const paymentMethod = { id: 'pm-bank-transfer', name: 'bankTransfer' };
+      const standardTransaction = {
+        ownerId: TEST_OWNER_ID,
+        sourceIndex: 0,
+        amount: 20,
+        categoryId: 'cat-food',
+        type: 'expense',
+        title: 'Food expense',
+        transactionDate: TEST_DATE,
+      };
+      const transferExpense = {
+        ownerId: TEST_OWNER_ID,
+        sourceIndex: 1,
+        sourceRefIndex: 2,
+        amount: 50,
+        categoryId: 'cat-my-account',
+        type: 'expense',
+        title: 'Transfer out',
+        transactionDate: TEST_DATE,
+      };
+      const transferIncome = {
+        ownerId: TEST_OWNER_ID,
+        sourceIndex: 2,
+        sourceRefIndex: 1,
+        amount: 50,
+        categoryId: 'cat-my-account',
+        type: 'income',
+        title: 'Transfer in',
+        transactionDate: TEST_DATE,
+      };
 
-    (getOrCreateCategory as Mock)
-      .mockResolvedValueOnce(TEST_CATEGORIES[0])
-      .mockResolvedValueOnce(TEST_CATEGORIES[1])
-      .mockResolvedValueOnce(TEST_CATEGORIES[2])
-      .mockResolvedValueOnce(TEST_CATEGORIES[3])
-      .mockResolvedValueOnce(TEST_CATEGORIES[4])
-      .mockResolvedValueOnce(TEST_CATEGORIES[5])
-      .mockResolvedValueOnce(TEST_CATEGORIES[6]);
-    (getOrCreatePaymentMethod as Mock)
-      .mockResolvedValueOnce(paymentMethod)
-      .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
-      .mockResolvedValueOnce({ id: 'pm-card', name: 'card' })
-      .mockResolvedValueOnce({ id: 'pm-blik', name: 'blik' });
-    (randomDate as Mock).mockReturnValue(TEST_DATE);
-    (randomFromSet as Mock)
-      .mockReturnValueOnce('cat-food')
-      .mockReturnValueOnce('pm-bank-transfer')
-      .mockReturnValueOnce('cat-my-account')
-      .mockReturnValueOnce('pm-bank-transfer');
-    (prepareRandomStandardTransaction as Mock).mockReturnValue(standardTransaction);
-    (prepareRandomTransferTransactionPair as Mock).mockReturnValue([
-      transferExpense,
-      transferIncome,
-    ]);
-    (TransactionModel.insertMany as Mock).mockResolvedValue({
-      insertedIds: { 0: 'id-0', 1: 'id-1', 2: 'id-2' },
-      insertedCount: 3,
-    });
-    (TransactionModel.bulkWrite as Mock).mockResolvedValue({
-      modifiedCount: 1,
-    });
+      (getOrCreateCategory as Mock)
+        .mockResolvedValueOnce(TEST_CATEGORIES[0])
+        .mockResolvedValueOnce(TEST_CATEGORIES[1])
+        .mockResolvedValueOnce(TEST_CATEGORIES[2])
+        .mockResolvedValueOnce(TEST_CATEGORIES[3])
+        .mockResolvedValueOnce(TEST_CATEGORIES[4])
+        .mockResolvedValueOnce(TEST_CATEGORIES[5])
+        .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+      (getOrCreatePaymentMethod as Mock)
+        .mockResolvedValueOnce(paymentMethod)
+        .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
+        .mockResolvedValueOnce({ id: 'pm-card', name: 'card' })
+        .mockResolvedValueOnce({ id: 'pm-blik', name: 'blik' });
+      (randomDate as Mock).mockReturnValue(TEST_DATE);
+      (randomFromSet as Mock)
+        .mockReturnValueOnce('cat-food')
+        .mockReturnValueOnce('pm-bank-transfer')
+        .mockReturnValueOnce('cat-my-account')
+        .mockReturnValueOnce('pm-bank-transfer');
+      (prepareRandomStandardTransaction as Mock).mockReturnValue(standardTransaction);
+      (prepareRandomTransferTransactionPair as Mock).mockReturnValue([
+        transferExpense,
+        transferIncome,
+      ]);
+      (TransactionModel.insertMany as Mock).mockResolvedValue({
+        insertedIds: { 0: 'id-0', 1: 'id-1', 2: 'id-2' },
+        insertedCount: 3,
+      });
+      (TransactionModel.bulkWrite as Mock).mockResolvedValue({
+        modifiedCount: 1,
+      });
 
-    const resultPromise = createRandomTransactions(TEST_OWNER_ID, 3);
-    await expect(resultPromise).rejects.toThrow(AppError);
-    await expect(resultPromise).rejects.toThrow(
-      'Not all expected transctions were updated with reference id',
-    );
-  });
+      const resultPromise = createRandomTransactions(TEST_OWNER_ID, 3);
+      await expect(resultPromise).rejects.toThrow(AppError);
+      await expect(resultPromise).rejects.toThrow(
+        'Not all expected transctions were updated with reference id',
+      );
+    }
+  );
 });

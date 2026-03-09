@@ -11,6 +11,7 @@ import {
 } from '@transaction/services';
 import {
   CategoryNotFoundError,
+  PaymentMethodOwnershipError,
   SystemCategoryHasOwner,
   SystemCategoryNotAllowed,
   SystemCategoryWrongType,
@@ -123,6 +124,28 @@ describe('update transaction', async () => {
     expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
     expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
   });
+
+  // prettier-ignore
+  it(
+    'should throw error when creating single transaction with payment method not owned by user',
+    async () => {
+      vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue( foodCategory as any);
+      vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+        { ...paymentMethod, type: CATEGORY_TYPE_USER, ownerId: '123', id: '1' } as any,
+      );
+      vi.spyOn(dbTransactions, 'findTransaction');
+      vi.spyOn(dbTransactions, 'saveTransactionChanges');
+
+      await expect(
+      updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
+    ).rejects.toThrow(PaymentMethodOwnershipError);
+
+      expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+      expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
+      expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
+      expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
+    }
+  );
 
   it('throws when updating transaction pair with not system category', async () => {
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(

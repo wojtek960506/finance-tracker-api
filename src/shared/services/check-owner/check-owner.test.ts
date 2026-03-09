@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { CategoryOwnershipError, TransactionOwnershipError } from '@utils/errors';
+import {
+  CategoryOwnershipError,
+  PaymentMethodOwnershipError,
+  TransactionOwnershipError,
+} from '@utils/errors';
 
 import { checkOwner, CheckOwnerType } from './check-owner';
 
@@ -13,6 +17,7 @@ describe('checkOwner', () => {
   it.each([
     ['transaction', TransactionOwnershipError],
     ['category', CategoryOwnershipError],
+    ['paymentMethod', PaymentMethodOwnershipError],
   ])('throws error when owner is different than in %s', (type, error) => {
     expect(() => checkOwner('1', '2', '3', type as CheckOwnerType)).toThrow(error);
   });

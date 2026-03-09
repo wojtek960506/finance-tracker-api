@@ -1,9 +1,12 @@
 import { findPaymentMethodByName } from '@payment-method/db';
 import { serializePaymentMethod } from '@payment-method/serializers';
 import { createPaymentMethod } from '@payment-method/services';
+import { getOrCreateNamedResource } from '@shared/named-resource';
 
-export const getOrCreatePaymentMethod = async (ownerId: string, name: string) => {
-  const paymentMethod = await findPaymentMethodByName(name, ownerId);
-  if (paymentMethod) return serializePaymentMethod(paymentMethod);
-  return createPaymentMethod(ownerId, { name });
+export const getOrCreatePaymentMethod = (ownerId: string, name: string) => {
+  return getOrCreateNamedResource({
+    findByName: findPaymentMethodByName,
+    serialize: serializePaymentMethod,
+    create: createPaymentMethod,
+  })(ownerId, name);
 };
