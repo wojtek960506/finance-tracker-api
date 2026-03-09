@@ -172,38 +172,46 @@ describe('createStandardTransaction', async () => {
     expect(getNextSourceIndex).not.toHaveBeenCalled();
   });
 
-  it('should throw error when creating transaction pair with system category with owner', async () => {
-    vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
-      transferCategory as any,
-    );
-    vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
-      ...transferCategory,
-      ownerId: USER_ID_STR,
-    } as any);
-    vi.spyOn(dbTransactions, 'persistTransactionPair');
+  // prettier-ignore
+  it(
+    'should throw error when creating transaction pair with system category with owner',
+    async () => {
+      vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
+        transferCategory as any,
+      );
+      vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
+        ...transferCategory,
+        ownerId: USER_ID_STR,
+      } as any);
+      vi.spyOn(dbTransactions, 'persistTransactionPair');
 
-    await expect(createTransferTransaction(transferDTO, USER_ID_STR)).rejects.toThrow(
-      SystemCategoryHasOwner,
-    );
+      await expect(createTransferTransaction(transferDTO, USER_ID_STR)).rejects.toThrow(
+        SystemCategoryHasOwner,
+      );
 
-    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
-    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
-    expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
-    expect(getNextSourceIndex).not.toHaveBeenCalled();
-  });
+      expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+      expect(serializers.serializeCategory).toHaveBeenCalledOnce();
+      expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
+      expect(getNextSourceIndex).not.toHaveBeenCalled();
+    }
+  );
 
-  it('should throw error when category not found by name for creating transaction pair', async () => {
-    vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(null);
-    vi.spyOn(serializers, 'serializeCategory');
-    vi.spyOn(dbTransactions, 'persistTransactionPair');
+  // prettier-ignore
+  it(
+    'should throw error when category not found by name for creating transaction pair',
+    async () => {
+      vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(null);
+      vi.spyOn(serializers, 'serializeCategory');
+      vi.spyOn(dbTransactions, 'persistTransactionPair');
 
-    await expect(createTransferTransaction(transferDTO, USER_ID_STR)).rejects.toThrow(
-      CategoryNotFoundError,
-    );
+      await expect(createTransferTransaction(transferDTO, USER_ID_STR)).rejects.toThrow(
+        CategoryNotFoundError,
+      );
 
-    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
-    expect(serializers.serializeCategory).not.toHaveBeenCalled();
-    expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
-    expect(getNextSourceIndex).not.toHaveBeenCalled();
-  });
+      expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
+      expect(serializers.serializeCategory).not.toHaveBeenCalled();
+      expect(dbTransactions.persistTransactionPair).not.toHaveBeenCalled();
+      expect(getNextSourceIndex).not.toHaveBeenCalled();
+    }
+  );
 });

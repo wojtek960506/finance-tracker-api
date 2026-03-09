@@ -39,20 +39,24 @@ describe('payment-method db wiring', () => {
     vi.clearAllMocks();
   });
 
-  it('findPaymentMethodById delegates to findNamedResourceById with not-found factory', async () => {
-    const resultObj = { id: '1' };
-    (namedResource.findNamedResourceById as Mock).mockResolvedValue(resultObj);
+  // prettier-ignore
+  it(
+    'findPaymentMethodById delegates to findNamedResourceById with not-found factory',
+    async () => {
+      const resultObj = { id: '1' };
+      (namedResource.findNamedResourceById as Mock).mockResolvedValue(resultObj);
 
-    const result = await findPaymentMethodById('pm-1');
+      const result = await findPaymentMethodById('pm-1');
 
-    expect(namedResource.findNamedResourceById).toHaveBeenCalledOnce();
-    const [modelArg, idArg, factoryArg] = (namedResource.findNamedResourceById as Mock)
-      .mock.calls[0];
-    expect(modelArg).toBe(PaymentMethodModel);
-    expect(idArg).toBe('pm-1');
-    expect(factoryArg('x')).toBeInstanceOf(PaymentMethodNotFoundError);
-    expect(result).toBe(resultObj);
-  });
+      expect(namedResource.findNamedResourceById).toHaveBeenCalledOnce();
+      const [modelArg, idArg, factoryArg] = (namedResource.findNamedResourceById as Mock)
+        .mock.calls[0];
+      expect(modelArg).toBe(PaymentMethodModel);
+      expect(idArg).toBe('pm-1');
+      expect(factoryArg('x')).toBeInstanceOf(PaymentMethodNotFoundError);
+      expect(result).toBe(resultObj);
+    }
+  );
 
   it('findPaymentMethodByName delegates to findNamedResourceByName', async () => {
     const resultObj = { id: '1' };

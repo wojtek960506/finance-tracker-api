@@ -39,20 +39,24 @@ describe('category db wiring', () => {
     vi.clearAllMocks();
   });
 
-  it('findCategoryById delegates to findNamedResourceById with category not-found factory', async () => {
-    const resultObj = { id: '1' };
-    (namedResource.findNamedResourceById as Mock).mockResolvedValue(resultObj);
+  // prettier-ignore
+  it(
+    'findCategoryById delegates to findNamedResourceById with category not-found factory',
+    async () => {
+      const resultObj = { id: '1' };
+      (namedResource.findNamedResourceById as Mock).mockResolvedValue(resultObj);
 
-    const result = await findCategoryById('cat-1');
+      const result = await findCategoryById('cat-1');
 
-    expect(namedResource.findNamedResourceById).toHaveBeenCalledOnce();
-    const [modelArg, idArg, factoryArg] = (namedResource.findNamedResourceById as Mock)
-      .mock.calls[0];
-    expect(modelArg).toBe(CategoryModel);
-    expect(idArg).toBe('cat-1');
-    expect(factoryArg('x')).toBeInstanceOf(CategoryNotFoundError);
-    expect(result).toBe(resultObj);
-  });
+      expect(namedResource.findNamedResourceById).toHaveBeenCalledOnce();
+      const [modelArg, idArg, factoryArg] = (namedResource.findNamedResourceById as Mock)
+        .mock.calls[0];
+      expect(modelArg).toBe(CategoryModel);
+      expect(idArg).toBe('cat-1');
+      expect(factoryArg('x')).toBeInstanceOf(CategoryNotFoundError);
+      expect(result).toBe(resultObj);
+    }
+  );
 
   it('findCategoryByName delegates to findNamedResourceByName', async () => {
     const resultObj = { id: '1' };

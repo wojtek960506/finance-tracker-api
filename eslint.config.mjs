@@ -19,6 +19,18 @@ export default tseslint.config(
       'sort-imports': 'off',
       'import/order': 'off',
       'import/no-duplicates': 'error',
+      'max-len': [
+        'error',
+        {
+          code: 100,
+          tabWidth: 2,
+          ignoreUrls: true,
+          ignoreStrings: false,
+          ignoreTemplateLiterals: false,
+          ignoreRegExpLiterals: false,
+          ignoreComments: false,
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',

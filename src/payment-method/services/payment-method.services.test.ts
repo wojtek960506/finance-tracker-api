@@ -66,39 +66,47 @@ describe('payment-method services wiring', () => {
     expect(result).toEqual({ id: '1' });
   });
 
-  it('getPaymentMethod delegates through getNamedResource with paymentMethod owner type', async () => {
-    getImpl.mockResolvedValue({ id: '1' });
+  // prettier-ignore
+  it(
+    'getPaymentMethod delegates through getNamedResource with paymentMethod owner type',
+    async () => {
+      getImpl.mockResolvedValue({ id: '1' });
 
-    const result = await getPaymentMethod('pm-1', 'u1');
+      const result = await getPaymentMethod('pm-1', 'u1');
 
-    expect(namedResource.getNamedResource).toHaveBeenCalledOnce();
-    const [deps] = (namedResource.getNamedResource as Mock).mock.calls[0];
-    expect(deps.findById).toBe(db.findPaymentMethodById);
-    expect(deps.serialize).toBe(serializePaymentMethod);
-    expect(deps.ownerType).toBe('paymentMethod');
-    expect(getImpl).toHaveBeenCalledWith('pm-1', 'u1');
-    expect(result).toEqual({ id: '1' });
-  });
+      expect(namedResource.getNamedResource).toHaveBeenCalledOnce();
+      const [deps] = (namedResource.getNamedResource as Mock).mock.calls[0];
+      expect(deps.findById).toBe(db.findPaymentMethodById);
+      expect(deps.serialize).toBe(serializePaymentMethod);
+      expect(deps.ownerType).toBe('paymentMethod');
+      expect(getImpl).toHaveBeenCalledWith('pm-1', 'u1');
+      expect(result).toEqual({ id: '1' });
+    }
+  );
 
-  it('updatePaymentMethod delegates through updateNamedResource with paymentMethod errors', async () => {
-    updateImpl.mockResolvedValue({ id: '1' });
+  // prettier-ignore
+  it(
+    'updatePaymentMethod delegates through updateNamedResource with paymentMethod errors',
+    async () => {
+      updateImpl.mockResolvedValue({ id: '1' });
 
-    const result = await updatePaymentMethod('pm-1', 'u1', { name: 'New' } as any);
+      const result = await updatePaymentMethod('pm-1', 'u1', { name: 'New' } as any);
 
-    expect(namedResource.updateNamedResource).toHaveBeenCalledOnce();
-    const [deps] = (namedResource.updateNamedResource as Mock).mock.calls[0];
-    expect(deps.findById).toBe(db.findPaymentMethodById);
-    expect(deps.saveChanges).toBe(db.savePaymentMethodChanges);
-    expect(deps.ownerType).toBe('paymentMethod');
-    expect(deps.systemUpdateNotAllowedFactory('x')).toBeInstanceOf(
-      SystemPaymentMethodUpdateNotAllowed,
-    );
-    expect(deps.userMissingOwnerFactory('x')).toBeInstanceOf(
-      UserPaymentMethodMissingOwner,
-    );
-    expect(updateImpl).toHaveBeenCalledWith('pm-1', 'u1', { name: 'New' });
-    expect(result).toEqual({ id: '1' });
-  });
+      expect(namedResource.updateNamedResource).toHaveBeenCalledOnce();
+      const [deps] = (namedResource.updateNamedResource as Mock).mock.calls[0];
+      expect(deps.findById).toBe(db.findPaymentMethodById);
+      expect(deps.saveChanges).toBe(db.savePaymentMethodChanges);
+      expect(deps.ownerType).toBe('paymentMethod');
+      expect(deps.systemUpdateNotAllowedFactory('x')).toBeInstanceOf(
+        SystemPaymentMethodUpdateNotAllowed,
+      );
+      expect(deps.userMissingOwnerFactory('x')).toBeInstanceOf(
+        UserPaymentMethodMissingOwner,
+      );
+      expect(updateImpl).toHaveBeenCalledWith('pm-1', 'u1', { name: 'New' });
+      expect(result).toEqual({ id: '1' });
+    }
+  );
 
   it('preparePaymentMethodsMap delegates list fetch and map preparation', async () => {
     const paymentMethods = [
