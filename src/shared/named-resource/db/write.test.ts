@@ -50,4 +50,3 @@ describe('saveNamedResourceChanges', () => {
     expect(result).toEqual({ id: '1', name: 'New' });
   });
 });
-

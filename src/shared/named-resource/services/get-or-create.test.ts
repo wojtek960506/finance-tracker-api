@@ -30,4 +30,3 @@ describe('getOrCreateNamedResource', () => {
     expect(result).toEqual({ id: '1', name: 'Food' });
   });
 });
-

@@ -37,4 +37,3 @@ describe('createNamedResource', () => {
     expect(persist).not.toHaveBeenCalled();
   });
 });
-

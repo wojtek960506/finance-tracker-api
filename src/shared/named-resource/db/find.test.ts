@@ -67,4 +67,3 @@ describe('findNamedResources', () => {
     expect(result).toEqual(list);
   });
 });
-

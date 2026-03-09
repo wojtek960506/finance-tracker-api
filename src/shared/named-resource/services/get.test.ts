@@ -5,6 +5,7 @@ vi.mock('@shared/services', () => ({
 }));
 
 import * as sharedServices from '@shared/services';
+
 import { getNamedResource } from './get';
 
 describe('getNamedResource', () => {
@@ -28,11 +29,6 @@ describe('getNamedResource', () => {
 
     await get('r1', 'u1');
 
-    expect(sharedServices.checkOwner).toHaveBeenCalledWith(
-      'u1',
-      'r1',
-      'u1',
-      'category',
-    );
+    expect(sharedServices.checkOwner).toHaveBeenCalledWith('u1', 'r1', 'u1', 'category');
   });
 });

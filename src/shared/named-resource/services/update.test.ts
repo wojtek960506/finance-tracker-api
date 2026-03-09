@@ -5,6 +5,7 @@ vi.mock('@shared/services', () => ({
 }));
 
 import * as sharedServices from '@shared/services';
+
 import { updateNamedResource } from './update';
 
 describe('updateNamedResource', () => {
@@ -22,12 +23,7 @@ describe('updateNamedResource', () => {
 
     const result = await update('r1', 'u1', { name: '  New   Name ' });
 
-    expect(sharedServices.checkOwner).toHaveBeenCalledWith(
-      'u1',
-      'r1',
-      'u1',
-      'category',
-    );
+    expect(sharedServices.checkOwner).toHaveBeenCalledWith('u1', 'r1', 'u1', 'category');
     expect(saveChanges).toHaveBeenCalledWith(resource, {
       name: 'New Name',
       nameNormalized: 'new name',
