@@ -3,8 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as db from '@category/db';
 import * as serializers from '@category/serializers';
 
-import { getCategory } from './get-category';
-
+import { getCategory } from '@/category/services';
 import {
   EXCHANGE_CATEGORY_ID_STR,
   FOOD_CATEGORY_ID_STR,

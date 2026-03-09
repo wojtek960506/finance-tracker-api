@@ -3,8 +3,7 @@ import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 import { CategoryModel } from '@category/model';
 import { CategoryNotFoundError } from '@utils/errors';
 
-import { findCategoryById, findCategoryByName } from './find-category';
-
+import { findCategoryById, findCategoryByName } from '@/category/db';
 import {
   FOOD_CATEGORY_ID_STR,
   getUserCategoryResultSerialized,

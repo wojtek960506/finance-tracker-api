@@ -2,8 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import * as db from '@category/db';
 
-import { prepareCategoriesMap } from './prepare-categories-map';
-
+import { prepareCategoriesMap } from '@/category/services';
 import {
   CATEGORY_TYPE_SYSTEM,
   CATEGORY_TYPE_USER,
