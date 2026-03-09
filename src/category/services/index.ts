@@ -1,5 +1,8 @@
-export * from './create-category';
-export * from './get-category';
+export type { CategoriesMap } from './category.services';
+export {
+  createCategory,
+  getCategory,
+  prepareCategoriesMap,
+  updateCategory,
+} from './category.services';
 export * from './get-or-create-category';
-export * from './prepare-categories-map';
-export * from './update-category';
