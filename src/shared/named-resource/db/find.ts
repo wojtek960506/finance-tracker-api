@@ -2,25 +2,7 @@ import { Model } from 'mongoose';
 
 import { normalizeWhitespace } from '@utils/strings';
 
-type NamedResourceMinimal = {
-  type: 'user' | 'system';
-  ownerId?: unknown;
-  _id: { toString: () => string };
-  name: string;
-  save: () => Promise<unknown>;
-};
-
-export type NamedResourceCreateProps = {
-  ownerId: string;
-  type: 'user' | 'system';
-  name: string;
-  nameNormalized: string;
-};
-
-export type NamedResourceUpdateProps = Pick<
-  NamedResourceCreateProps,
-  'name' | 'nameNormalized'
->;
+import { NamedResourceMinimal } from './types';
 
 export const findNamedResourceById = async <TResource extends NamedResourceMinimal>(
   model: Model<TResource>,
@@ -66,30 +48,4 @@ export const findNamedResources = async <TResource extends NamedResourceMinimal>
   if (resourceIds) query._id = { $in: resourceIds };
 
   return model.find(query);
-};
-
-export const persistNamedResource = async <
-  TResource extends NamedResourceMinimal,
-  TResponse,
->(
-  model: Model<TResource>,
-  props: NamedResourceCreateProps,
-  serialize: (resource: TResource) => TResponse,
-) => {
-  const newResource = await model.create(props);
-  return serialize(newResource);
-};
-
-export const saveNamedResourceChanges = async <
-  TResource extends NamedResourceMinimal,
-  TResponse,
->(
-  resource: TResource,
-  newProps: NamedResourceUpdateProps,
-  serialize: (resource: TResource) => TResponse,
-) => {
-  Object.assign(resource, newProps);
-  await resource.save();
-
-  return serialize(resource);
 };
