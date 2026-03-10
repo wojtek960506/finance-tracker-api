@@ -17,7 +17,7 @@ import {
   updateNamedResource,
 } from '@shared/named-resource';
 import { ITransaction } from '@transaction/model';
-import { checkTransactionDependencies } from '@transaction/services';
+import { checkTransactionDependencies } from '@transaction/services/check-transaction-dependencies';
 import {
   CategoryAlreadyExistsError,
   SystemCategoryDeletionNotAllowed,

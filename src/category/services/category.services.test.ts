@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as db from '@category/db';
 import { serializeCategory } from '@category/serializers';
@@ -20,13 +20,6 @@ const { createImpl, getImpl, updateImpl } = vi.hoisted(() => ({
   getImpl: vi.fn(),
   updateImpl: vi.fn(),
 }));
-
-// const { createImpl, getImpl, updateImpl } = {
-//   createImpl: vi.fn(),
-//   getImpl: vi.fn(),
-//   updateImpl: vi.fn(),
-// }
-
 
 vi.mock('@category/db', () => ({
   findCategoryById: vi.fn(),
