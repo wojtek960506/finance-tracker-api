@@ -1,13 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import * as config from '@app/config';
-
 import {
   COOKIE_SECRET_TEST,
   ENV_TEST_VALUES,
   JWT_ACCESS_SECRET_TEST,
   PORT_TEST,
-} from '@/testing/env-consts';
+} from '@testing/env-consts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import * as config from '@app/config';
 
 const {
   appMock,

@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 
 import { normalizeWhitespace } from '@utils/strings';
 
-import { NamedResourceMinimal } from './types';
+import { NamedResourceMinimal } from '../types';
 
 export const findNamedResourceById = async <TResource extends NamedResourceMinimal>(
   model: Model<TResource>,

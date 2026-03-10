@@ -8,6 +8,7 @@ import {
   NamedResourceCreateProps,
   NamedResourceUpdateProps,
   persistNamedResource,
+  removeNamedResourceById,
   saveNamedResourceChanges,
 } from '@shared/named-resource';
 import { CategoryNotFoundError } from '@utils/errors';
@@ -41,4 +42,10 @@ export const saveCategoryChanges = async (
   newProps: CategoryUpdateProps,
 ) => {
   return saveNamedResourceChanges(category, newProps, serializeCategory);
+};
+
+export const removeCategory = async (id: string) => {
+  return removeNamedResourceById(CategoryModel, id, (categoryId) => {
+    return new CategoryNotFoundError(categoryId);
+  });
 };

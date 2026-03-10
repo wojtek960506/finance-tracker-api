@@ -1,3 +1,10 @@
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  getStandardTransactionNotPopulatedResultJSON,
+  getStandardTransactionResultSerialized,
+  getTransferTransactionNotPopulatedResultJSON,
+  getTransferTransactionResultSerialized,
+} from '@testing/factories/transaction';
 import { describe, expect, it, Mock, vi } from 'vitest';
 
 import * as services from '@category/services';
@@ -5,14 +12,6 @@ import * as paymentMethodServices from '@payment-method/services';
 import { findTransactions, findTransactionsCount } from '@transaction/db';
 import { serializeTransaction } from '@transaction/serializers';
 import { getTransactions } from '@transaction/services';
-
-import { USER_ID_STR } from '@/testing/factories/general';
-import {
-  getStandardTransactionNotPopulatedResultJSON,
-  getStandardTransactionResultSerialized,
-  getTransferTransactionNotPopulatedResultJSON,
-  getTransferTransactionResultSerialized,
-} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/db', () => ({
   findTransactions: vi.fn(),

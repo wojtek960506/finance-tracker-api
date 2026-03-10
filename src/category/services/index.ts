@@ -1,6 +1,7 @@
-export type { CategoriesMap } from './category.services';
 export {
+  type CategoriesMap,
   createCategory,
+  deleteCategory,
   getCategory,
   prepareCategoriesMap,
   updateCategory,

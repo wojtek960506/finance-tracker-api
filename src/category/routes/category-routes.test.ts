@@ -1,3 +1,10 @@
+import {
+  FOOD_CATEGORY_ID_STR,
+  getUpdateCategoryProps,
+  getUserCategoryResultJSON,
+  getUserCategoryResultSerialized,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -6,14 +13,6 @@ import * as dbC from '@category/db';
 import * as serviceC from '@category/services';
 
 import { categoryRoutes } from './category-routes';
-
-import {
-  FOOD_CATEGORY_ID_STR,
-  getUpdateCategoryProps,
-  getUserCategoryResultJSON,
-  getUserCategoryResultSerialized,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
 
 const MOCKED_RESULT = { result: 'result' };
 const mockPreHandler = vi.fn(async (req, _res) => {
@@ -84,6 +83,23 @@ describe('category routes', async () => {
       FOOD_CATEGORY_ID_STR,
       USER_ID_STR,
       categoryDTO,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
+
+  it("should delete category - 'DELETE /:id'", async () => {
+    vi.spyOn(serviceC, 'deleteCategory').mockResolvedValue(MOCKED_RESULT as any);
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/${FOOD_CATEGORY_ID_STR}`,
+    });
+
+    expect(serviceC.deleteCategory).toHaveBeenCalledOnce();
+    expect(serviceC.deleteCategory).toHaveBeenCalledWith(
+      FOOD_CATEGORY_ID_STR,
+      USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);

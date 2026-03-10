@@ -1,3 +1,4 @@
+import { USER_ID_STR } from '@testing/factories/general';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import { TransactionModel } from '@transaction/model';
@@ -5,8 +6,6 @@ import { createRandomTransactions } from '@transaction/services';
 import { AppError } from '@utils/errors';
 
 import { createTestTransactions } from './create-test-transactions';
-
-import { USER_ID_STR } from '@/testing/factories/general';
 
 const sessionMock = {} as any;
 

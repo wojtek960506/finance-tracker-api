@@ -3,6 +3,7 @@ import { ClientSession } from 'mongoose';
 import { getOrCreateCategory } from '@category/services';
 import { getOrCreatePaymentMethod } from '@payment-method/services';
 import { TransactionModel } from '@transaction/model';
+import { SYSTEM_CATEGORY_NAMES, SYSTEM_PAYMENT_METHOD_NAMES } from '@utils/consts';
 import { AppError } from '@utils/errors';
 import { randomDate, randomFromSet } from '@utils/random';
 
@@ -23,14 +24,15 @@ export async function createRandomTransactions(
 
   // create some categories
   const testCategoryNames = [
+    ...SYSTEM_CATEGORY_NAMES,
     'Food',
     'Sport',
     'Transport',
     'Accomodation',
     'Entertainment',
-    'exchange', // system category
-    'myAccount', // system category
   ];
+  const testPaymentMethodNames = [...SYSTEM_PAYMENT_METHOD_NAMES, 'BLIK'];
+
   const categories = (
     await Promise.all(testCategoryNames.map((name) => getOrCreateCategory(ownerId, name)))
   ).filter((c) => c != undefined);
@@ -38,9 +40,7 @@ export async function createRandomTransactions(
   const categoryNamesMap = Object.fromEntries(categories.map((c) => [c.id, c.name]));
   const paymentMethods = (
     await Promise.all(
-      ['cash', 'card', 'bankTransfer', 'blik'].map((name) =>
-        getOrCreatePaymentMethod(ownerId, name),
-      ),
+      testPaymentMethodNames.map((name) => getOrCreatePaymentMethod(ownerId, name)),
     )
   ).filter((pm) => pm != undefined);
   const paymentMethodIds = paymentMethods.map((pm) => pm.id);

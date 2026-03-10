@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { DeleteResult } from 'mongoose';
 
 import { authorizeAccessToken } from '@auth/services';
 import {
@@ -12,6 +13,7 @@ import { validateBody } from '@utils/validation';
 
 import {
   createCategoryHandler,
+  deleteCategoryHandler,
   getCategoriesHandler,
   getCategoryHandler,
   updateCategoryHandler,
@@ -42,5 +44,11 @@ export async function categoryRoutes(
     '/:id',
     { preHandler: [validateBody(CategorySchema), authorizeAccessToken()] },
     updateCategoryHandler,
+  );
+
+  app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
+    '/:id',
+    { preHandler: authorizeAccessToken() },
+    deleteCategoryHandler,
   );
 }

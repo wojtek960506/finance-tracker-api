@@ -23,6 +23,14 @@ export class CategoryOwnershipError extends AppError {
   }
 }
 
+export class CategoryDependencyError extends AppError {
+  readonly code = 'CATEGORY_DEPENDENCY_ERROR';
+
+  constructor(readonly categoryId: string) {
+    super(403, 'Category is being used by some transactions');
+  }
+}
+
 export class CategoryAlreadyExistsError extends AppError {
   readonly code = 'CATEGORY_ALREADY_EXISTS';
 
@@ -36,6 +44,14 @@ export class SystemCategoryUpdateNotAllowed extends AppError {
 
   constructor(readonly categoryId: string) {
     super(403, `Updating system category not allowed`);
+  }
+}
+
+export class SystemCategoryDeletionNotAllowed extends AppError {
+  readonly code = 'SYSTEM_CATEGORY_DELETION_NOT_ALLOWED';
+
+  constructor(readonly categoryId: string) {
+    super(403, `Deleting system category not allowed`);
   }
 }
 

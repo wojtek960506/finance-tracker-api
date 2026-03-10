@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import { PaymentMethodModel } from '@payment-method/model';
+import { serializePaymentMethod } from '@payment-method/serializers';
 import * as namedResource from '@shared/named-resource';
 import { PaymentMethodNotFoundError } from '@utils/errors';
 
@@ -8,11 +10,9 @@ import {
   findPaymentMethodByName,
   findPaymentMethods,
   persistPaymentMethod,
+  removePaymentMethod,
   savePaymentMethodChanges,
 } from './payment-method.db';
-
-import { PaymentMethodModel } from '@/payment-method/model';
-import { serializePaymentMethod } from '@/payment-method/serializers';
 
 vi.mock('@payment-method/model', () => ({
   PaymentMethodModel: {},
@@ -30,6 +30,7 @@ vi.mock('@shared/named-resource', async (importOriginal) => {
     findNamedResourceByName: vi.fn(),
     findNamedResources: vi.fn(),
     persistNamedResource: vi.fn(),
+    removeNamedResourceById: vi.fn(),
     saveNamedResourceChanges: vi.fn(),
   };
 });
@@ -121,4 +122,23 @@ describe('payment-method db wiring', () => {
     );
     expect(result).toBe(resultObj);
   });
+
+  // prettier-ignore
+  it(
+    'removePaymentMethod delegates to removeNamedResourceById with not-found factory',
+    async () => {
+      const resultObj = { deletedCount: 1 };
+      (namedResource.removeNamedResourceById as Mock).mockResolvedValue(resultObj);
+
+      const result = await removePaymentMethod('pm-1');
+
+      expect(namedResource.removeNamedResourceById).toHaveBeenCalledOnce();
+      const [modelArg, idArg, factoryArg] = (namedResource.removeNamedResourceById as Mock)
+        .mock.calls[0];
+      expect(modelArg).toBe(PaymentMethodModel);
+      expect(idArg).toBe('pm-1');
+      expect(factoryArg('x')).toBeInstanceOf(PaymentMethodNotFoundError);
+      expect(result).toBe(resultObj);
+    }
+  );
 });

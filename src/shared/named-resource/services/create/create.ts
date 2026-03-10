@@ -1,6 +1,6 @@
 import { normalizeWhitespace } from '@utils/strings';
 
-import { NameDTO } from './types';
+import { NameDTO } from '../types';
 
 export const createNamedResource = <TDTO extends NameDTO, TResponse>(deps: {
   findByName: (name: string, ownerId: string) => Promise<unknown>;

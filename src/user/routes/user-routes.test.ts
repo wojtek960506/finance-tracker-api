@@ -1,3 +1,9 @@
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  getUserDTO,
+  TEST_USER_TOTAL_TRANSACTIONS,
+  TEST_USER_USERNAME,
+} from '@testing/factories/user';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -5,13 +11,6 @@ import { registerErrorHandler } from '@app/plugins/errorHandler';
 import * as serviceU from '@user/services';
 
 import { userRoutes } from './user-routes';
-
-import { USER_ID_STR } from '@/testing/factories/general';
-import {
-  getUserDTO,
-  TEST_USER_TOTAL_TRANSACTIONS,
-  TEST_USER_USERNAME,
-} from '@/testing/factories/user';
 
 const MOCKED_RESULT = { result: 'result' };
 

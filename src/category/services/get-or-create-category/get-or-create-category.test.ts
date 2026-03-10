@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
-import { getOrCreateCategory } from './get-or-create-category';
+import * as db from '@category/db';
+import { serializeCategory } from '@category/serializers';
+import * as services from '@category/services';
+import * as namedResource from '@shared/named-resource';
 
-import * as db from '@/category/db';
-import { serializeCategory } from '@/category/serializers';
-import * as services from '@/category/services';
-import * as namedResource from '@/shared/named-resource';
+import { getOrCreateCategory } from './get-or-create-category';
 
 const getOrCreateImpl = vi.fn();
 

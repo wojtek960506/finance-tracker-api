@@ -1,3 +1,28 @@
+import {
+  CATEGORY_TYPE_SYSTEM,
+  CATEGORY_TYPE_USER,
+  EXCHANGE_CATEGORY_NAME,
+  FOOD_CATEGORY_ID_STR,
+  getExchangeCategoryResultJSON,
+  getTransferCategoryResultJSON,
+  getUserCategoryResultJSON,
+  TRANSFER_CATEGORY_NAME,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
+import { getBankTransferPaymentMethodResultJSON } from '@testing/factories/payment-method';
+import {
+  EXCHANGE_TXN_EXPENSE_SRC_IDX,
+  EXCHANGE_TXN_INCOME_SRC_IDX,
+  getExchangeTransactionDTO,
+  getExchangeTransactionResultSerialized,
+  getStandardTransactionDTO,
+  getStandardTransactionResultSerialized,
+  getTransferTransactionDTO,
+  getTransferTransactionResultSerialized,
+  STANDARD_TXN_SRC_IDX,
+  TRANSFER_TXN_EXPENSE_SRC_IDX,
+  TRANSFER_TXN_INCOME_SRC_IDX,
+} from '@testing/factories/transaction';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as dbCategories from '@category/db';
@@ -18,32 +43,6 @@ import {
   createStandardTransaction,
   createTransferTransaction,
 } from './create-transaction';
-
-import {
-  CATEGORY_TYPE_SYSTEM,
-  CATEGORY_TYPE_USER,
-  EXCHANGE_CATEGORY_NAME,
-  FOOD_CATEGORY_ID_STR,
-  getExchangeCategoryResultJSON,
-  getTransferCategoryResultJSON,
-  getUserCategoryResultJSON,
-  TRANSFER_CATEGORY_NAME,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
-import { getBankTransferPaymentMethodResultJSON } from '@/testing/factories/payment-method';
-import {
-  EXCHANGE_TXN_EXPENSE_SRC_IDX,
-  EXCHANGE_TXN_INCOME_SRC_IDX,
-  getExchangeTransactionDTO,
-  getExchangeTransactionResultSerialized,
-  getStandardTransactionDTO,
-  getStandardTransactionResultSerialized,
-  getTransferTransactionDTO,
-  getTransferTransactionResultSerialized,
-  STANDARD_TXN_SRC_IDX,
-  TRANSFER_TXN_EXPENSE_SRC_IDX,
-  TRANSFER_TXN_INCOME_SRC_IDX,
-} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/services/get-next-source-index', () => ({
   getNextSourceIndex: vi.fn(),

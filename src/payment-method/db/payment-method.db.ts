@@ -8,6 +8,7 @@ import {
   NamedResourceCreateProps,
   NamedResourceUpdateProps,
   persistNamedResource,
+  removeNamedResourceById,
   saveNamedResourceChanges,
 } from '@shared/named-resource';
 import { PaymentMethodNotFoundError } from '@utils/errors';
@@ -44,4 +45,10 @@ export const savePaymentMethodChanges = async (
   newProps: PaymentMethodUpdateProps,
 ) => {
   return saveNamedResourceChanges(paymentMethod, newProps, serializePaymentMethod);
+};
+
+export const removePaymentMethod = async (id: string) => {
+  return removeNamedResourceById(PaymentMethodModel, id, (paymentMethodId) => {
+    return new PaymentMethodNotFoundError(paymentMethodId);
+  });
 };

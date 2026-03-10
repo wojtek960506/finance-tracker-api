@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
-import { getOrCreatePaymentMethod } from './get-or-create-payment-method';
+import * as db from '@payment-method/db';
+import { serializePaymentMethod } from '@payment-method/serializers';
+import * as services from '@payment-method/services';
+import * as namedResource from '@shared/named-resource';
 
-import * as db from '@/payment-method/db';
-import { serializePaymentMethod } from '@/payment-method/serializers';
-import * as services from '@/payment-method/services';
-import * as namedResource from '@/shared/named-resource';
+import { getOrCreatePaymentMethod } from './get-or-create-payment-method';
 
 const getOrCreateImpl = vi.fn();
 

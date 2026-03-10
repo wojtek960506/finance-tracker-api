@@ -1,3 +1,24 @@
+import {
+  CATEGORY_TYPE_SYSTEM,
+  CATEGORY_TYPE_USER,
+  FOOD_CATEGORY_ID_STR,
+  getExchangeCategoryResultJSON,
+  getTransferCategoryResultJSON,
+  getUserCategoryResultJSON,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
+import { getBankTransferPaymentMethodResultJSON } from '@testing/factories/payment-method';
+import {
+  EXCHANGE_TXN_EXPENSE_ID_STR,
+  getExchangeTransactionDTO,
+  getExchangeTransactionResultJSON,
+  getStandardTransactionDTO,
+  getStandardTransactionNotPopulatedResultJSON,
+  getTransferTransactionDTO,
+  getTransferTransactionResultJSON,
+  STANDARD_TXN_ID_STR,
+  TRANSFER_TXN_EXPENSE_ID_STR,
+} from '@testing/factories/transaction';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as dbCategories from '@category/db';
@@ -16,28 +37,6 @@ import {
   SystemCategoryNotAllowed,
   SystemCategoryWrongType,
 } from '@utils/errors';
-
-import {
-  CATEGORY_TYPE_SYSTEM,
-  CATEGORY_TYPE_USER,
-  FOOD_CATEGORY_ID_STR,
-  getExchangeCategoryResultJSON,
-  getTransferCategoryResultJSON,
-  getUserCategoryResultJSON,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
-import { getBankTransferPaymentMethodResultJSON } from '@/testing/factories/payment-method';
-import {
-  EXCHANGE_TXN_EXPENSE_ID_STR,
-  getExchangeTransactionDTO,
-  getExchangeTransactionResultJSON,
-  getStandardTransactionDTO,
-  getStandardTransactionNotPopulatedResultJSON,
-  getTransferTransactionDTO,
-  getTransferTransactionResultJSON,
-  STANDARD_TXN_ID_STR,
-  TRANSFER_TXN_EXPENSE_ID_STR,
-} from '@/testing/factories/transaction';
 
 describe('update transaction', async () => {
   const standardDTO = getStandardTransactionDTO();

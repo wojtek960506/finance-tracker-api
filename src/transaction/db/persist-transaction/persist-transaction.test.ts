@@ -1,15 +1,14 @@
+import {
+  getStandardTransactionProps,
+  getStandardTransactionResultJSON,
+  getStandardTransactionResultSerialized,
+} from '@testing/factories/transaction';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import { TransactionModel } from '@transaction/model';
 import { serializeTransaction } from '@transaction/serializers';
 
 import { persistTransaction } from './persist-transaction';
-
-import {
-  getStandardTransactionProps,
-  getStandardTransactionResultJSON,
-  getStandardTransactionResultSerialized,
-} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/model', () => ({
   TransactionModel: { create: vi.fn() },

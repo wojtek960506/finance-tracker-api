@@ -1,22 +1,16 @@
 import {
-  TransactionExchangeCreateProps,
-  TransactionExchangeUpdateProps,
-} from '@transaction/db';
-import { TransactionExchangeDTO } from '@transaction/schema';
-
-import {
   CATEGORY_TYPE_SYSTEM,
   EXCHANGE_CATEGORY_ID_OBJ,
   EXCHANGE_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_NAME,
-} from '@/testing/factories/category';
-import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from '@/testing/factories/general';
+} from '@testing/factories/category';
+import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from '@testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
   PAYMENT_METHOD_TYPE_SYSTEM,
-} from '@/testing/factories/payment-method';
+} from '@testing/factories/payment-method';
 import {
   ACCOUNT_EXPENSE,
   AMOUNT_EXPENSE,
@@ -32,7 +26,13 @@ import {
   EXCHANGE_TXN_INCOME_SRC_IDX,
   TRANSACTION_TYPE_EXPENSE,
   TRANSACTION_TYPE_INCOME,
-} from '@/testing/factories/transaction';
+} from '@testing/factories/transaction';
+
+import {
+  TransactionExchangeCreateProps,
+  TransactionExchangeUpdateProps,
+} from '@transaction/db';
+import { TransactionExchangeDTO } from '@transaction/schema';
 
 export const getExchangeTransactionDTO = () =>
   ({

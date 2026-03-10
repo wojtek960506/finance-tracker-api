@@ -1,22 +1,16 @@
 import {
-  TransactionTransferCreateProps,
-  TransactionTransferUpdateProps,
-} from '@transaction/db';
-import { TransactionTransferDTO } from '@transaction/schema';
-
-import {
   CATEGORY_TYPE_SYSTEM,
   TRANSFER_CATEGORY_ID_OBJ,
   TRANSFER_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_NAME,
-} from '@/testing/factories/category';
-import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from '@/testing/factories/general';
+} from '@testing/factories/category';
+import { DATE_ISO_STR, DATE_OBJ, USER_ID_STR } from '@testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
   PAYMENT_METHOD_TYPE_SYSTEM,
-} from '@/testing/factories/payment-method';
+} from '@testing/factories/payment-method';
 import {
   ACCOUNT_EXPENSE,
   ACCOUNT_INCOME,
@@ -31,7 +25,13 @@ import {
   TRANSFER_TXN_INCOME_ID_OBJ,
   TRANSFER_TXN_INCOME_ID_STR,
   TRANSFER_TXN_INCOME_SRC_IDX,
-} from '@/testing/factories/transaction';
+} from '@testing/factories/transaction';
+
+import {
+  TransactionTransferCreateProps,
+  TransactionTransferUpdateProps,
+} from '@transaction/db';
+import { TransactionTransferDTO } from '@transaction/schema';
 
 export const getTransferTransactionDTO = () =>
   ({

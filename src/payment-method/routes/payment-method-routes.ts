@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { DeleteResult } from 'mongoose';
 
 import { authorizeAccessToken } from '@auth/services';
 import {
@@ -12,6 +13,7 @@ import { validateBody } from '@utils/validation';
 
 import {
   createPaymentMethodHandler,
+  deletePaymentMethodHandler,
   getPaymentMethodHandler,
   getPaymentMethodsHandler,
   updatePaymentMethodHandler,
@@ -46,5 +48,11 @@ export async function paymentMethodRoutes(
     '/:id',
     { preHandler: [validateBody(PaymentMethodSchema), authorizeAccessToken()] },
     updatePaymentMethodHandler,
+  );
+
+  app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
+    '/:id',
+    { preHandler: authorizeAccessToken() },
+    deletePaymentMethodHandler,
   );
 }

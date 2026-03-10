@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import { CategoryModel } from '@category/model';
+import { serializeCategory } from '@category/serializers';
 import * as namedResource from '@shared/named-resource';
 import { CategoryNotFoundError } from '@utils/errors';
 
@@ -8,11 +10,9 @@ import {
   findCategoryById,
   findCategoryByName,
   persistCategory,
+  removeCategory,
   saveCategoryChanges,
 } from './category.db';
-
-import { CategoryModel } from '@/category/model';
-import { serializeCategory } from '@/category/serializers';
 
 vi.mock('@category/model', () => ({
   CategoryModel: {},
@@ -30,6 +30,7 @@ vi.mock('@shared/named-resource', async (importOriginal) => {
     findNamedResourceByName: vi.fn(),
     findNamedResources: vi.fn(),
     persistNamedResource: vi.fn(),
+    removeNamedResourceById: vi.fn(),
     saveNamedResourceChanges: vi.fn(),
   };
 });
@@ -117,6 +118,21 @@ describe('category db wiring', () => {
       props,
       serializeCategory,
     );
+    expect(result).toBe(resultObj);
+  });
+
+  it('removeCategory delegates to removeNamedResourceById with not-found factory', async () => {
+    const resultObj = { deletedCount: 1 };
+    (namedResource.removeNamedResourceById as Mock).mockResolvedValue(resultObj);
+
+    const result = await removeCategory('cat-1');
+
+    expect(namedResource.removeNamedResourceById).toHaveBeenCalledOnce();
+    const [modelArg, idArg, factoryArg] = (namedResource.removeNamedResourceById as Mock)
+      .mock.calls[0];
+    expect(modelArg).toBe(CategoryModel);
+    expect(idArg).toBe('cat-1');
+    expect(factoryArg('x')).toBeInstanceOf(CategoryNotFoundError);
     expect(result).toBe(resultObj);
   });
 });

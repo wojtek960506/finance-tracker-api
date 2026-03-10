@@ -1,4 +1,4 @@
-import { DATE_ISO_STR, USER_ID_OBJ, USER_ID_STR } from '@/testing/factories/general';
+import { DATE_ISO_STR, USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
 import {
   USER_EMAIL,
   USER_FIRST_NAME,
@@ -6,7 +6,7 @@ import {
   USER_PASSWORD,
   USER_PASSWORD_HASH,
   USER_REFRESH_TOKEN_HASH,
-} from '@/testing/factories/user/user-consts';
+} from '@testing/factories/user/user-consts';
 
 const commonProps = {
   firstName: USER_FIRST_NAME,

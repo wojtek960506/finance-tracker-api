@@ -1,13 +1,12 @@
-import { describe, expect, it, Mock, vi } from 'vitest';
-
-import { saveTransactionChanges } from '@transaction/db/';
-import { serializeTransaction } from '@transaction/serializers';
-
 import {
   getStandardTransactionDTO,
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
-} from '@/testing/factories/transaction';
+} from '@testing/factories/transaction';
+import { describe, expect, it, Mock, vi } from 'vitest';
+
+import { saveTransactionChanges } from '@transaction/db/';
+import { serializeTransaction } from '@transaction/serializers';
 
 vi.mock('@transaction/serializers', () => ({
   serializeTransaction: vi.fn(),

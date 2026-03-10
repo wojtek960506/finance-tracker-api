@@ -1,3 +1,4 @@
+import { FOOD_CATEGORY_ID_STR } from '@testing/factories/category';
 import { describe, expect, it, Mock, vi } from 'vitest';
 
 import {
@@ -13,8 +14,6 @@ import {
   TOTALS_BY_CURRENCY,
   TOTALS_OVERALL,
 } from './mocks';
-
-import { FOOD_CATEGORY_ID_STR } from '@/testing/factories/category';
 
 vi.mock('@transaction/db', () => ({
   findTransactionTotalsOverall: vi.fn(),

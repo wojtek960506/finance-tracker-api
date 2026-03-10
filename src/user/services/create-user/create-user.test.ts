@@ -3,6 +3,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // mock BEFORE importing the file that uses argon2
 vi.mock('argon2', () => ({ default: { hash: vi.fn() } }));
 
+import {
+  getUserDTO,
+  getUserResultJSON,
+  getUserResultSerialized,
+  USER_PASSWORD_HASH,
+} from '@testing/factories/user';
 import argon2 from 'argon2';
 
 import { UserModel } from '@user/model';
@@ -10,13 +16,6 @@ import * as serializers from '@user/serializers';
 import { AppError } from '@utils/errors';
 
 import { createUser } from './create-user';
-
-import {
-  getUserDTO,
-  getUserResultJSON,
-  getUserResultSerialized,
-  USER_PASSWORD_HASH,
-} from '@/testing/factories/user';
 
 describe('createUser', () => {
   const user = getUserResultJSON();

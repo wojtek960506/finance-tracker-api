@@ -1,3 +1,10 @@
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  CASH_PAYMENT_METHOD_ID_STR,
+  getUpdatePaymentMethodProps,
+  getUserPaymentMethodResultJSON,
+  getUserPaymentMethodResultSerialized,
+} from '@testing/factories/payment-method';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -6,14 +13,6 @@ import * as dbPM from '@payment-method/db';
 import * as servicePM from '@payment-method/services';
 
 import { paymentMethodRoutes } from './payment-method-routes';
-
-import { USER_ID_STR } from '@/testing/factories/general';
-import {
-  CASH_PAYMENT_METHOD_ID_STR,
-  getUpdatePaymentMethodProps,
-  getUserPaymentMethodResultJSON,
-  getUserPaymentMethodResultSerialized,
-} from '@/testing/factories/payment-method';
 
 const MOCKED_RESULT = { result: 'result' };
 const mockPreHandler = vi.fn(async (req, _res) => {
@@ -97,6 +96,23 @@ describe('payment method routes', async () => {
       CASH_PAYMENT_METHOD_ID_STR,
       USER_ID_STR,
       paymentMethodDTO,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
+
+  it("should delete payment method - 'DELETE /:id'", async () => {
+    vi.spyOn(servicePM, 'deletePaymentMethod').mockResolvedValue(MOCKED_RESULT as any);
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/${CASH_PAYMENT_METHOD_ID_STR}`,
+    });
+
+    expect(servicePM.deletePaymentMethod).toHaveBeenCalledOnce();
+    expect(servicePM.deletePaymentMethod).toHaveBeenCalledWith(
+      CASH_PAYMENT_METHOD_ID_STR,
+      USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);

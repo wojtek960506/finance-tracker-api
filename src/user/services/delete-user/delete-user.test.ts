@@ -1,3 +1,5 @@
+import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { CategoryModel } from '@category/model';
@@ -14,9 +16,6 @@ import { randomObjectIdString } from '@utils/random';
 import { withSession } from '@utils/with-session';
 
 import { deleteUser } from './delete-user';
-
-import { USER_ID_STR } from '@/testing/factories/general';
-import { getUserResultJSON, getUserResultSerialized } from '@/testing/factories/user';
 
 const sessionMock = {} as any;
 

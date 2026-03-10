@@ -1,3 +1,7 @@
+import {
+  getStandardTransactionResultSerialized,
+  getTransferTransactionResultSerialized,
+} from '@testing/factories/transaction';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import { TransactionModel } from '@transaction/model';
@@ -5,11 +9,6 @@ import { NotFoundError } from '@utils/errors';
 import { withSession } from '@utils/with-session';
 
 import { removeTransaction } from './remove-transaction';
-
-import {
-  getStandardTransactionResultSerialized,
-  getTransferTransactionResultSerialized,
-} from '@/testing/factories/transaction';
 
 vi.mock('@utils/with-session', () => ({
   withSession: vi.fn().mockImplementation(async (func, ...args) => {

@@ -3,6 +3,7 @@ import {
   findPaymentMethodByName,
   findPaymentMethods,
   persistPaymentMethod,
+  removePaymentMethod,
   savePaymentMethodChanges,
 } from '@payment-method/db';
 import { IPaymentMethod } from '@payment-method/model';
@@ -10,13 +11,19 @@ import { PaymentMethodDTO, PaymentMethodResponseDTO } from '@payment-method/sche
 import { serializePaymentMethod } from '@payment-method/serializers';
 import {
   createNamedResource,
+  deleteNamedResource,
   getNamedResource,
   prepareNamedResourcesMap,
   updateNamedResource,
 } from '@shared/named-resource';
 import { ITransaction } from '@transaction/model';
+// prettier-ignore
+import {
+  checkTransactionDependencies,
+} from '@transaction/services/check-transaction-dependencies';
 import {
   PaymentMethodAlreadyExistsError,
+  SystemPaymentMethodDeletionNotAllowed,
   SystemPaymentMethodUpdateNotAllowed,
   UserPaymentMethodMissingOwner,
 } from '@utils/errors';
@@ -37,7 +44,7 @@ export const getPaymentMethod = (paymentMethodId: string, ownerId: string) => {
   return getNamedResource<IPaymentMethod, PaymentMethodResponseDTO>({
     findById: findPaymentMethodById,
     serialize: serializePaymentMethod,
-    ownerType: 'paymentMethod',
+    checkOwnerType: 'paymentMethod',
   })(paymentMethodId, ownerId);
 };
 
@@ -49,7 +56,7 @@ export const updatePaymentMethod = (
   return updateNamedResource<IPaymentMethod, PaymentMethodResponseDTO>({
     findById: findPaymentMethodById,
     saveChanges: savePaymentMethodChanges,
-    ownerType: 'paymentMethod',
+    checkOwnerType: 'paymentMethod',
     systemUpdateNotAllowedFactory: (resourceId) => {
       return new SystemPaymentMethodUpdateNotAllowed(resourceId);
     },
@@ -71,4 +78,15 @@ export const preparePaymentMethodsMap = async (
   const paymentMethodIds = transactions?.map((t) => t.paymentMethodId.toString());
   const paymentMethods = await findPaymentMethods(ownerId, paymentMethodIds);
   return prepareNamedResourcesMap(paymentMethods);
+};
+
+export const deletePaymentMethod = (paymentMethodId: string, ownerId: string) => {
+  return deleteNamedResource<IPaymentMethod>({
+    findById: findPaymentMethodById,
+    remove: removePaymentMethod,
+    checkOwnerType: 'paymentMethod',
+    checkOccurrences: (id) => checkTransactionDependencies('paymentMethodId', id),
+    systemResourceDeleteErrorFactory: (id) =>
+      new SystemPaymentMethodDeletionNotAllowed(id),
+  })(paymentMethodId, ownerId);
 };
