@@ -1,6 +1,8 @@
+import { Types } from 'mongoose';
+
 export type NamedResourceMinimal = {
   type: 'user' | 'system';
-  ownerId?: unknown;
+  ownerId?: string | Types.ObjectId;
   _id: { toString: () => string };
   name: string;
   save: () => Promise<unknown>;

@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import { PaymentMethodModel } from '@payment-method/model';
+import { serializePaymentMethod } from '@payment-method/serializers';
 import * as namedResource from '@shared/named-resource';
 import { PaymentMethodNotFoundError } from '@utils/errors';
 
@@ -10,9 +12,6 @@ import {
   persistPaymentMethod,
   savePaymentMethodChanges,
 } from './payment-method.db';
-
-import { PaymentMethodModel } from '@/payment-method/model';
-import { serializePaymentMethod } from '@/payment-method/serializers';
 
 vi.mock('@payment-method/model', () => ({
   PaymentMethodModel: {},

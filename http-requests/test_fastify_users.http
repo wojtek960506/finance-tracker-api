@@ -6,7 +6,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "test1@test.com",
+  "email": "w@z.pl",
   "password": "123"
 }
 
@@ -70,7 +70,7 @@ Authorization: Bearer {{accessToken}}
 
 ### Delete user by id
 @newUserId = {{createUser.response.body.id}}
-DELETE {{baseUrl}}/users/{{newUserId}}
+DELETE {{baseUrl}}/users/699719579344a89905cd5b60
 Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------

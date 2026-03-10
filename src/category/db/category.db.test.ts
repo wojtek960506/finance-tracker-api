@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import { CategoryModel } from '@category/model';
+import { serializeCategory } from '@category/serializers';
 import * as namedResource from '@shared/named-resource';
 import { CategoryNotFoundError } from '@utils/errors';
 
@@ -10,9 +12,6 @@ import {
   persistCategory,
   saveCategoryChanges,
 } from './category.db';
-
-import { CategoryModel } from '@/category/model';
-import { serializeCategory } from '@/category/serializers';
 
 vi.mock('@category/model', () => ({
   CategoryModel: {},

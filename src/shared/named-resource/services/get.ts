@@ -8,12 +8,12 @@ export const getNamedResource = <
 >(deps: {
   findById: (id: string) => Promise<TResource>;
   serialize: (resource: TResource) => TResponse;
-  ownerType: CheckOwnerType;
+  checkOwnerType: CheckOwnerType;
 }) => {
   return async (resourceId: string, ownerId: string): Promise<TResponse> => {
     const resource = await deps.findById(resourceId);
     if (resource.type !== 'system')
-      checkOwner(ownerId, resourceId, resource.ownerId!, deps.ownerType);
+      checkOwner(ownerId, resourceId, resource.ownerId!, deps.checkOwnerType);
     return deps.serialize(resource);
   };
 };

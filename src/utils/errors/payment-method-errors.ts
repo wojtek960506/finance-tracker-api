@@ -23,6 +23,14 @@ export class PaymentMethodOwnershipError extends AppError {
   }
 }
 
+export class PaymentMethodDependencyError extends AppError {
+  readonly code = 'PAYMENT_METHOD_DEPENDENCY_ERROR';
+
+  constructor(readonly paymentMethodId: string) {
+    super(403, 'Payment method is being used by some transactions');
+  }
+}
+
 export class PaymentMethodAlreadyExistsError extends AppError {
   readonly code = 'PAYMENT_METHOD_ALREADY_EXISTS';
 

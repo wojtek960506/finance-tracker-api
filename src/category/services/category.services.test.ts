@@ -1,26 +1,32 @@
-import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import * as db from '@category/db';
+import { serializeCategory } from '@category/serializers';
 import {
   createCategory,
   getCategory,
   prepareCategoriesMap,
   updateCategory,
-} from './category.services';
-
-import * as db from '@/category/db';
-import { serializeCategory } from '@/category/serializers';
-import * as namedResource from '@/shared/named-resource';
+} from '@category/services';
+import * as namedResource from '@shared/named-resource';
 import {
   CategoryAlreadyExistsError,
   SystemCategoryUpdateNotAllowed,
   UserCategoryMissingOwner,
-} from '@/utils/errors';
+} from '@utils/errors';
 
 const { createImpl, getImpl, updateImpl } = vi.hoisted(() => ({
   createImpl: vi.fn(),
   getImpl: vi.fn(),
   updateImpl: vi.fn(),
 }));
+
+// const { createImpl, getImpl, updateImpl } = {
+//   createImpl: vi.fn(),
+//   getImpl: vi.fn(),
+//   updateImpl: vi.fn(),
+// }
+
 
 vi.mock('@category/db', () => ({
   findCategoryById: vi.fn(),
@@ -42,6 +48,7 @@ vi.mock('@shared/named-resource', async (importOriginal) => {
     getNamedResource: vi.fn(() => getImpl),
     updateNamedResource: vi.fn(() => updateImpl),
     prepareNamedResourcesMap: vi.fn(),
+    deleteNamedResource: vi.fn(),
   };
 });
 
@@ -49,6 +56,10 @@ describe('category services wiring', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
+
+  // beforeEach(() => {
+  //   vi.clearAllMocks();
+  // });
 
   it('createCategory is built with createNamedResource and forwards execution', async () => {
     createImpl.mockResolvedValue({ id: '1' });
@@ -75,7 +86,7 @@ describe('category services wiring', () => {
     const [deps] = (namedResource.getNamedResource as Mock).mock.calls[0];
     expect(deps.findById).toBe(db.findCategoryById);
     expect(deps.serialize).toBe(serializeCategory);
-    expect(deps.ownerType).toBe('category');
+    expect(deps.checkOwnerType).toBe('category');
     expect(getImpl).toHaveBeenCalledWith('cat-1', 'u1');
     expect(result).toEqual({ id: '1' });
   });
@@ -89,7 +100,7 @@ describe('category services wiring', () => {
     const [deps] = (namedResource.updateNamedResource as Mock).mock.calls[0];
     expect(deps.findById).toBe(db.findCategoryById);
     expect(deps.saveChanges).toBe(db.saveCategoryChanges);
-    expect(deps.ownerType).toBe('category');
+    expect(deps.checkOwnerType).toBe('category');
     expect(deps.systemUpdateNotAllowedFactory('x')).toBeInstanceOf(
       SystemCategoryUpdateNotAllowed,
     );

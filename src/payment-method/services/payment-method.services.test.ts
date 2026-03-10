@@ -1,20 +1,20 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import * as db from '@payment-method/db';
+import { serializePaymentMethod } from '@payment-method/serializers';
+import * as namedResource from '@shared/named-resource';
+import {
+  PaymentMethodAlreadyExistsError,
+  SystemPaymentMethodUpdateNotAllowed,
+  UserPaymentMethodMissingOwner,
+} from '@utils/errors';
+
 import {
   createPaymentMethod,
   getPaymentMethod,
   preparePaymentMethodsMap,
   updatePaymentMethod,
 } from './payment-method.services';
-
-import * as db from '@/payment-method/db';
-import { serializePaymentMethod } from '@/payment-method/serializers';
-import * as namedResource from '@/shared/named-resource';
-import {
-  PaymentMethodAlreadyExistsError,
-  SystemPaymentMethodUpdateNotAllowed,
-  UserPaymentMethodMissingOwner,
-} from '@/utils/errors';
 
 const { createImpl, getImpl, updateImpl } = vi.hoisted(() => ({
   createImpl: vi.fn(),
@@ -78,7 +78,7 @@ describe('payment-method services wiring', () => {
       const [deps] = (namedResource.getNamedResource as Mock).mock.calls[0];
       expect(deps.findById).toBe(db.findPaymentMethodById);
       expect(deps.serialize).toBe(serializePaymentMethod);
-      expect(deps.ownerType).toBe('paymentMethod');
+      expect(deps.checkOwnerType).toBe('paymentMethod');
       expect(getImpl).toHaveBeenCalledWith('pm-1', 'u1');
       expect(result).toEqual({ id: '1' });
     }
@@ -96,7 +96,7 @@ describe('payment-method services wiring', () => {
       const [deps] = (namedResource.updateNamedResource as Mock).mock.calls[0];
       expect(deps.findById).toBe(db.findPaymentMethodById);
       expect(deps.saveChanges).toBe(db.savePaymentMethodChanges);
-      expect(deps.ownerType).toBe('paymentMethod');
+      expect(deps.checkOwnerType).toBe('paymentMethod');
       expect(deps.systemUpdateNotAllowedFactory('x')).toBeInstanceOf(
         SystemPaymentMethodUpdateNotAllowed,
       );

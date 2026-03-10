@@ -37,7 +37,7 @@ export const getPaymentMethod = (paymentMethodId: string, ownerId: string) => {
   return getNamedResource<IPaymentMethod, PaymentMethodResponseDTO>({
     findById: findPaymentMethodById,
     serialize: serializePaymentMethod,
-    ownerType: 'paymentMethod',
+    checkOwnerType: 'paymentMethod',
   })(paymentMethodId, ownerId);
 };
 
@@ -49,7 +49,7 @@ export const updatePaymentMethod = (
   return updateNamedResource<IPaymentMethod, PaymentMethodResponseDTO>({
     findById: findPaymentMethodById,
     saveChanges: savePaymentMethodChanges,
-    ownerType: 'paymentMethod',
+    checkOwnerType: 'paymentMethod',
     systemUpdateNotAllowedFactory: (resourceId) => {
       return new SystemPaymentMethodUpdateNotAllowed(resourceId);
     },

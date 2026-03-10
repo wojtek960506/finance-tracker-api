@@ -13,7 +13,7 @@ describe('getNamedResource', () => {
     const resource = { type: 'system', ownerId: undefined, name: 'Transfer' } as any;
     const findById = vi.fn().mockResolvedValue(resource);
     const serialize = vi.fn().mockReturnValue({ id: '1', name: 'Transfer' });
-    const get = getNamedResource({ findById, serialize, ownerType: 'category' });
+    const get = getNamedResource({ findById, serialize, checkOwnerType: 'category' });
 
     const result = await get('r1', 'u1');
 
@@ -25,7 +25,7 @@ describe('getNamedResource', () => {
     const resource = { type: 'user', ownerId: 'u1', name: 'Food' } as any;
     const findById = vi.fn().mockResolvedValue(resource);
     const serialize = vi.fn().mockReturnValue({ id: '1', name: 'Food' });
-    const get = getNamedResource({ findById, serialize, ownerType: 'category' });
+    const get = getNamedResource({ findById, serialize, checkOwnerType: 'category' });
 
     await get('r1', 'u1');
 

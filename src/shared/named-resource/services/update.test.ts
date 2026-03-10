@@ -16,7 +16,7 @@ describe('updateNamedResource', () => {
     const update = updateNamedResource({
       findById,
       saveChanges,
-      ownerType: 'category',
+      checkOwnerType: 'category',
       systemUpdateNotAllowedFactory: (id) => new Error(`system:${id}`),
       userMissingOwnerFactory: (id) => new Error(`missing:${id}`),
     });
@@ -37,7 +37,7 @@ describe('updateNamedResource', () => {
     const update = updateNamedResource({
       findById,
       saveChanges,
-      ownerType: 'category',
+      checkOwnerType: 'category',
       systemUpdateNotAllowedFactory: (id) => new Error(`system:${id}`),
       userMissingOwnerFactory: (id) => new Error(`missing:${id}`),
     });
@@ -52,7 +52,7 @@ describe('updateNamedResource', () => {
     const update = updateNamedResource({
       findById,
       saveChanges,
-      ownerType: 'category',
+      checkOwnerType: 'category',
       systemUpdateNotAllowedFactory: (id) => new Error(`system:${id}`),
       userMissingOwnerFactory: (id) => new Error(`missing:${id}`),
     });
