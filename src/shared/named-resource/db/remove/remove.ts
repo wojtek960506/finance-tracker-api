@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 
-import { NamedResourceMinimal } from './types';
+import { NamedResourceMinimal } from '../types';
 
 export const removeNamedResourceById = async <TResource extends NamedResourceMinimal>(
   model: Model<TResource>,

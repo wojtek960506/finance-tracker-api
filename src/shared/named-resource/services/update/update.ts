@@ -1,7 +1,7 @@
 import { checkOwner, CheckOwnerType } from '@shared/services';
 import { normalizeWhitespace } from '@utils/strings';
 
-import { NamedResourceMinimal, NameDTO } from './types';
+import { NamedResourceMinimal, NameDTO } from '../types';
 
 export const updateNamedResource = <
   TResource extends NamedResourceMinimal,

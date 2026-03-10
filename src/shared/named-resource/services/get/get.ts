@@ -1,6 +1,6 @@
 import { checkOwner, CheckOwnerType } from '@shared/services';
 
-import { NamedResourceMinimal } from './types';
+import { NamedResourceMinimal } from '../types';
 
 export const getNamedResource = <
   TResource extends NamedResourceMinimal,
