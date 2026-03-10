@@ -1,8 +1,8 @@
-import { ClientSession, Model } from "mongoose";
+import { ClientSession, Model } from 'mongoose';
 
-import { NamedResourceMinimal } from "@shared/named-resource";
-import { normalizeWhitespace } from "@utils/strings";
-import { withSession } from "@utils/with-session";
+import { NamedResourceMinimal } from '@shared/named-resource';
+import { normalizeWhitespace } from '@utils/strings';
+import { withSession } from '@utils/with-session';
 
 const upsertSystemNamedResourcesCore = async <TResource extends NamedResourceMinimal>(
   session: ClientSession,
@@ -16,11 +16,7 @@ const upsertSystemNamedResourcesCore = async <TResource extends NamedResourceMin
       name: nameNormalizedWhitespace,
       nameNormalized: nameNormalizedWhitespace.toLowerCase(),
     };
-    await model.updateOne(
-      doc,
-      { $setOnInsert: doc },
-      { upsert: true, session },
-    );
+    await model.updateOne(doc, { $setOnInsert: doc }, { upsert: true, session });
   }
 };
 

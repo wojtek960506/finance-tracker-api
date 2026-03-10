@@ -6,7 +6,7 @@ import { upsertSystemNamedResources } from './upsert-system-named-resources';
 
 const sessionMock = {} as any;
 
-const modelMock = { updateOne: vi.fn().mockResolvedValue({} as any) }
+const modelMock = { updateOne: vi.fn().mockResolvedValue({} as any) };
 const names = new Set(['name1', 'name2']);
 
 vi.mock('@utils/with-session', () => ({
@@ -21,14 +21,12 @@ describe('upsertSystemNamedResources', () => {
   });
 
   it('delegates to withSession', async () => {
-
     await upsertSystemNamedResources(modelMock as any, names);
 
     expect(withSession).toHaveBeenCalledOnce();
   });
 
   it('upserts all expected system named resources', async () => {
-  
     await upsertSystemNamedResources(modelMock as any, names);
 
     const namesArr = Array.from(names);

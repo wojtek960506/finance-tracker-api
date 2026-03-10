@@ -1,17 +1,16 @@
-import { upsertSystemPaymentMethods } from "app/setup/upsert-system-payment-methods";
-import { describe, expect, it, Mock, vi } from "vitest";
+import { describe, expect, it, Mock, vi } from 'vitest';
 
-import { upsertSystemNamedResources } from "@app/setup";
-import { SYSTEM_PAYMENT_METHOD_NAMES } from "@utils/consts";
+import { upsertSystemNamedResources } from '@app/setup';
+import { PaymentMethodModel } from '@payment-method/model';
+import { SYSTEM_PAYMENT_METHOD_NAMES } from '@utils/consts';
 
-import { PaymentMethodModel } from "@/payment-method/model";
+import { upsertSystemPaymentMethods } from './upsert-system-payment-methods';
 
-vi.mock("@app/setup", () => ({
+vi.mock('@app/setup', () => ({
   upsertSystemNamedResources: vi.fn(),
 }));
 
 describe('upsertSystemPaymentMethods', () => {
-
   it('delegates to upsertSystemNamedResources', async () => {
     (upsertSystemNamedResources as Mock).mockResolvedValue({} as any);
 
@@ -19,7 +18,8 @@ describe('upsertSystemPaymentMethods', () => {
 
     expect(upsertSystemNamedResources).toHaveBeenCalledOnce();
     expect(upsertSystemNamedResources).toHaveBeenCalledWith(
-      PaymentMethodModel, SYSTEM_PAYMENT_METHOD_NAMES
+      PaymentMethodModel,
+      SYSTEM_PAYMENT_METHOD_NAMES,
     );
   });
 });
