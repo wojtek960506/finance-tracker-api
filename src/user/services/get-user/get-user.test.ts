@@ -1,3 +1,5 @@
+import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { describe, expect, it, vi } from 'vitest';
 
 import * as db from '@user/db';
@@ -5,9 +7,6 @@ import * as serializers from '@user/serializers';
 import { AppError } from '@utils/errors';
 
 import { getUser } from './get-user';
-
-import { USER_ID_STR } from '@/testing/factories/general';
-import { getUserResultJSON, getUserResultSerialized } from '@/testing/factories/user';
 
 describe('getUser', () => {
   it('get not authenticated user', async () => {

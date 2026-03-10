@@ -1,24 +1,23 @@
+import {
+  CATEGORY_TYPE_USER,
+  FOOD_CATEGORY_ID_STR,
+  FOOD_CATEGORY_NAME,
+} from '@testing/factories/category';
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+  PAYMENT_METHOD_TYPE_SYSTEM,
+} from '@testing/factories/payment-method';
+import {
+  getStandardTransactionNotPopulatedResultJSON,
+  getStandardTransactionResultJSON,
+  getStandardTransactionResultSerialized,
+} from '@testing/factories/transaction';
 import { describe, expect, it } from 'vitest';
 
 import { CategoryType } from '@category/model';
 import { PaymentMethodType } from '@payment-method/model';
 import { serializeTransaction } from '@transaction/serializers';
-
-import {
-  CATEGORY_TYPE_USER,
-  FOOD_CATEGORY_ID_STR,
-  FOOD_CATEGORY_NAME,
-} from '@/testing/factories/category';
-import {
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-  PAYMENT_METHOD_BANK_TRANSFER_NAME,
-  PAYMENT_METHOD_TYPE_SYSTEM,
-} from '@/testing/factories/payment-method';
-import {
-  getStandardTransactionNotPopulatedResultJSON,
-  getStandardTransactionResultJSON,
-  getStandardTransactionResultSerialized,
-} from '@/testing/factories/transaction';
 
 describe('serializeTransaction', () => {
   const transaction = getStandardTransactionResultJSON();

@@ -24,7 +24,8 @@
       "@user/*": ["user/*"],
       "@category/*": ["category/*"],
       "@transaction/*": ["transaction/*"],
-      "@payment-method/*": ["payment-method/*"]
+      "@payment-method/*": ["payment-method/*"],
+      "@testing/*": ["testing/*"]
     },
     "types": ["node", "vitest"]
   },

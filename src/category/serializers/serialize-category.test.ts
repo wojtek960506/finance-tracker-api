@@ -1,13 +1,12 @@
-import { describe, expect, it } from 'vitest';
-
-import { serializeCategory } from './serialize-category';
-
 import {
   getExchangeCategoryResultJSON,
   getExchangeCategoryResultSerialized,
   getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
-} from '@/testing/factories/category';
+} from '@testing/factories/category';
+import { describe, expect, it } from 'vitest';
+
+import { serializeCategory } from './serialize-category';
 
 describe('serializeCategory', () => {
   const userCategoryJSON = getUserCategoryResultJSON();

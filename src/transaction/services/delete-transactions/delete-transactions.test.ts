@@ -1,3 +1,4 @@
+import { USER_ID_STR } from '@testing/factories/general';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { TransactionModel } from '@transaction/model';
@@ -5,8 +6,6 @@ import { UserModel } from '@user/model';
 import { AppError } from '@utils/errors';
 
 import { deleteTransactions } from './delete-transactions';
-
-import { USER_ID_STR } from '@/testing/factories/general';
 
 describe('deleteTransactions', () => {
   const deleteResult = { deletedCount: 100 };

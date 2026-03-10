@@ -1,3 +1,4 @@
+import { getStandardTransactionDTO } from '@testing/factories/transaction';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -8,8 +9,6 @@ import {
 
 import { ValidationError } from './errors';
 import { validateBody, validateQuery } from './validation';
-
-import { getStandardTransactionDTO } from '@/testing/factories/transaction';
 
 const expectValidationError = async (promise: Promise<unknown>) => {
   await expect(promise).rejects.toBeInstanceOf(ValidationError);

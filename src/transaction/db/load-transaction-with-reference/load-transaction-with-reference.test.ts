@@ -1,3 +1,18 @@
+import {
+  EXCHANGE_CATEGORY_ID_STR,
+  EXCHANGE_CATEGORY_NAME,
+  FOOD_CATEGORY_ID_STR,
+  TRANSFER_CATEGORY_ID_STR,
+  TRANSFER_CATEGORY_NAME,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  EXCHANGE_TXN_EXPENSE_ID_STR,
+  EXCHANGE_TXN_INCOME_ID_STR,
+  getExchangeTransactionNotPopulatedResultJSON,
+  TRANSACTION_TYPE_EXPENSE,
+  TRANSFER_TXN_EXPENSE_ID_STR,
+} from '@testing/factories/transaction';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as db from '@transaction/db';
@@ -10,22 +25,6 @@ import {
   TransactionWrongReferenceError,
   TransactionWrongTypesError,
 } from '@utils/errors';
-
-import {
-  EXCHANGE_CATEGORY_ID_STR,
-  EXCHANGE_CATEGORY_NAME,
-  FOOD_CATEGORY_ID_STR,
-  TRANSFER_CATEGORY_ID_STR,
-  TRANSFER_CATEGORY_NAME,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
-import {
-  EXCHANGE_TXN_EXPENSE_ID_STR,
-  EXCHANGE_TXN_INCOME_ID_STR,
-  getExchangeTransactionNotPopulatedResultJSON,
-  TRANSACTION_TYPE_EXPENSE,
-  TRANSFER_TXN_EXPENSE_ID_STR,
-} from '@/testing/factories/transaction';
 
 vi.mock('@transaction/db/find-transaction', () => ({ findTransaction: vi.fn() }));
 

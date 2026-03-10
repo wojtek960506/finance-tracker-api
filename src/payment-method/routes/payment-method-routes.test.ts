@@ -1,3 +1,10 @@
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  CASH_PAYMENT_METHOD_ID_STR,
+  getUpdatePaymentMethodProps,
+  getUserPaymentMethodResultJSON,
+  getUserPaymentMethodResultSerialized,
+} from '@testing/factories/payment-method';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -6,14 +13,6 @@ import * as dbPM from '@payment-method/db';
 import * as servicePM from '@payment-method/services';
 
 import { paymentMethodRoutes } from './payment-method-routes';
-
-import { USER_ID_STR } from '@/testing/factories/general';
-import {
-  CASH_PAYMENT_METHOD_ID_STR,
-  getUpdatePaymentMethodProps,
-  getUserPaymentMethodResultJSON,
-  getUserPaymentMethodResultSerialized,
-} from '@/testing/factories/payment-method';
 
 const MOCKED_RESULT = { result: 'result' };
 const mockPreHandler = vi.fn(async (req, _res) => {

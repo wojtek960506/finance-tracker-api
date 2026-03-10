@@ -1,3 +1,10 @@
+import {
+  FOOD_CATEGORY_ID_STR,
+  getUpdateCategoryProps,
+  getUserCategoryResultJSON,
+  getUserCategoryResultSerialized,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -6,14 +13,6 @@ import * as dbC from '@category/db';
 import * as serviceC from '@category/services';
 
 import { categoryRoutes } from './category-routes';
-
-import {
-  FOOD_CATEGORY_ID_STR,
-  getUpdateCategoryProps,
-  getUserCategoryResultJSON,
-  getUserCategoryResultSerialized,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
 
 const MOCKED_RESULT = { result: 'result' };
 const mockPreHandler = vi.fn(async (req, _res) => {

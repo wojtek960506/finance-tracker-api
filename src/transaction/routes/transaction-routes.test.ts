@@ -1,3 +1,23 @@
+import {
+  FOOD_CATEGORY_ID_OBJ,
+  FOOD_CATEGORY_ID_STR,
+  FOOD_CATEGORY_NAME,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  PAYMENT_METHOD_BANK_TRANSFER_NAME,
+} from '@testing/factories/payment-method';
+import {
+  getExchangeTransactionDTO,
+  getStandardTransactionDTO,
+  getStandardTransactionResultSerialized,
+  getTransferTransactionDTO,
+  STANDARD_TXN_ID_STR as T_ID,
+} from '@testing/factories/transaction';
+import { TEST_USER_TOTAL_TRANSACTIONS } from '@testing/factories/user';
+import { getCsvForTransactions } from '@testing/get-csv-for-transactions';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
@@ -8,27 +28,6 @@ import { streamTransactions } from '@transaction/db';
 import * as serviceT from '@transaction/services';
 
 import { transactionRoutes } from './transaction-routes';
-
-import {
-  FOOD_CATEGORY_ID_OBJ,
-  FOOD_CATEGORY_ID_STR,
-  FOOD_CATEGORY_NAME,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
-import {
-  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-  PAYMENT_METHOD_BANK_TRANSFER_NAME,
-} from '@/testing/factories/payment-method';
-import {
-  getExchangeTransactionDTO,
-  getStandardTransactionDTO,
-  getStandardTransactionResultSerialized,
-  getTransferTransactionDTO,
-  STANDARD_TXN_ID_STR as T_ID,
-} from '@/testing/factories/transaction';
-import { TEST_USER_TOTAL_TRANSACTIONS } from '@/testing/factories/user';
-import { getCsvForTransactions } from '@/testing/get-csv-for-transactions';
 
 async function* mockAsyncCursor<T>(items: T[]) {
   for (const item of items) {

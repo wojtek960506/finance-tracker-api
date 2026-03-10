@@ -1,15 +1,9 @@
-import { describe, expect, it } from 'vitest';
-
-import { ValidationError } from '@utils/errors';
-
-import { buildTransactionFilterQuery } from './build-transaction-query';
-
-import { FOOD_CATEGORY_ID_OBJ, FOOD_CATEGORY_ID_STR } from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
+import { FOOD_CATEGORY_ID_OBJ, FOOD_CATEGORY_ID_STR } from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from '@/testing/factories/payment-method';
+} from '@testing/factories/payment-method';
 import {
   ACCOUNT_EXPENSE,
   CURRENCY_EXPENSE,
@@ -18,7 +12,12 @@ import {
   MIN_AMOUNT_FILTER,
   START_DATE_FILTER,
   TRANSACTION_TYPE_EXPENSE,
-} from '@/testing/factories/transaction';
+} from '@testing/factories/transaction';
+import { describe, expect, it } from 'vitest';
+
+import { ValidationError } from '@utils/errors';
+
+import { buildTransactionFilterQuery } from './build-transaction-query';
 
 describe('build-transaction-query', () => {
   const basicFilters = {

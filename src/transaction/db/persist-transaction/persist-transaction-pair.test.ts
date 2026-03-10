@@ -1,3 +1,10 @@
+import {
+  EXCHANGE_TXN_EXPENSE_ID_OBJ,
+  EXCHANGE_TXN_INCOME_ID_OBJ,
+  getExchangeTransactionProps,
+  getExchangeTransactionResultJSON,
+  getExchangeTransactionResultSerialized,
+} from '@testing/factories/transaction';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import { TransactionModel } from '@transaction/model';
@@ -5,14 +12,6 @@ import { serializeTransaction } from '@transaction/serializers';
 import { withSession } from '@utils/with-session';
 
 import { persistTransactionPair } from './persist-transaction-pair';
-
-import {
-  EXCHANGE_TXN_EXPENSE_ID_OBJ,
-  EXCHANGE_TXN_INCOME_ID_OBJ,
-  getExchangeTransactionProps,
-  getExchangeTransactionResultJSON,
-  getExchangeTransactionResultSerialized,
-} from '@/testing/factories/transaction';
 
 vi.mock('@utils/with-session', () => ({
   withSession: vi.fn().mockImplementation(async (func, ...args) => {

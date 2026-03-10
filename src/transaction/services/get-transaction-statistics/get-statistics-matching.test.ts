@@ -1,3 +1,20 @@
+import {
+  EXCHANGE_CATEGORY_ID_OBJ,
+  EXCHANGE_CATEGORY_ID_STR,
+  FOOD_CATEGORY_ID_OBJ,
+  FOOD_CATEGORY_ID_STR,
+  TRANSFER_CATEGORY_ID_STR,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+} from '@testing/factories/payment-method';
+import {
+  ACCOUNT_EXPENSE,
+  CURRENCY_EXPENSE,
+  TRANSACTION_TYPE_EXPENSE,
+} from '@testing/factories/transaction';
 import { FilterQuery, Types } from 'mongoose';
 import { describe, expect, it } from 'vitest';
 
@@ -5,24 +22,6 @@ import { TransactionStatisticsQuery } from '@transaction/schema';
 import { ValidationError } from '@utils/errors';
 
 import { getStatisticsMatching } from './get-statistics-matching';
-
-import {
-  EXCHANGE_CATEGORY_ID_OBJ,
-  EXCHANGE_CATEGORY_ID_STR,
-  FOOD_CATEGORY_ID_OBJ,
-  FOOD_CATEGORY_ID_STR,
-  TRANSFER_CATEGORY_ID_STR,
-} from '@/testing/factories/category';
-import { USER_ID_STR } from '@/testing/factories/general';
-import {
-  BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
-  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-} from '@/testing/factories/payment-method';
-import {
-  ACCOUNT_EXPENSE,
-  CURRENCY_EXPENSE,
-  TRANSACTION_TYPE_EXPENSE,
-} from '@/testing/factories/transaction';
 
 const checkRequiredProps = (
   result: FilterQuery<unknown>,

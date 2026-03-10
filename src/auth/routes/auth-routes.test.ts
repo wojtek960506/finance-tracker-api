@@ -1,4 +1,6 @@
 import cookie from '@fastify/cookie';
+import { ENV_TEST_VALUES } from '@testing/env-consts';
+import { USER_ID_STR } from '@testing/factories/general';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,9 +9,6 @@ import * as serviceA from '@auth/services';
 import * as serviceU from '@user/services';
 
 import { authRoutes } from './auth-routes';
-
-import { ENV_TEST_VALUES } from '@/testing/env-consts';
-import { USER_ID_STR } from '@/testing/factories/general';
 
 const MOCKED_RESULT = { result: 'result' };
 const LOGIN_DTO = { email: 'john@example.com', password: 'secret-password' };
