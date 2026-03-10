@@ -50,6 +50,14 @@ export class SystemPaymentMethodUpdateNotAllowed extends AppError {
   }
 }
 
+export class SystemPaymentMethodDeletionNotAllowed extends AppError {
+  readonly code = 'SYSTEM_PAYMENT_METHOD_DELETION_NOT_ALLOWED';
+
+  constructor(readonly paymentMethodId: string) {
+    super(403, 'Deleting system payment method not allowed');
+  }
+}
+
 export class UserPaymentMethodMissingOwner extends AppError {
   readonly code = 'USER_PAYMENT_METHOD_MISSING_OWNER';
 

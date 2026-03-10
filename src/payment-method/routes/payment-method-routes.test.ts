@@ -100,4 +100,21 @@ describe('payment method routes', async () => {
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);
   });
+
+  it("should delete payment method - 'DELETE /:id'", async () => {
+    vi.spyOn(servicePM, 'deletePaymentMethod').mockResolvedValue(MOCKED_RESULT as any);
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/${CASH_PAYMENT_METHOD_ID_STR}`,
+    });
+
+    expect(servicePM.deletePaymentMethod).toHaveBeenCalledOnce();
+    expect(servicePM.deletePaymentMethod).toHaveBeenCalledWith(
+      CASH_PAYMENT_METHOD_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
 });

@@ -3,21 +3,28 @@ import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 import * as db from '@payment-method/db';
 import { serializePaymentMethod } from '@payment-method/serializers';
 import * as namedResource from '@shared/named-resource';
+// prettier-ignore
+import {
+  checkTransactionDependencies
+} from '@transaction/services/check-transaction-dependencies';
 import {
   PaymentMethodAlreadyExistsError,
+  SystemPaymentMethodDeletionNotAllowed,
   SystemPaymentMethodUpdateNotAllowed,
   UserPaymentMethodMissingOwner,
 } from '@utils/errors';
 
 import {
   createPaymentMethod,
+  deletePaymentMethod,
   getPaymentMethod,
   preparePaymentMethodsMap,
   updatePaymentMethod,
 } from './payment-method.services';
 
-const { createImpl, getImpl, updateImpl } = vi.hoisted(() => ({
+const { createImpl, deleteImpl, getImpl, updateImpl } = vi.hoisted(() => ({
   createImpl: vi.fn(),
+  deleteImpl: vi.fn(),
   getImpl: vi.fn(),
   updateImpl: vi.fn(),
 }));
@@ -27,6 +34,7 @@ vi.mock('@payment-method/db', () => ({
   findPaymentMethodByName: vi.fn(),
   findPaymentMethods: vi.fn(),
   persistPaymentMethod: vi.fn(),
+  removePaymentMethod: vi.fn(),
   savePaymentMethodChanges: vi.fn(),
 }));
 
@@ -39,11 +47,16 @@ vi.mock('@shared/named-resource', async (importOriginal) => {
   return {
     ...actual,
     createNamedResource: vi.fn(() => createImpl),
+    deleteNamedResource: vi.fn(() => deleteImpl),
     getNamedResource: vi.fn(() => getImpl),
     updateNamedResource: vi.fn(() => updateImpl),
     prepareNamedResourcesMap: vi.fn(),
   };
 });
+
+vi.mock('@transaction/services/check-transaction-dependencies', () => ({
+  checkTransactionDependencies: vi.fn(),
+}));
 
 describe('payment-method services wiring', () => {
   afterEach(() => {
@@ -124,4 +137,28 @@ describe('payment-method services wiring', () => {
     expect(namedResource.prepareNamedResourcesMap).toHaveBeenCalledWith(paymentMethods);
     expect(result).toEqual(prepared);
   });
+
+  // prettier-ignore
+  it(
+    'deletePaymentMethod delegates through deleteNamedResource with payment method errors',
+    async () => {
+      deleteImpl.mockResolvedValue({ id: '1' });
+
+      const result = await deletePaymentMethod('pm-1', 'u1');
+
+      expect(namedResource.deleteNamedResource).toHaveBeenCalledOnce();
+      const [deps] = (namedResource.deleteNamedResource as Mock).mock.calls[0];
+      expect(deps.findById).toBe(db.findPaymentMethodById);
+      expect(deps.remove).toBe(db.removePaymentMethod);
+      expect(deps.checkOwnerType).toBe('paymentMethod');
+      expect(deps.checkOccurrences('x')).toBe(
+        checkTransactionDependencies('paymentMethodId', 'x'),
+      );
+      expect(deps.systemResourceDeleteErrorFactory('x')).toBeInstanceOf(
+        SystemPaymentMethodDeletionNotAllowed,
+      );
+      expect(deleteImpl).toHaveBeenCalledWith('pm-1', 'u1');
+      expect(result).toEqual({ id: '1' });
+    }
+  );
 });
