@@ -87,4 +87,21 @@ describe('category routes', async () => {
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(MOCKED_RESULT);
   });
+
+  it("should delete category - 'DELETE /:id'", async () => {
+    vi.spyOn(serviceC, 'deleteCategory').mockResolvedValue(MOCKED_RESULT as any);
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/${FOOD_CATEGORY_ID_STR}`,
+    });
+
+    expect(serviceC.deleteCategory).toHaveBeenCalledOnce();
+    expect(serviceC.deleteCategory).toHaveBeenCalledWith(
+      FOOD_CATEGORY_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(MOCKED_RESULT);
+  });
 });

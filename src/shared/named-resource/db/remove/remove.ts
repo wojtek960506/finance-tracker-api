@@ -8,6 +8,6 @@ export const removeNamedResourceById = async <TResource extends NamedResourceMin
   notFoundErrorFactory: (id: string) => Error,
 ) => {
   const result = await model.deleteOne({ _id: id });
-  if (!result) throw notFoundErrorFactory(id);
+  if (result.deletedCount === 0) throw notFoundErrorFactory(id);
   return result;
 };

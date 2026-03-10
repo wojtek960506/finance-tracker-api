@@ -4,19 +4,26 @@ import * as db from '@category/db';
 import { serializeCategory } from '@category/serializers';
 import {
   createCategory,
+  deleteCategory,
   getCategory,
   prepareCategoriesMap,
   updateCategory,
 } from '@category/services';
 import * as namedResource from '@shared/named-resource';
+// prettier-ignore
+import {
+  checkTransactionDependencies
+} from '@transaction/services/check-transaction-dependencies';
 import {
   CategoryAlreadyExistsError,
+  SystemCategoryDeletionNotAllowed,
   SystemCategoryUpdateNotAllowed,
   UserCategoryMissingOwner,
 } from '@utils/errors';
 
-const { createImpl, getImpl, updateImpl } = vi.hoisted(() => ({
+const { createImpl, deleteImpl, getImpl, updateImpl } = vi.hoisted(() => ({
   createImpl: vi.fn(),
+  deleteImpl: vi.fn(),
   getImpl: vi.fn(),
   updateImpl: vi.fn(),
 }));
@@ -27,6 +34,7 @@ vi.mock('@category/db', () => ({
   findCategories: vi.fn(),
   persistCategory: vi.fn(),
   saveCategoryChanges: vi.fn(),
+  removeCategory: vi.fn(),
 }));
 
 vi.mock('@category/serializers', () => ({
@@ -38,21 +46,21 @@ vi.mock('@shared/named-resource', async (importOriginal) => {
   return {
     ...actual,
     createNamedResource: vi.fn(() => createImpl),
+    deleteNamedResource: vi.fn(() => deleteImpl),
     getNamedResource: vi.fn(() => getImpl),
     updateNamedResource: vi.fn(() => updateImpl),
     prepareNamedResourcesMap: vi.fn(),
-    deleteNamedResource: vi.fn(),
   };
 });
+
+vi.mock('@transaction/services/check-transaction-dependencies', () => ({
+  checkTransactionDependencies: vi.fn(),
+}));
 
 describe('category services wiring', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
-
-  // beforeEach(() => {
-  //   vi.clearAllMocks();
-  // });
 
   it('createCategory is built with createNamedResource and forwards execution', async () => {
     createImpl.mockResolvedValue({ id: '1' });
@@ -115,5 +123,25 @@ describe('category services wiring', () => {
     expect(db.findCategories).toHaveBeenCalledWith('u1', ['c1']);
     expect(namedResource.prepareNamedResourcesMap).toHaveBeenCalledWith(categories);
     expect(result).toEqual(prepared);
+  });
+
+  it('deleteCategory delegates through deleteNamedResource with category errors', async () => {
+    deleteImpl.mockResolvedValue({ id: '1' });
+
+    const result = await deleteCategory('cat-1', 'u1');
+
+    expect(namedResource.deleteNamedResource).toHaveBeenCalledOnce();
+    const [deps] = (namedResource.deleteNamedResource as Mock).mock.calls[0];
+    expect(deps.findById).toBe(db.findCategoryById);
+    expect(deps.remove).toBe(db.removeCategory);
+    expect(deps.checkOwnerType).toBe('category');
+    expect(deps.checkOccurrences('x')).toBe(
+      checkTransactionDependencies('categoryId', 'x'),
+    );
+    expect(deps.systemResourceDeleteErrorFactory('x')).toBeInstanceOf(
+      SystemCategoryDeletionNotAllowed,
+    );
+    expect(deleteImpl).toHaveBeenCalledWith('cat-1', 'u1');
+    expect(result).toEqual({ id: '1' });
   });
 });
