@@ -1,15 +1,7 @@
-import { ClientSession } from 'mongoose';
+import { upsertSystemNamedResources } from "@app/setup";
+import { SYSTEM_CATEGORY_NAMES } from "@utils/consts";
 
-import { CategoryModel } from '@category/model';
-import { withSession } from '@utils/with-session';
+import { CategoryModel } from "@/category/model";
 
-const SYSTEM_CATEGORY_NAMES = new Set(['exchange', 'myAccount']);
-
-const upsertSystemCategoriesCore = async (session: ClientSession) => {
-  for (const c of SYSTEM_CATEGORY_NAMES) {
-    const doc = { type: 'system', name: c, nameNormalized: c.toLowerCase() };
-    await CategoryModel.updateOne(doc, { $setOnInsert: doc }, { upsert: true, session });
-  }
-};
-
-export const upsertSystemCategories = async () => withSession(upsertSystemCategoriesCore);
+export const upsertSystemCategories = async () =>
+  upsertSystemNamedResources(CategoryModel, SYSTEM_CATEGORY_NAMES);

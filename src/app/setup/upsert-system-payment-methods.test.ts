@@ -1,53 +1,25 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { upsertSystemPaymentMethods } from "app/setup/upsert-system-payment-methods";
+import { describe, expect, it, Mock, vi } from "vitest";
 
-import { PaymentMethodModel } from '@payment-method/model';
-import { PAYMENT_METHODS } from '@utils/consts';
-import { withSession } from '@utils/with-session';
+import { upsertSystemNamedResources } from "@app/setup";
+import { SYSTEM_PAYMENT_METHOD_NAMES } from "@utils/consts";
 
-import { upsertSystemPaymentMethods } from './upsert-system-payment-methods';
+import { PaymentMethodModel } from "@/payment-method/model";
 
-const sessionMock = {} as any;
-
-vi.mock('@utils/with-session', () => ({
-  withSession: vi
-    .fn()
-    .mockImplementation(async (func, ...args) => await func(sessionMock, ...args)),
+vi.mock("@app/setup", () => ({
+  upsertSystemNamedResources: vi.fn(),
 }));
 
 describe('upsertSystemPaymentMethods', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
 
-  it('delegates to withSession', async () => {
-    vi.spyOn(PaymentMethodModel, 'updateOne').mockResolvedValue({} as any);
+  it('delegates to upsertSystemNamedResources', async () => {
+    (upsertSystemNamedResources as Mock).mockResolvedValue({} as any);
 
     await upsertSystemPaymentMethods();
 
-    expect(withSession).toHaveBeenCalledOnce();
-  });
-
-  it('upserts all expected system payment methods', async () => {
-    vi.spyOn(PaymentMethodModel, 'updateOne').mockResolvedValue({} as any);
-
-    await upsertSystemPaymentMethods();
-
-    const methods = Array.from(PAYMENT_METHODS);
-
-    expect(PaymentMethodModel.updateOne).toHaveBeenCalledTimes(methods.length);
-
-    methods.forEach((paymentMethodName, index) => {
-      const doc = {
-        type: 'system',
-        name: paymentMethodName,
-        nameNormalized: paymentMethodName.toLowerCase(),
-      };
-      expect(PaymentMethodModel.updateOne).toHaveBeenNthCalledWith(
-        index + 1,
-        doc,
-        { $setOnInsert: doc },
-        { upsert: true, session: sessionMock },
-      );
-    });
+    expect(upsertSystemNamedResources).toHaveBeenCalledOnce();
+    expect(upsertSystemNamedResources).toHaveBeenCalledWith(
+      PaymentMethodModel, SYSTEM_PAYMENT_METHOD_NAMES
+    );
   });
 });
