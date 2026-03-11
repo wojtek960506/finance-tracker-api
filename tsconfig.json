@@ -16,11 +16,11 @@
     "baseUrl": "./src",
     "paths": {
       "@utils/*": ["utils/*"],
-      "@plugins/*": ["app/plugins/*"],
       "@app/*": ["app/*"],
       "@shared/*": ["shared/*"],
       "@auth/*": ["auth/*"],
       "@user/*": ["user/*"],
+      "@account/*": ["account/*"],
       "@category/*": ["category/*"],
       "@transaction/*": ["transaction/*"],
       "@payment-method/*": ["payment-method/*"],

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import { getOrCreateAccount } from '@account/services';
 import { getOrCreateCategory } from '@category/services';
 import { getOrCreatePaymentMethod } from '@payment-method/services';
 import { TransactionModel } from '@transaction/model';
@@ -16,6 +17,7 @@ import { TEST_CATEGORIES, TEST_DATE, TEST_OWNER_ID } from './test-fixtures';
 
 vi.mock('@category/services', () => ({ getOrCreateCategory: vi.fn() }));
 vi.mock('@payment-method/services', () => ({ getOrCreatePaymentMethod: vi.fn() }));
+vi.mock('@account/services', () => ({ getOrCreateAccount: vi.fn() }));
 
 vi.mock('@utils/random', () => ({
   randomDate: vi.fn(),
@@ -107,14 +109,24 @@ describe('createRandomTransactions', () => {
       .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
       .mockResolvedValueOnce({ id: 'pm-card', name: 'card' })
       .mockResolvedValueOnce({ id: 'pm-blik', name: 'blik' });
+    (getOrCreateAccount as Mock)
+      .mockResolvedValueOnce({ id: 'acc-cash', name: 'cash' })
+      .mockResolvedValueOnce({ id: 'acc-wallet', name: 'wallet' })
+      .mockResolvedValueOnce({ id: 'acc-bank', name: 'bank' });
     (randomDate as Mock).mockReturnValue(TEST_DATE);
     (randomFromSet as Mock)
       .mockReturnValueOnce('cat-food')
       .mockReturnValueOnce('pm-bank-transfer')
+      .mockReturnValueOnce('acc-cash')
+      .mockReturnValueOnce('acc-wallet')
       .mockReturnValueOnce('cat-my-account')
       .mockReturnValueOnce('pm-bank-transfer')
+      .mockReturnValueOnce('acc-wallet')
+      .mockReturnValueOnce('acc-bank')
       .mockReturnValueOnce('cat-exchange')
-      .mockReturnValueOnce('pm-bank-transfer');
+      .mockReturnValueOnce('pm-bank-transfer')
+      .mockReturnValueOnce('acc-bank')
+      .mockReturnValueOnce('acc-cash');
     (prepareRandomStandardTransaction as Mock).mockReturnValue(standardTransaction);
     (prepareRandomTransferTransactionPair as Mock).mockReturnValue([
       transferExpense,
@@ -135,7 +147,7 @@ describe('createRandomTransactions', () => {
     const result = await createRandomTransactions(TEST_OWNER_ID, 5, session);
 
     expect(getOrCreateCategory).toHaveBeenCalledTimes(7);
-    expect(randomFromSet).toHaveBeenCalledTimes(6);
+    expect(randomFromSet).toHaveBeenCalledTimes(12);
     expect(prepareRandomStandardTransaction).toHaveBeenCalledOnce();
     expect(prepareRandomStandardTransaction).toHaveBeenCalledWith(
       TEST_OWNER_ID,
@@ -143,6 +155,7 @@ describe('createRandomTransactions', () => {
       0,
       'cat-food',
       'pm-bank-transfer',
+      'acc-cash',
     );
     expect(prepareRandomTransferTransactionPair).toHaveBeenCalledOnce();
     expect(prepareRandomTransferTransactionPair).toHaveBeenCalledWith(
@@ -151,6 +164,8 @@ describe('createRandomTransactions', () => {
       1,
       'cat-my-account',
       'pm-bank-transfer',
+      'acc-wallet',
+      'acc-bank',
     );
     expect(prepareRandomExchangeTransactionPair).toHaveBeenCalledOnce();
     expect(prepareRandomExchangeTransactionPair).toHaveBeenCalledWith(
@@ -159,6 +174,7 @@ describe('createRandomTransactions', () => {
       3,
       'cat-exchange',
       'pm-bank-transfer',
+      'acc-bank',
     );
     expect(TransactionModel.insertMany).toHaveBeenCalledOnce();
     expect(TransactionModel.insertMany).toHaveBeenCalledWith(

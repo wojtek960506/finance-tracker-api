@@ -8,10 +8,15 @@ import {
   PrepareTransactionPropsObjectIds,
 } from '@transaction/services/types';
 
+type PrepareTransferPropsContext = Partial<PrepareTransactionPropsContext> & {
+  accountExpenseName?: string;
+  accountIncomeName?: string;
+};
+
 export function prepareTransferProps(
   body: TransactionTransferDTO,
   objectIds: PrepareTransactionPropsObjectIds,
-  additionalProps: PrepareTransactionPropsContext,
+  additionalProps: PrepareTransferPropsContext,
 ): {
   expenseTransactionProps: TransactionTransferCreateProps;
   incomeTransactionProps: TransactionTransferCreateProps;
@@ -26,13 +31,15 @@ export function prepareTransferProps(
 export function prepareTransferProps(
   body: TransactionTransferDTO,
   objectIds: PrepareTransactionPropsObjectIds,
-  additionalProps?: PrepareTransactionPropsContext,
+  additionalProps?: PrepareTransferPropsContext,
 ) {
   const { categoryId } = objectIds;
 
-  // TODO for now `accountExpense` and `accountIncome` are not translated in the body,
-  // so decide how to handle it
-  let description = `${body.accountExpense} --> ${body.accountIncome}`;
+  const accountExpenseLabel =
+    additionalProps?.accountExpenseName ?? body.accountExpenseId;
+  const accountIncomeLabel = additionalProps?.accountIncomeName ?? body.accountIncomeId;
+
+  let description = `${accountExpenseLabel} --> ${accountIncomeLabel}`;
   if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
   // TODO - probably paymentMethodId has to be placed in 'objectIds`
@@ -48,13 +55,13 @@ export function prepareTransferProps(
   const commonExpenseTransactionProps = {
     ...commonTransactionProps,
     transactionType: 'expense',
-    account: body.accountExpense,
+    accountId: body.accountExpenseId,
   };
 
   const commonIncomeTransactionProps = {
     ...commonTransactionProps,
     transactionType: 'income',
-    account: body.accountIncome,
+    accountId: body.accountIncomeId,
   };
 
   if (additionalProps) {

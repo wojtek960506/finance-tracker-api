@@ -12,7 +12,9 @@ import {
   PAYMENT_METHOD_TYPE_SYSTEM,
 } from '@testing/factories/payment-method';
 import {
-  ACCOUNT_EXPENSE,
+  ACCOUNT_EXPENSE_ID_OBJ,
+  ACCOUNT_EXPENSE_ID_STR,
+  ACCOUNT_EXPENSE_NAME,
   AMOUNT_EXPENSE,
   AMOUNT_INCOME,
   CURRENCY_EXPENSE,
@@ -37,7 +39,7 @@ import { TransactionExchangeDTO } from '@transaction/schema';
 export const getExchangeTransactionDTO = () =>
   ({
     date: DATE_OBJ,
-    account: ACCOUNT_EXPENSE,
+    accountId: ACCOUNT_EXPENSE_ID_STR,
     amountIncome: AMOUNT_INCOME,
     amountExpense: AMOUNT_EXPENSE,
     currencyIncome: CURRENCY_INCOME,
@@ -58,7 +60,7 @@ export function getExchangeTransactionProps(isCreate?: true) {
   const commonProps = {
     categoryId: EXCHANGE_CATEGORY_ID_STR,
     date: DATE_OBJ,
-    account: ACCOUNT_EXPENSE,
+    accountId: ACCOUNT_EXPENSE_ID_STR,
     paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
     description: `${CURRENCY_EXPENSE} -> ${CURRENCY_INCOME} (${DESCRPTION})`,
     currencies: `${CURRENCY_INCOME}/${CURRENCY_EXPENSE}`,
@@ -114,6 +116,16 @@ const paymentMethodWithIdStr = {
   type: PAYMENT_METHOD_TYPE_SYSTEM,
   name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
 };
+const accountWithIdObj = {
+  _id: ACCOUNT_EXPENSE_ID_OBJ,
+  type: PAYMENT_METHOD_TYPE_SYSTEM,
+  name: ACCOUNT_EXPENSE_NAME,
+};
+const accountWithIdStr = {
+  id: ACCOUNT_EXPENSE_ID_STR,
+  type: PAYMENT_METHOD_TYPE_SYSTEM,
+  name: ACCOUNT_EXPENSE_NAME,
+};
 
 export const getExchangeTransactionResultJSON = () => {
   const { expenseProps, incomeProps } = getExchangeTransactionProps(true);
@@ -121,6 +133,7 @@ export const getExchangeTransactionResultJSON = () => {
     date: DATE_ISO_STR,
     categoryId: { ...categoryWithIdObj },
     paymentMethodId: { ...paymentMethodWithIdObj },
+    accountId: { ...accountWithIdObj },
   };
   const expenseTransactionJSON = {
     ...expenseProps,
@@ -145,23 +158,36 @@ export const getExchangeTransactionNotPopulatedResultJSON = () => {
       ...expenseTransactionJSON,
       categoryId: expenseTransactionJSON.categoryId._id,
       paymentMethodId: expenseTransactionJSON.paymentMethodId._id,
+      accountId: expenseTransactionJSON.accountId._id,
     },
     incomeTransactionNotPopulatedJSON: {
       ...incomeTransactionJSON,
       categoryId: incomeTransactionJSON.categoryId._id,
       paymentMethodId: incomeTransactionJSON.paymentMethodId._id,
+      accountId: incomeTransactionJSON.accountId._id,
     },
   };
 };
 
 export const getExchangeTransactionResultSerialized = () => {
   const { expenseProps, incomeProps } = getExchangeTransactionProps(true);
-  const { categoryId: _1, paymentMethodId: _2, ...expensePropsRest } = expenseProps;
-  const { categoryId: _3, paymentMethodId: _4, ...incomePropsRest } = incomeProps;
+  const {
+    categoryId: _1,
+    paymentMethodId: _2,
+    accountId: _3,
+    ...expensePropsRest
+  } = expenseProps;
+  const {
+    categoryId: _4,
+    paymentMethodId: _5,
+    accountId: _6,
+    ...incomePropsRest
+  } = incomeProps;
   const commonSerialized = {
     date: DATE_ISO_STR,
     category: { ...categoryWithIdStr },
     paymentMethod: { ...paymentMethodWithIdStr },
+    account: { ...accountWithIdStr },
   };
 
   const expenseTransactionSerialized = {

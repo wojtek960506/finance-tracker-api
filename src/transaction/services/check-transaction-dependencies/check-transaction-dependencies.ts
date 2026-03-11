@@ -1,7 +1,11 @@
 import { TransactionModel } from '@transaction/model';
-import { CategoryDependencyError, PaymentMethodDependencyError } from '@utils/errors';
+import {
+  AccountDependencyError,
+  CategoryDependencyError,
+  PaymentMethodDependencyError,
+} from '@utils/errors';
 
-type TransactionDependencyProp = 'paymentMethodId' | 'categoryId';
+type TransactionDependencyProp = 'paymentMethodId' | 'categoryId' | 'accountId';
 
 export const checkTransactionDependencies = async (
   dependencyProp: TransactionDependencyProp,
@@ -15,6 +19,8 @@ export const checkTransactionDependencies = async (
         throw new CategoryDependencyError(dependencyId);
       case 'paymentMethodId':
         throw new PaymentMethodDependencyError(dependencyId);
+      case 'accountId':
+        throw new AccountDependencyError(dependencyId);
     }
   }
 };

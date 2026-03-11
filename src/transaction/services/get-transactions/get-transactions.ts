@@ -1,3 +1,4 @@
+import { prepareAccountsMap } from '@account/services';
 import { prepareCategoriesMap } from '@category/services';
 import { preparePaymentMethodsMap } from '@payment-method/services';
 import { FilteredResponse } from '@shared/http';
@@ -19,7 +20,8 @@ export const getTransactions = async (
 
   const totalPages = Math.ceil(total / query.limit);
 
-  const [categoriesMap, paymentMethodsMap] = await Promise.all([
+  const [accountsMap, categoriesMap, paymentMethodsMap] = await Promise.all([
+    prepareAccountsMap(userId, transactions),
     prepareCategoriesMap(userId, transactions),
     preparePaymentMethodsMap(userId, transactions),
   ]);
@@ -30,7 +32,7 @@ export const getTransactions = async (
     total,
     totalPages,
     items: transactions.map((transaction) =>
-      serializeTransaction(transaction, categoriesMap, paymentMethodsMap),
+      serializeTransaction(transaction, categoriesMap, paymentMethodsMap, accountsMap),
     ),
   };
 };

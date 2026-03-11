@@ -1,10 +1,14 @@
 import {
+  getSystemExpenseAccountResultSerialized,
+  getSystemIncomeAccountResultSerialized,
+} from '@testing/factories/account';
+import {
   CATEGORY_TYPE_SYSTEM,
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_ID_STR,
   getExchangeCategoryResultJSON,
   getTransferCategoryResultJSON,
-  getUserCategoryResultJSON,
+  getUserCategoryResultSerialized,
 } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
 import { getBankTransferPaymentMethodResultJSON } from '@testing/factories/payment-method';
@@ -21,6 +25,7 @@ import {
 } from '@testing/factories/transaction';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as dbAccounts from '@account/db';
 import * as dbCategories from '@category/db';
 import * as serializers from '@category/serializers';
 import * as dbPaymentMethods from '@payment-method/db';
@@ -47,10 +52,12 @@ describe('update transaction', async () => {
   const transferPair = getTransferTransactionResultJSON();
   const exchangePair = getExchangeTransactionResultJSON();
 
-  const foodCategory = getUserCategoryResultJSON();
+  const foodCategory = getUserCategoryResultSerialized();
   const transferCategory = getTransferCategoryResultJSON();
   const exchangeCategory = getExchangeCategoryResultJSON();
   const paymentMethod = getBankTransferPaymentMethodResultJSON();
+  const accountExpense = getSystemExpenseAccountResultSerialized();
+  const accountIncome = getSystemIncomeAccountResultSerialized();
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -65,6 +72,7 @@ describe('update transaction', async () => {
     vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
       paymentMethod as any,
     );
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
 
     const result = await updateStandardTransaction(
       STANDARD_TXN_ID_STR,
@@ -95,6 +103,12 @@ describe('update transaction', async () => {
     vi.spyOn(dbTransactions, 'saveTransactionPairChanges').mockResolvedValue(
       expectedResult as any,
     );
+    vi.spyOn(dbAccounts, 'findAccountById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
+    );
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(category as any);
     vi.spyOn(serializers, 'serializeCategory').mockReturnValue(category as any);
 
@@ -112,6 +126,7 @@ describe('update transaction', async () => {
       ...foodCategory,
       type: CATEGORY_TYPE_SYSTEM,
     } as any);
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
     vi.spyOn(dbTransactions, 'findTransaction');
     vi.spyOn(dbTransactions, 'saveTransactionChanges');
 
@@ -132,6 +147,7 @@ describe('update transaction', async () => {
       vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
         { ...paymentMethod, type: CATEGORY_TYPE_USER, ownerId: '123', id: '1' } as any,
       );
+      vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
       vi.spyOn(dbTransactions, 'findTransaction');
       vi.spyOn(dbTransactions, 'saveTransactionChanges');
 
@@ -149,6 +165,10 @@ describe('update transaction', async () => {
   it('throws when updating transaction pair with not system category', async () => {
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
       exchangeCategory as any,
+    );
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
     );
     vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
       ...exchangeCategory,
@@ -171,6 +191,12 @@ describe('update transaction', async () => {
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
       transferCategory as any,
     );
+    vi.spyOn(dbAccounts, 'findAccountById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
+    );
     vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
       ...transferCategory,
       ownerId: USER_ID_STR,
@@ -190,6 +216,12 @@ describe('update transaction', async () => {
 
   it('throws when updating transaction pair with not existing category', async () => {
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(null);
+    vi.spyOn(dbAccounts, 'findAccountById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
+    );
     vi.spyOn(dbTransactions, 'loadTransactionWithReference');
     vi.spyOn(dbTransactions, 'saveTransactionPairChanges');
 

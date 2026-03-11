@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
+import { AccountResponseSchema } from '@account/schema';
 import { CategoryResponseSchema } from '@category/schema';
 import { PaymentMethodResponseSchema } from '@payment-method/schema';
-import { ACCOUNTS, CURRENCIES, OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
+import { CURRENCIES, OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
 
 const TransactionCommonSchema = z.object({
   date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
@@ -22,7 +23,7 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
   paymentMethodId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `paymentMethodId`'),
-  account: z.enum([...ACCOUNTS]),
+  accountId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountId`'),
   transactionType: z.enum([...TRANSACTION_TYPES]),
 });
 
@@ -39,7 +40,7 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
   amountIncome: z.number().positive('Amount of income in exchange must be positive'),
   currencyExpense: z.enum([...CURRENCIES]),
   currencyIncome: z.enum([...CURRENCIES]),
-  account: z.enum([...ACCOUNTS]),
+  accountId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountId`'),
   paymentMethodId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `paymentMethodId`'),
@@ -56,8 +57,12 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
     .optional(),
   amount: z.number().positive('Amount must be positive'),
   currency: z.enum([...CURRENCIES]),
-  accountExpense: z.enum([...ACCOUNTS]),
-  accountIncome: z.enum([...ACCOUNTS]),
+  accountExpenseId: z
+    .string()
+    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountExpenseId`'),
+  accountIncomeId: z
+    .string()
+    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountIncomeId`'),
   paymentMethodId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `paymentMethodId`'),
@@ -66,6 +71,7 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
 export const TransactionResponseSchema = TransactionStandardSchema.omit({
   categoryId: true,
   paymentMethodId: true,
+  accountId: true,
 }).extend({
   id: z.string(),
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
@@ -85,6 +91,7 @@ export const TransactionResponseSchema = TransactionStandardSchema.omit({
   exchangeRate: z.number().optional(),
   category: CategoryResponseSchema.pick({ id: true, type: true, name: true }),
   paymentMethod: PaymentMethodResponseSchema.pick({ id: true, type: true, name: true }),
+  account: AccountResponseSchema.pick({ id: true, type: true, name: true }),
 });
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);

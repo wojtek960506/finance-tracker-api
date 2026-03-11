@@ -38,7 +38,7 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
       $nin: q.excludeCategoryIds.map((id) => new Types.ObjectId(id)),
     };
   if (q.paymentMethodId) matching.paymentMethodId = new Types.ObjectId(q.paymentMethodId);
-  if (q.account) matching.account = q.account;
+  if (q.accountId) matching.accountId = new Types.ObjectId(q.accountId);
 
   return matching;
 };

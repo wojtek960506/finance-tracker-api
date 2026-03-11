@@ -23,10 +23,7 @@ describe('prepareRandomTransferTransactionPair', () => {
 
   it('builds an expense and income transfer pair with linked source refs', () => {
     (randomNumber as Mock).mockReturnValue(250);
-    (randomFromSet as Mock)
-      .mockReturnValueOnce('EUR')
-      .mockReturnValueOnce('wallet')
-      .mockReturnValueOnce('bank');
+    (randomFromSet as Mock).mockReturnValueOnce('EUR');
 
     // TODO - create some constant for these values (probably similar as TEST_CATEGORY_ID)
     const [expense, income] = prepareRandomTransferTransactionPair(
@@ -35,11 +32,13 @@ describe('prepareRandomTransferTransactionPair', () => {
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
       'pm-1',
+      'acc-1',
+      'acc-2',
     );
 
     expect(randomNumber).toHaveBeenCalledOnce();
     expect(randomNumber).toHaveBeenCalledWith(10, 10000);
-    expect(randomFromSet).toHaveBeenCalledTimes(3);
+    expect(randomFromSet).toHaveBeenCalledTimes(1);
     expect(expense).toEqual({
       date: TEST_DATE,
       amount: 250,
@@ -47,11 +46,11 @@ describe('prepareRandomTransferTransactionPair', () => {
       currency: 'EUR',
       categoryId: TEST_CATEGORY_ID,
       paymentMethodId: 'pm-1',
-      account: 'wallet',
+      accountId: 'acc-1',
       sourceIndex: TEST_SOURCE_INDEX,
       sourceRefIndex: TEST_SOURCE_INDEX + 1,
       transactionType: 'expense',
-      description: 'Money Transfer: wallet --> bank',
+      description: 'Money Transfer: acc-1 --> acc-2',
     });
     expect(income).toEqual({
       date: TEST_DATE,
@@ -60,11 +59,11 @@ describe('prepareRandomTransferTransactionPair', () => {
       currency: 'EUR',
       categoryId: TEST_CATEGORY_ID,
       paymentMethodId: 'pm-1',
-      account: 'bank',
+      accountId: 'acc-2',
       sourceRefIndex: TEST_SOURCE_INDEX,
       sourceIndex: TEST_SOURCE_INDEX + 1,
       transactionType: 'income',
-      description: 'Money Transfer: wallet --> bank',
+      description: 'Money Transfer: acc-1 --> acc-2',
     });
   });
 });

@@ -1,4 +1,4 @@
-import { ACCOUNTS, CURRENCIES, TRANSACTION_TYPES } from '@utils/consts';
+import { CURRENCIES, TRANSACTION_TYPES } from '@utils/consts';
 import { randomFromSet, randomNumber, weightedRandomFromSet } from '@utils/random';
 
 import { RandomStandardTransaction } from '../types';
@@ -9,10 +9,10 @@ export const prepareRandomStandardTransaction = (
   index: number,
   categoryId: string,
   paymentMethodId: string,
+  accountId: string,
 ): RandomStandardTransaction => {
   const amount = randomNumber(10, 10000);
   const currency = randomFromSet(CURRENCIES);
-  const account = randomFromSet(ACCOUNTS);
   const transactionType = weightedRandomFromSet(TRANSACTION_TYPES, {
     expense: 5,
     income: 1,
@@ -24,7 +24,7 @@ export const prepareRandomStandardTransaction = (
   return {
     date,
     amount,
-    account,
+    accountId,
     ownerId,
     currency,
     categoryId,

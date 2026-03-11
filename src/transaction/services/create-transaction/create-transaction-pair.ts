@@ -39,7 +39,5 @@ export const createTransactionPair = async <T extends TransactionCreateProps>(
     { ownerId, sourceIndexExpense, sourceIndexIncome },
   );
 
-  // TODO add check for paymentTransactionId
-
   return persistTransactionPair(expenseTransactionProps, incomeTransactionProps);
 };

@@ -35,7 +35,7 @@ export function prepareExchangeProps(
   const commonTransactionProps = {
     categoryId,
     date: dto.date,
-    account: dto.account,
+    accountId: dto.accountId,
     paymentMethodId: dto.paymentMethodId,
     description,
     currencies,

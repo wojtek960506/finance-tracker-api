@@ -23,10 +23,7 @@ describe('prepareRandomExchangeTransactionPair', () => {
 
   it('builds an exchange pair when expense amount is greater than income amount', () => {
     (randomNumber as Mock).mockReturnValueOnce(100).mockReturnValueOnce(20);
-    (randomFromSet as Mock)
-      .mockReturnValueOnce('PLN')
-      .mockReturnValueOnce('USD')
-      .mockReturnValueOnce('bank');
+    (randomFromSet as Mock).mockReturnValueOnce('PLN').mockReturnValueOnce('USD');
 
     // TODO - create some constant for these values (probably similar as TEST_CATEGORY_ID)
     const [expense, income] = prepareRandomExchangeTransactionPair(
@@ -35,16 +32,17 @@ describe('prepareRandomExchangeTransactionPair', () => {
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
       'pm-1',
+      'acc-1',
     );
 
     expect(randomNumber).toHaveBeenCalledTimes(2);
     expect(randomNumber).toHaveBeenNthCalledWith(1, 10, 10000);
     expect(randomNumber).toHaveBeenNthCalledWith(2, 10, 10000);
-    expect(randomFromSet).toHaveBeenCalledTimes(3);
+    expect(randomFromSet).toHaveBeenCalledTimes(2);
     expect(expense).toEqual({
       date: TEST_DATE,
       amount: 100,
-      account: 'bank',
+      accountId: 'acc-1',
       ownerId: TEST_OWNER_ID,
       currency: 'PLN',
       categoryId: TEST_CATEGORY_ID,
@@ -59,7 +57,7 @@ describe('prepareRandomExchangeTransactionPair', () => {
     expect(income).toEqual({
       date: TEST_DATE,
       amount: 20,
-      account: 'bank',
+      accountId: 'acc-1',
       ownerId: TEST_OWNER_ID,
       currency: 'USD',
       categoryId: TEST_CATEGORY_ID,
@@ -78,7 +76,7 @@ describe('prepareRandomExchangeTransactionPair', () => {
     (randomFromSet as Mock)
       .mockReturnValueOnce('EUR')
       .mockReturnValueOnce('GBP')
-      .mockReturnValueOnce('bankTransfer');
+      .mockReturnValueOnce('acc-2');
 
     const [expense, income] = prepareRandomExchangeTransactionPair(
       TEST_OWNER_ID,
@@ -86,6 +84,7 @@ describe('prepareRandomExchangeTransactionPair', () => {
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
       'pm-2',
+      'acc-2',
     );
 
     expect(expense.exchangeRate).toBe(0.2);

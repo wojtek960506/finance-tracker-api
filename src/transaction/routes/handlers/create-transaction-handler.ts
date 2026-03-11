@@ -23,7 +23,7 @@ export const createTransactionHandler = async (
 
   if ('currencyExpense' in dto) {
     return res.code(201).send(await createExchangeTransaction(dto, userId));
-  } else if ('accountExpense' in dto) {
+  } else if ('accountExpenseId' in dto) {
     return res.code(201).send(await createTransferTransaction(dto, userId));
   } else {
     return res.code(201).send(await createStandardTransaction(dto, userId));

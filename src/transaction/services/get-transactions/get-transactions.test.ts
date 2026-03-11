@@ -1,3 +1,4 @@
+import { getSystemExpenseAccountResultSerialized } from '@testing/factories/account';
 import { USER_ID_STR } from '@testing/factories/general';
 import {
   getStandardTransactionNotPopulatedResultJSON,
@@ -7,6 +8,7 @@ import {
 } from '@testing/factories/transaction';
 import { describe, expect, it, Mock, vi } from 'vitest';
 
+import * as accountServices from '@account/services';
 import * as services from '@category/services';
 import * as paymentMethodServices from '@payment-method/services';
 import { findTransactions, findTransactionsCount } from '@transaction/db';
@@ -23,6 +25,8 @@ vi.mock('@transaction/serializers', () => ({ serializeTransaction: vi.fn() }));
 describe('getTransactionsTest', () => {
   it('get transactions', async () => {
     const total = 3;
+    const account = getSystemExpenseAccountResultSerialized();
+    const tmpAccountsMap = { [account.id]: { name: account.name } } as any;
     const tmpCategoriesMap = { key: 'value' } as any;
     const tmpPaymentMethodsMap = { key2: 'value2' } as any;
 
@@ -48,6 +52,7 @@ describe('getTransactionsTest', () => {
     vi.spyOn(paymentMethodServices, 'preparePaymentMethodsMap').mockResolvedValue(
       tmpPaymentMethodsMap,
     );
+    vi.spyOn(accountServices, 'prepareAccountsMap').mockResolvedValue(tmpAccountsMap);
 
     const result = await getTransactions(query, USER_ID_STR);
 
@@ -59,18 +64,21 @@ describe('getTransactionsTest', () => {
       transactionNotPopulatedJSON,
       tmpCategoriesMap,
       tmpPaymentMethodsMap,
+      tmpAccountsMap,
     );
     expect(serializeTransaction).toHaveBeenNthCalledWith(
       2,
       expenseTransactionNotPopulatedJSON,
       tmpCategoriesMap,
       tmpPaymentMethodsMap,
+      tmpAccountsMap,
     );
     expect(serializeTransaction).toHaveBeenNthCalledWith(
       3,
       incomeTransactionNotPopulatedJSON,
       tmpCategoriesMap,
       tmpPaymentMethodsMap,
+      tmpAccountsMap,
     );
     expect(result).toEqual({
       page: query.page,
