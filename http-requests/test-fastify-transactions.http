@@ -117,14 +117,19 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-### Create new standard transaction
 
 # "categoryId": "69a9c24ee2c1284ee32aa406", (food)
 # "categoryId": "6980aef7f9f1739803300ef5", (exchange - system category)
 
 # "paymentMethodId": "69a7fb11e7e4554a4e559e19" (cash)
-# "paymentMethodId": "69a7fb1ae7e4554a4e559e1d" (bankTransfer)
-# "paymentMethodId": "69a7fb13e7e4554a4e559e1a" (blik)
+# "paymentMethodId": "69b0002be7e4554a4e562cff" (bankTransfer)
+# "paymentMethodId": "69a7fb0ee7e4554a4e559e18" (card)
+
+# "accountId": "69b16e8aeb8e59fdad7a2761" (mBank)
+# "accountId": "69b173a78ef9c23d50217479" (Alior Bank)
+# "accountId": "69b16e8aeb8e59fdad7a2761" (cash)
+
+### CREATE NEW STANDARD TRANSACTION
 
 # @name createTransaction
 POST {{baseUrl}}/standard
@@ -139,7 +144,7 @@ Authorization: Bearer {{accessToken}}
   "categoryId": "69a9c24ee2c1284ee32aa406",
   "transactionType": "expense",
   "paymentMethodId": "69a7fb11e7e4554a4e559e19",
-  "account": "mBank"
+  "accountId": "69b16e8aeb8e59fdad7a2761"
 }
 
 #--------------------------------------------------------------------------------------
@@ -157,8 +162,8 @@ Authorization: Bearer {{accessToken}}
   "amountIncome": 84.23,
   "currencyExpense": "EUR",
   "currencyIncome": "PLN",
-  "account": "revolut",
-  "paymentMethodId": "69a7fb1ae7e4554a4e559e1d"
+  "accountId": "69b16e8aeb8e59fdad7a2761",
+  "paymentMethodId": "69a7fb11e7e4554a4e559e19"
 }
 
 #--------------------------------------------------------------------------------------
@@ -174,19 +179,29 @@ Authorization: Bearer {{accessToken}}
   "additionalDescription": "z oszczędnościowego na zwykłe",  
   "amount": 12345.67,
   "currency": "PLN",
-  "accountExpense": "mBank",
-  "accountIncome": "aliorBank",
-  "paymentMethodId": "69a7fb13e7e4554a4e559e1a"
+  "accountExpenseId": "69b173a78ef9c23d50217479",
+  "accountIncomeId": "69b16e8aeb8e59fdad7a2761",
+  "paymentMethodId": "69a7fb11e7e4554a4e559e19"
 }
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-# "category": "food",
-# "categoryId": "69830737a0d0fb8f48f900cc" (transport)
+# "categoryId": "69a9c24ee2c1284ee32aa406", (food)
+# "categoryId": "6980aef7f9f1739803300ef5", (exchange - system category)
+# "categoryId": "6980aef8f9f1739803300ef6" (myAccount)
+
+# "paymentMethodId": "69a7fb11e7e4554a4e559e19" (cash)
+# "paymentMethodId": "69b0002be7e4554a4e562cff" (bankTransfer)
+# "paymentMethodId": "69a7fb0ee7e4554a4e559e18" (card)
+
+# "accountId": "69b16e8aeb8e59fdad7a2761" (mBank)
+# "accountId": "69b173a78ef9c23d50217479" (Alior Bank)
+# "accountId": "69b16e8aeb8e59fdad7a2761" (cash)
+
 
 ### Update STANDARD transaction
-PUT {{baseUrl}}/standard/69a9c26ee2c1284ee32aa40b
+PUT {{baseUrl}}/standard/69b1710c8ef9c23d5021746f
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -197,15 +212,15 @@ Authorization: Bearer {{accessToken}}
   "currency": "EUR",
   "categoryId": "69a9c24ee2c1284ee32aa406",
   "transactionType": "expense",
-  "paymentMethodId": "69a7fb1ae7e4554a4e559e1d",
-  "account": "creditAgricole"
+  "paymentMethodId": "69a7fb0ee7e4554a4e559e18",
+  "accountId": "69b173a78ef9c23d50217479"
 }
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
 ### Update TRANSFER transaction
-PUT {{baseUrl}}/transfer/69a9c2bce2c1284ee32aa422
+PUT {{baseUrl}}/transfer/69b176ff8ef9c23d5021749b
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -214,16 +229,16 @@ Authorization: Bearer {{accessToken}}
   "additionalDescription": "abcdef",
   "amount": 1.70,
   "currency": "PLN",
-  "paymentMethodId": "69a7fb1ae7e4554a4e559e1d",
-  "accountExpense": "mBank",
-  "accountIncome": "veloBank"
+  "paymentMethodId": "69b0002be7e4554a4e562cff",
+  "accountExpenseId": "69b16e8aeb8e59fdad7a2761",
+  "accountIncomeId": "69b173a78ef9c23d50217479"
 }
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
 ### Update EXCHAGE transaction
-PUT {{baseUrl}}/exchange/69830b9a269a841a876428d5
+PUT {{baseUrl}}/exchange/69b176be8ef9c23d50217489
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -234,15 +249,15 @@ Authorization: Bearer {{accessToken}}
   "amountIncome": 840.23,
   "currencyExpense": "HUF",
   "currencyIncome": "RON",
-  "account": "mBank",
-  "paymentMethod": "bankTransfer"
+  "accountId": "69b16e8aeb8e59fdad7a2761",
+  "paymentMethodId": "69a7fb11e7e4554a4e559e19"
 }
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
 ### Delete a transaction
-DELETE {{baseUrl}}/6974d150efa585c6eca912e7
+DELETE {{baseUrl}}/69b17efa052f4e35fe6bbf2c
 Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------

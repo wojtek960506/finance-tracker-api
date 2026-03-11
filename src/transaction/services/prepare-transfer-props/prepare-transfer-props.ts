@@ -42,7 +42,6 @@ export function prepareTransferProps(
   let description = `${accountExpenseLabel} --> ${accountIncomeLabel}`;
   if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
-  // TODO - probably paymentMethodId has to be placed in 'objectIds`
   const commonTransactionProps = {
     categoryId,
     date: body.date,
@@ -64,7 +63,9 @@ export function prepareTransferProps(
     accountId: body.accountIncomeId,
   };
 
-  if (additionalProps) {
+  // TODO probably move `accountExpenseName` and `accountIncomeName` from `additionalProps`
+  // to avoid this strange condition below
+  if (additionalProps && ("ownerId" in additionalProps)) {
     const { ownerId, sourceIndexExpense, sourceIndexIncome } = additionalProps;
     return {
       expenseTransactionProps: {
