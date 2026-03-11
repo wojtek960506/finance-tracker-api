@@ -1,4 +1,5 @@
 import {
+  ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
   getSystemIncomeAccountResultSerialized,
 } from '@testing/factories/account';
@@ -36,6 +37,7 @@ import * as dbPaymentMethods from '@payment-method/db';
 import * as dbTransactions from '@transaction/db';
 import { getNextSourceIndex } from '@transaction/services';
 import {
+  AccountOwnershipError,
   CategoryNotFoundError,
   PaymentMethodOwnershipError,
   SystemCategoryHasOwner,
@@ -207,6 +209,34 @@ describe('createStandardTransaction', async () => {
     expect(dbTransactions.persistTransaction).not.toHaveBeenCalled();
     expect(getNextSourceIndex).not.toHaveBeenCalled();
   });
+
+  // prettier-ignore
+  it(
+    'should throw error when creating single transaction with account not owned by user',
+    async () => {
+      vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue(foodCategory as any);
+      vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+        paymentMethod as any,
+      );
+      vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue({
+        ...accountExpense,
+        type: ACCOUNT_TYPE_USER,
+        ownerId: '123',
+        id: '1',
+      } as any);
+      vi.spyOn(dbTransactions, 'persistTransaction');
+
+      await expect(createStandardTransaction(standardDTO, USER_ID_STR)).rejects.toThrow(
+        AccountOwnershipError,
+      );
+
+      expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+      expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
+      expect(dbAccounts.findAccountById).toHaveBeenCalledOnce();
+      expect(dbTransactions.persistTransaction).not.toHaveBeenCalled();
+      expect(getNextSourceIndex).not.toHaveBeenCalled();
+    }
+  );
 
   it('should throw error when creating transaction pair with user category', async () => {
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(

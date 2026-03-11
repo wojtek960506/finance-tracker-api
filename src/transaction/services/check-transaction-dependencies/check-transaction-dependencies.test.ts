@@ -22,7 +22,7 @@ describe('checkTransactionDependencies', () => {
     expect(result).toBeUndefined();
   });
 
-  it('throws CategoryDependencyError when category has transactions', async () => {
+  it('throws CategoryDependencyError when category is used in transactions', async () => {
     (TransactionModel.countDocuments as any).mockResolvedValue(2);
 
     await expect(checkTransactionDependencies('categoryId', 'cat-1')).rejects.toThrow(
@@ -30,11 +30,22 @@ describe('checkTransactionDependencies', () => {
     );
   });
 
-  it('throws PaymentMethodDependencyError when payment method has transactions', async () => {
+  // prettier-ignore
+  it('throws PaymentMethodDependencyError when payment method is used in transactions',
+    async () => {
+      (TransactionModel.countDocuments as any).mockResolvedValue(1);
+
+      await expect(checkTransactionDependencies('paymentMethodId', 'pm-1')).rejects.toThrow(
+        'Payment method is being used by some transactions',
+      );
+    }
+  );
+
+  it('throws AccountDependencyError when account is used in transactions', async () => {
     (TransactionModel.countDocuments as any).mockResolvedValue(1);
 
-    await expect(checkTransactionDependencies('paymentMethodId', 'pm-1')).rejects.toThrow(
-      'Payment method is being used by some transactions',
+    await expect(checkTransactionDependencies('accountId', 'acc-1')).rejects.toThrow(
+      'Account is being used by some transactions',
     );
   });
 });

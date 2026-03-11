@@ -5,6 +5,7 @@ import {
   PaymentMethodOwnershipError,
   TransactionOwnershipError,
 } from '@utils/errors';
+import { AccountOwnershipError } from '@utils/errors/account-errors';
 
 import { checkOwner, CheckOwnerType } from './check-owner';
 
@@ -18,6 +19,7 @@ describe('checkOwner', () => {
     ['transaction', TransactionOwnershipError],
     ['category', CategoryOwnershipError],
     ['paymentMethod', PaymentMethodOwnershipError],
+    ['account', AccountOwnershipError],
   ])('throws error when owner is different than in %s', (type, error) => {
     expect(() => checkOwner('1', '2', '3', type as CheckOwnerType)).toThrow(error);
   });

@@ -1,4 +1,5 @@
 import {
+  ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
   getSystemIncomeAccountResultSerialized,
 } from '@testing/factories/account';
@@ -36,6 +37,7 @@ import {
   updateTransferTransaction,
 } from '@transaction/services';
 import {
+  AccountOwnershipError,
   CategoryNotFoundError,
   PaymentMethodOwnershipError,
   SystemCategoryHasOwner,
@@ -60,7 +62,7 @@ describe('update transaction', async () => {
   const accountIncome = getSystemIncomeAccountResultSerialized();
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('update standard transaction', async () => {
@@ -135,6 +137,31 @@ describe('update transaction', async () => {
     ).rejects.toThrow(SystemCategoryNotAllowed);
 
     expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+    expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
+    expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
+  });
+
+  it('throws when updating standard transaction with account not owned by user', async () => {
+    vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue(foodCategory as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
+    );
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue({
+      ...accountExpense,
+      type: ACCOUNT_TYPE_USER,
+      ownerId: '123',
+      id: '1',
+    } as any);
+    vi.spyOn(dbTransactions, 'findTransaction');
+    vi.spyOn(dbTransactions, 'saveTransactionChanges');
+
+    await expect(
+      updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
+    ).rejects.toThrow(AccountOwnershipError);
+
+    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+    expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
+    expect(dbAccounts.findAccountById).toHaveBeenCalledOnce();
     expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
     expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
   });
@@ -222,6 +249,7 @@ describe('update transaction', async () => {
     vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
       paymentMethod as any,
     );
+    vi.spyOn(serializers, 'serializeCategory');
     vi.spyOn(dbTransactions, 'loadTransactionWithReference');
     vi.spyOn(dbTransactions, 'saveTransactionPairChanges');
 
