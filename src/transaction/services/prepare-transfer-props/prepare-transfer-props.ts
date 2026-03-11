@@ -65,7 +65,7 @@ export function prepareTransferProps(
 
   // TODO probably move `accountExpenseName` and `accountIncomeName` from `additionalProps`
   // to avoid this strange condition below
-  if (additionalProps && ("ownerId" in additionalProps)) {
+  if (additionalProps && 'ownerId' in additionalProps) {
     const { ownerId, sourceIndexExpense, sourceIndexIncome } = additionalProps;
     return {
       expenseTransactionProps: {

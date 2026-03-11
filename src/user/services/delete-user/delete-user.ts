@@ -1,5 +1,6 @@
 import { ClientSession } from 'mongoose';
 
+import { AccountModel } from '@account/model';
 import { CategoryModel } from '@category/model';
 import { PaymentMethodModel } from '@payment-method/model';
 import { TransactionModel } from '@transaction/model';
@@ -34,6 +35,11 @@ const deleteUserCore = async (
   const { deletedCount: deletedPaymentMethodsCount } =
     await PaymentMethodModel.deleteMany({ ownerId: id }, { session });
 
+  const { deletedCount: deletedAccountsCount } = await AccountModel.deleteMany(
+    { ownerId: id },
+    { session },
+  );
+
   const { deletedCount } = await UserModel.deleteOne({ _id: id }, { session });
   if (deletedCount !== 1) throw new UserNotDeletedError(id);
 
@@ -42,6 +48,7 @@ const deleteUserCore = async (
   console.log('Deleted transactions count:', deletedTransactionsCount);
   console.log('Deleted categories count:', deletedCategoriesCount);
   console.log('Deleted payment methods count:', deletedPaymentMethodsCount);
+  console.log('Deleted accounts count:', deletedAccountsCount);
   console.log('------------------------------------------------');
 
   return serializeUser(user);

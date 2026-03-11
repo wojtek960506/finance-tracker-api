@@ -1,7 +1,7 @@
 import { USER_ID_STR } from '@testing/factories/general';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import * as dbT from "@transaction/db";
+import * as dbT from '@transaction/db';
 
 import { deleteTransactions } from './delete-transactions';
 
@@ -20,5 +20,4 @@ describe('deleteTransactions', () => {
     expect(dbT.removeTransactions).toHaveBeenCalledWith(USER_ID_STR);
     expect(result).toEqual(deleteResult);
   });
-
 });
