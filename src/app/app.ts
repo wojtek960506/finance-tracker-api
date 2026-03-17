@@ -72,6 +72,16 @@ export const buildApp = async (env = getEnv()) => {
         description: 'Documentation for API of Finance Tracker',
         version: '1.0.0',
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+        },
+      },
+      security: [{ bearerAuth: [] }],
     },
     transform: jsonSchemaTransform,
     transformObject: jsonSchemaTransformObject,
