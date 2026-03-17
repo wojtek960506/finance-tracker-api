@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongoose';
+
 import {
   findPaymentMethodById,
   findPaymentMethodByName,
@@ -80,7 +82,10 @@ export const preparePaymentMethodsMap = async (
   return prepareNamedResourcesMap(paymentMethods);
 };
 
-export const deletePaymentMethod = (paymentMethodId: string, ownerId: string) => {
+export const deletePaymentMethod = (
+  paymentMethodId: string,
+  ownerId: string,
+): Promise<DeleteResult> => {
   return deleteNamedResource<IPaymentMethod>({
     findById: findPaymentMethodById,
     remove: removePaymentMethod,

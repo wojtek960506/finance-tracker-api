@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongoose';
+
 import {
   findCategories,
   findCategoryById,
@@ -74,7 +76,10 @@ export const prepareCategoriesMap = async (
   return prepareNamedResourcesMap(categories);
 };
 
-export const deleteCategory = (categoryId: string, ownerId: string) => {
+export const deleteCategory = (
+  categoryId: string,
+  ownerId: string,
+): Promise<DeleteResult> => {
   return deleteNamedResource<ICategory>({
     findById: findCategoryById,
     remove: removeCategory,

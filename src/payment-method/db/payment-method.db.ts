@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongoose';
+
 import { IPaymentMethod, PaymentMethodModel } from '@payment-method/model';
 import { PaymentMethodResponseDTO } from '@payment-method/schema';
 import { serializePaymentMethod } from '@payment-method/serializers';
@@ -47,7 +49,7 @@ export const savePaymentMethodChanges = async (
   return saveNamedResourceChanges(paymentMethod, newProps, serializePaymentMethod);
 };
 
-export const removePaymentMethod = async (id: string) => {
+export const removePaymentMethod = async (id: string): Promise<DeleteResult> => {
   return removeNamedResourceById(PaymentMethodModel, id, (paymentMethodId) => {
     return new PaymentMethodNotFoundError(paymentMethodId);
   });

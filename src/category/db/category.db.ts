@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongoose';
+
 import { CategoryModel, ICategory } from '@category/model';
 import { CategoryResponseDTO } from '@category/schema';
 import { serializeCategory } from '@category/serializers';
@@ -44,7 +46,7 @@ export const saveCategoryChanges = async (
   return saveNamedResourceChanges(category, newProps, serializeCategory);
 };
 
-export const removeCategory = async (id: string) => {
+export const removeCategory = async (id: string): Promise<DeleteResult> => {
   return removeNamedResourceById(CategoryModel, id, (categoryId) => {
     return new CategoryNotFoundError(categoryId);
   });

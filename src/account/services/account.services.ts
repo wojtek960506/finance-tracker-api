@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongoose';
+
 import {
   findAccountById,
   findAccountByName,
@@ -70,7 +72,10 @@ export const prepareAccountsMap = async (
   return prepareNamedResourcesMap(accounts);
 };
 
-export const deleteAccount = (accountId: string, ownerId: string) => {
+export const deleteAccount = (
+  accountId: string,
+  ownerId: string,
+): Promise<DeleteResult> => {
   return deleteNamedResource<IAccount>({
     findById: findAccountById,
     remove: removeAccount,
