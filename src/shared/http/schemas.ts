@@ -8,3 +8,5 @@ export const DeleteResultSchema = z.object({
   acknowledged: z.boolean(),
   deletedCount: z.number(),
 });
+
+export const DeleteManyReplySchema = DeleteResultSchema;
