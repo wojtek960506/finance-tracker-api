@@ -88,7 +88,12 @@ export const buildApp = async (env = getEnv()) => {
   });
 
   // register Swagger UI
-  await app.register(swaggerUI, { routePrefix: '/docs' });
+  await app.register(swaggerUI, {
+    routePrefix: '/docs',
+    uiConfig: {
+      deepLinking: false,
+    },
+  });
 
   // register routes
   await app.register(mainRoutes, { prefix: '' });
