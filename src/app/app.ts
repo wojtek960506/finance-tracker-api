@@ -1,6 +1,8 @@
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
+import swagger from '@fastify/swagger';
+import swaggerUI from '@fastify/swagger-ui';
 import Fastify from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
@@ -77,6 +79,19 @@ export const buildApp = async (env = getEnv()) => {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
+
+  // register Swagger (OpenAPI spec generation)
+  await app.register(swagger, {
+    openapi: {
+      info: {
+        title: 'Finance Tracker API',
+        description: 'Documentation for API of Finance Tracker',
+        version: '1.0.0'
+      }
+    }
+  });
+
+  await app.register(swaggerUI, { routePrefix: '/docs' });
 
   return app;
 };
