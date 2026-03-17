@@ -6,6 +6,7 @@ import swaggerUI from '@fastify/swagger-ui';
 import Fastify from 'fastify';
 import {
   jsonSchemaTransform,
+  jsonSchemaTransformObject,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -73,6 +74,7 @@ export const buildApp = async (env = getEnv()) => {
       }
     },
     transform: jsonSchemaTransform,
+    transformObject: jsonSchemaTransformObject,
   });
 
   // register Swagger UI

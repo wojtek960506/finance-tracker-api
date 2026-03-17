@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const UserCommonSchema = z.object({
   firstName: z.string().min(2, 'First name must have at least 2 characters.'),
@@ -67,3 +67,9 @@ export type UsersResponseDTO = z.infer<typeof UsersResponseSchema>;
 export type UserSensitiveResponseDTO = z.infer<typeof UserSensitiveResponseSchema>;
 export type TestUserCreateDTO = z.infer<typeof TestUserCreateSchema>;
 export type TestUserCreateResponseDTO = z.infer<typeof TestUserCreateResponseSchema>;
+
+z.globalRegistry.add(UsersResponseSchema, { id: 'UsersResponse' });
+z.globalRegistry.add(UserResponseSchema, { id: 'UserResponse' });
+z.globalRegistry.add(UserCreateSchema, { id: 'UserCreate' });
+z.globalRegistry.add(TestUserCreateSchema, { id: 'TestUserCreate' });
+z.globalRegistry.add(TestUserCreateResponseSchema, { id: 'TestUserCreateResponse' });
