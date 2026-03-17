@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongoose';
+
 import { AccountModel, IAccount } from '@account/model';
 import { AccountResponseDTO } from '@account/schema';
 import { serializeAccount } from '@account/serializers';
@@ -44,7 +46,7 @@ export const saveAccountChanges = async (
   return saveNamedResourceChanges(account, newProps, serializeAccount);
 };
 
-export const removeAccount = async (id: string) => {
+export const removeAccount = async (id: string): Promise<DeleteResult> => {
   return removeNamedResourceById(AccountModel, id, (accountId) => {
     return new AccountNotFoundError(accountId);
   });
