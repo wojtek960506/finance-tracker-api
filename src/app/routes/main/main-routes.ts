@@ -17,6 +17,7 @@ export async function mainRoutes(app: FastifyInstance) {
         tags: ['Main'],
         summary: 'Welcome message',
         description: 'Return a friendly welcome message.',
+        security: [],
         response: {
           200: WelcomeResponseSchema,
         },

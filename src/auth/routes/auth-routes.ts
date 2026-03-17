@@ -17,6 +17,7 @@ export async function authRoutes(app: FastifyInstance) {
         tags: ['Auth'],
         summary: 'Login',
         description: 'Authenticate user and set refresh token cookie.',
+        security: [],
         body: LoginSchema,
         response: {
           200: TokenSchema,
@@ -33,6 +34,7 @@ export async function authRoutes(app: FastifyInstance) {
         tags: ['Auth'],
         summary: 'Refresh access token',
         description: 'Rotate refresh token cookie and return a new access token.',
+        security: [],
         response: {
           200: TokenSchema,
         },
