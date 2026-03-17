@@ -4,7 +4,12 @@ import fastifyJwt from '@fastify/jwt';
 import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 import Fastify from 'fastify';
-import { ZodTypeProvider } from 'fastify-type-provider-zod';
+import {
+  jsonSchemaTransform,
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
 
 import { accountRoutes } from '@account/routes';
 import { getEnv } from '@app/config';
@@ -39,6 +44,9 @@ export const buildApp = async (env = getEnv()) => {
 
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
+
   // upsert system categories
   await upsertSystemAccounts();
   await upsertSystemCategories();
@@ -55,14 +63,29 @@ export const buildApp = async (env = getEnv()) => {
     secret: jwtAccessSecret,
   });
 
+  // register Swagger (OpenAPI spec generation)
+  await app.register(swagger, {
+    openapi: {
+      info: {
+        title: 'Finance Tracker API',
+        description: 'Documentation for API of Finance Tracker',
+        version: '1.0.0'
+      }
+    },
+    transform: jsonSchemaTransform,
+  });
+
+  // register Swagger UI
+  await app.register(swaggerUI, { routePrefix: '/docs' });
+
   // register routes
-  app.register(mainRoutes, { prefix: '' });
-  app.register(authRoutes, { prefix: '/api/auth' });
-  app.register(userRoutes, { prefix: '/api/users' });
-  app.register(accountRoutes, { prefix: '/api/accounts' });
-  app.register(categoryRoutes, { prefix: '/api/categories' });
-  app.register(paymentMethodRoutes, { prefix: '/api/paymentMethods' });
-  app.register(transactionRoutes, { prefix: '/api/transactions' });
+  await app.register(mainRoutes, { prefix: '' });
+  await app.register(authRoutes, { prefix: '/api/auth' });
+  await app.register(userRoutes, { prefix: '/api/users' });
+  await app.register(accountRoutes, { prefix: '/api/accounts' });
+  await app.register(categoryRoutes, { prefix: '/api/categories' });
+  await app.register(paymentMethodRoutes, { prefix: '/api/paymentMethods' });
+  await app.register(transactionRoutes, { prefix: '/api/transactions' });
 
   // register error handler
   await registerErrorHandler(app);
@@ -80,18 +103,7 @@ export const buildApp = async (env = getEnv()) => {
     credentials: true,
   });
 
-  // register Swagger (OpenAPI spec generation)
-  await app.register(swagger, {
-    openapi: {
-      info: {
-        title: 'Finance Tracker API',
-        description: 'Documentation for API of Finance Tracker',
-        version: '1.0.0'
-      }
-    }
-  });
-
-  await app.register(swaggerUI, { routePrefix: '/docs' });
+  
 
   return app;
 };

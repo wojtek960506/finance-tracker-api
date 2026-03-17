@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 const UserCommonSchema = z.object({
   firstName: z.string().min(2, 'First name must have at least 2 characters.'),

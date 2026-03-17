@@ -9,7 +9,9 @@ import {
   UserCreateDTO,
   UserCreateSchema,
   UserResponseDTO,
+  UserResponseSchema,
   UsersResponseDTO,
+  UsersResponseSchema,
 } from '@user/schema';
 import { validateBody } from '@utils/validation';
 
@@ -21,18 +23,50 @@ import {
   getUsersHandler,
 } from './handlers';
 
-export async function userRoutes(app: FastifyInstance) {
-  app.get<{ Reply: UsersResponseDTO }>('/', getUsersHandler);
+export async function userRoutes(
+  app: FastifyInstance  & { withTypeProvider: <_T>() => any },
+) {
+  app.get<{ Reply: UsersResponseDTO }>(
+    '/',
+    {
+      schema: {
+        tags: ['Users'],
+        response: {
+          200: UsersResponseSchema,
+        }
+      }
+    },
+    getUsersHandler
+  );
 
   app.get<{ Params: ParamsJustId; Reply: UserResponseDTO }>(
     '/:id',
-    { preHandler: authorizeAccessToken() },
+
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Users'],
+        response: {
+          200: UserResponseSchema,
+        }
+      },
+    },
     getUserHandler,
   );
 
   app.post<{ Body: UserCreateDTO; Reply: UserResponseDTO }>(
     '/',
-    { preHandler: validateBody(UserCreateSchema) },
+    {
+      preHandler: validateBody(UserCreateSchema),
+      schema: {
+        tags: ['Users'],
+        description: "Create user",
+        summary: "Create user",
+        response: {
+          200: UserCreateSchema,
+        }
+      },
+    },
     createUserHandler,
   );
 
