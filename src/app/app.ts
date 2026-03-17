@@ -70,8 +70,8 @@ export const buildApp = async (env = getEnv()) => {
       info: {
         title: 'Finance Tracker API',
         description: 'Documentation for API of Finance Tracker',
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     },
     transform: jsonSchemaTransform,
     transformObject: jsonSchemaTransformObject,
@@ -104,8 +104,6 @@ export const buildApp = async (env = getEnv()) => {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
-
-  
 
   return app;
 };

@@ -26,7 +26,7 @@ import {
 } from './handlers';
 
 export async function userRoutes(
-  app: FastifyInstance  & { withTypeProvider: <_T>() => any },
+  app: FastifyInstance & { withTypeProvider: <_T>() => any },
 ) {
   const ParamsJustIdSchema = z.object({
     id: z.string().describe('User id'),
@@ -41,10 +41,10 @@ export async function userRoutes(
         description: 'Return all users.',
         response: {
           200: UsersResponseSchema,
-        }
-      }
+        },
+      },
     },
-    getUsersHandler
+    getUsersHandler,
   );
 
   app.get<{ Params: ParamsJustId; Reply: UserResponseDTO }>(
@@ -59,7 +59,7 @@ export async function userRoutes(
         params: ParamsJustIdSchema,
         response: {
           200: UserResponseSchema,
-        }
+        },
       },
     },
     getUserHandler,
@@ -76,7 +76,7 @@ export async function userRoutes(
         body: UserCreateSchema,
         response: {
           201: UserResponseSchema,
-        }
+        },
       },
     },
     createUserHandler,
@@ -94,7 +94,7 @@ export async function userRoutes(
         body: TestUserCreateSchema,
         response: {
           201: TestUserCreateResponseSchema,
-        }
+        },
       },
     },
     createTestUserHandler,
@@ -111,7 +111,7 @@ export async function userRoutes(
         params: ParamsJustIdSchema,
         response: {
           200: UserResponseSchema,
-        }
+        },
       },
     },
     deleteUserHandler,
