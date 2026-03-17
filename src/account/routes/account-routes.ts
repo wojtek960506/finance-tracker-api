@@ -1,6 +1,5 @@
 import { FastifyInstance } from 'fastify';
 import { DeleteResult } from 'mongoose';
-import { z } from 'zod/v4';
 
 import {
   AccountDTO,
@@ -11,7 +10,7 @@ import {
   AccountsResponseSchema,
 } from '@account/schema';
 import { authorizeAccessToken } from '@auth/services';
-import { ParamsJustId } from '@shared/http';
+import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
 import { validateBody } from '@utils/validation';
 
 import {
@@ -25,15 +24,6 @@ import {
 export async function accountRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
 ) {
-  const ParamsJustIdSchema = z.object({
-    id: z.string().describe('Account id'),
-  });
-
-  const DeleteResultSchema = z.object({
-    acknowledged: z.boolean(),
-    deletedCount: z.number(),
-  });
-
   app.get<{ Reply: AccountsResponseDTO }>(
     '/',
     {
