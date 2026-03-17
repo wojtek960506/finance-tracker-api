@@ -44,8 +44,6 @@ export const updateTransactionPair = async <T extends TransactionUpdateProps>(
     categoryId: category.id,
   });
 
-  // TODO add check for paymentTransactionId
-
   return saveTransactionPairChanges(
     transaction,
     transactionRef,

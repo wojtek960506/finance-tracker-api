@@ -8,6 +8,7 @@ export const getTransaction = async (transactionId: string, userId: string) => {
   await transaction.populate([
     { path: 'categoryId', select: '_id type name' },
     { path: 'paymentMethodId', select: '_id type name' },
+    { path: 'accountId', select: '_id type name' },
   ]);
 
   return serializeTransaction(transaction);

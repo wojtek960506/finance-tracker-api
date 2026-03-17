@@ -1,3 +1,7 @@
+import {
+  getSystemExpenseAccountResultSerialized,
+  getSystemIncomeAccountResultSerialized,
+} from '@testing/factories/account';
 import { TRANSFER_CATEGORY_ID_STR } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
 import {
@@ -14,6 +18,8 @@ describe('prepareTransferProps', () => {
   it('prepare props for create', () => {
     const dto = getTransferTransactionDTO();
     const mockProps = getTransferTransactionProps(true);
+    const accountExpense = getSystemExpenseAccountResultSerialized();
+    const accountIncome = getSystemIncomeAccountResultSerialized();
 
     const { expenseTransactionProps, incomeTransactionProps } = prepareTransferProps(
       dto,
@@ -22,6 +28,8 @@ describe('prepareTransferProps', () => {
         ownerId: USER_ID_STR,
         sourceIndexExpense: TRANSFER_TXN_EXPENSE_SRC_IDX,
         sourceIndexIncome: TRANSFER_TXN_INCOME_SRC_IDX,
+        accountExpenseName: accountExpense.name,
+        accountIncomeName: accountIncome.name,
       },
     );
 
@@ -30,25 +38,19 @@ describe('prepareTransferProps', () => {
   });
 
   it('prepare props for update', () => {
-    const { additionalDescription, ...dto } = getTransferTransactionDTO();
+    const dto = getTransferTransactionDTO();
+    delete (dto as { additionalDescription?: string }).additionalDescription;
     const mockProps = getTransferTransactionProps();
+    const accountExpense = getSystemExpenseAccountResultSerialized();
+    const accountIncome = getSystemIncomeAccountResultSerialized();
 
     const { expenseTransactionProps, incomeTransactionProps } = prepareTransferProps(
       dto,
       { categoryId: TRANSFER_CATEGORY_ID_STR },
     );
 
-    const shortenDescription = (description: string, endingToErase: string) =>
-      description.slice(0, description.indexOf(endingToErase)).trim();
-
-    mockProps.expenseProps.description = shortenDescription(
-      mockProps.expenseProps.description,
-      additionalDescription ? `(${additionalDescription})` : '',
-    );
-    mockProps.incomeProps.description = shortenDescription(
-      mockProps.incomeProps.description,
-      additionalDescription ? `(${additionalDescription})` : '',
-    );
+    mockProps.expenseProps.description = `${accountExpense.id} --> ${accountIncome.id}`;
+    mockProps.incomeProps.description = `${accountExpense.id} --> ${accountIncome.id}`;
 
     expect(expenseTransactionProps).toEqual(mockProps.expenseProps);
     expect(incomeTransactionProps).toEqual(mockProps.incomeProps);

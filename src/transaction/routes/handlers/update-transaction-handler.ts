@@ -25,7 +25,7 @@ export const updateTransactionHandler = async (
 
   if ('currencyExpense' in dto) {
     return res.code(200).send(await updateExchangeTransaction(id, userId, dto));
-  } else if ('accountExpense' in dto) {
+  } else if ('accountExpenseId' in dto) {
     return res.code(200).send(await updateTransferTransaction(id, userId, dto));
   } else {
     return res.code(200).send(await updateStandardTransaction(id, userId, dto));

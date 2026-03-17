@@ -4,7 +4,7 @@ import {
   NamedResourceCreateProps,
   NamedResourceMinimal,
   NamedResourceUpdateProps,
-} from './types';
+} from '../types';
 
 export const persistNamedResource = async <
   TResource extends NamedResourceMinimal,

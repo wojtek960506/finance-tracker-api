@@ -1,11 +1,16 @@
 import {
+  ACCOUNT_TYPE_USER,
+  getSystemExpenseAccountResultSerialized,
+  getSystemIncomeAccountResultSerialized,
+} from '@testing/factories/account';
+import {
   CATEGORY_TYPE_SYSTEM,
   CATEGORY_TYPE_USER,
   EXCHANGE_CATEGORY_NAME,
   FOOD_CATEGORY_ID_STR,
   getExchangeCategoryResultJSON,
   getTransferCategoryResultJSON,
-  getUserCategoryResultJSON,
+  getUserCategoryResultSerialized,
   TRANSFER_CATEGORY_NAME,
 } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
@@ -25,12 +30,14 @@ import {
 } from '@testing/factories/transaction';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import * as dbAccounts from '@account/db';
 import * as dbCategories from '@category/db';
 import * as serializers from '@category/serializers';
 import * as dbPaymentMethods from '@payment-method/db';
 import * as dbTransactions from '@transaction/db';
 import { getNextSourceIndex } from '@transaction/services';
 import {
+  AccountOwnershipError,
   CategoryNotFoundError,
   PaymentMethodOwnershipError,
   SystemCategoryHasOwner,
@@ -53,13 +60,15 @@ describe('createStandardTransaction', async () => {
     vi.clearAllMocks();
   });
 
-  const foodCategory = getUserCategoryResultJSON();
+  const foodCategory = getUserCategoryResultSerialized();
   const exchangeCategory = getExchangeCategoryResultJSON();
   const transferCategory = getTransferCategoryResultJSON();
   const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getExchangeTransactionDTO();
   const transferDTO = getTransferTransactionDTO();
   const paymentMethod = getBankTransferPaymentMethodResultJSON();
+  const accountExpense = getSystemExpenseAccountResultSerialized();
+  const accountIncome = getSystemIncomeAccountResultSerialized();
 
   it('should create standard transaction', async () => {
     const transaction = getStandardTransactionResultSerialized();
@@ -70,6 +79,7 @@ describe('createStandardTransaction', async () => {
     vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
       paymentMethod as any,
     );
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
 
     const result = await createStandardTransaction(standardDTO, USER_ID_STR);
 
@@ -77,6 +87,8 @@ describe('createStandardTransaction', async () => {
     expect(dbCategories.findCategoryById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
     expect(dbTransactions.persistTransaction).toHaveBeenCalledOnce();
     expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
+    expect(dbAccounts.findAccountById).toHaveBeenCalledOnce();
+    expect(dbAccounts.findAccountById).toHaveBeenCalledWith(standardDTO.accountId);
     expect(getNextSourceIndex).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledWith(USER_ID_STR);
     expect(result).toEqual(transaction);
@@ -91,6 +103,10 @@ describe('createStandardTransaction', async () => {
     (getNextSourceIndex as Mock)
       .mockResolvedValueOnce(EXCHANGE_TXN_EXPENSE_SRC_IDX)
       .mockResolvedValueOnce(EXCHANGE_TXN_INCOME_SRC_IDX);
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
+    );
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
       exchangeCategory as any,
     );
@@ -103,6 +119,9 @@ describe('createStandardTransaction', async () => {
     expect(serializers.serializeCategory).toHaveBeenCalledOnce();
     expect(serializers.serializeCategory).toHaveBeenCalledWith(exchangeCategory);
     expect(dbTransactions.persistTransactionPair).toHaveBeenCalledOnce();
+    expect(dbAccounts.findAccountById).toHaveBeenCalledOnce();
+    expect(dbAccounts.findAccountById).toHaveBeenCalledWith(exchangeDTO.accountId);
+    expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID_STR);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID_STR);
@@ -118,6 +137,12 @@ describe('createStandardTransaction', async () => {
     (getNextSourceIndex as Mock)
       .mockResolvedValueOnce(TRANSFER_TXN_EXPENSE_SRC_IDX)
       .mockResolvedValueOnce(TRANSFER_TXN_INCOME_SRC_IDX);
+    vi.spyOn(dbAccounts, 'findAccountById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
+    );
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
       transferCategory as any,
     );
@@ -130,6 +155,16 @@ describe('createStandardTransaction', async () => {
     expect(serializers.serializeCategory).toHaveBeenCalledOnce();
     expect(serializers.serializeCategory).toHaveBeenCalledWith(transferCategory);
     expect(dbTransactions.persistTransactionPair).toHaveBeenCalledOnce();
+    expect(dbAccounts.findAccountById).toHaveBeenCalledTimes(2);
+    expect(dbAccounts.findAccountById).toHaveBeenNthCalledWith(
+      1,
+      transferDTO.accountExpenseId,
+    );
+    expect(dbAccounts.findAccountById).toHaveBeenNthCalledWith(
+      2,
+      transferDTO.accountIncomeId,
+    );
+    expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
     expect(getNextSourceIndex).toHaveBeenCalledTimes(2);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(1, USER_ID_STR);
     expect(getNextSourceIndex).toHaveBeenNthCalledWith(2, USER_ID_STR);
@@ -144,6 +179,7 @@ describe('createStandardTransaction', async () => {
       vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
         { ...paymentMethod, type: CATEGORY_TYPE_USER, ownerId: '123', id: '1' } as any,
       );
+      vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
       vi.spyOn(dbTransactions, 'persistTransaction');
 
       await expect(createStandardTransaction(standardDTO, USER_ID_STR)).rejects.toThrow(
@@ -162,6 +198,7 @@ describe('createStandardTransaction', async () => {
       ...foodCategory,
       type: CATEGORY_TYPE_SYSTEM,
     } as any);
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
     vi.spyOn(dbTransactions, 'persistTransaction');
 
     await expect(createStandardTransaction(standardDTO, USER_ID_STR)).rejects.toThrow(
@@ -173,9 +210,41 @@ describe('createStandardTransaction', async () => {
     expect(getNextSourceIndex).not.toHaveBeenCalled();
   });
 
+  // prettier-ignore
+  it(
+    'should throw error when creating single transaction with account not owned by user',
+    async () => {
+      vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue(foodCategory as any);
+      vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+        paymentMethod as any,
+      );
+      vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue({
+        ...accountExpense,
+        type: ACCOUNT_TYPE_USER,
+        ownerId: '123',
+        id: '1',
+      } as any);
+      vi.spyOn(dbTransactions, 'persistTransaction');
+
+      await expect(createStandardTransaction(standardDTO, USER_ID_STR)).rejects.toThrow(
+        AccountOwnershipError,
+      );
+
+      expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
+      expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
+      expect(dbAccounts.findAccountById).toHaveBeenCalledOnce();
+      expect(dbTransactions.persistTransaction).not.toHaveBeenCalled();
+      expect(getNextSourceIndex).not.toHaveBeenCalled();
+    }
+  );
+
   it('should throw error when creating transaction pair with user category', async () => {
     vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
       exchangeCategory as any,
+    );
+    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
+    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+      paymentMethod as any,
     );
     vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
       ...exchangeCategory,
@@ -200,6 +269,12 @@ describe('createStandardTransaction', async () => {
       vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
         transferCategory as any,
       );
+      vi.spyOn(dbAccounts, 'findAccountById')
+        .mockResolvedValueOnce(accountExpense as any)
+        .mockResolvedValueOnce(accountIncome as any);
+      vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+        paymentMethod as any,
+      );
       vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
         ...transferCategory,
         ownerId: USER_ID_STR,
@@ -222,6 +297,12 @@ describe('createStandardTransaction', async () => {
     'should throw error when category not found by name for creating transaction pair',
     async () => {
       vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(null);
+      vi.spyOn(dbAccounts, 'findAccountById')
+        .mockResolvedValueOnce(accountExpense as any)
+        .mockResolvedValueOnce(accountIncome as any);
+      vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
+        paymentMethod as any,
+      );
       vi.spyOn(serializers, 'serializeCategory');
       vi.spyOn(dbTransactions, 'persistTransactionPair');
 

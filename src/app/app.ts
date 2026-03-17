@@ -4,10 +4,12 @@ import fastifyJwt from '@fastify/jwt';
 import Fastify from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
+import { accountRoutes } from '@account/routes';
 import { getEnv } from '@app/config';
 import { mainRoutes } from '@app/routes';
 import {
   connectDB,
+  upsertSystemAccounts,
   upsertSystemCategories,
   upsertSystemPaymentMethods,
 } from '@app/setup';
@@ -36,6 +38,7 @@ export const buildApp = async (env = getEnv()) => {
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
   // upsert system categories
+  await upsertSystemAccounts();
   await upsertSystemCategories();
   await upsertSystemPaymentMethods();
 
@@ -54,6 +57,7 @@ export const buildApp = async (env = getEnv()) => {
   app.register(mainRoutes, { prefix: '' });
   app.register(authRoutes, { prefix: '/api/auth' });
   app.register(userRoutes, { prefix: '/api/users' });
+  app.register(accountRoutes, { prefix: '/api/accounts' });
   app.register(categoryRoutes, { prefix: '/api/categories' });
   app.register(paymentMethodRoutes, { prefix: '/api/paymentMethods' });
   app.register(transactionRoutes, { prefix: '/api/transactions' });

@@ -9,18 +9,8 @@ export const SYSTEM_PAYMENT_METHOD_NAMES = new Set([
   'bankTransfer',
 ]);
 
-export const CURRENCIES = new Set(['PLN', 'EUR', 'CZK', 'GBP', 'USD', 'HUF', 'RON']);
+export const SYSTEM_ACCOUNT_NAMES = new Set(['cash']);
 
-export const ACCOUNTS = new Set([
-  'cash',
-  'pekao',
-  'mBank',
-  'revolut',
-  'veloBank',
-  'nestBank',
-  'aliorBank',
-  'cardByCliq',
-  'creditAgricole',
-]);
+export const CURRENCIES = new Set(['PLN', 'EUR', 'CZK', 'GBP', 'USD', 'HUF', 'RON']);
 
 export const TRANSACTION_TYPES = new Set(['expense', 'income']);

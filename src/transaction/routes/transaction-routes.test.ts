@@ -10,6 +10,9 @@ import {
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
 } from '@testing/factories/payment-method';
 import {
+  ACCOUNT_EXPENSE_ID_OBJ,
+  ACCOUNT_EXPENSE_ID_STR,
+  ACCOUNT_EXPENSE_NAME,
   getExchangeTransactionDTO,
   getStandardTransactionDTO,
   getStandardTransactionResultSerialized,
@@ -21,6 +24,7 @@ import { getCsvForTransactions } from '@testing/get-csv-for-transactions';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import * as serviceA from '@account/services';
 import { registerErrorHandler } from '@app/plugins/errorHandler';
 import * as serviceC from '@category/services';
 import * as servicePM from '@payment-method/services';
@@ -75,6 +79,9 @@ describe('transaction routes', async () => {
     vi.spyOn(serviceC, 'prepareCategoriesMap').mockResolvedValue({
       [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } as any,
     });
+    vi.spyOn(serviceA, 'prepareAccountsMap').mockResolvedValue({
+      [ACCOUNT_EXPENSE_ID_STR]: { name: ACCOUNT_EXPENSE_NAME } as any,
+    });
     vi.spyOn(servicePM, 'preparePaymentMethodsMap').mockResolvedValue({
       [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: {
         name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
@@ -87,6 +94,7 @@ describe('transaction routes', async () => {
           date: new Date(standardSerialized.date),
           categoryId: FOOD_CATEGORY_ID_OBJ,
           paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
+          accountId: ACCOUNT_EXPENSE_ID_OBJ,
         },
       ]),
     );

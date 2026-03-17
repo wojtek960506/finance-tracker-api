@@ -1,4 +1,4 @@
-import { ACCOUNTS, CURRENCIES } from '@utils/consts';
+import { CURRENCIES } from '@utils/consts';
 import { randomFromSet, randomNumber } from '@utils/random';
 
 import { RandomExchangeTransactionPair } from '../types';
@@ -9,12 +9,12 @@ export const prepareRandomExchangeTransactionPair = (
   index: number,
   categoryId: string,
   paymentMethodId: string,
+  accountId: string,
 ): RandomExchangeTransactionPair => {
   const amountExpense = randomNumber(10, 10000);
   const currencyExpense = randomFromSet(CURRENCIES);
   const amountIncome = randomNumber(10, 10000);
   const currencyIncome = randomFromSet(CURRENCIES);
-  const account = randomFromSet(ACCOUNTS);
 
   let currencies;
   let exchangeRate;
@@ -29,7 +29,7 @@ export const prepareRandomExchangeTransactionPair = (
 
   const commonProps = {
     date,
-    account,
+    accountId,
     ownerId,
     currencies,
     categoryId,

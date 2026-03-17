@@ -2,6 +2,7 @@ import { USER_ID_STR } from '@testing/factories/general';
 import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { AccountModel } from '@account/model';
 import { CategoryModel } from '@category/model';
 import { PaymentMethodModel } from '@payment-method/model';
 import { TransactionModel } from '@transaction/model';
@@ -42,6 +43,7 @@ describe('deleteUser', () => {
       deletedCount: 3,
     } as any);
     vi.spyOn(CategoryModel, 'deleteMany').mockResolvedValue({ deletedCount: 2 } as any);
+    vi.spyOn(AccountModel, 'deleteMany').mockResolvedValue({ deletedCount: 1 } as any);
     vi.spyOn(PaymentMethodModel, 'deleteMany').mockResolvedValue({
       deletedCount: 1,
     } as any);
@@ -70,6 +72,11 @@ describe('deleteUser', () => {
       { ownerId: USER_ID_STR },
       { session: sessionMock },
     );
+    expect(AccountModel.deleteMany).toHaveBeenCalledOnce();
+    expect(AccountModel.deleteMany).toHaveBeenCalledWith(
+      { ownerId: USER_ID_STR },
+      { session: sessionMock },
+    );
     expect(UserModel.deleteOne).toHaveBeenCalledOnce();
     expect(UserModel.deleteOne).toHaveBeenCalledWith(
       { _id: USER_ID_STR },
@@ -77,7 +84,7 @@ describe('deleteUser', () => {
     );
     expect(serializers.serializeUser).toHaveBeenCalledOnce();
     expect(serializers.serializeUser).toHaveBeenCalledWith(user);
-    expect(consoleLogSpy).toHaveBeenCalledTimes(6);
+    expect(consoleLogSpy).toHaveBeenCalledTimes(7);
     expect(result).toEqual(userSerialized);
   });
 
@@ -112,6 +119,7 @@ describe('deleteUser', () => {
     vi.spyOn(PaymentMethodModel, 'deleteMany').mockResolvedValue({
       deletedCount: 3,
     } as any);
+    vi.spyOn(AccountModel, 'deleteMany').mockResolvedValue({ deletedCount: 1 } as any);
     vi.spyOn(UserModel, 'deleteOne').mockResolvedValue({ deletedCount: 1 } as any);
     vi.spyOn(serializers, 'serializeUser').mockReturnValue(userSerialized as any);
 
@@ -130,6 +138,7 @@ describe('deleteUser', () => {
     vi.spyOn(TransactionModel, 'deleteMany');
     vi.spyOn(CategoryModel, 'deleteMany');
     vi.spyOn(PaymentMethodModel, 'deleteMany');
+    vi.spyOn(AccountModel, 'deleteMany');
     vi.spyOn(UserModel, 'deleteOne');
     vi.spyOn(serializers, 'serializeUser');
 
@@ -138,7 +147,8 @@ describe('deleteUser', () => {
     expect(TransactionModel.deleteMany).not.toHaveBeenCalled();
     expect(CategoryModel.deleteMany).not.toHaveBeenCalled();
     expect(PaymentMethodModel.deleteMany).not.toHaveBeenCalled();
-    expect(UserModel.deleteOne).not.toHaveBeenCalled();
+    expect(PaymentMethodModel.deleteMany).not.toHaveBeenCalled();
+    expect(AccountModel.deleteMany).not.toHaveBeenCalled();
     expect(serializers.serializeUser).not.toHaveBeenCalled();
   });
 
@@ -153,6 +163,7 @@ describe('deleteUser', () => {
     vi.spyOn(PaymentMethodModel, 'deleteMany').mockResolvedValue({
       deletedCount: 3,
     } as any);
+    vi.spyOn(AccountModel, 'deleteMany').mockResolvedValue({ deletedCount: 1 } as any);
     vi.spyOn(UserModel, 'deleteOne').mockResolvedValue({ deletedCount: 0 } as any);
     vi.spyOn(serializers, 'serializeUser');
 

@@ -29,10 +29,12 @@ export const saveTransactionPairChangesCore = async <
   await transaction.populate([
     { path: 'categoryId', select: '_id type name' },
     { path: 'paymentMethodId', select: '_id type name' },
+    { path: 'accountId', select: '_id type name' },
   ]);
   await transactionRef.populate([
     { path: 'categoryId', select: '_id type name' },
     { path: 'paymentMethodId', select: '_id type name' },
+    { path: 'accountId', select: '_id type name' },
   ]);
 
   return [serializeTransaction(transaction), serializeTransaction(transactionRef)];

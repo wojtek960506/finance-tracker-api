@@ -1,11 +1,17 @@
 import { ClientSession } from 'mongoose';
 
+import { getOrCreateAccount } from '@account/services';
 import { getOrCreateCategory } from '@category/services';
 import { getOrCreatePaymentMethod } from '@payment-method/services';
 import { TransactionModel } from '@transaction/model';
-import { SYSTEM_CATEGORY_NAMES, SYSTEM_PAYMENT_METHOD_NAMES } from '@utils/consts';
+import {
+  SYSTEM_ACCOUNT_NAMES,
+  SYSTEM_CATEGORY_NAMES,
+  SYSTEM_PAYMENT_METHOD_NAMES,
+} from '@utils/consts';
 import { AppError } from '@utils/errors';
 import { randomDate, randomFromSet } from '@utils/random';
+import { excludeFromSet } from '@utils/set';
 
 import {
   prepareRandomExchangeTransactionPair,
@@ -32,6 +38,7 @@ export async function createRandomTransactions(
     'Entertainment',
   ];
   const testPaymentMethodNames = [...SYSTEM_PAYMENT_METHOD_NAMES, 'BLIK'];
+  const testAccountNames = [...SYSTEM_ACCOUNT_NAMES, 'wallet', 'bank'];
 
   const categories = (
     await Promise.all(testCategoryNames.map((name) => getOrCreateCategory(ownerId, name)))
@@ -44,6 +51,10 @@ export async function createRandomTransactions(
     )
   ).filter((pm) => pm != undefined);
   const paymentMethodIds = paymentMethods.map((pm) => pm.id);
+  const accounts = (
+    await Promise.all(testAccountNames.map((name) => getOrCreateAccount(ownerId, name)))
+  ).filter((account) => account != undefined);
+  const accountIds = new Set(accounts.map((account) => account.id));
 
   const randomTransactions: RandomTransaction[] = [];
   for (let i = 0; i < totalTransactions; ) {
@@ -51,6 +62,8 @@ export async function createRandomTransactions(
 
     const categoryId = randomFromSet(new Set(categoryIds));
     const paymentMethodId = randomFromSet(new Set(paymentMethodIds));
+    const accountId1 = randomFromSet(new Set(accountIds));
+    const accountId2 = randomFromSet(excludeFromSet(new Set(accountIds), [accountId1]));
 
     if (categoryNamesMap[categoryId] === 'myAccount') {
       const [expense, income] = prepareRandomTransferTransactionPair(
@@ -59,6 +72,8 @@ export async function createRandomTransactions(
         i,
         categoryId,
         paymentMethodId,
+        accountId1,
+        accountId2,
       );
       randomTransactions.push(expense, income);
       i += 2;
@@ -69,6 +84,7 @@ export async function createRandomTransactions(
         i,
         categoryId,
         paymentMethodId,
+        accountId1,
       );
       randomTransactions.push(expense, income);
       i += 2;
@@ -79,6 +95,7 @@ export async function createRandomTransactions(
         i,
         categoryId,
         paymentMethodId,
+        accountId1,
       );
       randomTransactions.push(transaction);
       i += 1;

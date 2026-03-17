@@ -12,7 +12,9 @@ import {
   PAYMENT_METHOD_TYPE_SYSTEM,
 } from '@testing/factories/payment-method';
 import {
-  ACCOUNT_EXPENSE,
+  ACCOUNT_EXPENSE_ID_OBJ,
+  ACCOUNT_EXPENSE_ID_STR,
+  ACCOUNT_EXPENSE_NAME,
   AMOUNT_EXPENSE,
   CURRENCY_EXPENSE,
   DESCRPTION,
@@ -26,7 +28,7 @@ export const getStandardTransactionDTO = () => ({
   date: DATE_OBJ,
   amount: AMOUNT_EXPENSE,
   description: DESCRPTION,
-  account: ACCOUNT_EXPENSE,
+  accountId: ACCOUNT_EXPENSE_ID_STR,
   currency: CURRENCY_EXPENSE,
   categoryId: FOOD_CATEGORY_ID_STR,
   transactionType: TRANSACTION_TYPE_EXPENSE,
@@ -54,15 +56,27 @@ export const getStandardTransactionResultJSON = () => ({
     type: PAYMENT_METHOD_TYPE_SYSTEM,
     name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
   },
+  accountId: {
+    _id: ACCOUNT_EXPENSE_ID_OBJ,
+    type: PAYMENT_METHOD_TYPE_SYSTEM,
+    name: ACCOUNT_EXPENSE_NAME,
+  },
 });
 
 export const getStandardTransactionNotPopulatedResultJSON = () => {
-  const { categoryId, paymentMethodId, ...props } = getStandardTransactionResultJSON();
-  return { ...props, categoryId: categoryId._id, paymentMethodId: paymentMethodId._id };
+  const { categoryId, paymentMethodId, accountId, ...props } =
+    getStandardTransactionResultJSON();
+  return {
+    ...props,
+    categoryId: categoryId._id,
+    paymentMethodId: paymentMethodId._id,
+    accountId: accountId._id,
+  };
 };
 
 export const getStandardTransactionResultSerialized = () => {
-  const { categoryId, paymentMethodId, ...props } = getStandardTransactionProps();
+  const { categoryId, paymentMethodId, accountId, ...props } =
+    getStandardTransactionProps();
 
   return {
     ...props,
@@ -78,6 +92,11 @@ export const getStandardTransactionResultSerialized = () => {
       id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
       type: PAYMENT_METHOD_TYPE_SYSTEM,
       name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+    },
+    account: {
+      id: ACCOUNT_EXPENSE_ID_STR,
+      type: PAYMENT_METHOD_TYPE_SYSTEM,
+      name: ACCOUNT_EXPENSE_NAME,
     },
   };
 };

@@ -1,4 +1,4 @@
-import { ACCOUNTS, CURRENCIES } from '@utils/consts';
+import { CURRENCIES } from '@utils/consts';
 import { randomFromSet, randomNumber } from '@utils/random';
 
 import { RandomTransferTransactionPair } from '../types';
@@ -9,13 +9,13 @@ export const prepareRandomTransferTransactionPair = (
   index: number,
   categoryId: string,
   paymentMethodId: string,
+  accountExpenseId: string,
+  accountIncomeId: string,
 ): RandomTransferTransactionPair => {
   const amount = randomNumber(10, 10000);
   const currency = randomFromSet(CURRENCIES);
-  const accountExpense = randomFromSet(ACCOUNTS);
-  const accountIncome = randomFromSet(ACCOUNTS);
 
-  const description = `Money Transfer: ${accountExpense} --> ${accountIncome}`;
+  const description = `Money Transfer: ${accountExpenseId} --> ${accountIncomeId}`;
 
   const commonProps = {
     date,
@@ -29,14 +29,14 @@ export const prepareRandomTransferTransactionPair = (
   const expense = {
     ...commonProps,
     sourceIndex: index,
-    account: accountExpense,
+    accountId: accountExpenseId,
     sourceRefIndex: index + 1,
     transactionType: 'expense',
   };
   const income = {
     ...commonProps,
     sourceRefIndex: index,
-    account: accountIncome,
+    accountId: accountIncomeId,
     sourceIndex: index + 1,
     transactionType: 'income',
   };

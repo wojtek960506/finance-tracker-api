@@ -11,7 +11,8 @@ import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
 } from '@testing/factories/payment-method';
 import {
-  ACCOUNT_EXPENSE,
+  ACCOUNT_EXPENSE_ID_OBJ,
+  ACCOUNT_EXPENSE_ID_STR,
   CURRENCY_EXPENSE,
   TRANSACTION_TYPE_EXPENSE,
 } from '@testing/factories/transaction';
@@ -100,16 +101,16 @@ describe('getStatisticsMatching', () => {
     });
   });
 
-  it("has 'account' and 'paymentMethod'", () => {
+  it("has 'accountId' and 'paymentMethodId'", () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      account: ACCOUNT_EXPENSE,
+      accountId: ACCOUNT_EXPENSE_ID_STR,
       paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
     };
 
     const result = getStatisticsMatching(query, USER_ID_STR);
     checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
-    expect(result.account).toEqual(ACCOUNT_EXPENSE);
+    expect(result.accountId).toEqual(ACCOUNT_EXPENSE_ID_OBJ);
     expect(result.paymentMethodId).toEqual(BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ);
   });
 });

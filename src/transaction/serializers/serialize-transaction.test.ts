@@ -13,6 +13,10 @@ import {
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
 } from '@testing/factories/transaction';
+import {
+  ACCOUNT_EXPENSE_ID_STR,
+  ACCOUNT_EXPENSE_NAME,
+} from '@testing/factories/transaction/transaction-consts';
 import { describe, expect, it } from 'vitest';
 
 import { CategoryType } from '@category/model';
@@ -46,6 +50,13 @@ describe('serializeTransaction', () => {
       name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
     },
   };
+  const accountsMap = {
+    [ACCOUNT_EXPENSE_ID_STR]: {
+      id: ACCOUNT_EXPENSE_ID_STR,
+      type: PAYMENT_METHOD_TYPE_SYSTEM as PaymentMethodType,
+      name: ACCOUNT_EXPENSE_NAME,
+    },
+  };
 
   it('serialize transaction with populated category', () => {
     const result = serializeTransaction(iTransaction as any);
@@ -57,6 +68,7 @@ describe('serializeTransaction', () => {
       iTransactionNotPopulated as any,
       categoriesMap,
       paymentMethodsMap,
+      accountsMap,
     );
     expect(result).toEqual(transactionSerialized);
   });

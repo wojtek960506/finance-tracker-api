@@ -25,7 +25,7 @@ describe('prepareRandomStandardTransaction', () => {
 
   it('builds a standard random transaction with expected fields', () => {
     (randomNumber as Mock).mockReturnValue(123);
-    (randomFromSet as Mock).mockReturnValueOnce('PLN').mockReturnValueOnce('wallet');
+    (randomFromSet as Mock).mockReturnValueOnce('PLN');
     (weightedRandomFromSet as Mock).mockReturnValue('expense');
 
     // TODO - create some constant for these values (probably similar as TEST_CATEGORY)
@@ -35,11 +35,12 @@ describe('prepareRandomStandardTransaction', () => {
       TEST_SOURCE_INDEX,
       TEST_CATEGORY_ID,
       'pm-1',
+      'acc-1',
     );
 
     expect(randomNumber).toHaveBeenCalledOnce();
     expect(randomNumber).toHaveBeenCalledWith(10, 10000);
-    expect(randomFromSet).toHaveBeenCalledTimes(2);
+    expect(randomFromSet).toHaveBeenCalledTimes(1);
     expect(weightedRandomFromSet).toHaveBeenCalledOnce();
     expect(weightedRandomFromSet).toHaveBeenCalledWith(TRANSACTION_TYPES, {
       expense: 5,
@@ -48,7 +49,7 @@ describe('prepareRandomStandardTransaction', () => {
     expect(result).toEqual({
       date: TEST_DATE,
       amount: 123,
-      account: 'wallet',
+      accountId: 'acc-1',
       ownerId: TEST_OWNER_ID,
       currency: 'PLN',
       categoryId: TEST_CATEGORY_ID,

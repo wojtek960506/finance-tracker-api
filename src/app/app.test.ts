@@ -16,6 +16,7 @@ const {
   mainRoutesMock,
   authRoutesMock,
   userRoutesMock,
+  accountRoutesMock,
   corsPluginMock,
   cookiePluginMock,
   categoryRoutesMock,
@@ -24,6 +25,7 @@ const {
   registerErrorHandlerMock,
   upsertSystemCategoriesMock,
   upsertSystemPaymentMethodsMock,
+  upsertSystemAccountsMock,
 } = vi.hoisted(() => {
   const app = {
     register: vi.fn().mockResolvedValue(undefined),
@@ -39,12 +41,14 @@ const {
     upsertSystemCategoriesMock: vi.fn(),
     connectDBMock: vi.fn(),
     upsertSystemPaymentMethodsMock: vi.fn(),
+    upsertSystemAccountsMock: vi.fn(),
     registerErrorHandlerMock: vi.fn(),
     mainRoutesMock: vi.fn(),
     authRoutesMock: vi.fn(),
     userRoutesMock: vi.fn(),
     categoryRoutesMock: vi.fn(),
     paymentMethodRoutesMock: vi.fn(),
+    accountRoutesMock: vi.fn(),
     transactionRoutesMock: vi.fn(),
     cookiePluginMock: vi.fn(),
     jwtPluginMock: vi.fn(),
@@ -59,6 +63,7 @@ vi.mock('@fastify/cors', () => ({ default: corsPluginMock }));
 vi.mock('@app/setup', () => ({
   upsertSystemCategories: upsertSystemCategoriesMock,
   upsertSystemPaymentMethods: upsertSystemPaymentMethodsMock,
+  upsertSystemAccounts: upsertSystemAccountsMock,
   connectDB: connectDBMock,
 }));
 vi.mock('./plugins/errorHandler', () => ({
@@ -71,6 +76,7 @@ vi.mock('@app/routes', () => ({
 vi.mock('@auth/routes', () => ({ authRoutes: authRoutesMock }));
 vi.mock('@user/routes', () => ({ userRoutes: userRoutesMock }));
 vi.mock('@category/routes', () => ({ categoryRoutes: categoryRoutesMock }));
+vi.mock('@account/routes', () => ({ accountRoutes: accountRoutesMock }));
 vi.mock('@payment-method/routes', () => ({
   paymentMethodRoutes: paymentMethodRoutesMock,
 }));
