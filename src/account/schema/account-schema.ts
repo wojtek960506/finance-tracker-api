@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod/v4';
 
 import { OBJECT_ID_REGEX } from '@utils/consts';
 
@@ -21,3 +21,7 @@ export const AccountsResponseSchema = z.array(AccountResponseSchema);
 export type AccountDTO = z.infer<typeof AccountSchema>;
 export type AccountResponseDTO = z.infer<typeof AccountResponseSchema>;
 export type AccountsResponseDTO = z.infer<typeof AccountsResponseSchema>;
+
+z.globalRegistry.add(AccountSchema, { id: 'Account' });
+z.globalRegistry.add(AccountResponseSchema, { id: 'AccountResponse' });
+z.globalRegistry.add(AccountsResponseSchema, { id: 'AccountsResponse' });

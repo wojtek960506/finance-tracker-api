@@ -30,6 +30,8 @@ const {
   const app = {
     register: vi.fn().mockResolvedValue(undefined),
     withTypeProvider: vi.fn(),
+    setValidatorCompiler: vi.fn(),
+    setSerializerCompiler: vi.fn(),
     listen: vi.fn().mockResolvedValue(undefined),
     log: { error: vi.fn() },
   } as any;

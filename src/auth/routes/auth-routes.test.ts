@@ -1,7 +1,13 @@
 import cookie from '@fastify/cookie';
 import { ENV_TEST_VALUES } from '@testing/env-consts';
 import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultSerialized } from '@testing/factories/user';
 import Fastify from 'fastify';
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
@@ -10,7 +16,6 @@ import * as serviceU from '@user/services';
 
 import { authRoutes } from './auth-routes';
 
-const MOCKED_RESULT = { result: 'result' };
 const LOGIN_DTO = { email: 'john@example.com', password: 'secret-password' };
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
@@ -31,7 +36,9 @@ const getSetCookieHeaders = (setCookieHeader: string | string[] | undefined) => 
 };
 
 describe('auth routes', async () => {
-  const app = Fastify();
+  const app = Fastify().withTypeProvider<ZodTypeProvider>();
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
   await app.register(cookie);
   app.register(authRoutes);
   await registerErrorHandler(app);
@@ -101,7 +108,8 @@ describe('auth routes', async () => {
   });
 
   it("should get current user - 'GET /me'", async () => {
-    vi.spyOn(serviceU, 'getUser').mockResolvedValue(MOCKED_RESULT as any);
+    const userResult = getUserResultSerialized();
+    vi.spyOn(serviceU, 'getUser').mockResolvedValue(userResult as any);
 
     const response = await app.inject({ method: 'GET', url: '/me' });
 
@@ -109,6 +117,6 @@ describe('auth routes', async () => {
     expect(serviceU.getUser).toHaveBeenCalledOnce();
     expect(serviceU.getUser).toHaveBeenCalledWith(USER_ID_STR, USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(userResult);
   });
 });

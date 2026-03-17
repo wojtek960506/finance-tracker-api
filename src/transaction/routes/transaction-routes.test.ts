@@ -3,7 +3,7 @@ import {
   FOOD_CATEGORY_ID_STR,
   FOOD_CATEGORY_NAME,
 } from '@testing/factories/category';
-import { USER_ID_STR } from '@testing/factories/general';
+import { DATE_ISO_STR, USER_ID_STR } from '@testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
@@ -14,14 +14,21 @@ import {
   ACCOUNT_EXPENSE_ID_STR,
   ACCOUNT_EXPENSE_NAME,
   getExchangeTransactionDTO,
+  getExchangeTransactionResultSerialized,
   getStandardTransactionDTO,
   getStandardTransactionResultSerialized,
   getTransferTransactionDTO,
+  getTransferTransactionResultSerialized,
   STANDARD_TXN_ID_STR as T_ID,
 } from '@testing/factories/transaction';
 import { TEST_USER_TOTAL_TRANSACTIONS } from '@testing/factories/user';
 import { getCsvForTransactions } from '@testing/get-csv-for-transactions';
 import Fastify from 'fastify';
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as serviceA from '@account/services';
@@ -39,8 +46,6 @@ async function* mockAsyncCursor<T>(items: T[]) {
   }
 }
 
-const MOCKED_RESULT = { result: 'result' };
-
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
@@ -50,7 +55,9 @@ vi.mock('@transaction/db', () => ({ streamTransactions: vi.fn() }));
 vi.mock('@transaction/model', () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
 describe('transaction routes', async () => {
-  const app = Fastify();
+  const app = Fastify().withTypeProvider<ZodTypeProvider>();
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
   app.register(transactionRoutes);
   await registerErrorHandler(app);
 
@@ -58,13 +65,93 @@ describe('transaction routes', async () => {
   const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getExchangeTransactionDTO();
   const transferDTO = getTransferTransactionDTO();
+  const exchangeSerialized = getExchangeTransactionResultSerialized();
+  const transferSerialized = getTransferTransactionResultSerialized();
+  const normalizeTransactionResponse = <T extends { date: string }>(value: T) => {
+    const { refId, redId, ...rest } = value as T & {
+      refId?: string;
+      redId?: string;
+    };
+    const account = (rest as any).account as {
+      id?: string;
+      name?: string;
+      type?: string;
+    };
+    const patchedAccount =
+      account && (!account.id || !account.name)
+        ? {
+            ...account,
+            id: account.id ?? ACCOUNT_EXPENSE_ID_STR,
+            name: account.name ?? ACCOUNT_EXPENSE_NAME,
+          }
+        : account;
+    return {
+      ...rest,
+      account: patchedAccount,
+      date: DATE_ISO_STR,
+      ...(refId ? { refId } : {}),
+      createdAt: DATE_ISO_STR,
+      updatedAt: DATE_ISO_STR,
+    };
+  };
+  const standardResponse = normalizeTransactionResponse(standardSerialized);
+  const exchangeResponse = [
+    normalizeTransactionResponse(exchangeSerialized.expenseTransactionSerialized),
+    normalizeTransactionResponse(exchangeSerialized.incomeTransactionSerialized),
+  ];
+  const transferResponse = [
+    normalizeTransactionResponse(transferSerialized.expenseTransactionSerialized),
+    normalizeTransactionResponse(transferSerialized.incomeTransactionSerialized),
+  ];
+  const filteredTransactionsResult = {
+    page: 1,
+    limit: 20,
+    total: 1,
+    totalPages: 1,
+    items: [standardResponse],
+  };
+  const deleteManyResult = { acknowledged: true, deletedCount: 1 };
+  const totalsResult = {
+    byCurrency: {
+      PLN: {
+        totalItems: 2,
+        expense: {
+          totalAmount: 100,
+          totalItems: 1,
+          averageAmount: 100,
+          maxAmount: 100,
+          minAmount: 100,
+        },
+        income: {
+          totalAmount: 200,
+          totalItems: 1,
+          averageAmount: 200,
+          maxAmount: 200,
+          minAmount: 200,
+        },
+      },
+    },
+    overall: {
+      totalItems: 2,
+      expense: { totalItems: 1 },
+      income: { totalItems: 1 },
+    },
+  };
+  const statisticsResult = {
+    allTime: { totalAmount: 300, totalItems: 2 },
+    monthly: {
+      1: { totalAmount: 100, totalItems: 1 },
+    },
+  };
 
   afterEach(() => {
     vi.clearAllMocks();
   });
 
   it("should get transactions - 'GET /'", async () => {
-    vi.spyOn(serviceT, 'getTransactions').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(serviceT, 'getTransactions').mockResolvedValue(
+      filteredTransactionsResult as any,
+    );
     const response = await app.inject({ method: 'GET', url: '/' });
     expect(serviceT.getTransactions).toHaveBeenCalledOnce();
     expect(serviceT.getTransactions).toHaveBeenCalledWith(
@@ -72,7 +159,7 @@ describe('transaction routes', async () => {
       USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(filteredTransactionsResult);
   });
 
   it("should export transactions - 'GET /export'", async () => {
@@ -124,22 +211,23 @@ describe('transaction routes', async () => {
     ['totals', 'totals', 'getTransactionTotals'],
     ['statistics', 'statistics', 'getTransactionStatistics'],
   ])("should get %s of transaction - 'GET /%s'", async (kind, _, serviceName) => {
-    vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
+    const mockedResult = kind === 'totals' ? totalsResult : statisticsResult;
+    vi.spyOn(serviceT, serviceName).mockResolvedValue(mockedResult as any);
     const query = { transactionType: 'expense', currency: 'PLN' };
     const response = await app.inject({ method: 'GET', url: `/${kind}`, query });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();
     expect(serviceT[serviceName]).toHaveBeenCalledWith(query, USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(mockedResult);
   });
 
   it('should get transaction - `GET /:id`', async () => {
-    vi.spyOn(serviceT, 'getTransaction').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(serviceT, 'getTransaction').mockResolvedValue(standardResponse as any);
     const response = await app.inject({ method: 'GET', url: `/${T_ID}` });
     expect(serviceT.getTransaction).toHaveBeenCalledOnce();
     expect(serviceT.getTransaction).toHaveBeenCalledWith(T_ID, USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(standardResponse);
   });
 
   it.each<
@@ -158,12 +246,18 @@ describe('transaction routes', async () => {
     ['exchange', 'exchange', 'createExchangeTransaction', exchangeDTO],
     ['transfer', 'transfer', 'createTransferTransaction', transferDTO],
   ])("should create %s transaction - 'POST /%s'", async (kind, _, serviceName, body) => {
-    vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
+    const mockedResult =
+      kind === 'standard'
+        ? standardResponse
+        : kind === 'exchange'
+          ? exchangeResponse
+          : transferResponse;
+    vi.spyOn(serviceT, serviceName).mockResolvedValue(mockedResult as any);
     const response = await app.inject({ method: 'POST', url: `/${kind}`, body });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();
     expect(serviceT[serviceName]).toHaveBeenCalledWith(body, USER_ID_STR);
     expect(response.statusCode).toBe(201);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(mockedResult);
   });
 
   it.each<
@@ -182,35 +276,43 @@ describe('transaction routes', async () => {
     ['exchange', 'exchange', 'updateExchangeTransaction', exchangeDTO],
     ['transfer', 'transfer', 'updateTransferTransaction', transferDTO],
   ])("should update %s transaction - 'PUT /%s'", async (kind, _, serviceName, body) => {
-    vi.spyOn(serviceT, serviceName).mockResolvedValue(MOCKED_RESULT as any);
+    const mockedResult =
+      kind === 'standard'
+        ? standardResponse
+        : kind === 'exchange'
+          ? exchangeResponse
+          : transferResponse;
+    vi.spyOn(serviceT, serviceName).mockResolvedValue(mockedResult as any);
     const response = await app.inject({ method: 'PUT', url: `/${kind}/${T_ID}`, body });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();
     expect(serviceT[serviceName]).toHaveBeenCalledWith(T_ID, USER_ID_STR, body);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(mockedResult);
   });
 
   it("should delete transaction - 'DELETE /:id'", async () => {
-    vi.spyOn(serviceT, 'deleteTransaction').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(serviceT, 'deleteTransaction').mockResolvedValue(deleteManyResult as any);
     const response = await app.inject({ method: 'DELETE', url: `/${T_ID}` });
     expect(serviceT.deleteTransaction).toHaveBeenCalledOnce();
     expect(serviceT.deleteTransaction).toHaveBeenCalledWith(T_ID, USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(deleteManyResult);
   });
 
   it("should delete all transactions of given user - 'DELETE /'", async () => {
-    vi.spyOn(serviceT, 'deleteTransactions').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(serviceT, 'deleteTransactions').mockResolvedValue(deleteManyResult as any);
     const response = await app.inject({ method: 'DELETE', url: '/' });
     expect(serviceT.deleteTransactions).toHaveBeenCalledOnce();
     expect(serviceT.deleteTransactions).toHaveBeenCalledWith(USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(deleteManyResult);
   });
 
   it("should create test transactions for a given user - 'POST /test'", async () => {
     const body = { totalTransactions: TEST_USER_TOTAL_TRANSACTIONS };
-    vi.spyOn(serviceT, 'createTestTransactions').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(serviceT, 'createTestTransactions').mockResolvedValue({
+      insertedCount: TEST_USER_TOTAL_TRANSACTIONS,
+    } as any);
     const response = await app.inject({ method: 'POST', url: '/test', body });
     expect(serviceT.createTestTransactions).toHaveBeenCalledOnce();
     expect(serviceT.createTestTransactions).toHaveBeenCalledWith(
@@ -218,6 +320,8 @@ describe('transaction routes', async () => {
       TEST_USER_TOTAL_TRANSACTIONS,
     );
     expect(response.statusCode).toBe(201);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual({
+      insertedCount: TEST_USER_TOTAL_TRANSACTIONS,
+    });
   });
 });

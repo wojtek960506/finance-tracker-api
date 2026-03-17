@@ -6,6 +6,11 @@ import {
 } from '@testing/factories/account';
 import { USER_ID_STR } from '@testing/factories/general';
 import Fastify from 'fastify';
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as dbAccounts from '@account/db';
@@ -14,7 +19,6 @@ import { registerErrorHandler } from '@app/plugins/errorHandler';
 
 import { accountRoutes } from './account-routes';
 
-const MOCKED_RESULT = { result: 'result' };
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
@@ -22,11 +26,15 @@ const mockPreHandler = vi.fn(async (req, _res) => {
 vi.mock('@auth/services', () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
 
 describe('account routes', async () => {
-  const app = Fastify();
+  const app = Fastify().withTypeProvider<ZodTypeProvider>();
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
   app.register(accountRoutes);
   await registerErrorHandler(app);
 
   const accountDTO = getUpdateAccountProps();
+  const accountResult = getUserAccountResultSerialized();
+  const deleteResult = { acknowledged: true, deletedCount: 1 };
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -48,7 +56,7 @@ describe('account routes', async () => {
   });
 
   it("should get account - 'GET /:id'", async () => {
-    vi.spyOn(accountServices, 'getAccount').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(accountServices, 'getAccount').mockResolvedValue(accountResult as any);
 
     const response = await app.inject({
       method: 'GET',
@@ -61,11 +69,11 @@ describe('account routes', async () => {
       USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(accountResult);
   });
 
   it("should create account - 'POST /'", async () => {
-    vi.spyOn(accountServices, 'createAccount').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(accountServices, 'createAccount').mockResolvedValue(accountResult as any);
 
     const response = await app.inject({
       method: 'POST',
@@ -76,11 +84,11 @@ describe('account routes', async () => {
     expect(accountServices.createAccount).toHaveBeenCalledOnce();
     expect(accountServices.createAccount).toHaveBeenCalledWith(USER_ID_STR, accountDTO);
     expect(response.statusCode).toBe(201);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(accountResult);
   });
 
   it("should update account - 'PUT /:id'", async () => {
-    vi.spyOn(accountServices, 'updateAccount').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(accountServices, 'updateAccount').mockResolvedValue(accountResult as any);
 
     const response = await app.inject({
       method: 'PUT',
@@ -95,11 +103,11 @@ describe('account routes', async () => {
       accountDTO,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(accountResult);
   });
 
   it("should delete account - 'DELETE /:id'", async () => {
-    vi.spyOn(accountServices, 'deleteAccount').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(accountServices, 'deleteAccount').mockResolvedValue(deleteResult as any);
 
     const response = await app.inject({
       method: 'DELETE',
@@ -112,6 +120,6 @@ describe('account routes', async () => {
       USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(deleteResult);
   });
 });

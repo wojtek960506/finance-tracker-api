@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod/v4';
 
 import { OBJECT_ID_REGEX } from '@utils/consts';
 
@@ -21,3 +21,7 @@ export const CategoriesResponseSchema = z.array(CategoryResponseSchema);
 export type CategoryDTO = z.infer<typeof CategorySchema>;
 export type CategoryResponseDTO = z.infer<typeof CategoryResponseSchema>;
 export type CategoriesResponseDTO = z.infer<typeof CategoriesResponseSchema>;
+
+z.globalRegistry.add(CategorySchema, { id: 'Category' });
+z.globalRegistry.add(CategoryResponseSchema, { id: 'CategoryResponse' });
+z.globalRegistry.add(CategoriesResponseSchema, { id: 'CategoriesResponse' });

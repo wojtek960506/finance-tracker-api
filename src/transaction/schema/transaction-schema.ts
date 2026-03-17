@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { AccountResponseSchema } from '@account/schema';
 import { CategoryResponseSchema } from '@category/schema';
@@ -118,3 +118,13 @@ export type TestTransactionsCreateDTO = z.infer<typeof TestTransactionsCreateSch
 export type TestTransactionsCreateResponse = z.infer<
   typeof TestTransactionsCreateResponseSchema
 >;
+
+z.globalRegistry.add(TransactionStandardSchema, { id: 'TransactionStandard' });
+z.globalRegistry.add(TransactionExchangeSchema, { id: 'TransactionExchange' });
+z.globalRegistry.add(TransactionTransferSchema, { id: 'TransactionTransfer' });
+z.globalRegistry.add(TransactionResponseSchema, { id: 'TransactionResponse' });
+z.globalRegistry.add(TransactionsResponseSchema, { id: 'TransactionsResponse' });
+z.globalRegistry.add(TestTransactionsCreateSchema, { id: 'TestTransactionsCreate' });
+z.globalRegistry.add(TestTransactionsCreateResponseSchema, {
+  id: 'TestTransactionsCreateResponse',
+});

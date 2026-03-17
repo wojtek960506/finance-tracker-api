@@ -6,6 +6,11 @@ import {
   getUserPaymentMethodResultSerialized,
 } from '@testing/factories/payment-method';
 import Fastify from 'fastify';
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
@@ -14,7 +19,6 @@ import * as servicePM from '@payment-method/services';
 
 import { paymentMethodRoutes } from './payment-method-routes';
 
-const MOCKED_RESULT = { result: 'result' };
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
@@ -22,11 +26,15 @@ const mockPreHandler = vi.fn(async (req, _res) => {
 vi.mock('@auth/services', () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
 
 describe('payment method routes', async () => {
-  const app = Fastify();
+  const app = Fastify().withTypeProvider<ZodTypeProvider>();
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
   app.register(paymentMethodRoutes);
   await registerErrorHandler(app);
 
   const paymentMethodDTO = getUpdatePaymentMethodProps();
+  const paymentMethodResult = getUserPaymentMethodResultSerialized();
+  const deleteResult = { acknowledged: true, deletedCount: 1 };
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -48,7 +56,7 @@ describe('payment method routes', async () => {
   });
 
   it("should get payment method - 'GET /:id'", async () => {
-    vi.spyOn(servicePM, 'getPaymentMethod').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(servicePM, 'getPaymentMethod').mockResolvedValue(paymentMethodResult as any);
 
     const response = await app.inject({
       method: 'GET',
@@ -61,11 +69,13 @@ describe('payment method routes', async () => {
       USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(paymentMethodResult);
   });
 
   it("should create payment method - 'POST /'", async () => {
-    vi.spyOn(servicePM, 'createPaymentMethod').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(servicePM, 'createPaymentMethod').mockResolvedValue(
+      paymentMethodResult as any,
+    );
 
     const response = await app.inject({
       method: 'POST',
@@ -79,11 +89,13 @@ describe('payment method routes', async () => {
       paymentMethodDTO,
     );
     expect(response.statusCode).toBe(201);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(paymentMethodResult);
   });
 
   it("should update payment method - 'PUT /:id'", async () => {
-    vi.spyOn(servicePM, 'updatePaymentMethod').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(servicePM, 'updatePaymentMethod').mockResolvedValue(
+      paymentMethodResult as any,
+    );
 
     const response = await app.inject({
       method: 'PUT',
@@ -98,11 +110,11 @@ describe('payment method routes', async () => {
       paymentMethodDTO,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(paymentMethodResult);
   });
 
   it("should delete payment method - 'DELETE /:id'", async () => {
-    vi.spyOn(servicePM, 'deletePaymentMethod').mockResolvedValue(MOCKED_RESULT as any);
+    vi.spyOn(servicePM, 'deletePaymentMethod').mockResolvedValue(deleteResult as any);
 
     const response = await app.inject({
       method: 'DELETE',
@@ -115,6 +127,6 @@ describe('payment method routes', async () => {
       USER_ID_STR,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(MOCKED_RESULT);
+    expect(response.json()).toEqual(deleteResult);
   });
 });
