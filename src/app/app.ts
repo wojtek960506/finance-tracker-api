@@ -23,6 +23,7 @@ import {
 } from '@app/setup';
 import { authRoutes } from '@auth/routes';
 import { categoryRoutes } from '@category/routes';
+import { currencyRoutes } from '@currency/routes';
 import { paymentMethodRoutes } from '@payment-method/routes';
 import { transactionRoutes } from '@transaction/routes';
 import { userRoutes } from '@user/routes';
@@ -102,6 +103,7 @@ export const buildApp = async (env = getEnv()) => {
   await app.register(accountRoutes, { prefix: '/api/accounts' });
   await app.register(categoryRoutes, { prefix: '/api/categories' });
   await app.register(paymentMethodRoutes, { prefix: '/api/paymentMethods' });
+  await app.register(currencyRoutes, { prefix: '/api/currencies' });
   await app.register(transactionRoutes, { prefix: '/api/transactions' });
 
   // register error handler

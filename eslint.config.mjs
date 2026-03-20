@@ -49,7 +49,7 @@ export default tseslint.config(
             ['^\\u0000'],
             ['^@?\\w'],
             [
-              '^(@app|@auth|@user|@category|@transaction|@payment-method|@shared|@utils|@account)(/.*|$)',
+              '^(@app|@auth|@user|@category|@transaction|@payment-method|@shared|@utils|@account|@currency)(/.*|$)',
             ],
             ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
             ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
