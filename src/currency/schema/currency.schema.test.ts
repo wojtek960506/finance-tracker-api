@@ -20,9 +20,8 @@ describe('currency schema', () => {
       currencies: [{ code: 'USD', name: 'US Dollar' }],
     }));
 
-    const { CurrencyCodeSchema, CurrencySchema, CurrenciesSchema } = await import(
-      './currency.schema'
-    );
+    const { CurrencyCodeSchema, CurrencySchema, CurrenciesSchema } =
+      await import('./currency.schema');
 
     expect(CurrencyCodeSchema.parse('USD')).toBe('USD');
     expect(CurrencySchema.parse({ code: 'USD', name: 'US Dollar' })).toEqual({

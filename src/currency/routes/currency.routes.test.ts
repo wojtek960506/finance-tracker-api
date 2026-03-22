@@ -1,11 +1,14 @@
+import { USER_ID_STR } from '@testing/factories/general';
+import Fastify from 'fastify';
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
+import { describe, expect, it, vi } from 'vitest';
 
-import { USER_ID_STR } from "@testing/factories/general";
-import Fastify from "fastify";
-import { serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
-import { describe, expect, it, vi } from "vitest";
-
-import { registerErrorHandler } from "@app/plugins/errorHandler";
-import { currencyRoutes } from "@currency/routes";
+import { registerErrorHandler } from '@app/plugins/errorHandler';
+import { currencyRoutes } from '@currency/routes';
 
 const mockPrehandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
@@ -17,7 +20,7 @@ describe('currency routes', async () => {
   const app = Fastify().withTypeProvider<ZodTypeProvider>();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
-  app.register(currencyRoutes)
+  app.register(currencyRoutes);
   await registerErrorHandler(app);
 
   it("should get currencies - 'GET /'", async () => {
@@ -26,6 +29,6 @@ describe('currency routes', async () => {
     expect(response.statusCode).toBe(200);
     const json = response.json();
     expect(json).toHaveLength(36);
-    expect(json[0]).toEqual({ code: 'USD', name: 'US Dollar'});
+    expect(json[0]).toEqual({ code: 'USD', name: 'US Dollar' });
   });
-})
+});

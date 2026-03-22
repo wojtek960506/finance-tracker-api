@@ -1,4 +1,4 @@
-import { CURRENCIES } from '@utils/consts';
+import { CURRENCY_CODES } from '@currency/schema';
 import { randomFromSet, randomNumber } from '@utils/random';
 
 import { RandomTransferTransactionPair } from '../types';
@@ -13,7 +13,7 @@ export const prepareRandomTransferTransactionPair = (
   accountIncomeId: string,
 ): RandomTransferTransactionPair => {
   const amount = randomNumber(10, 10000);
-  const currency = randomFromSet(CURRENCIES);
+  const currency = randomFromSet(new Set(CURRENCY_CODES));
 
   const description = `Money Transfer: ${accountExpenseId} --> ${accountIncomeId}`;
 

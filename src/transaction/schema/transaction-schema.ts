@@ -2,8 +2,9 @@ import { z } from 'zod/v4';
 
 import { AccountResponseSchema } from '@account/schema';
 import { CategoryResponseSchema } from '@category/schema';
+import { CurrencyCodeSchema } from '@currency/schema';
 import { PaymentMethodResponseSchema } from '@payment-method/schema';
-import { CURRENCIES, OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
+import { OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
 
 const TransactionCommonSchema = z.object({
   date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
@@ -16,7 +17,7 @@ const TransactionCommonSchema = z.object({
 export const TransactionStandardSchema = TransactionCommonSchema.extend({
   description: z.string().min(1, 'Description is required'),
   amount: z.number().positive('Amount must be positive'),
-  currency: z.enum([...CURRENCIES]),
+  currency: CurrencyCodeSchema,
   categoryId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `categoryId`'),
@@ -38,8 +39,8 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
     .optional(),
   amountExpense: z.number().positive('Amount of expense in exchange must be positive'),
   amountIncome: z.number().positive('Amount of income in exchange must be positive'),
-  currencyExpense: z.enum([...CURRENCIES]),
-  currencyIncome: z.enum([...CURRENCIES]),
+  currencyExpense: CurrencyCodeSchema,
+  currencyIncome: CurrencyCodeSchema,
   accountId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountId`'),
   paymentMethodId: z
     .string()
@@ -56,7 +57,7 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
     .min(1, 'Additional description cannot be empty')
     .optional(),
   amount: z.number().positive('Amount must be positive'),
-  currency: z.enum([...CURRENCIES]),
+  currency: CurrencyCodeSchema,
   accountExpenseId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountExpenseId`'),

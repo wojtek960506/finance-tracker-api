@@ -57,7 +57,6 @@ const {
     cookiePluginMock: vi.fn(),
     jwtPluginMock: vi.fn(),
     corsPluginMock: vi.fn(),
-    
   };
 });
 

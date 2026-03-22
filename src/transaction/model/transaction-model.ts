@@ -1,6 +1,7 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
-import { CURRENCIES, TRANSACTION_TYPES } from '@utils/consts';
+import { CURRENCY_CODES } from '@currency/schema';
+import { TRANSACTION_TYPES } from '@utils/consts';
 
 export interface TransactionAttributes {
   date: Date;
@@ -37,7 +38,7 @@ const transactionSchema = new Schema<ITransaction>(
       uppercase: true,
       minlength: 3,
       maxlength: 3,
-      enums: [...CURRENCIES],
+      enums: [...CURRENCY_CODES],
     },
     categoryId: {
       type: Schema.Types.ObjectId,

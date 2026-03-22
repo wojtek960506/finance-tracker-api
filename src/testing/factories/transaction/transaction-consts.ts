@@ -1,10 +1,11 @@
 import { Types } from 'mongoose';
 
+import { CurrencyCode } from '@currency/schema';
 import { randomObjectIdString } from '@utils/random';
 
 export const AMOUNT_EXPENSE = 423;
 export const AMOUNT_INCOME = 100;
-export const CURRENCY_EXPENSE = 'PLN';
+export const CURRENCY_EXPENSE: CurrencyCode = 'PLN';
 export const CURRENCY_INCOME = 'EUR';
 export const ACCOUNT_EXPENSE_NAME = 'mBank';
 export const ACCOUNT_INCOME_NAME = 'veloBank';
