@@ -21,6 +21,7 @@ const {
   cookiePluginMock,
   categoryRoutesMock,
   transactionRoutesMock,
+  currencyRoutesMock,
   paymentMethodRoutesMock,
   registerErrorHandlerMock,
   upsertSystemCategoriesMock,
@@ -51,10 +52,12 @@ const {
     categoryRoutesMock: vi.fn(),
     paymentMethodRoutesMock: vi.fn(),
     accountRoutesMock: vi.fn(),
+    currencyRoutesMock: vi.fn(),
     transactionRoutesMock: vi.fn(),
     cookiePluginMock: vi.fn(),
     jwtPluginMock: vi.fn(),
     corsPluginMock: vi.fn(),
+    
   };
 });
 
@@ -79,6 +82,7 @@ vi.mock('@auth/routes', () => ({ authRoutes: authRoutesMock }));
 vi.mock('@user/routes', () => ({ userRoutes: userRoutesMock }));
 vi.mock('@category/routes', () => ({ categoryRoutes: categoryRoutesMock }));
 vi.mock('@account/routes', () => ({ accountRoutes: accountRoutesMock }));
+vi.mock('@currency/routes', () => ({ currencyRoutes: currencyRoutesMock }));
 vi.mock('@payment-method/routes', () => ({
   paymentMethodRoutes: paymentMethodRoutesMock,
 }));
