@@ -1,4 +1,4 @@
-import { CURRENCIES } from '@utils/consts';
+import { CURRENCY_CODES } from '@currency/schema';
 import { randomFromSet, randomNumber } from '@utils/random';
 
 import { RandomExchangeTransactionPair } from '../types';
@@ -12,9 +12,9 @@ export const prepareRandomExchangeTransactionPair = (
   accountId: string,
 ): RandomExchangeTransactionPair => {
   const amountExpense = randomNumber(10, 10000);
-  const currencyExpense = randomFromSet(CURRENCIES);
+  const currencyExpense = randomFromSet(new Set(CURRENCY_CODES));
   const amountIncome = randomNumber(10, 10000);
-  const currencyIncome = randomFromSet(CURRENCIES);
+  const currencyIncome = randomFromSet(new Set(CURRENCY_CODES));
 
   let currencies;
   let exchangeRate;

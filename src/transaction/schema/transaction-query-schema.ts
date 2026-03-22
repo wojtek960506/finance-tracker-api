@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 
-import { CURRENCIES, OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
+import { CurrencyCodeSchema } from '@currency/schema';
+import { OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
 
 const TransactionCommonQuerySchema = z.object({
   categoryId: z
@@ -31,7 +32,7 @@ export const TransactionFiltersQuerySchema = TransactionCommonQuerySchema.extend
   minAmount: z.coerce.number().min(0).optional(),
   maxAmount: z.coerce.number().min(0).optional(),
   transactionType: z.enum([...TRANSACTION_TYPES]).optional(),
-  currency: z.enum([...CURRENCIES]).optional(),
+  currency: CurrencyCodeSchema.optional(),
 });
 
 export const TransactionQuerySchema = TransactionFiltersQuerySchema.extend({
@@ -46,7 +47,7 @@ export const TransactionStatisticsQuerySchema = TransactionCommonQuerySchema.ext
   year: z.coerce.number().min(0).optional(),
   month: z.coerce.number().min(1).max(12).optional(),
   transactionType: z.enum([...TRANSACTION_TYPES]),
-  currency: z.enum([...CURRENCIES]),
+  currency: CurrencyCodeSchema,
 });
 
 export type TransactionQuery = z.infer<typeof TransactionQuerySchema>;

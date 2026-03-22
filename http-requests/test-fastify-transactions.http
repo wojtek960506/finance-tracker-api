@@ -5,9 +5,14 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "w@z.pl",
-  "password": "123"
+  "email": "g@h.ij",
+  "password": "klm"
 }
+
+# {
+#   "email": "w@z.pl",
+#   "password": "123"
+# }
 
 ###
 
@@ -106,7 +111,7 @@ Authorization: Bearer {{accessToken}}
 # 
 # 69a9c2bce2c1284ee32aa422
 ### Get single transaction
-GET {{baseUrl}}/69a9c2bce2c1284ee32aa422
+GET {{baseUrl}}/69b1710c8ef9c23d5021746f
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -127,7 +132,7 @@ Authorization: Bearer {{accessToken}}
 
 # "accountId": "69b16e8aeb8e59fdad7a2761" (mBank)
 # "accountId": "69b173a78ef9c23d50217479" (Alior Bank)
-# "accountId": "69b16e8aeb8e59fdad7a2761" (cash)
+# "accountId": "69b0858be7e4554a4e563505" (cash)
 
 ### CREATE NEW STANDARD TRANSACTION
 
@@ -144,7 +149,7 @@ Authorization: Bearer {{accessToken}}
   "categoryId": "69a9c24ee2c1284ee32aa406",
   "transactionType": "expense",
   "paymentMethodId": "69a7fb11e7e4554a4e559e19",
-  "accountId": "69b16e8aeb8e59fdad7a2761"
+  "accountId": "69b0858be7e4554a4e563505"
 }
 
 #--------------------------------------------------------------------------------------
@@ -162,7 +167,7 @@ Authorization: Bearer {{accessToken}}
   "amountIncome": 84.23,
   "currencyExpense": "EUR",
   "currencyIncome": "PLN",
-  "accountId": "69b16e8aeb8e59fdad7a2761",
+  "accountId": "69b0858be7e4554a4e563505",
   "paymentMethodId": "69a7fb11e7e4554a4e559e19"
 }
 
