@@ -115,6 +115,7 @@ export const buildApp = async (env = getEnv()) => {
       'http://localhost:3000',
       'http://192.168.0.244:3000',
       'http://localhost:5173',
+      'http://192.168.0.244:5173',
       'https://finance-tracker-web-three.vercel.app',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
