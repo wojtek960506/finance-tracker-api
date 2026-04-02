@@ -1,6 +1,7 @@
 import { describe, expect, it, Mock, vi } from 'vitest';
 
 import { TransactionModel } from '@transaction/model';
+import { TransactionStatisticsQuery } from '@transaction/schema';
 import { randomObjectIdString } from '@utils/random';
 
 import { getStatisticsGrouping } from './get-statistics-grouping';
@@ -36,7 +37,11 @@ describe('getTransactionStatistics', () => {
     (getStatisticsGrouping as Mock).mockReturnValue(GROUPING);
     (TransactionModel.aggregate as Mock).mockResolvedValue(RESULT);
     (parseStatisticsResult as Mock).mockResolvedValue(RESULT);
-    const query = { year: 2026, currency: 'PLN', transactionType: 'expense' };
+    const query: TransactionStatisticsQuery = {
+      year: 2026,
+      currency: 'PLN',
+      transactionType: 'expense',
+    };
 
     const result = await getTransactionStatistics(query, USER_ID);
 
