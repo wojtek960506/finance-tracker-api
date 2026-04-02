@@ -5,6 +5,7 @@ import {
   AccountDependencyError,
   AccountNotFoundError,
   AccountOwnershipError,
+  AccountSystemNameConflictError,
   SystemAccountDeletionNotAllowed,
   SystemAccountUpdateNotAllowed,
   UserAccountMissingOwner,
@@ -43,6 +44,16 @@ describe('account errors', () => {
     expect(err.code).toBe('ACCOUNT_ALREADY_EXISTS');
     expect(err.message).toBe("Account with normalized name 'mbank' already exists");
     expect(err.accountName).toBe('mbank');
+  });
+
+  it('AccountSystemNameConflictError uses name', () => {
+    const err = new AccountSystemNameConflictError('cash');
+    expect(err.statusCode).toBe(409);
+    expect(err.code).toBe('ACCOUNT_SYSTEM_NAME_CONFLICT');
+    expect(err.message).toBe(
+      "Account name 'cash' is reserved by a system account. Choose a different name",
+    );
+    expect(err.accountName).toBe('cash');
   });
 
   it('SystemAccountUpdateNotAllowed uses id', () => {

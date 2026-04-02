@@ -16,6 +16,7 @@ import {
 } from '@transaction/services/check-transaction-dependencies';
 import {
   CategoryAlreadyExistsError,
+  CategorySystemNameConflictError,
   SystemCategoryDeletionNotAllowed,
   SystemCategoryUpdateNotAllowed,
   UserCategoryMissingOwner,
@@ -74,6 +75,9 @@ describe('category services wiring', () => {
     expect(deps.alreadyExistsErrorFactory('Food')).toBeInstanceOf(
       CategoryAlreadyExistsError,
     );
+    expect(deps.systemNameConflictErrorFactory('Food')).toBeInstanceOf(
+      CategorySystemNameConflictError,
+    );
     expect(createImpl).toHaveBeenCalledWith('u1', { name: 'Food' });
     expect(result).toEqual({ id: '1' });
   });
@@ -100,13 +104,19 @@ describe('category services wiring', () => {
     expect(namedResource.updateNamedResource).toHaveBeenCalledOnce();
     const [deps] = (namedResource.updateNamedResource as Mock).mock.calls[0];
     expect(deps.findById).toBe(db.findCategoryById);
+    expect(deps.findByName).toBe(db.findCategoryByName);
     expect(deps.saveChanges).toBe(db.saveCategoryChanges);
     expect(deps.checkOwnerType).toBe('category');
     expect(deps.systemUpdateNotAllowedFactory('x')).toBeInstanceOf(
       SystemCategoryUpdateNotAllowed,
     );
     expect(deps.userMissingOwnerFactory('x')).toBeInstanceOf(UserCategoryMissingOwner);
-    expect(deps.alreadyExistsErrorFactory('x')).toBeInstanceOf(CategoryAlreadyExistsError);
+    expect(deps.alreadyExistsErrorFactory('x')).toBeInstanceOf(
+      CategoryAlreadyExistsError,
+    );
+    expect(deps.systemNameConflictErrorFactory('x')).toBeInstanceOf(
+      CategorySystemNameConflictError,
+    );
     expect(updateImpl).toHaveBeenCalledWith('cat-1', 'u1', { name: 'New' });
     expect(result).toEqual({ id: '1' });
   });

@@ -16,6 +16,7 @@ import {
 } from '@transaction/services/check-transaction-dependencies';
 import {
   AccountAlreadyExistsError,
+  AccountSystemNameConflictError,
   SystemAccountDeletionNotAllowed,
   SystemAccountUpdateNotAllowed,
   UserAccountMissingOwner,
@@ -74,6 +75,9 @@ describe('account services wiring', () => {
     expect(deps.alreadyExistsErrorFactory('mBank')).toBeInstanceOf(
       AccountAlreadyExistsError,
     );
+    expect(deps.systemNameConflictErrorFactory('mBank')).toBeInstanceOf(
+      AccountSystemNameConflictError,
+    );
     expect(createImpl).toHaveBeenCalledWith('u1', { name: 'mBank' });
     expect(result).toEqual({ id: '1' });
   });
@@ -100,6 +104,7 @@ describe('account services wiring', () => {
     expect(namedResource.updateNamedResource).toHaveBeenCalledOnce();
     const [deps] = (namedResource.updateNamedResource as Mock).mock.calls[0];
     expect(deps.findById).toBe(db.findAccountById);
+    expect(deps.findByName).toBe(db.findAccountByName);
     expect(deps.saveChanges).toBe(db.saveAccountChanges);
     expect(deps.checkOwnerType).toBe('account');
     expect(deps.systemUpdateNotAllowedFactory('x')).toBeInstanceOf(
@@ -107,6 +112,9 @@ describe('account services wiring', () => {
     );
     expect(deps.userMissingOwnerFactory('x')).toBeInstanceOf(UserAccountMissingOwner);
     expect(deps.alreadyExistsErrorFactory('x')).toBeInstanceOf(AccountAlreadyExistsError);
+    expect(deps.systemNameConflictErrorFactory('x')).toBeInstanceOf(
+      AccountSystemNameConflictError,
+    );
     expect(updateImpl).toHaveBeenCalledWith('acc-1', 'u1', { name: 'New' });
     expect(result).toEqual({ id: '1' });
   });

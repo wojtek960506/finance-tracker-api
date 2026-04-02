@@ -22,6 +22,7 @@ import { ITransaction } from '@transaction/model';
 import { checkTransactionDependencies } from '@transaction/services/check-transaction-dependencies';
 import {
   CategoryAlreadyExistsError,
+  CategorySystemNameConflictError,
   SystemCategoryDeletionNotAllowed,
   SystemCategoryUpdateNotAllowed,
   UserCategoryMissingOwner,
@@ -37,6 +38,7 @@ export const createCategory: (
     findByName: findCategoryByName,
     persist: persistCategory,
     alreadyExistsErrorFactory: (name) => new CategoryAlreadyExistsError(name),
+    systemNameConflictErrorFactory: (name) => new CategorySystemNameConflictError(name),
   },
 );
 
@@ -51,6 +53,7 @@ export const getCategory = (categoryId: string, ownerId: string) => {
 export const updateCategory = (categoryId: string, ownerId: string, dto: CategoryDTO) => {
   return updateNamedResource<ICategory, CategoryResponseDTO>({
     findById: findCategoryById,
+    findByName: findCategoryByName,
     saveChanges: saveCategoryChanges,
     checkOwnerType,
     systemUpdateNotAllowedFactory: (resourceId) => {
@@ -60,6 +63,7 @@ export const updateCategory = (categoryId: string, ownerId: string, dto: Categor
       return new UserCategoryMissingOwner(resourceId);
     },
     alreadyExistsErrorFactory: (name) => new CategoryAlreadyExistsError(name),
+    systemNameConflictErrorFactory: (name) => new CategorySystemNameConflictError(name),
   })(categoryId, ownerId, dto);
 };
 

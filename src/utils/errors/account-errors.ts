@@ -39,6 +39,17 @@ export class AccountAlreadyExistsError extends AppError {
   }
 }
 
+export class AccountSystemNameConflictError extends AppError {
+  readonly code = 'ACCOUNT_SYSTEM_NAME_CONFLICT';
+
+  constructor(readonly accountName: string) {
+    super(
+      409,
+      `Account name '${accountName}' is reserved by a system account. Choose a different name`,
+    );
+  }
+}
+
 export class SystemAccountUpdateNotAllowed extends AppError {
   readonly code = 'SYSTEM_ACCOUNT_UPDATE_NOT_ALLOWED';
 

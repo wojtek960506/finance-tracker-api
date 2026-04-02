@@ -1,9 +1,9 @@
 import { normalizeWhitespace } from '@utils/strings';
 
-import { NameDTO } from '../types';
+import { NamedResourceMinimal, NameDTO } from '../types';
 
 export const createNamedResource = <TDTO extends NameDTO, TResponse>(deps: {
-  findByName: (name: string, ownerId: string) => Promise<unknown>;
+  findByName: (name: string, ownerId: string) => Promise<NamedResourceMinimal | null>;
   persist: (props: {
     ownerId: string;
     type: 'user' | 'system';
@@ -11,12 +11,16 @@ export const createNamedResource = <TDTO extends NameDTO, TResponse>(deps: {
     nameNormalized: string;
   }) => Promise<TResponse>;
   alreadyExistsErrorFactory: (name: string) => Error;
+  systemNameConflictErrorFactory: (name: string) => Error;
 }) => {
   return async (ownerId: string, dto: TDTO): Promise<TResponse> => {
     const { name } = dto;
 
     const resource = await deps.findByName(name, ownerId);
-    if (resource) throw deps.alreadyExistsErrorFactory(name);
+    if (resource) {
+      if (resource.type === 'system') throw deps.systemNameConflictErrorFactory(name);
+      throw deps.alreadyExistsErrorFactory(name);
+    }
 
     const normalizedName = normalizeWhitespace(name);
     return deps.persist({

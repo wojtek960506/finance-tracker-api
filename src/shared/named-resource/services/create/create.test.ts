@@ -10,6 +10,7 @@ describe('createNamedResource', () => {
       findByName,
       persist,
       alreadyExistsErrorFactory: (name) => new Error(`exists:${name}`),
+      systemNameConflictErrorFactory: (name) => new Error(`systemExists:${name}`),
     });
 
     const result = await create('u1', { name: '  Foo   Bar ' });
@@ -31,9 +32,24 @@ describe('createNamedResource', () => {
       findByName,
       persist,
       alreadyExistsErrorFactory: (name) => new Error(`exists:${name}`),
+      systemNameConflictErrorFactory: (name) => new Error(`systemExists:${name}`),
     });
 
     await expect(create('u1', { name: 'Food' })).rejects.toThrow('exists:Food');
+    expect(persist).not.toHaveBeenCalled();
+  });
+
+  it('throws dedicated error when name conflicts with system resource', async () => {
+    const findByName = vi.fn().mockResolvedValue({ type: 'system' });
+    const persist = vi.fn();
+    const create = createNamedResource({
+      findByName,
+      persist,
+      alreadyExistsErrorFactory: (name) => new Error(`exists:${name}`),
+      systemNameConflictErrorFactory: (name) => new Error(`systemExists:${name}`),
+    });
+
+    await expect(create('u1', { name: 'Food' })).rejects.toThrow('systemExists:Food');
     expect(persist).not.toHaveBeenCalled();
   });
 });

@@ -21,7 +21,7 @@ export class NotFoundError extends AppError {
 
 export class ValidationError extends AppError {
   readonly code = 'VALIDATION_ERROR';
-  
+
   constructor(details?: unknown) {
     super(422, 'Validation error', details);
   }

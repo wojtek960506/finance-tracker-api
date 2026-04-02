@@ -25,6 +25,7 @@ import {
 } from '@transaction/services/check-transaction-dependencies';
 import {
   PaymentMethodAlreadyExistsError,
+  PaymentMethodSystemNameConflictError,
   SystemPaymentMethodDeletionNotAllowed,
   SystemPaymentMethodUpdateNotAllowed,
   UserPaymentMethodMissingOwner,
@@ -40,6 +41,8 @@ export const createPaymentMethod: (
   findByName: findPaymentMethodByName,
   persist: persistPaymentMethod,
   alreadyExistsErrorFactory: (name) => new PaymentMethodAlreadyExistsError(name),
+  systemNameConflictErrorFactory: (name) =>
+    new PaymentMethodSystemNameConflictError(name),
 });
 
 export const getPaymentMethod = (paymentMethodId: string, ownerId: string) => {
@@ -57,6 +60,7 @@ export const updatePaymentMethod = (
 ) => {
   return updateNamedResource<IPaymentMethod, PaymentMethodResponseDTO>({
     findById: findPaymentMethodById,
+    findByName: findPaymentMethodByName,
     saveChanges: savePaymentMethodChanges,
     checkOwnerType: 'paymentMethod',
     systemUpdateNotAllowedFactory: (resourceId) => {
@@ -66,6 +70,8 @@ export const updatePaymentMethod = (
       return new UserPaymentMethodMissingOwner(resourceId);
     },
     alreadyExistsErrorFactory: (name) => new PaymentMethodAlreadyExistsError(name),
+    systemNameConflictErrorFactory: (name) =>
+      new PaymentMethodSystemNameConflictError(name),
   })(paymentMethodId, ownerId, dto);
 };
 

@@ -39,6 +39,17 @@ export class CategoryAlreadyExistsError extends AppError {
   }
 }
 
+export class CategorySystemNameConflictError extends AppError {
+  readonly code = 'CATEGORY_SYSTEM_NAME_CONFLICT';
+
+  constructor(readonly categoryName: string) {
+    super(
+      409,
+      `Category name '${categoryName}' is reserved by a system category. Choose a different name`,
+    );
+  }
+}
+
 export class SystemCategoryUpdateNotAllowed extends AppError {
   readonly code = 'SYSTEM_CATEGORY_UPDATE_NOT_ALLOWED';
 

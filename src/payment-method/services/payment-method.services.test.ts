@@ -9,6 +9,7 @@ import {
 } from '@transaction/services/check-transaction-dependencies';
 import {
   PaymentMethodAlreadyExistsError,
+  PaymentMethodSystemNameConflictError,
   SystemPaymentMethodDeletionNotAllowed,
   SystemPaymentMethodUpdateNotAllowed,
   UserPaymentMethodMissingOwner,
@@ -75,6 +76,9 @@ describe('payment-method services wiring', () => {
     expect(deps.alreadyExistsErrorFactory('Card')).toBeInstanceOf(
       PaymentMethodAlreadyExistsError,
     );
+    expect(deps.systemNameConflictErrorFactory('Card')).toBeInstanceOf(
+      PaymentMethodSystemNameConflictError,
+    );
     expect(createImpl).toHaveBeenCalledWith('u1', { name: 'Card' });
     expect(result).toEqual({ id: '1' });
   });
@@ -108,6 +112,7 @@ describe('payment-method services wiring', () => {
       expect(namedResource.updateNamedResource).toHaveBeenCalledOnce();
       const [deps] = (namedResource.updateNamedResource as Mock).mock.calls[0];
       expect(deps.findById).toBe(db.findPaymentMethodById);
+      expect(deps.findByName).toBe(db.findPaymentMethodByName);
       expect(deps.saveChanges).toBe(db.savePaymentMethodChanges);
       expect(deps.checkOwnerType).toBe('paymentMethod');
       expect(deps.systemUpdateNotAllowedFactory('x')).toBeInstanceOf(
@@ -117,6 +122,9 @@ describe('payment-method services wiring', () => {
         UserPaymentMethodMissingOwner,
       );
       expect(deps.alreadyExistsErrorFactory('x')).toBeInstanceOf(PaymentMethodAlreadyExistsError);
+      expect(deps.systemNameConflictErrorFactory('x')).toBeInstanceOf(
+        PaymentMethodSystemNameConflictError,
+      );
       expect(updateImpl).toHaveBeenCalledWith('pm-1', 'u1', { name: 'New' });
       expect(result).toEqual({ id: '1' });
     }

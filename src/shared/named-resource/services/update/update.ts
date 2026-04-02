@@ -9,6 +9,7 @@ export const updateNamedResource = <
   TResponse,
 >(deps: {
   findById: (id: string) => Promise<TResource>;
+  findByName: (name: string, ownerId: string) => Promise<NamedResourceMinimal | null>;
   saveChanges: (
     resource: TResource,
     props: { name: string; nameNormalized: string },
@@ -17,6 +18,7 @@ export const updateNamedResource = <
   systemUpdateNotAllowedFactory: (id: string) => Error;
   userMissingOwnerFactory: (id: string) => Error;
   alreadyExistsErrorFactory: (name: string) => Error;
+  systemNameConflictErrorFactory: (name: string) => Error;
 }) => {
   return async (
     resourceId: string,
@@ -29,6 +31,13 @@ export const updateNamedResource = <
     checkOwner(ownerId, resourceId, resource.ownerId, deps.checkOwnerType);
 
     const normalizedName = normalizeWhitespace(dto.name);
+    const resourceWithSameName = await deps.findByName(normalizedName, ownerId);
+    if (resourceWithSameName && resourceWithSameName._id?.toString() !== resourceId) {
+      if (resourceWithSameName.type === 'system')
+        throw deps.systemNameConflictErrorFactory(dto.name);
+      throw deps.alreadyExistsErrorFactory(dto.name);
+    }
+
     try {
       return await deps.saveChanges(resource, {
         name: normalizedName,

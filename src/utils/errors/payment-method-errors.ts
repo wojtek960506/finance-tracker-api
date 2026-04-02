@@ -42,6 +42,18 @@ export class PaymentMethodAlreadyExistsError extends AppError {
   }
 }
 
+export class PaymentMethodSystemNameConflictError extends AppError {
+  readonly code = 'PAYMENT_METHOD_SYSTEM_NAME_CONFLICT';
+
+  constructor(readonly paymentMethodName: string) {
+    super(
+      409,
+      `Payment method name '${paymentMethodName}' is reserved by a system payment method. ` +
+        `Choose a different name`,
+    );
+  }
+}
+
 export class SystemPaymentMethodUpdateNotAllowed extends AppError {
   readonly code = 'SYSTEM_PAYMENT_METHOD_UPDATE_NOT_ALLOWED';
 

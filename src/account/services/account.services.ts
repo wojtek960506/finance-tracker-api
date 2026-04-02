@@ -25,6 +25,7 @@ import {
 } from '@transaction/services/check-transaction-dependencies';
 import {
   AccountAlreadyExistsError,
+  AccountSystemNameConflictError,
   SystemAccountDeletionNotAllowed,
   SystemAccountUpdateNotAllowed,
   UserAccountMissingOwner,
@@ -37,6 +38,7 @@ export const createAccount: (
   findByName: findAccountByName,
   persist: persistAccount,
   alreadyExistsErrorFactory: (name) => new AccountAlreadyExistsError(name),
+  systemNameConflictErrorFactory: (name) => new AccountSystemNameConflictError(name),
 });
 
 export const getAccount = (accountId: string, ownerId: string) => {
@@ -50,12 +52,14 @@ export const getAccount = (accountId: string, ownerId: string) => {
 export const updateAccount = (accountId: string, ownerId: string, dto: AccountDTO) => {
   return updateNamedResource<IAccount, AccountResponseDTO>({
     findById: findAccountById,
+    findByName: findAccountByName,
     saveChanges: saveAccountChanges,
     checkOwnerType: 'account',
     systemUpdateNotAllowedFactory: (resourceId) =>
       new SystemAccountUpdateNotAllowed(resourceId),
     userMissingOwnerFactory: (resourceId) => new UserAccountMissingOwner(resourceId),
     alreadyExistsErrorFactory: (name) => new AccountAlreadyExistsError(name),
+    systemNameConflictErrorFactory: (name) => new AccountSystemNameConflictError(name),
   })(accountId, ownerId, dto);
 };
 
