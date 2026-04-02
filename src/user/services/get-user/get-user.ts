@@ -8,7 +8,12 @@ export const getUser = async (
   authenticatedUserId: string,
 ): Promise<UserResponseDTO> => {
   if (userId !== authenticatedUserId) {
-    throw new AppError(401, 'Cannot get info about different user.');
+    throw new AppError(
+      401,
+      'Cannot get info about different user.',
+      undefined,
+      'ACCESS_DENIED_DIFFERENT_USER_INFO',
+    );
   }
 
   return serializeUser(await findUser(userId));

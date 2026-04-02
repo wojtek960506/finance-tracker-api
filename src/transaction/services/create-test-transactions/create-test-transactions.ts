@@ -27,6 +27,8 @@ export const createTestTransactions = async (
     throw new AppError(
       409,
       'Cannot add test transactions to a user which already owns some transactions',
+      undefined,
+      'TEST_TRANSACTIONS_USER_HAS_TRANSACTIONS',
     );
 
   totalTransactions = totalTransactions ?? 200;

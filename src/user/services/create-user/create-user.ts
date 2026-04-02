@@ -20,7 +20,18 @@ export const createUser = async (
     return serializeUser(newUser);
   } catch (err) {
     if ((err as { code: number }).code === 11000)
-      throw new AppError(409, 'User with given email already exists');
-    else throw new AppError(400, (err as { message: string }).message);
+      throw new AppError(
+        409,
+        'User with given email already exists',
+        undefined,
+        'USER_EMAIL_ALREADY_EXISTS',
+      );
+    else
+      throw new AppError(
+        400,
+        (err as { message: string }).message,
+        undefined,
+        'USER_CREATE_ERROR',
+      );
   }
 };

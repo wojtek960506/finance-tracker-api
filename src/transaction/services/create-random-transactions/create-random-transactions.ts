@@ -110,7 +110,12 @@ export async function createRandomTransactions(
   const insertedIds = Object.values(result.insertedIds);
   const sourceIndices = randomTransactions.map((t) => t.sourceIndex);
   if (insertedIds.length !== sourceIndices.length)
-    throw new AppError(409, 'Not all provided transactions were inserted');
+    throw new AppError(
+      409,
+      'Not all provided transactions were inserted',
+      undefined,
+      'RANDOM_TRANSACTIONS_INSERT_INCOMPLETE',
+    );
 
   const sourceIndicesToIdsMap = Object.fromEntries(
     sourceIndices.map((idx, i) => [idx, insertedIds[i]]),
@@ -138,6 +143,8 @@ export async function createRandomTransactions(
     throw new AppError(
       409,
       'Not all expected transctions were updated with reference id',
+      undefined,
+      'RANDOM_TRANSACTIONS_REFERENCE_UPDATE_INCOMPLETE',
     );
 
   // TODO save proper source index counter for this test user because it just goes from 0

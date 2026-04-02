@@ -8,6 +8,7 @@ export async function registerErrorHandler(app: FastifyInstance) {
     // Known (custom) errors
     if (error instanceof AppError) {
       return res.status(error.statusCode).send({
+        code: error.code,
         message: error.message,
         details: error.details,
       });
@@ -19,6 +20,7 @@ export async function registerErrorHandler(app: FastifyInstance) {
     // from Fastify or manual safeParse
     if (error instanceof ZodError) {
       return res.status(400).send({
+        code: 'VALIDATION_ERROR',
         message: 'Validation error',
         details: error.issues.map((issue) => ({
           path: issue.path.join('.'),
@@ -30,8 +32,9 @@ export async function registerErrorHandler(app: FastifyInstance) {
     // Fallback: unknown error
     app.log.error(error);
     return res.status(500).send({
+      code: 'INTERNAL_SERVER_ERROR',
       message: 'Internal server error',
-      details: error,
+      details: null,
     });
   });
 }

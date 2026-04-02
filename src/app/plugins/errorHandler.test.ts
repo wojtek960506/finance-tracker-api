@@ -38,7 +38,7 @@ describe('registerErrorHandler', () => {
     const [message, details] = ['Some conflict', { key: 'value' }];
     const { handler, app } = await getRegisteredHandler();
     const res = createReplyMock();
-    const error = new AppError(409, message, details);
+    const error = new AppError(409, message, details, 'SOME_CONFLICT_ERROR');
 
     handler(error, {} as any, res as any);
 
@@ -46,7 +46,11 @@ describe('registerErrorHandler', () => {
     expect(res.status).toHaveBeenCalledOnce();
     expect(res.status).toHaveBeenCalledWith(409);
     expect(res.send).toHaveBeenCalledOnce();
-    expect(res.send).toHaveBeenCalledWith({ message, details });
+    expect(res.send).toHaveBeenCalledWith({
+      code: 'SOME_CONFLICT_ERROR',
+      message,
+      details,
+    });
   });
 
   it('returns validation payload for zod errors', async () => {
@@ -67,6 +71,7 @@ describe('registerErrorHandler', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledOnce();
     expect(res.send).toHaveBeenCalledWith({
+      code: 'VALIDATION_ERROR',
       message: 'Validation error',
       details: [{ path: 'user.email', message: expect.any(String) }],
     });
@@ -85,8 +90,9 @@ describe('registerErrorHandler', () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.send).toHaveBeenCalledOnce();
     expect(res.send).toHaveBeenCalledWith({
+      code: 'INTERNAL_SERVER_ERROR',
       message: 'Internal server error',
-      details: error,
+      details: null,
     });
   });
 });

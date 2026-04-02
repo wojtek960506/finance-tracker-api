@@ -46,7 +46,13 @@ export const updateNamedResource = <
     } catch (err) {
       if ((err as { code: number }).code === 11000)
         throw deps.alreadyExistsErrorFactory(dto.name);
-      else throw new AppError(400, (err as { message: string }).message);
+      else
+        throw new AppError(
+          400,
+          (err as { message: string }).message,
+          undefined,
+          'NAMED_RESOURCE_UPDATE_ERROR',
+        );
     }
   };
 };
