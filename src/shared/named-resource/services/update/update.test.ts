@@ -19,6 +19,7 @@ describe('updateNamedResource', () => {
       checkOwnerType: 'category',
       systemUpdateNotAllowedFactory: (id) => new Error(`system:${id}`),
       userMissingOwnerFactory: (id) => new Error(`missing:${id}`),
+      alreadyExistsErrorFactory: (name) => new Error(`nameExists:${name}`),
     });
 
     const result = await update('r1', 'u1', { name: '  New   Name ' });
@@ -40,6 +41,7 @@ describe('updateNamedResource', () => {
       checkOwnerType: 'category',
       systemUpdateNotAllowedFactory: (id) => new Error(`system:${id}`),
       userMissingOwnerFactory: (id) => new Error(`missing:${id}`),
+      alreadyExistsErrorFactory: (name) => new Error(`nameExists:${name}`),
     });
 
     await expect(update('r1', 'u1', { name: 'x' })).rejects.toThrow('system:r1');
@@ -55,9 +57,12 @@ describe('updateNamedResource', () => {
       checkOwnerType: 'category',
       systemUpdateNotAllowedFactory: (id) => new Error(`system:${id}`),
       userMissingOwnerFactory: (id) => new Error(`missing:${id}`),
+      alreadyExistsErrorFactory: (name) => new Error(`nameExists:${name}`),
     });
 
     await expect(update('r1', 'u1', { name: 'x' })).rejects.toThrow('missing:r1');
     expect(saveChanges).not.toHaveBeenCalled();
   });
+
+  // TODO write unit test for already exists error case when saveChanges throws 11000 error code
 });

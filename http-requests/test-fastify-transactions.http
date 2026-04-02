@@ -285,3 +285,16 @@ Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
+
+
+# BODY TO CREATE STANDARD TRANSACTION
+# {
+#   "date": "2026-03-22",
+#   "description": "Transaction with new approach of currencies",
+#   "amount": 123,
+#   "currency": "PLN",
+#   "categoryId": "69ba78971bce280681533c68",
+#   "paymentMethodId": "69a7fb0ee7e4554a4e559e17",
+#   "accountId": "69b0858be7e4554a4e563505",
+#   "transactionType": "expense"
+# }

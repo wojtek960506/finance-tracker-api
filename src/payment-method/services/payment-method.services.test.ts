@@ -116,6 +116,7 @@ describe('payment-method services wiring', () => {
       expect(deps.userMissingOwnerFactory('x')).toBeInstanceOf(
         UserPaymentMethodMissingOwner,
       );
+      expect(deps.alreadyExistsErrorFactory('x')).toBeInstanceOf(PaymentMethodAlreadyExistsError);
       expect(updateImpl).toHaveBeenCalledWith('pm-1', 'u1', { name: 'New' });
       expect(result).toEqual({ id: '1' });
     }

@@ -106,6 +106,7 @@ describe('category services wiring', () => {
       SystemCategoryUpdateNotAllowed,
     );
     expect(deps.userMissingOwnerFactory('x')).toBeInstanceOf(UserCategoryMissingOwner);
+    expect(deps.alreadyExistsErrorFactory('x')).toBeInstanceOf(CategoryAlreadyExistsError);
     expect(updateImpl).toHaveBeenCalledWith('cat-1', 'u1', { name: 'New' });
     expect(result).toEqual({ id: '1' });
   });

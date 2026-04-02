@@ -55,6 +55,7 @@ export const updateAccount = (accountId: string, ownerId: string, dto: AccountDT
     systemUpdateNotAllowedFactory: (resourceId) =>
       new SystemAccountUpdateNotAllowed(resourceId),
     userMissingOwnerFactory: (resourceId) => new UserAccountMissingOwner(resourceId),
+    alreadyExistsErrorFactory: (name) => new AccountAlreadyExistsError(name),
   })(accountId, ownerId, dto);
 };
 

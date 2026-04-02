@@ -12,12 +12,16 @@ export class AppError extends Error {
 }
 
 export class NotFoundError extends AppError {
+  readonly code = 'NOT_FOUND_ERROR';
+
   constructor(message: string, details?: unknown) {
     super(404, message, details);
   }
 }
 
 export class ValidationError extends AppError {
+  readonly code = 'VALIDATION_ERROR';
+  
   constructor(details?: unknown) {
     super(422, 'Validation error', details);
   }

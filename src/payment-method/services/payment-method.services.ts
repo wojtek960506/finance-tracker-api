@@ -65,6 +65,7 @@ export const updatePaymentMethod = (
     userMissingOwnerFactory: (resourceId) => {
       return new UserPaymentMethodMissingOwner(resourceId);
     },
+    alreadyExistsErrorFactory: (name) => new PaymentMethodAlreadyExistsError(name),
   })(paymentMethodId, ownerId, dto);
 };
 

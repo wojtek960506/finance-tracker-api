@@ -59,6 +59,7 @@ export const updateCategory = (categoryId: string, ownerId: string, dto: Categor
     userMissingOwnerFactory: (resourceId) => {
       return new UserCategoryMissingOwner(resourceId);
     },
+    alreadyExistsErrorFactory: (name) => new CategoryAlreadyExistsError(name),
   })(categoryId, ownerId, dto);
 };
 

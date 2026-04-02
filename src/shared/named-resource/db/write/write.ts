@@ -28,6 +28,5 @@ export const saveNamedResourceChanges = async <
 ) => {
   Object.assign(resource, newProps);
   await resource.save();
-
   return serialize(resource);
 };

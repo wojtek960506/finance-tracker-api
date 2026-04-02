@@ -106,6 +106,7 @@ describe('account services wiring', () => {
       SystemAccountUpdateNotAllowed,
     );
     expect(deps.userMissingOwnerFactory('x')).toBeInstanceOf(UserAccountMissingOwner);
+    expect(deps.alreadyExistsErrorFactory('x')).toBeInstanceOf(AccountAlreadyExistsError);
     expect(updateImpl).toHaveBeenCalledWith('acc-1', 'u1', { name: 'New' });
     expect(result).toEqual({ id: '1' });
   });
