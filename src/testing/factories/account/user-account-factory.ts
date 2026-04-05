@@ -1,6 +1,5 @@
-import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
-
 import { NamedResourceType } from '@shared/named-resource';
+import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
 
 import {
   ACCOUNT_EXPENSE_ID_OBJ,

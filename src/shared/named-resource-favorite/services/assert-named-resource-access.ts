@@ -1,7 +1,7 @@
-import { findNamedResourceById } from '@shared/named-resource/db';
-import { getNamedResourceKindConfig } from '@shared/named-resource/kind-config';
-import { INamedResource } from '@shared/named-resource/model';
-import { NamedResourceKind } from '@shared/named-resource/types';
+import { findNamedResourceById } from '@named-resource/db';
+import { getNamedResourceKindConfig } from '@named-resource/kind-config';
+import { INamedResource } from '@named-resource/model';
+import { NamedResourceKind } from '@named-resource/types';
 import { checkOwner } from '@shared/services';
 
 export const assertNamedResourceAccess = async (

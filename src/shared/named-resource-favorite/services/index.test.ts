@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResourceById: vi.fn(),
   findNamedResources: vi.fn(),
 }));
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(),
 }));
 vi.mock('@named-resource-favorite/db', () => ({
@@ -16,6 +16,8 @@ vi.mock('@shared/services', () => ({
   checkOwner: vi.fn(),
 }));
 
+import { findNamedResourceById, findNamedResources } from '@named-resource/db';
+import { getNamedResourceKindConfig } from '@named-resource/kind-config';
 import {
   findFavoriteNamedResourceIds,
   persistFavoriteNamedResource,
@@ -26,9 +28,6 @@ import {
   getFavoriteNamedResources,
   unfavoriteNamedResource,
 } from '@named-resource-favorite/services';
-
-import { findNamedResourceById, findNamedResources } from '@shared/named-resource/db';
-import { getNamedResourceKindConfig } from '@shared/named-resource/kind-config';
 import { checkOwner } from '@shared/services';
 
 describe('named resource favorites services', () => {

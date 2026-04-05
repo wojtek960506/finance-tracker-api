@@ -1,6 +1,6 @@
-import { getStandardTransactionDTO } from '@testing/factories/transaction';
 import { describe, expect, it } from 'vitest';
 
+import { getStandardTransactionDTO } from '@testing/factories/transaction';
 import {
   TransactionFiltersQuerySchema,
   TransactionStandardSchema,

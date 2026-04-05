@@ -1,7 +1,4 @@
 import cookie from '@fastify/cookie';
-import { ENV_TEST_VALUES } from '@testing/env-consts';
-import { USER_ID_STR } from '@testing/factories/general';
-import { getUserResultSerialized } from '@testing/factories/user';
 import Fastify from 'fastify';
 import {
   serializerCompiler,
@@ -12,6 +9,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
 import * as serviceA from '@auth/services';
+import { ENV_TEST_VALUES } from '@testing/env-consts';
+import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultSerialized } from '@testing/factories/user';
 import * as serviceU from '@user/services';
 
 import { authRoutes } from './auth-routes';

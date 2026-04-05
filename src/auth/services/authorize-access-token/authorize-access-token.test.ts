@@ -1,8 +1,8 @@
-import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@testing/env-consts';
 import jwt from 'jsonwebtoken';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as config from '@app/config';
+import { ENV_TEST_VALUES, JWT_ACCESS_SECRET_TEST } from '@testing/env-consts';
 import {
   UnauthorizedInvalidTokenError,
   UnauthorizedMissingTokenError,

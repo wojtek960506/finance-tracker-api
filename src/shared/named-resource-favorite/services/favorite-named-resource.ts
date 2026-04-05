@@ -1,10 +1,9 @@
-import { persistFavoriteNamedResource } from '@named-resource-favorite/db';
-
 import {
   getNamedResourceKindConfig,
   NamedResourceResponse,
-} from '@shared/named-resource/kind-config';
-import { NamedResourceKind } from '@shared/named-resource/types';
+} from '@named-resource/kind-config';
+import { NamedResourceKind } from '@named-resource/types';
+import { persistFavoriteNamedResource } from '@named-resource-favorite/db';
 
 import { assertNamedResourceAccess } from './assert-named-resource-access';
 

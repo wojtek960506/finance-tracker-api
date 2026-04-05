@@ -1,9 +1,9 @@
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
 import {
   getStandardTransactionResultJSON,
   STANDARD_TXN_ID_STR,
 } from '@testing/factories/transaction';
-import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
-
 import { TransactionModel } from '@transaction/model';
 import { TransactionNotFoundError } from '@utils/errors';
 

@@ -1,7 +1,7 @@
-import { USER_ID_STR } from '@testing/factories/general';
-import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { describe, expect, it, vi } from 'vitest';
 
+import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import * as db from '@user/db';
 import * as serializers from '@user/serializers';
 import { AppError } from '@utils/errors';

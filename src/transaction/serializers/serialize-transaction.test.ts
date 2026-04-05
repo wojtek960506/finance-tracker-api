@@ -1,3 +1,6 @@
+import { describe, expect, it } from 'vitest';
+
+import { NamedResourceType } from '@shared/named-resource';
 import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_ID_STR,
@@ -17,9 +20,6 @@ import {
   ACCOUNT_EXPENSE_ID_STR,
   ACCOUNT_EXPENSE_NAME,
 } from '@testing/factories/transaction/transaction-consts';
-import { describe, expect, it } from 'vitest';
-
-import { NamedResourceType } from '@shared/named-resource';
 import { serializeTransaction } from '@transaction/serializers';
 
 describe('serializeTransaction', () => {

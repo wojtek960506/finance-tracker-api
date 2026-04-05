@@ -1,9 +1,3 @@
-import { USER_ID_STR } from '@testing/factories/general';
-import {
-  CASH_PAYMENT_METHOD_ID_STR,
-  getUpdatePaymentMethodProps,
-  getUserPaymentMethodResultSerialized,
-} from '@testing/factories/payment-method';
 import Fastify from 'fastify';
 import {
   serializerCompiler,
@@ -13,6 +7,12 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  CASH_PAYMENT_METHOD_ID_STR,
+  getUpdatePaymentMethodProps,
+  getUserPaymentMethodResultSerialized,
+} from '@testing/factories/payment-method';
 
 import { paymentMethodRoutes } from './payment-method-routes';
 

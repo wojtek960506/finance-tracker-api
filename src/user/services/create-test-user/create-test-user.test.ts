@@ -1,6 +1,6 @@
-import { USER_ID_STR } from '@testing/factories/general';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
+import { USER_ID_STR } from '@testing/factories/general';
 import { createRandomTransactions } from '@transaction/services';
 import { createUser } from '@user/services';
 

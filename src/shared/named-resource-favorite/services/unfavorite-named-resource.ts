@@ -1,7 +1,7 @@
-import { removeFavoriteNamedResource } from '@named-resource-favorite/db';
 import { DeleteResult } from 'mongoose';
 
-import { NamedResourceKind } from '@shared/named-resource/types';
+import { NamedResourceKind } from '@named-resource/types';
+import { removeFavoriteNamedResource } from '@named-resource-favorite/db';
 
 import { assertNamedResourceAccess } from './assert-named-resource-access';
 

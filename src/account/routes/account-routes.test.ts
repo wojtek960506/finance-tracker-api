@@ -1,9 +1,3 @@
-import {
-  ACCOUNT_EXPENSE_ID_STR,
-  getUpdateAccountProps,
-  getUserAccountResultSerialized,
-} from '@testing/factories/account';
-import { USER_ID_STR } from '@testing/factories/general';
 import Fastify from 'fastify';
 import {
   serializerCompiler,
@@ -14,6 +8,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
 import * as namedResourceServices from '@shared/named-resource/services';
+import {
+  ACCOUNT_EXPENSE_ID_STR,
+  getUpdateAccountProps,
+  getUserAccountResultSerialized,
+} from '@testing/factories/account';
+import { USER_ID_STR } from '@testing/factories/general';
 
 import { accountRoutes } from './account-routes';
 

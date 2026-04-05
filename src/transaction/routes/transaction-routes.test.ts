@@ -1,3 +1,13 @@
+import Fastify from 'fastify';
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import { registerErrorHandler } from '@app/plugins/errorHandler';
+import * as namedResourceServices from '@shared/named-resource/services';
 import {
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,
@@ -23,16 +33,6 @@ import {
 } from '@testing/factories/transaction';
 import { TEST_USER_TOTAL_TRANSACTIONS } from '@testing/factories/user';
 import { getCsvForTransactions } from '@testing/get-csv-for-transactions';
-import Fastify from 'fastify';
-import {
-  serializerCompiler,
-  validatorCompiler,
-  ZodTypeProvider,
-} from 'fastify-type-provider-zod';
-import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
-
-import { registerErrorHandler } from '@app/plugins/errorHandler';
-import * as namedResourceServices from '@shared/named-resource/services';
 import { streamTransactions } from '@transaction/db';
 import * as serviceT from '@transaction/services';
 

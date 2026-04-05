@@ -1,7 +1,7 @@
-import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from '@testing/env-consts';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as config from '@app/config';
+import { ENV_TEST_VALUES, JWT_REFRESH_EXPIRES_DAYS_TEST } from '@testing/env-consts';
 
 import { getRefreshCookieOptions } from './refresh-cookie-options';
 

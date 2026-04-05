@@ -1,6 +1,6 @@
-import { USER_ID_STR } from '@testing/factories/general';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { USER_ID_STR } from '@testing/factories/general';
 import { TransactionModel } from '@transaction/model';
 
 import { removeTransactions } from './remove-transactions';

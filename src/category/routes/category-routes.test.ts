@@ -1,9 +1,3 @@
-import {
-  FOOD_CATEGORY_ID_STR,
-  getUpdateCategoryProps,
-  getUserCategoryResultSerialized,
-} from '@testing/factories/category';
-import { USER_ID_STR } from '@testing/factories/general';
 import Fastify from 'fastify';
 import {
   serializerCompiler,
@@ -13,6 +7,12 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
+import {
+  FOOD_CATEGORY_ID_STR,
+  getUpdateCategoryProps,
+  getUserCategoryResultSerialized,
+} from '@testing/factories/category';
+import { USER_ID_STR } from '@testing/factories/general';
 
 import { categoryRoutes } from './category-routes';
 

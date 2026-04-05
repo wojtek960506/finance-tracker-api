@@ -1,6 +1,6 @@
-import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { describe, expect, it } from 'vitest';
 
+import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { serializeUser } from '@user/serializers';
 
 describe('serializeUser', () => {

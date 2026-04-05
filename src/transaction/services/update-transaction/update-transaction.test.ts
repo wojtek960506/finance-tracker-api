@@ -1,3 +1,6 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import * as namedResourceDb from '@shared/named-resource/db';
 import {
   ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
@@ -23,9 +26,6 @@ import {
   STANDARD_TXN_ID_STR,
   TRANSFER_TXN_EXPENSE_ID_STR,
 } from '@testing/factories/transaction';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import * as namedResourceDb from '@shared/named-resource/db';
 import * as dbTransactions from '@transaction/db';
 import {
   updateExchangeTransaction,

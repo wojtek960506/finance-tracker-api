@@ -30,7 +30,6 @@ import {
   TRANSFER_TXN_INCOME_ID_STR,
   TRANSFER_TXN_INCOME_SRC_IDX,
 } from '@testing/factories/transaction';
-
 import {
   TransactionTransferCreateProps,
   TransactionTransferUpdateProps,

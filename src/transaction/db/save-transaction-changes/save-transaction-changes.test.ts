@@ -1,10 +1,10 @@
+import { describe, expect, it, Mock, vi } from 'vitest';
+
 import {
   getStandardTransactionDTO,
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
 } from '@testing/factories/transaction';
-import { describe, expect, it, Mock, vi } from 'vitest';
-
 import { saveTransactionChanges } from '@transaction/db/';
 import { serializeTransaction } from '@transaction/serializers';
 

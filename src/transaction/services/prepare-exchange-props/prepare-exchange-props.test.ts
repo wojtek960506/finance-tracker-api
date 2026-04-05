@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { EXCHANGE_CATEGORY_ID_STR } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
 import {
@@ -6,7 +8,6 @@ import {
   getExchangeTransactionDTO,
   getExchangeTransactionProps,
 } from '@testing/factories/transaction';
-import { describe, expect, it } from 'vitest';
 
 import { prepareExchangeProps } from './prepare-exchange-props';
 

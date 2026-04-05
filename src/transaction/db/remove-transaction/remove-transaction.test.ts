@@ -1,9 +1,9 @@
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
 import {
   getStandardTransactionResultSerialized,
   getTransferTransactionResultSerialized,
 } from '@testing/factories/transaction';
-import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
-
 import { TransactionModel } from '@transaction/model';
 import { NotFoundError } from '@utils/errors';
 import { withSession } from '@utils/with-session';

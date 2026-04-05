@@ -1,23 +1,23 @@
-import {
-  favoriteNamedResource,
-  getFavoriteNamedResources,
-  unfavoriteNamedResource,
-} from '@named-resource-favorite/services';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { AccountDTO, AccountResponseDTO } from '@account/schema';
 import { CategoryDTO, CategoryResponseDTO } from '@category/schema';
-import { PaymentMethodDTO, PaymentMethodResponseDTO } from '@payment-method/schema';
-import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
 import {
   createNamedResource,
   deleteNamedResource,
   getNamedResource,
   listNamedResources,
   updateNamedResource,
-} from '@shared/named-resource/services';
-import { NameDTO } from '@shared/named-resource/services/types';
-import { NamedResourceKind } from '@shared/named-resource/types';
+} from '@named-resource/services';
+import { NameDTO } from '@named-resource/services/types';
+import { NamedResourceKind } from '@named-resource/types';
+import {
+  favoriteNamedResource,
+  getFavoriteNamedResources,
+  unfavoriteNamedResource,
+} from '@named-resource-favorite/services';
+import { PaymentMethodDTO, PaymentMethodResponseDTO } from '@payment-method/schema';
+import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
 
 type NamedResourceBodyByKind = {
   account: AccountDTO;

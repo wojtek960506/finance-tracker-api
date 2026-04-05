@@ -1,10 +1,10 @@
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
 import {
   getStandardTransactionProps,
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
 } from '@testing/factories/transaction';
-import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
-
 import { TransactionModel } from '@transaction/model';
 import { serializeTransaction } from '@transaction/serializers';
 

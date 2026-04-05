@@ -1,6 +1,7 @@
+import { DeleteResult, Types } from 'mongoose';
+
 import { FavoriteNamedResourceModel } from '@named-resource-favorite/model';
 import { FavoriteNamedResourceType } from '@named-resource-favorite/types';
-import { DeleteResult, Types } from 'mongoose';
 
 export const findFavoriteNamedResourceIds = async (
   userId: string,

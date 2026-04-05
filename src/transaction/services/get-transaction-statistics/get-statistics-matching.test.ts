@@ -1,3 +1,6 @@
+import { FilterQuery, Types } from 'mongoose';
+import { describe, expect, it } from 'vitest';
+
 import {
   EXCHANGE_CATEGORY_ID_OBJ,
   EXCHANGE_CATEGORY_ID_STR,
@@ -16,9 +19,6 @@ import {
   CURRENCY_EXPENSE,
   TRANSACTION_TYPE_EXPENSE,
 } from '@testing/factories/transaction';
-import { FilterQuery, Types } from 'mongoose';
-import { describe, expect, it } from 'vitest';
-
 import { TransactionStatisticsQuery } from '@transaction/schema';
 import { ValidationError } from '@utils/errors';
 

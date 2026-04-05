@@ -1,8 +1,8 @@
-import { USER_ID_STR } from '@testing/factories/general';
-import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getNamedResourceModel } from '@shared/named-resource';
+import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { TransactionModel } from '@transaction/model';
 import { UserModel } from '@user/model';
 import * as serializers from '@user/serializers';

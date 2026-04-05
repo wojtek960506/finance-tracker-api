@@ -1,3 +1,6 @@
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import * as namedResourceDb from '@shared/named-resource/db';
 import {
   ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
@@ -28,9 +31,6 @@ import {
   TRANSFER_TXN_EXPENSE_SRC_IDX,
   TRANSFER_TXN_INCOME_SRC_IDX,
 } from '@testing/factories/transaction';
-import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
-
-import * as namedResourceDb from '@shared/named-resource/db';
 import * as dbTransactions from '@transaction/db';
 import { getNextSourceIndex } from '@transaction/services';
 import {

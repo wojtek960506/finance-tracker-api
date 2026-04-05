@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { getSystemExpenseAccountResultSerialized } from '@testing/factories/account';
 import { FOOD_CATEGORY_ID_STR, FOOD_CATEGORY_NAME } from '@testing/factories/category';
 import { DATE_STR } from '@testing/factories/general';
@@ -6,7 +8,6 @@ import {
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
 } from '@testing/factories/payment-method';
 import { getStandardTransactionProps } from '@testing/factories/transaction';
-import { describe, expect, it } from 'vitest';
 
 import { transactionToCsvRow } from './transaction-to-csv-row';
 

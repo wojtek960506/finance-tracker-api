@@ -1,6 +1,6 @@
-import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { describe, expect, it, vi } from 'vitest';
 
+import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { UserModel } from '@user/model';
 import * as serializers from '@user/serializers';
 

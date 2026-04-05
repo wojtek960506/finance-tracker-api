@@ -1,3 +1,3 @@
-import { NamedResourceKind } from '@shared/named-resource/types';
+import { NamedResourceKind } from '@named-resource/types';
 
 export type FavoriteNamedResourceType = NamedResourceKind;
