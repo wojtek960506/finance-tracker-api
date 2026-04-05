@@ -11,18 +11,17 @@ import {
 } from '@account/schema';
 import { authorizeAccessToken } from '@auth/services';
 import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
-import { validateBody } from '@utils/validation';
-
 import {
-  createAccountHandler,
-  deleteAccountHandler,
-  favoriteAccountHandler,
-  getAccountHandler,
-  getAccountsHandler,
-  getFavoriteAccountsHandler,
-  unfavoriteAccountHandler,
-  updateAccountHandler,
-} from './handlers';
+  createNamedResourceHandler,
+  deleteNamedResourceHandler,
+  favoriteNamedResourceHandler,
+  getFavoriteNamedResourcesHandler,
+  getNamedResourceHandler,
+  getNamedResourcesHandler,
+  unfavoriteNamedResourceHandler,
+  updateNamedResourceHandler,
+} from '@shared/named-resource/routes/handlers';
+import { validateBody } from '@utils/validation';
 
 export async function accountRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
@@ -40,7 +39,7 @@ export async function accountRoutes(
         },
       },
     },
-    getAccountsHandler,
+    getNamedResourcesHandler('account'),
   );
 
   app.get<{ Reply: AccountsResponseDTO }>(
@@ -56,7 +55,7 @@ export async function accountRoutes(
         },
       },
     },
-    getFavoriteAccountsHandler,
+    getFavoriteNamedResourcesHandler('account'),
   );
 
   app.get<{ Params: ParamsJustId; Reply: AccountResponseDTO }>(
@@ -73,7 +72,7 @@ export async function accountRoutes(
         },
       },
     },
-    getAccountHandler,
+    getNamedResourceHandler('account'),
   );
 
   app.post<{ Body: AccountDTO; Reply: AccountResponseDTO }>(
@@ -90,7 +89,7 @@ export async function accountRoutes(
         },
       },
     },
-    createAccountHandler,
+    createNamedResourceHandler('account'),
   );
 
   app.put<{ Params: ParamsJustId; Body: AccountDTO; Reply: AccountResponseDTO }>(
@@ -108,7 +107,7 @@ export async function accountRoutes(
         },
       },
     },
-    updateAccountHandler,
+    updateNamedResourceHandler('account'),
   );
 
   app.post<{ Params: ParamsJustId; Reply: AccountResponseDTO }>(
@@ -125,7 +124,7 @@ export async function accountRoutes(
         },
       },
     },
-    favoriteAccountHandler,
+    favoriteNamedResourceHandler('account'),
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
@@ -142,7 +141,7 @@ export async function accountRoutes(
         },
       },
     },
-    unfavoriteAccountHandler,
+    unfavoriteNamedResourceHandler('account'),
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
@@ -159,6 +158,6 @@ export async function accountRoutes(
         },
       },
     },
-    deleteAccountHandler,
+    deleteNamedResourceHandler('account'),
   );
 }

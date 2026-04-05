@@ -11,18 +11,17 @@ import {
   CategorySchema,
 } from '@category/schema';
 import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
-import { validateBody } from '@utils/validation';
-
 import {
-  createCategoryHandler,
-  deleteCategoryHandler,
-  favoriteCategoryHandler,
-  getCategoriesHandler,
-  getCategoryHandler,
-  getFavoriteCategoriesHandler,
-  unfavoriteCategoryHandler,
-  updateCategoryHandler,
-} from './handlers';
+  createNamedResourceHandler,
+  deleteNamedResourceHandler,
+  favoriteNamedResourceHandler,
+  getFavoriteNamedResourcesHandler,
+  getNamedResourceHandler,
+  getNamedResourcesHandler,
+  unfavoriteNamedResourceHandler,
+  updateNamedResourceHandler,
+} from '@shared/named-resource/routes/handlers';
+import { validateBody } from '@utils/validation';
 
 export async function categoryRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
@@ -40,7 +39,7 @@ export async function categoryRoutes(
         },
       },
     },
-    getCategoriesHandler,
+    getNamedResourcesHandler('category'),
   );
 
   app.get<{ Reply: CategoriesResponseDTO }>(
@@ -56,7 +55,7 @@ export async function categoryRoutes(
         },
       },
     },
-    getFavoriteCategoriesHandler,
+    getFavoriteNamedResourcesHandler('category'),
   );
 
   app.get<{ Params: ParamsJustId; Reply: CategoryResponseDTO }>(
@@ -73,7 +72,7 @@ export async function categoryRoutes(
         },
       },
     },
-    getCategoryHandler,
+    getNamedResourceHandler('category'),
   );
 
   app.post<{ Body: CategoryDTO; Reply: CategoryResponseDTO }>(
@@ -90,7 +89,7 @@ export async function categoryRoutes(
         },
       },
     },
-    createCategoryHandler,
+    createNamedResourceHandler('category'),
   );
 
   app.put<{ Params: ParamsJustId; Body: CategoryDTO; Reply: CategoryResponseDTO }>(
@@ -108,7 +107,7 @@ export async function categoryRoutes(
         },
       },
     },
-    updateCategoryHandler,
+    updateNamedResourceHandler('category'),
   );
 
   app.post<{ Params: ParamsJustId; Reply: CategoryResponseDTO }>(
@@ -125,7 +124,7 @@ export async function categoryRoutes(
         },
       },
     },
-    favoriteCategoryHandler,
+    favoriteNamedResourceHandler('category'),
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
@@ -142,7 +141,7 @@ export async function categoryRoutes(
         },
       },
     },
-    unfavoriteCategoryHandler,
+    unfavoriteNamedResourceHandler('category'),
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
@@ -159,6 +158,6 @@ export async function categoryRoutes(
         },
       },
     },
-    deleteCategoryHandler,
+    deleteNamedResourceHandler('category'),
   );
 }

@@ -11,18 +11,17 @@ import {
   PaymentMethodsResponseSchema,
 } from '@payment-method/schema';
 import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
-import { validateBody } from '@utils/validation';
-
 import {
-  createPaymentMethodHandler,
-  deletePaymentMethodHandler,
-  favoritePaymentMethodHandler,
-  getFavoritePaymentMethodsHandler,
-  getPaymentMethodHandler,
-  getPaymentMethodsHandler,
-  unfavoritePaymentMethodHandler,
-  updatePaymentMethodHandler,
-} from './handlers';
+  createNamedResourceHandler,
+  deleteNamedResourceHandler,
+  favoriteNamedResourceHandler,
+  getFavoriteNamedResourcesHandler,
+  getNamedResourceHandler,
+  getNamedResourcesHandler,
+  unfavoriteNamedResourceHandler,
+  updateNamedResourceHandler,
+} from '@shared/named-resource/routes/handlers';
+import { validateBody } from '@utils/validation';
 
 export async function paymentMethodRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
@@ -40,7 +39,7 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    getPaymentMethodsHandler,
+    getNamedResourcesHandler('paymentMethod'),
   );
 
   app.get<{ Reply: PaymentMethodsResponseDTO }>(
@@ -56,7 +55,7 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    getFavoritePaymentMethodsHandler,
+    getFavoriteNamedResourcesHandler('paymentMethod'),
   );
 
   app.get<{ Params: ParamsJustId; Reply: PaymentMethodResponseDTO }>(
@@ -73,7 +72,7 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    getPaymentMethodHandler,
+    getNamedResourceHandler('paymentMethod'),
   );
 
   app.post<{ Body: PaymentMethodDTO; Reply: PaymentMethodResponseDTO }>(
@@ -90,7 +89,7 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    createPaymentMethodHandler,
+    createNamedResourceHandler('paymentMethod'),
   );
 
   app.put<{
@@ -112,7 +111,7 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    updatePaymentMethodHandler,
+    updateNamedResourceHandler('paymentMethod'),
   );
 
   app.post<{ Params: ParamsJustId; Reply: PaymentMethodResponseDTO }>(
@@ -129,7 +128,7 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    favoritePaymentMethodHandler,
+    favoriteNamedResourceHandler('paymentMethod'),
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
@@ -146,7 +145,7 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    unfavoritePaymentMethodHandler,
+    unfavoriteNamedResourceHandler('paymentMethod'),
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
@@ -163,6 +162,6 @@ export async function paymentMethodRoutes(
         },
       },
     },
-    deletePaymentMethodHandler,
+    deleteNamedResourceHandler('paymentMethod'),
   );
 }
