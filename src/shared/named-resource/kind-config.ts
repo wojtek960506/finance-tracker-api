@@ -2,7 +2,7 @@ import { AccountModel } from '@account/model';
 import { CategoryModel } from '@category/model';
 import { PaymentMethodModel } from '@payment-method/model';
 import { CheckOwnerType } from '@shared/services';
-import { checkTransactionDependencies } from '@transaction/services/check-transaction-dependencies';
+import { checkTransactionDependencies } from '@transaction/services';
 import {
   AccountAlreadyExistsError,
   AccountNotFoundError,

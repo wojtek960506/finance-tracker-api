@@ -6,7 +6,6 @@ import {
 import {
   CATEGORY_TYPE_SYSTEM,
   CATEGORY_TYPE_USER,
-  FOOD_CATEGORY_ID_STR,
   getExchangeCategoryResultJSON,
   getTransferCategoryResultJSON,
   getUserCategoryResultSerialized,
@@ -66,11 +65,20 @@ describe('update transaction', () => {
       .mockResolvedValueOnce(paymentMethod as any)
       .mockResolvedValueOnce(accountExpense as any);
     vi.spyOn(dbTransactions, 'findTransaction').mockResolvedValue(transaction as any);
-    vi.spyOn(dbTransactions, 'saveTransactionChanges').mockResolvedValue(transaction as any);
+    vi.spyOn(dbTransactions, 'saveTransactionChanges').mockResolvedValue(
+      transaction as any,
+    );
 
-    const result = await updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO);
+    const result = await updateStandardTransaction(
+      STANDARD_TXN_ID_STR,
+      USER_ID_STR,
+      standardDTO,
+    );
 
-    expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledWith(transaction, standardDTO);
+    expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledWith(
+      transaction,
+      standardDTO,
+    );
     expect(result).toEqual(transaction);
   });
 
@@ -148,20 +156,24 @@ describe('update transaction', () => {
     ).rejects.toThrow(AccountOwnershipError);
   });
 
-  it('throws when updating standard transaction with payment method not owned by user', async () => {
-    vi.spyOn(namedResourceDb, 'findNamedResourceById')
-      .mockResolvedValueOnce(foodCategory as any)
-      .mockResolvedValueOnce({
-        ...paymentMethod,
-        type: CATEGORY_TYPE_USER,
-        ownerId: '123',
-        id: '1',
-      } as any);
+  // prettier-ignore
+  it(
+    'throws when updating standard transaction with payment method not owned by user',
+    async () => {
+      vi.spyOn(namedResourceDb, 'findNamedResourceById')
+        .mockResolvedValueOnce(foodCategory as any)
+        .mockResolvedValueOnce({
+          ...paymentMethod,
+          type: CATEGORY_TYPE_USER,
+          ownerId: '123',
+          id: '1',
+        } as any);
 
-    await expect(
-      updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
-    ).rejects.toThrow(PaymentMethodOwnershipError);
-  });
+      await expect(
+        updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
+      ).rejects.toThrow(PaymentMethodOwnershipError);
+    }
+  );
 
   it('throws when updating pair transaction with non-system category', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')

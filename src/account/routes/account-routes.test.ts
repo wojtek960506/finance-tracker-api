@@ -43,9 +43,7 @@ const mockPreHandler = vi.fn(async (req, _res) => {
 
 vi.mock('@auth/services', () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
 vi.mock('@shared/named-resource/services', async (importOriginal) => {
-  const actual = await importOriginal<
-    typeof import('@shared/named-resource/services')
-  >();
+  const actual = await importOriginal<typeof import('@shared/named-resource/services')>();
   return {
     ...actual,
     createNamedResource: createImpl,

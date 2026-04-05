@@ -12,6 +12,11 @@ export const updateCategoryHandler = async (
   const userId = (req as AuthenticatedRequest).userId;
   const dto = req.body;
 
-  const result = await updateNamedResource<CategoryDTO>('category', categoryId, userId, dto);
+  const result = await updateNamedResource<CategoryDTO>(
+    'category',
+    categoryId,
+    userId,
+    dto,
+  );
   res.code(200).send(result);
 };

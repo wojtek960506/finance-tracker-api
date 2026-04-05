@@ -1,32 +1,35 @@
-import { Model } from 'mongoose';
-
 import {
-  NamedResourceCreateProps,
-  NamedResourceMinimal,
-  NamedResourceUpdateProps,
-} from '../types';
+  getNamedResourceKindConfig,
+  NamedResourceKind,
+  NamedResourceResponse,
+} from '@shared/named-resource/kind-config';
+import { INamedResource } from '@shared/named-resource/model';
+
+import { NamedResourceCreateProps, NamedResourceUpdateProps } from '../types';
 
 export const persistNamedResource = async <
-  TResource extends NamedResourceMinimal,
-  TResponse,
+  TResponse extends NamedResourceResponse = NamedResourceResponse,
 >(
-  model: Model<TResource>,
+  kind: NamedResourceKind,
   props: NamedResourceCreateProps,
-  serialize: (resource: TResource) => TResponse,
 ) => {
-  const newResource = await model.create(props);
-  return serialize(newResource);
+  const config = getNamedResourceKindConfig(kind);
+
+  const newResource = await config.model.create(props);
+  return config.serialize(newResource as INamedResource) as TResponse;
 };
 
 export const saveNamedResourceChanges = async <
-  TResource extends NamedResourceMinimal,
-  TResponse,
+  TResponse extends NamedResourceResponse = NamedResourceResponse,
 >(
-  resource: TResource,
+  kind: NamedResourceKind,
+  resource: INamedResource,
   newProps: NamedResourceUpdateProps,
-  serialize: (resource: TResource) => TResponse,
 ) => {
+  const config = getNamedResourceKindConfig(kind);
+
   Object.assign(resource, newProps);
   await resource.save();
-  return serialize(resource);
+
+  return config.serialize(resource) as TResponse;
 };

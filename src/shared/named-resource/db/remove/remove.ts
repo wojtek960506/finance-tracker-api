@@ -1,13 +1,18 @@
-import { DeleteResult, Model } from 'mongoose';
+import { DeleteResult } from 'mongoose';
 
-import { NamedResourceMinimal } from '../types';
+import {
+  getNamedResourceKindConfig,
+  NamedResourceKind,
+} from '@shared/named-resource/kind-config';
 
-export const removeNamedResourceById = async <TResource extends NamedResourceMinimal>(
-  model: Model<TResource>,
+export const removeNamedResourceById = async (
+  kind: NamedResourceKind,
   id: string,
-  notFoundErrorFactory: (id: string) => Error,
 ): Promise<DeleteResult> => {
-  const result = await model.deleteOne({ _id: id });
-  if (result.deletedCount === 0) throw notFoundErrorFactory(id);
+  const config = getNamedResourceKindConfig(kind);
+
+  const result = await config.model.deleteOne({ _id: id });
+  if (result.deletedCount === 0) throw config.notFoundErrorFactory(id);
+
   return result;
 };

@@ -40,7 +40,9 @@ export async function createRandomTransactions(
 
   const categories = (
     await Promise.all(
-      testCategoryNames.map((name) => getOrCreateNamedResource('category', ownerId, name)),
+      testCategoryNames.map((name) =>
+        getOrCreateNamedResource('category', ownerId, name),
+      ),
     )
   ).filter((c) => c != undefined);
   const categoryIds = categories.map((c) => c.id);

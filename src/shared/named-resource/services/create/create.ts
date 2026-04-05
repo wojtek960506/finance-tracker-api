@@ -1,7 +1,4 @@
-import {
-  findNamedResourceByName,
-  persistNamedResource,
-} from '@shared/named-resource/db';
+import { findNamedResourceByName, persistNamedResource } from '@shared/named-resource/db';
 import {
   getNamedResourceKindConfig,
   NamedResourceKind,

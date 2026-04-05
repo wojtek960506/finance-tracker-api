@@ -6,6 +6,9 @@ import { listNamedResources } from '@shared/named-resource/services';
 
 export const getCategoriesHandler = async (req: FastifyRequest, res: FastifyReply) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result = await listNamedResources<CategoriesResponseDTO[number]>('category', userId);
+  const result = await listNamedResources<CategoriesResponseDTO[number]>(
+    'category',
+    userId,
+  );
   return res.code(200).send(result);
 };

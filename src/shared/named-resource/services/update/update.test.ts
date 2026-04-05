@@ -67,11 +67,13 @@ describe('updateNamedResource', () => {
   });
 
   it('throws when updating system resource', async () => {
-    vi.mocked(namedResourceDb.findNamedResourceById).mockResolvedValue({ type: 'system' } as any);
+    vi.mocked(namedResourceDb.findNamedResourceById).mockResolvedValue({
+      type: 'system',
+    } as any);
 
-    await expect(updateNamedResource('category', 'r1', 'u1', { name: 'x' })).rejects.toThrow(
-      'system:r1',
-    );
+    await expect(
+      updateNamedResource('category', 'r1', 'u1', { name: 'x' }),
+    ).rejects.toThrow('system:r1');
     expect(namedResourceDb.saveNamedResourceChanges).not.toHaveBeenCalled();
   });
 
@@ -81,9 +83,9 @@ describe('updateNamedResource', () => {
       ownerId: undefined,
     } as any);
 
-    await expect(updateNamedResource('category', 'r1', 'u1', { name: 'x' })).rejects.toThrow(
-      'missing:r1',
-    );
+    await expect(
+      updateNamedResource('category', 'r1', 'u1', { name: 'x' }),
+    ).rejects.toThrow('missing:r1');
     expect(namedResourceDb.saveNamedResourceChanges).not.toHaveBeenCalled();
   });
 
@@ -132,7 +134,9 @@ describe('updateNamedResource', () => {
       type: 'user',
       ownerId: 'u1',
     } as any);
-    vi.mocked(namedResourceDb.saveNamedResourceChanges).mockRejectedValue({ code: 11000 });
+    vi.mocked(namedResourceDb.saveNamedResourceChanges).mockRejectedValue({
+      code: 11000,
+    });
 
     await expect(
       updateNamedResource('category', 'r1', 'u1', { name: 'Food' }),

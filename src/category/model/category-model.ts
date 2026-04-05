@@ -1,8 +1,5 @@
 import { createNamedResourceModel, INamedResource } from '@shared/named-resource/model';
-import {
-  NamedResourceAttributes,
-  NamedResourceType,
-} from '@shared/named-resource/types';
+import { NamedResourceAttributes, NamedResourceType } from '@shared/named-resource/types';
 
 export type CategoryType = NamedResourceType;
 

@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
+vi.mock('@shared/named-resource/kind-config', () => ({
+  getNamedResourceKindConfig: vi.fn(),
+}));
+
+import * as kindConfig from '@shared/named-resource/kind-config';
+
 import { persistNamedResource, saveNamedResourceChanges } from './write';
 
 describe('persistNamedResource', () => {
@@ -8,17 +14,17 @@ describe('persistNamedResource', () => {
     const serialized = { id: '1', name: 'Food', type: 'user' };
     const model = { create: vi.fn().mockResolvedValue(created) } as any;
     const serialize = vi.fn().mockReturnValue(serialized);
-
-    const result = await persistNamedResource(
+    vi.mocked(kindConfig.getNamedResourceKindConfig).mockReturnValue({
       model,
-      {
-        ownerId: 'u1',
-        type: 'user',
-        name: 'Food',
-        nameNormalized: 'food',
-      },
       serialize,
-    );
+    } as any);
+
+    const result = await persistNamedResource('category', {
+      ownerId: 'u1',
+      type: 'user',
+      name: 'Food',
+      nameNormalized: 'food',
+    });
 
     expect(model.create).toHaveBeenCalledOnce();
     expect(serialize).toHaveBeenCalledWith(created);
@@ -36,12 +42,14 @@ describe('saveNamedResourceChanges', () => {
       save,
     };
     const serialize = vi.fn().mockReturnValue({ id: '1', name: 'New' });
-
-    const result = await saveNamedResourceChanges(
-      resource,
-      { name: 'New', nameNormalized: 'new' },
+    vi.mocked(kindConfig.getNamedResourceKindConfig).mockReturnValue({
       serialize,
-    );
+    } as any);
+
+    const result = await saveNamedResourceChanges('category', resource, {
+      name: 'New',
+      nameNormalized: 'new',
+    });
 
     expect(resource.name).toBe('New');
     expect(resource.nameNormalized).toBe('new');

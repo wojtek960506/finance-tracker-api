@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
-import * as namedResourceServices from '@shared/named-resource/services';
 import { TransactionModel } from '@transaction/model';
 import { AppError } from '@utils/errors';
 import { randomDate, randomFromSet } from '@utils/random';
@@ -20,9 +19,7 @@ const { accountImpl, categoryImpl, paymentMethodImpl } = vi.hoisted(() => ({
 }));
 
 vi.mock('@shared/named-resource/services', async (importOriginal) => {
-  const actual = await importOriginal<
-    typeof import('@shared/named-resource/services')
-  >();
+  const actual = await importOriginal<typeof import('@shared/named-resource/services')>();
   return {
     ...actual,
     getOrCreateNamedResource: vi.fn((kind: string, ownerId: string, name: string) => {

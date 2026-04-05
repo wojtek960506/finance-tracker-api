@@ -1,8 +1,5 @@
 import { findNamedResources } from '@shared/named-resource/db';
-import {
-  NamedResourceKind,
-  NamedResourcesMap,
-} from '@shared/named-resource/kind-config';
+import { NamedResourceKind, NamedResourcesMap } from '@shared/named-resource/kind-config';
 
 const buildNamedResourcesMap = <
   TResource extends {

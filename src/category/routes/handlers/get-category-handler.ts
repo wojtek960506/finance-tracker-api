@@ -10,6 +10,10 @@ export const getCategoryHandler = async (
 ) => {
   const categoryId = req.params.id;
   const userId = (req as AuthenticatedRequest).userId;
-  const result = await getNamedResource<CategoryResponseDTO>('category', categoryId, userId);
+  const result = await getNamedResource<CategoryResponseDTO>(
+    'category',
+    categoryId,
+    userId,
+  );
   return res.code(200).send(result);
 };

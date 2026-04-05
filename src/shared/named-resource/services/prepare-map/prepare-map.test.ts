@@ -17,11 +17,10 @@ describe('prepareNamedResourcesMap', () => {
 
     const result = await prepareNamedResourcesMap('category', 'u1', ['r1', 'r2']);
 
-    expect(namedResourceDb.findNamedResources).toHaveBeenCalledWith(
-      'category',
-      'u1',
-      ['r1', 'r2'],
-    );
+    expect(namedResourceDb.findNamedResources).toHaveBeenCalledWith('category', 'u1', [
+      'r1',
+      'r2',
+    ]);
     expect(result).toEqual({
       r1: { id: 'r1', type: 'system', name: 'Transfer' },
       r2: { id: 'r2', type: 'user', name: 'Food' },

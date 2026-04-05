@@ -24,10 +24,7 @@ const ensureCategoryAllowed = async (categoryId: string, ownerId: string) => {
 };
 
 const ensurePaymentMethodAllowed = async (paymentMethodId: string, ownerId: string) => {
-  const paymentMethod = await findNamedResourceById(
-    'paymentMethod',
-    paymentMethodId,
-  );
+  const paymentMethod = await findNamedResourceById('paymentMethod', paymentMethodId);
   if (paymentMethod.type !== 'system')
     checkOwner(ownerId, paymentMethod.id, paymentMethod.ownerId!, 'paymentMethod');
   return paymentMethod;

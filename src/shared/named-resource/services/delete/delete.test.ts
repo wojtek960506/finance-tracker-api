@@ -25,7 +25,9 @@ import { deleteNamedResource } from './delete';
 
 describe('deleteNamedResource', () => {
   it('throws when resource is system', async () => {
-    vi.mocked(namedResourceDb.findNamedResourceById).mockResolvedValue({ type: 'system' } as any);
+    vi.mocked(namedResourceDb.findNamedResourceById).mockResolvedValue({
+      type: 'system',
+    } as any);
 
     await expect(deleteNamedResource('category', 'r1', 'u1')).rejects.toThrow('r1');
     expect(checkOwner).not.toHaveBeenCalled();
@@ -52,7 +54,10 @@ describe('deleteNamedResource', () => {
     expect(namedResourceDb.findNamedResourceById).toHaveBeenCalledWith('category', 'r1');
     expect(checkOwner).toHaveBeenCalledWith('u1', 'r1', 'u1', 'category');
     expect(checkOccurrences).toHaveBeenCalledWith('r1');
-    expect(namedResourceDb.removeNamedResourceById).toHaveBeenCalledWith('category', 'r1');
+    expect(namedResourceDb.removeNamedResourceById).toHaveBeenCalledWith(
+      'category',
+      'r1',
+    );
     expect(result).toEqual({ deletedCount: 1 });
   });
 });

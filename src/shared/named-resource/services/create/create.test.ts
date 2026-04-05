@@ -42,7 +42,9 @@ describe('createNamedResource', () => {
   });
 
   it('throws when resource with given name already exists', async () => {
-    vi.mocked(namedResourceDb.findNamedResourceByName).mockResolvedValue({ type: 'user' } as any);
+    vi.mocked(namedResourceDb.findNamedResourceByName).mockResolvedValue({
+      type: 'user',
+    } as any);
 
     await expect(createNamedResource('category', 'u1', { name: 'Food' })).rejects.toThrow(
       'exists:Food',

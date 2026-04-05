@@ -7,10 +7,7 @@ import {
   unfavoriteNamedResource as unfavoriteNamedResourceHandler,
 } from '@shared/named-resource-favorite';
 
-import {
-  findNamedResourceById,
-  findNamedResources,
-} from '../db';
+import { findNamedResourceById, findNamedResources } from '../db';
 import {
   getNamedResourceKindConfig,
   NamedResourceKind,
