@@ -10,10 +10,10 @@ import {
 import { findNamedResourceById, findNamedResources } from '../db';
 import {
   getNamedResourceKindConfig,
-  NamedResourceKind,
   NamedResourceResponse,
 } from '../kind-config';
 import { INamedResource } from '../model';
+import { NamedResourceKind } from '../types';
 
 export * from './create';
 export * from './delete';

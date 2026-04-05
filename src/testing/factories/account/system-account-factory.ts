@@ -1,4 +1,4 @@
-import { AccountType } from '@account/model';
+import { NamedResourceType } from '@shared/named-resource';
 
 import {
   ACCOUNT_EXPENSE_ID_OBJ,
@@ -11,7 +11,7 @@ import {
 } from './account-consts';
 
 const commonProps = {
-  type: ACCOUNT_TYPE_SYSTEM as AccountType,
+  type: ACCOUNT_TYPE_SYSTEM as NamedResourceType,
   ownerId: undefined,
 };
 

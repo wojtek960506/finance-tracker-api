@@ -1,11 +1,11 @@
 import { Types } from 'mongoose';
 import { describe, expect, it } from 'vitest';
 
-import { CategoryModel } from '@category/model';
+import { getNamedResourceModel } from '@shared/named-resource';
 
 describe('CategoryModel ownerId validator', () => {
   it('accepts user category with ownerId', () => {
-    const doc = new CategoryModel({
+    const doc = new (getNamedResourceModel('category'))({
       type: 'user',
       ownerId: new Types.ObjectId(),
       name: 'Food',
@@ -18,7 +18,7 @@ describe('CategoryModel ownerId validator', () => {
   });
 
   it('rejects user category when ownerId is null', () => {
-    const doc = new CategoryModel({
+    const doc = new (getNamedResourceModel('category'))({
       type: 'user',
       ownerId: null,
       name: 'Food',
@@ -32,7 +32,7 @@ describe('CategoryModel ownerId validator', () => {
   });
 
   it('rejects user category without ownerId', () => {
-    const doc = new CategoryModel({
+    const doc = new (getNamedResourceModel('category'))({
       type: 'user',
       name: 'Food',
       nameNormalized: 'food',
@@ -45,7 +45,7 @@ describe('CategoryModel ownerId validator', () => {
   });
 
   it('accepts system category without ownerId', () => {
-    const doc = new CategoryModel({
+    const doc = new (getNamedResourceModel('category'))({
       type: 'system',
       name: 'Transfer',
       nameNormalized: 'transfer',
@@ -57,7 +57,7 @@ describe('CategoryModel ownerId validator', () => {
   });
 
   it('rejects system category with ownerId', () => {
-    const doc = new CategoryModel({
+    const doc = new (getNamedResourceModel('category'))({
       type: 'system',
       ownerId: new Types.ObjectId(),
       name: 'Transfer',

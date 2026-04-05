@@ -5,9 +5,9 @@ import {
 } from '@shared/named-resource/db';
 import {
   getNamedResourceKindConfig,
-  NamedResourceKind,
   NamedResourceResponse,
 } from '@shared/named-resource/kind-config';
+import { NamedResourceKind } from '@shared/named-resource/types';
 import { checkOwner } from '@shared/services';
 import { AppError } from '@utils/errors';
 import { normalizeWhitespace } from '@utils/strings';

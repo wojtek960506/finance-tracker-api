@@ -1,10 +1,10 @@
 import { findNamedResourceById } from '@shared/named-resource/db';
 import {
   getNamedResourceKindConfig,
-  NamedResourceKind,
   NamedResourceResponse,
 } from '@shared/named-resource/kind-config';
 import { checkOwner } from '@shared/services';
+import { NamedResourceKind } from '@shared/named-resource/types';
 
 export const getNamedResource = async <
   TResponse extends NamedResourceResponse = NamedResourceResponse,

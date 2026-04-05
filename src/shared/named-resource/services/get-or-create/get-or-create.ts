@@ -1,9 +1,9 @@
 import { findNamedResourceByName } from '@shared/named-resource/db';
 import {
   getNamedResourceKindConfig,
-  NamedResourceKind,
   NamedResourceResponse,
 } from '@shared/named-resource/kind-config';
+import { NamedResourceKind } from '@shared/named-resource/types';
 
 import { createNamedResource } from '../create';
 

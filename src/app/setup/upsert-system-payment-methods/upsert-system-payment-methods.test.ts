@@ -1,7 +1,7 @@
 import { describe, expect, it, Mock, vi } from 'vitest';
 
 import { upsertSystemNamedResources } from '@app/setup';
-import { PaymentMethodModel } from '@payment-method/model';
+import { getNamedResourceModel } from '@shared/named-resource';
 import { SYSTEM_PAYMENT_METHOD_NAMES } from '@utils/consts';
 
 import { upsertSystemPaymentMethods } from './upsert-system-payment-methods';
@@ -18,7 +18,7 @@ describe('upsertSystemPaymentMethods', () => {
 
     expect(upsertSystemNamedResources).toHaveBeenCalledOnce();
     expect(upsertSystemNamedResources).toHaveBeenCalledWith(
-      PaymentMethodModel,
+      getNamedResourceModel('paymentMethod'),
       SYSTEM_PAYMENT_METHOD_NAMES,
     );
   });

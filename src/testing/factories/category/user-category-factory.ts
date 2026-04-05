@@ -1,6 +1,6 @@
 import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
 
-import { CategoryType } from '@category/model';
+import { NamedResourceType } from '@shared/named-resource';
 
 import {
   CATEGORY_TYPE_USER,
@@ -10,7 +10,7 @@ import {
 } from './category-consts';
 
 const commonProps = {
-  type: CATEGORY_TYPE_USER as CategoryType,
+  type: CATEGORY_TYPE_USER as NamedResourceType,
   name: FOOD_CATEGORY_NAME,
   nameNormalized: FOOD_CATEGORY_NAME.toLowerCase(),
 };

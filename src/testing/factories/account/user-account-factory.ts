@@ -1,6 +1,6 @@
 import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
 
-import { AccountType } from '@account/model';
+import { NamedResourceType } from '@shared/named-resource';
 
 import {
   ACCOUNT_EXPENSE_ID_OBJ,
@@ -10,7 +10,7 @@ import {
 } from './account-consts';
 
 const commonProps = {
-  type: ACCOUNT_TYPE_USER as AccountType,
+  type: ACCOUNT_TYPE_USER as NamedResourceType,
   name: ACCOUNT_EXPENSE_NAME,
   nameNormalized: ACCOUNT_EXPENSE_NAME.toLowerCase(),
 };

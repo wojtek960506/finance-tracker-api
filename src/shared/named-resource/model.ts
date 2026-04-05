@@ -1,6 +1,6 @@
-import { Document, model, Schema, Types } from 'mongoose';
+import { Document, Model, model, Schema, Types } from 'mongoose';
 
-import { NamedResourceAttributes } from './types';
+import { NamedResourceAttributes, NamedResourceKind } from './types';
 
 export interface INamedResource extends NamedResourceAttributes, Document {
   __v: number;
@@ -10,7 +10,6 @@ export interface INamedResource extends NamedResourceAttributes, Document {
 
 export const createNamedResourceModel = <TDocument extends INamedResource>(
   modelName: string,
-  invalidOwnerMessage: string,
 ) => {
   const schema = new Schema<TDocument>(
     {
@@ -21,14 +20,14 @@ export const createNamedResourceModel = <TDocument extends INamedResource>(
           function (this: TDocument) {
             return this.type === 'user';
           },
-          invalidOwnerMessage,
+          'Invalid ownerId',
         ],
         validate: {
           validator: function (this: TDocument, value: unknown) {
             if (this.type === 'system') return !value;
             return true;
           },
-          message: invalidOwnerMessage,
+          message: 'Invalid ownerId',
         },
       },
       type: { type: String, required: true, enum: ['user', 'system'] },
@@ -49,4 +48,14 @@ export const createNamedResourceModel = <TDocument extends INamedResource>(
   );
 
   return model<TDocument>(modelName, schema);
+};
+
+const namedResourceModels: Record<NamedResourceKind, Model<INamedResource>> = {
+  account: createNamedResourceModel<INamedResource>('Account'),
+  category: createNamedResourceModel<INamedResource>('Category'),
+  paymentMethod: createNamedResourceModel<INamedResource>('PaymentMethod'),
+};
+
+export const getNamedResourceModel = (kind: NamedResourceKind) => {
+  return namedResourceModels[kind];
 };

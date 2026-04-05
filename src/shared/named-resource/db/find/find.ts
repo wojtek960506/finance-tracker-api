@@ -1,8 +1,8 @@
 import {
   getNamedResourceKindConfig,
-  NamedResourceKind,
 } from '@shared/named-resource/kind-config';
 import { INamedResource } from '@shared/named-resource/model';
+import { NamedResourceKind } from '@shared/named-resource/types';
 import { normalizeWhitespace } from '@utils/strings';
 
 export const findNamedResourceById = async (kind: NamedResourceKind, id: string) => {

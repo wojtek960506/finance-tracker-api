@@ -1,4 +1,4 @@
-import { PaymentMethodType } from '@payment-method/model';
+import { NamedResourceType } from '@shared/named-resource';
 
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
@@ -11,7 +11,7 @@ import {
 } from './payment-method-consts';
 
 const commonProps = {
-  type: PAYMENT_METHOD_TYPE_SYSTEM as PaymentMethodType,
+  type: PAYMENT_METHOD_TYPE_SYSTEM as NamedResourceType,
   ownerId: undefined,
 };
 

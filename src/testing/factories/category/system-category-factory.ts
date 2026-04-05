@@ -1,4 +1,4 @@
-import { CategoryType } from '@category/model';
+import { NamedResourceType } from '@shared/named-resource';
 
 import {
   CATEGORY_TYPE_SYSTEM,
@@ -10,7 +10,10 @@ import {
   TRANSFER_CATEGORY_NAME,
 } from './category-consts';
 
-const commonProps = { type: CATEGORY_TYPE_SYSTEM as CategoryType, ownerId: undefined };
+const commonProps = {
+  type: CATEGORY_TYPE_SYSTEM as NamedResourceType,
+  ownerId: undefined,
+};
 const propsTransfer = {
   name: TRANSFER_CATEGORY_NAME,
   nameNormalized: TRANSFER_CATEGORY_NAME.toLowerCase(),

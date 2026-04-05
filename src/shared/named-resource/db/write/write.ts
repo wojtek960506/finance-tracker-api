@@ -1,9 +1,9 @@
 import {
   getNamedResourceKindConfig,
-  NamedResourceKind,
   NamedResourceResponse,
 } from '@shared/named-resource/kind-config';
 import { INamedResource } from '@shared/named-resource/model';
+import { NamedResourceKind } from '@shared/named-resource/types';
 
 import { NamedResourceCreateProps, NamedResourceUpdateProps } from '../types';
 

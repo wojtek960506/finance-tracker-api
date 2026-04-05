@@ -1,6 +1,3 @@
-import { AccountModel } from '@account/model';
-import { CategoryModel } from '@category/model';
-import { PaymentMethodModel } from '@payment-method/model';
 import { CheckOwnerType } from '@shared/services';
 import { checkTransactionDependencies } from '@transaction/services';
 import {
@@ -24,10 +21,9 @@ import {
   UserPaymentMethodMissingOwner,
 } from '@utils/errors';
 
-import { INamedResource } from './model';
+import { getNamedResourceModel, INamedResource } from './model';
 import { serializeNamedResource } from './serializers';
-
-export type NamedResourceKind = 'account' | 'category' | 'paymentMethod';
+import { NamedResourceKind } from './types';
 
 export type NamedResourceResponse = {
   id: string;
@@ -42,7 +38,7 @@ export type NamedResourceMapItem = Pick<NamedResourceResponse, 'id' | 'type' | '
 export type NamedResourcesMap = Record<string, NamedResourceMapItem>;
 
 type NamedResourceKindConfig = {
-  model: typeof AccountModel | typeof CategoryModel | typeof PaymentMethodModel;
+  model: ReturnType<typeof getNamedResourceModel>;
   serialize: (resource: INamedResource) => NamedResourceResponse;
   checkOwnerType: CheckOwnerType;
   notFoundErrorFactory: (id: string) => Error;
@@ -60,7 +56,7 @@ const serialize = (resource: INamedResource): NamedResourceResponse => {
 
 const namedResourceConfigs: Record<NamedResourceKind, NamedResourceKindConfig> = {
   account: {
-    model: AccountModel,
+    model: getNamedResourceModel('account'),
     serialize,
     checkOwnerType: 'account',
     notFoundErrorFactory: (id) => new AccountNotFoundError(id),
@@ -72,7 +68,7 @@ const namedResourceConfigs: Record<NamedResourceKind, NamedResourceKindConfig> =
     checkOccurrences: (id) => checkTransactionDependencies('accountId', id),
   },
   category: {
-    model: CategoryModel,
+    model: getNamedResourceModel('category'),
     serialize,
     checkOwnerType: 'category',
     notFoundErrorFactory: (id) => new CategoryNotFoundError(id),
@@ -84,7 +80,7 @@ const namedResourceConfigs: Record<NamedResourceKind, NamedResourceKindConfig> =
     checkOccurrences: (id) => checkTransactionDependencies('categoryId', id),
   },
   paymentMethod: {
-    model: PaymentMethodModel,
+    model: getNamedResourceModel('paymentMethod'),
     serialize,
     checkOwnerType: 'paymentMethod',
     notFoundErrorFactory: (id) => new PaymentMethodNotFoundError(id),

@@ -4,7 +4,6 @@ import { AccountDTO, AccountResponseDTO } from '@account/schema';
 import { CategoryDTO, CategoryResponseDTO } from '@category/schema';
 import { PaymentMethodDTO, PaymentMethodResponseDTO } from '@payment-method/schema';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
-import { NamedResourceKind } from '@shared/named-resource/kind-config';
 import {
   createNamedResource,
   deleteNamedResource,
@@ -16,6 +15,7 @@ import {
   updateNamedResource,
 } from '@shared/named-resource/services';
 import { NameDTO } from '@shared/named-resource/services/types';
+import { NamedResourceKind } from '@shared/named-resource/types';
 
 type NamedResourceBodyByKind = {
   account: AccountDTO;
