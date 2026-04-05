@@ -15,9 +15,11 @@
     "noEmit": true,
     "baseUrl": "./src",
     "paths": {
+      "@named-resource-favorite": ["shared/named-resource-favorite/index.ts"],
       "@utils/*": ["utils/*"],
       "@app/*": ["app/*"],
       "@shared/*": ["shared/*"],
+      "@named-resource-favorite/*": ["shared/named-resource-favorite/*"],
       "@auth/*": ["auth/*"],
       "@user/*": ["user/*"],
       "@account/*": ["account/*"],

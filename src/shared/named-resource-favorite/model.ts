@@ -1,6 +1,5 @@
+import { FavoriteNamedResourceType } from '@named-resource-favorite/types';
 import { Document, model, Schema, Types } from 'mongoose';
-
-import { FavoriteNamedResourceType } from './types';
 
 export interface FavoriteNamedResourceAttributes {
   userId: Types.ObjectId;

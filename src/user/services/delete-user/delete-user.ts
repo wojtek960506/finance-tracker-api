@@ -27,18 +27,15 @@ const deleteUserCore = async (
   // delete all categories of the user
   const { deletedCount: deletedCategoriesCount } = await getNamedResourceModel(
     'category',
-  ).deleteMany(
-    { ownerId: id },
-    { session },
-  );
+  ).deleteMany({ ownerId: id }, { session });
   // delete all payment methods of the user
-  const { deletedCount: deletedPaymentMethodsCount } =
-    await getNamedResourceModel('paymentMethod').deleteMany({ ownerId: id }, { session });
+  const { deletedCount: deletedPaymentMethodsCount } = await getNamedResourceModel(
+    'paymentMethod',
+  ).deleteMany({ ownerId: id }, { session });
 
-  const { deletedCount: deletedAccountsCount } = await getNamedResourceModel('account').deleteMany(
-    { ownerId: id },
-    { session },
-  );
+  const { deletedCount: deletedAccountsCount } = await getNamedResourceModel(
+    'account',
+  ).deleteMany({ ownerId: id }, { session });
 
   const { deletedCount } = await UserModel.deleteOne({ _id: id }, { session });
   if (deletedCount !== 1) throw new UserNotDeletedError(id);

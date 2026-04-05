@@ -1,8 +1,6 @@
 import { DeleteResult } from 'mongoose';
 
-import {
-  getNamedResourceKindConfig,
-} from '@shared/named-resource/kind-config';
+import { getNamedResourceKindConfig } from '@shared/named-resource/kind-config';
 import { NamedResourceKind } from '@shared/named-resource/types';
 
 export const removeNamedResourceById = async (

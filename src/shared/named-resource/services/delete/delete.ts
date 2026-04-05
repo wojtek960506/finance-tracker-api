@@ -4,11 +4,9 @@ import {
   findNamedResourceById,
   removeNamedResourceById,
 } from '@shared/named-resource/db';
-import {
-  getNamedResourceKindConfig,
-} from '@shared/named-resource/kind-config';
-import { checkOwner } from '@shared/services';
+import { getNamedResourceKindConfig } from '@shared/named-resource/kind-config';
 import { NamedResourceKind } from '@shared/named-resource/types';
+import { checkOwner } from '@shared/services';
 
 export const deleteNamedResource = async (
   kind: NamedResourceKind,

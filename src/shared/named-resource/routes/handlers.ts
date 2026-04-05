@@ -1,3 +1,8 @@
+import {
+  favoriteNamedResource,
+  getFavoriteNamedResources,
+  unfavoriteNamedResource,
+} from '@named-resource-favorite/services';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { AccountDTO, AccountResponseDTO } from '@account/schema';
@@ -7,11 +12,8 @@ import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
 import {
   createNamedResource,
   deleteNamedResource,
-  favoriteNamedResource,
-  getFavoriteNamedResources,
   getNamedResource,
   listNamedResources,
-  unfavoriteNamedResource,
   updateNamedResource,
 } from '@shared/named-resource/services';
 import { NameDTO } from '@shared/named-resource/services/types';

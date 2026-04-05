@@ -1,12 +1,14 @@
-import { findNamedResourceById } from '@shared/named-resource/db';
+import { persistFavoriteNamedResource } from '@named-resource-favorite/db';
+
 import {
   getNamedResourceKindConfig,
   NamedResourceResponse,
 } from '@shared/named-resource/kind-config';
 import { NamedResourceKind } from '@shared/named-resource/types';
-import { checkOwner } from '@shared/services';
 
-export const getNamedResource = async <
+import { assertNamedResourceAccess } from './assert-named-resource-access';
+
+export const favoriteNamedResource = async <
   TResponse extends NamedResourceResponse = NamedResourceResponse,
 >(
   kind: NamedResourceKind,
@@ -14,10 +16,8 @@ export const getNamedResource = async <
   ownerId: string,
 ): Promise<TResponse> => {
   const config = getNamedResourceKindConfig(kind);
-  const resource = await findNamedResourceById(kind, resourceId);
+  const resource = await assertNamedResourceAccess(kind, resourceId, ownerId);
 
-  if (resource.type !== 'system')
-    checkOwner(ownerId, resourceId, resource.ownerId!, config.checkOwnerType);
-
+  await persistFavoriteNamedResource(ownerId, kind, resourceId);
   return config.serialize(resource) as TResponse;
 };

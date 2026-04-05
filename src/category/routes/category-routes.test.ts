@@ -47,12 +47,19 @@ vi.mock('@shared/named-resource/services', async (importOriginal) => {
     ...actual,
     createNamedResource: createImpl,
     deleteNamedResource: deleteImpl,
-    favoriteNamedResource: favoriteImpl,
-    getFavoriteNamedResources: getFavoritesImpl,
     getNamedResource: getImpl,
     listNamedResources: listImpl,
-    unfavoriteNamedResource: unfavoriteImpl,
     updateNamedResource: updateImpl,
+  };
+});
+vi.mock('@named-resource-favorite/services', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@named-resource-favorite/services')>();
+  return {
+    ...actual,
+    favoriteNamedResource: favoriteImpl,
+    getFavoriteNamedResources: getFavoritesImpl,
+    unfavoriteNamedResource: unfavoriteImpl,
   };
 });
 
