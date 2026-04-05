@@ -1,23 +1,28 @@
 import { DeleteResult } from 'mongoose';
 
-import { NamedResourceMinimal } from '@shared/named-resource';
-import { checkOwner, CheckOwnerType } from '@shared/services';
+import {
+  findNamedResourceById,
+  removeNamedResourceById,
+} from '@shared/named-resource/db';
+import {
+  getNamedResourceKindConfig,
+  NamedResourceKind,
+} from '@shared/named-resource/kind-config';
+import { checkOwner } from '@shared/services';
 
-export const deleteNamedResource = <TResource extends NamedResourceMinimal>(deps: {
-  findById: (id: string) => Promise<TResource>;
-  remove: (id: string) => Promise<DeleteResult>;
-  checkOwnerType: CheckOwnerType;
-  checkOccurrences: (id: string) => Promise<void>;
-  systemResourceDeleteErrorFactory: (id: string) => Error;
-}) => {
-  return async (resourceId: string, ownerId: string): Promise<DeleteResult> => {
-    const resource = await deps.findById(resourceId);
-    if (resource.type === 'system')
-      throw deps.systemResourceDeleteErrorFactory(resourceId);
-    checkOwner(ownerId, resourceId, resource.ownerId!, deps.checkOwnerType);
+export const deleteNamedResource = async (
+  kind: NamedResourceKind,
+  resourceId: string,
+  ownerId: string,
+): Promise<DeleteResult> => {
+  const config = getNamedResourceKindConfig(kind);
+  const resource = await findNamedResourceById(kind, resourceId);
 
-    await deps.checkOccurrences(resourceId);
+  if (resource.type === 'system')
+    throw config.systemResourceDeleteErrorFactory(resourceId);
 
-    return deps.remove(resourceId);
-  };
+  checkOwner(ownerId, resourceId, resource.ownerId!, config.checkOwnerType);
+  await config.checkOccurrences(resourceId);
+
+  return removeNamedResourceById(kind, resourceId);
 };

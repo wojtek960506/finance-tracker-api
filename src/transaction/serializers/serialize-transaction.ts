@@ -1,21 +1,19 @@
-import { AccountsMap } from '@account/services';
-import { CategoriesMap } from '@category/services';
-import { PaymentMethodsMap } from '@payment-method/services';
+import { NamedResourcesMap } from '@shared/named-resource/kind-config';
 import { ITransaction } from '@transaction/model';
 import { TransactionResponseDTO } from '@transaction/schema';
 
 export function serializeTransaction(transaction: ITransaction): TransactionResponseDTO;
 export function serializeTransaction(
   transaction: ITransaction,
-  categoriesMap: CategoriesMap,
-  paymentMethodsMap: PaymentMethodsMap,
-  accountsMap: AccountsMap,
+  categoriesMap: NamedResourcesMap,
+  paymentMethodsMap: NamedResourcesMap,
+  accountsMap: NamedResourcesMap,
 ): TransactionResponseDTO;
 export function serializeTransaction(
   transaction: ITransaction,
-  categoriesMap?: CategoriesMap,
-  paymentMethodsMap?: PaymentMethodsMap,
-  accountsMap?: AccountsMap,
+  categoriesMap?: NamedResourcesMap,
+  paymentMethodsMap?: NamedResourcesMap,
+  accountsMap?: NamedResourcesMap,
 ): TransactionResponseDTO {
   const { _id, __v, ownerId, refId, categoryId, paymentMethodId, accountId, ...rest } =
     transaction.toObject();

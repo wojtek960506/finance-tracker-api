@@ -1,58 +1,61 @@
-import { checkOwner, CheckOwnerType } from '@shared/services';
+import {
+  findNamedResourceById,
+  findNamedResourceByName,
+  saveNamedResourceChanges,
+} from '@shared/named-resource/db';
+import {
+  getNamedResourceKindConfig,
+  NamedResourceKind,
+  NamedResourceResponse,
+} from '@shared/named-resource/kind-config';
+import { checkOwner } from '@shared/services';
 import { AppError } from '@utils/errors';
 import { normalizeWhitespace } from '@utils/strings';
 
-import { NamedResourceMinimal, NameDTO } from '../types';
+import { NameDTO } from '../types';
 
-export const updateNamedResource = <
-  TResource extends NamedResourceMinimal,
-  TResponse,
->(deps: {
-  findById: (id: string) => Promise<TResource>;
-  findByName: (name: string, ownerId: string) => Promise<NamedResourceMinimal | null>;
-  saveChanges: (
-    resource: TResource,
-    props: { name: string; nameNormalized: string },
-  ) => Promise<TResponse>;
-  checkOwnerType: CheckOwnerType;
-  systemUpdateNotAllowedFactory: (id: string) => Error;
-  userMissingOwnerFactory: (id: string) => Error;
-  alreadyExistsErrorFactory: (name: string) => Error;
-  systemNameConflictErrorFactory: (name: string) => Error;
-}) => {
-  return async (
-    resourceId: string,
-    ownerId: string,
-    dto: NameDTO,
-  ): Promise<TResponse> => {
-    const resource = await deps.findById(resourceId);
-    if (resource.type === 'system') throw deps.systemUpdateNotAllowedFactory(resourceId);
-    if (!resource.ownerId) throw deps.userMissingOwnerFactory(resourceId);
-    checkOwner(ownerId, resourceId, resource.ownerId, deps.checkOwnerType);
+export const updateNamedResource = async <
+  TDTO extends NameDTO,
+  TResponse extends NamedResourceResponse = NamedResourceResponse,
+>(
+  kind: NamedResourceKind,
+  resourceId: string,
+  ownerId: string,
+  dto: TDTO,
+): Promise<TResponse> => {
+  const config = getNamedResourceKindConfig(kind);
+  const resource = await findNamedResourceById(kind, resourceId);
 
-    const normalizedName = normalizeWhitespace(dto.name);
-    const resourceWithSameName = await deps.findByName(normalizedName, ownerId);
-    if (resourceWithSameName && resourceWithSameName._id?.toString() !== resourceId) {
-      if (resourceWithSameName.type === 'system')
-        throw deps.systemNameConflictErrorFactory(dto.name);
-      throw deps.alreadyExistsErrorFactory(dto.name);
-    }
+  if (resource.type === 'system') throw config.systemUpdateNotAllowedFactory(resourceId);
+  if (!resource.ownerId) throw config.userMissingOwnerFactory(resourceId);
+  checkOwner(ownerId, resourceId, resource.ownerId, config.checkOwnerType);
 
-    try {
-      return await deps.saveChanges(resource, {
-        name: normalizedName,
-        nameNormalized: normalizedName.toLowerCase(),
-      });
-    } catch (err) {
-      if ((err as { code: number }).code === 11000)
-        throw deps.alreadyExistsErrorFactory(dto.name);
-      else
-        throw new AppError(
-          400,
-          (err as { message: string }).message,
-          undefined,
-          'NAMED_RESOURCE_UPDATE_ERROR',
-        );
-    }
-  };
+  const normalizedName = normalizeWhitespace(dto.name);
+  const resourceWithSameName = await findNamedResourceByName(
+    kind,
+    normalizedName,
+    ownerId,
+  );
+  if (resourceWithSameName && resourceWithSameName._id?.toString() !== resourceId) {
+    if (resourceWithSameName.type === 'system')
+      throw config.systemNameConflictErrorFactory(dto.name);
+    throw config.alreadyExistsErrorFactory(dto.name);
+  }
+
+  try {
+    return await saveNamedResourceChanges<TResponse>(kind, resource, {
+      name: normalizedName,
+      nameNormalized: normalizedName.toLowerCase(),
+    });
+  } catch (err) {
+    if ((err as { code: number }).code === 11000)
+      throw config.alreadyExistsErrorFactory(dto.name);
+
+    throw new AppError(
+      400,
+      (err as { message: string }).message,
+      undefined,
+      'NAMED_RESOURCE_UPDATE_ERROR',
+    );
+  }
 };

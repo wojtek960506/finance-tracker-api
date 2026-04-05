@@ -1,7 +1,6 @@
 import {
   FOOD_CATEGORY_ID_STR,
   getUpdateCategoryProps,
-  getUserCategoryResultJSON,
   getUserCategoryResultSerialized,
 } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
@@ -14,16 +13,50 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
-import * as dbC from '@category/db';
-import * as serviceC from '@category/services';
 
 import { categoryRoutes } from './category-routes';
+
+const {
+  createImpl,
+  deleteImpl,
+  favoriteImpl,
+  getFavoritesImpl,
+  getImpl,
+  listImpl,
+  unfavoriteImpl,
+  updateImpl,
+} = vi.hoisted(() => ({
+  createImpl: vi.fn(),
+  deleteImpl: vi.fn(),
+  favoriteImpl: vi.fn(),
+  getFavoritesImpl: vi.fn(),
+  getImpl: vi.fn(),
+  listImpl: vi.fn(),
+  unfavoriteImpl: vi.fn(),
+  updateImpl: vi.fn(),
+}));
 
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
 
 vi.mock('@auth/services', () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
+vi.mock('@shared/named-resource/services', async (importOriginal) => {
+  const actual = await importOriginal<
+    typeof import('@shared/named-resource/services')
+  >();
+  return {
+    ...actual,
+    createNamedResource: createImpl,
+    deleteNamedResource: deleteImpl,
+    favoriteNamedResource: favoriteImpl,
+    getFavoriteNamedResources: getFavoritesImpl,
+    getNamedResource: getImpl,
+    listNamedResources: listImpl,
+    unfavoriteNamedResource: unfavoriteImpl,
+    updateNamedResource: updateImpl,
+  };
+});
 
 describe('category routes', async () => {
   const app = Fastify().withTypeProvider<ZodTypeProvider>();
@@ -41,55 +74,47 @@ describe('category routes', async () => {
   });
 
   it("should get categories - 'GET /'", async () => {
-    vi.spyOn(dbC, 'findCategories').mockResolvedValue([
-      {
-        toObject: () => getUserCategoryResultJSON(),
-      },
-    ] as any);
+    listImpl.mockResolvedValue([categoryResult]);
 
     const response = await app.inject({ method: 'GET', url: '/' });
 
-    expect(dbC.findCategories).toHaveBeenCalledOnce();
-    expect(dbC.findCategories).toHaveBeenCalledWith(USER_ID_STR);
+    expect(listImpl).toHaveBeenCalledWith('category', USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual([getUserCategoryResultSerialized()]);
+    expect(response.json()).toEqual([categoryResult]);
   });
 
   it("should get category - 'GET /:id'", async () => {
-    vi.spyOn(serviceC, 'getCategory').mockResolvedValue(categoryResult as any);
+    getImpl.mockResolvedValue(categoryResult);
 
     const response = await app.inject({ method: 'GET', url: `/${FOOD_CATEGORY_ID_STR}` });
 
-    expect(serviceC.getCategory).toHaveBeenCalledOnce();
-    expect(serviceC.getCategory).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR, USER_ID_STR);
+    expect(getImpl).toHaveBeenCalledWith('category', FOOD_CATEGORY_ID_STR, USER_ID_STR);
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(categoryResult);
   });
 
   it("should get favorite categories - 'GET /favorites'", async () => {
-    vi.spyOn(serviceC, 'getFavoriteCategories').mockResolvedValue([categoryResult] as any);
+    getFavoritesImpl.mockResolvedValue([categoryResult]);
 
     const response = await app.inject({ method: 'GET', url: '/favorites' });
 
-    expect(serviceC.getFavoriteCategories).toHaveBeenCalledOnce();
-    expect(serviceC.getFavoriteCategories).toHaveBeenCalledWith(USER_ID_STR);
+    expect(getFavoritesImpl).toHaveBeenCalledWith('category', USER_ID_STR);
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual([categoryResult]);
   });
 
   it("should create category - 'POST /'", async () => {
-    vi.spyOn(serviceC, 'createCategory').mockResolvedValue(categoryResult as any);
+    createImpl.mockResolvedValue(categoryResult);
 
     const response = await app.inject({ method: 'POST', url: '/', body: categoryDTO });
 
-    expect(serviceC.createCategory).toHaveBeenCalledOnce();
-    expect(serviceC.createCategory).toHaveBeenCalledWith(USER_ID_STR, categoryDTO);
+    expect(createImpl).toHaveBeenCalledWith('category', USER_ID_STR, categoryDTO);
     expect(response.statusCode).toBe(201);
     expect(response.json()).toEqual(categoryResult);
   });
 
   it("should update category - 'PUT /:id'", async () => {
-    vi.spyOn(serviceC, 'updateCategory').mockResolvedValue(categoryResult as any);
+    updateImpl.mockResolvedValue(categoryResult);
 
     const response = await app.inject({
       method: 'PUT',
@@ -97,8 +122,8 @@ describe('category routes', async () => {
       body: categoryDTO,
     });
 
-    expect(serviceC.updateCategory).toHaveBeenCalledOnce();
-    expect(serviceC.updateCategory).toHaveBeenCalledWith(
+    expect(updateImpl).toHaveBeenCalledWith(
+      'category',
       FOOD_CATEGORY_ID_STR,
       USER_ID_STR,
       categoryDTO,
@@ -108,15 +133,15 @@ describe('category routes', async () => {
   });
 
   it("should favorite category - 'POST /:id/favorite'", async () => {
-    vi.spyOn(serviceC, 'favoriteCategory').mockResolvedValue(categoryResult as any);
+    favoriteImpl.mockResolvedValue(categoryResult);
 
     const response = await app.inject({
       method: 'POST',
       url: `/${FOOD_CATEGORY_ID_STR}/favorite`,
     });
 
-    expect(serviceC.favoriteCategory).toHaveBeenCalledOnce();
-    expect(serviceC.favoriteCategory).toHaveBeenCalledWith(
+    expect(favoriteImpl).toHaveBeenCalledWith(
+      'category',
       FOOD_CATEGORY_ID_STR,
       USER_ID_STR,
     );
@@ -125,15 +150,15 @@ describe('category routes', async () => {
   });
 
   it("should unfavorite category - 'DELETE /:id/favorite'", async () => {
-    vi.spyOn(serviceC, 'unfavoriteCategory').mockResolvedValue(deleteResult as any);
+    unfavoriteImpl.mockResolvedValue(deleteResult);
 
     const response = await app.inject({
       method: 'DELETE',
       url: `/${FOOD_CATEGORY_ID_STR}/favorite`,
     });
 
-    expect(serviceC.unfavoriteCategory).toHaveBeenCalledOnce();
-    expect(serviceC.unfavoriteCategory).toHaveBeenCalledWith(
+    expect(unfavoriteImpl).toHaveBeenCalledWith(
+      'category',
       FOOD_CATEGORY_ID_STR,
       USER_ID_STR,
     );
@@ -142,15 +167,15 @@ describe('category routes', async () => {
   });
 
   it("should delete category - 'DELETE /:id'", async () => {
-    vi.spyOn(serviceC, 'deleteCategory').mockResolvedValue(deleteResult as any);
+    deleteImpl.mockResolvedValue(deleteResult);
 
     const response = await app.inject({
       method: 'DELETE',
       url: `/${FOOD_CATEGORY_ID_STR}`,
     });
 
-    expect(serviceC.deleteCategory).toHaveBeenCalledOnce();
-    expect(serviceC.deleteCategory).toHaveBeenCalledWith(
+    expect(deleteImpl).toHaveBeenCalledWith(
+      'category',
       FOOD_CATEGORY_ID_STR,
       USER_ID_STR,
     );

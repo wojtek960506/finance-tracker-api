@@ -1,8 +1,6 @@
 import { ClientSession } from 'mongoose';
 
-import { getOrCreateAccount } from '@account/services';
-import { getOrCreateCategory } from '@category/services';
-import { getOrCreatePaymentMethod } from '@payment-method/services';
+import { getOrCreateNamedResource } from '@shared/named-resource/services';
 import { TransactionModel } from '@transaction/model';
 import {
   SYSTEM_ACCOUNT_NAMES,
@@ -41,18 +39,24 @@ export async function createRandomTransactions(
   const testAccountNames = [...SYSTEM_ACCOUNT_NAMES, 'wallet', 'bank'];
 
   const categories = (
-    await Promise.all(testCategoryNames.map((name) => getOrCreateCategory(ownerId, name)))
+    await Promise.all(
+      testCategoryNames.map((name) => getOrCreateNamedResource('category', ownerId, name)),
+    )
   ).filter((c) => c != undefined);
   const categoryIds = categories.map((c) => c.id);
   const categoryNamesMap = Object.fromEntries(categories.map((c) => [c.id, c.name]));
   const paymentMethods = (
     await Promise.all(
-      testPaymentMethodNames.map((name) => getOrCreatePaymentMethod(ownerId, name)),
+      testPaymentMethodNames.map((name) =>
+        getOrCreateNamedResource('paymentMethod', ownerId, name),
+      ),
     )
   ).filter((pm) => pm != undefined);
   const paymentMethodIds = paymentMethods.map((pm) => pm.id);
   const accounts = (
-    await Promise.all(testAccountNames.map((name) => getOrCreateAccount(ownerId, name)))
+    await Promise.all(
+      testAccountNames.map((name) => getOrCreateNamedResource('account', ownerId, name)),
+    )
   ).filter((account) => account != undefined);
   const accountIds = new Set(accounts.map((account) => account.id));
 

@@ -76,7 +76,9 @@ describe('named resource favorites services', () => {
   it('unfavorites user resource with owner check', async () => {
     const resource = { type: 'user', ownerId: 'u1', name: 'Cash' } as any;
     const findById = vi.fn().mockResolvedValue(resource);
-    const removeFavorite = vi.fn().mockResolvedValue({ acknowledged: true, deletedCount: 1 });
+    const removeFavorite = vi
+      .fn()
+      .mockResolvedValue({ acknowledged: true, deletedCount: 1 });
 
     const unfavorite = unfavoriteNamedResource({
       resourceType: 'paymentMethod',

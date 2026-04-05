@@ -2,7 +2,6 @@ import { USER_ID_STR } from '@testing/factories/general';
 import {
   CASH_PAYMENT_METHOD_ID_STR,
   getUpdatePaymentMethodProps,
-  getUserPaymentMethodResultJSON,
   getUserPaymentMethodResultSerialized,
 } from '@testing/factories/payment-method';
 import Fastify from 'fastify';
@@ -14,16 +13,50 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
-import * as dbPM from '@payment-method/db';
-import * as servicePM from '@payment-method/services';
 
 import { paymentMethodRoutes } from './payment-method-routes';
+
+const {
+  createImpl,
+  deleteImpl,
+  favoriteImpl,
+  getFavoritesImpl,
+  getImpl,
+  listImpl,
+  unfavoriteImpl,
+  updateImpl,
+} = vi.hoisted(() => ({
+  createImpl: vi.fn(),
+  deleteImpl: vi.fn(),
+  favoriteImpl: vi.fn(),
+  getFavoritesImpl: vi.fn(),
+  getImpl: vi.fn(),
+  listImpl: vi.fn(),
+  unfavoriteImpl: vi.fn(),
+  updateImpl: vi.fn(),
+}));
 
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
 
 vi.mock('@auth/services', () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
+vi.mock('@shared/named-resource/services', async (importOriginal) => {
+  const actual = await importOriginal<
+    typeof import('@shared/named-resource/services')
+  >();
+  return {
+    ...actual,
+    createNamedResource: createImpl,
+    deleteNamedResource: deleteImpl,
+    favoriteNamedResource: favoriteImpl,
+    getFavoriteNamedResources: getFavoritesImpl,
+    getNamedResource: getImpl,
+    listNamedResources: listImpl,
+    unfavoriteNamedResource: unfavoriteImpl,
+    updateNamedResource: updateImpl,
+  };
+});
 
 describe('payment method routes', async () => {
   const app = Fastify().withTypeProvider<ZodTypeProvider>();
@@ -41,30 +74,25 @@ describe('payment method routes', async () => {
   });
 
   it("should get payment methods - 'GET /'", async () => {
-    vi.spyOn(dbPM, 'findPaymentMethods').mockResolvedValue([
-      {
-        toObject: () => getUserPaymentMethodResultJSON(),
-      },
-    ] as any);
+    listImpl.mockResolvedValue([paymentMethodResult]);
 
     const response = await app.inject({ method: 'GET', url: '/' });
 
-    expect(dbPM.findPaymentMethods).toHaveBeenCalledOnce();
-    expect(dbPM.findPaymentMethods).toHaveBeenCalledWith(USER_ID_STR);
+    expect(listImpl).toHaveBeenCalledWith('paymentMethod', USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual([getUserPaymentMethodResultSerialized()]);
+    expect(response.json()).toEqual([paymentMethodResult]);
   });
 
   it("should get payment method - 'GET /:id'", async () => {
-    vi.spyOn(servicePM, 'getPaymentMethod').mockResolvedValue(paymentMethodResult as any);
+    getImpl.mockResolvedValue(paymentMethodResult);
 
     const response = await app.inject({
       method: 'GET',
       url: `/${CASH_PAYMENT_METHOD_ID_STR}`,
     });
 
-    expect(servicePM.getPaymentMethod).toHaveBeenCalledOnce();
-    expect(servicePM.getPaymentMethod).toHaveBeenCalledWith(
+    expect(getImpl).toHaveBeenCalledWith(
+      'paymentMethod',
       CASH_PAYMENT_METHOD_ID_STR,
       USER_ID_STR,
     );
@@ -73,22 +101,17 @@ describe('payment method routes', async () => {
   });
 
   it("should get favorite payment methods - 'GET /favorites'", async () => {
-    vi.spyOn(servicePM, 'getFavoritePaymentMethods').mockResolvedValue(
-      [paymentMethodResult] as any,
-    );
+    getFavoritesImpl.mockResolvedValue([paymentMethodResult]);
 
     const response = await app.inject({ method: 'GET', url: '/favorites' });
 
-    expect(servicePM.getFavoritePaymentMethods).toHaveBeenCalledOnce();
-    expect(servicePM.getFavoritePaymentMethods).toHaveBeenCalledWith(USER_ID_STR);
+    expect(getFavoritesImpl).toHaveBeenCalledWith('paymentMethod', USER_ID_STR);
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual([paymentMethodResult]);
   });
 
   it("should create payment method - 'POST /'", async () => {
-    vi.spyOn(servicePM, 'createPaymentMethod').mockResolvedValue(
-      paymentMethodResult as any,
-    );
+    createImpl.mockResolvedValue(paymentMethodResult);
 
     const response = await app.inject({
       method: 'POST',
@@ -96,8 +119,8 @@ describe('payment method routes', async () => {
       body: paymentMethodDTO,
     });
 
-    expect(servicePM.createPaymentMethod).toHaveBeenCalledOnce();
-    expect(servicePM.createPaymentMethod).toHaveBeenCalledWith(
+    expect(createImpl).toHaveBeenCalledWith(
+      'paymentMethod',
       USER_ID_STR,
       paymentMethodDTO,
     );
@@ -106,9 +129,7 @@ describe('payment method routes', async () => {
   });
 
   it("should update payment method - 'PUT /:id'", async () => {
-    vi.spyOn(servicePM, 'updatePaymentMethod').mockResolvedValue(
-      paymentMethodResult as any,
-    );
+    updateImpl.mockResolvedValue(paymentMethodResult);
 
     const response = await app.inject({
       method: 'PUT',
@@ -116,8 +137,8 @@ describe('payment method routes', async () => {
       body: paymentMethodDTO,
     });
 
-    expect(servicePM.updatePaymentMethod).toHaveBeenCalledOnce();
-    expect(servicePM.updatePaymentMethod).toHaveBeenCalledWith(
+    expect(updateImpl).toHaveBeenCalledWith(
+      'paymentMethod',
       CASH_PAYMENT_METHOD_ID_STR,
       USER_ID_STR,
       paymentMethodDTO,
@@ -127,17 +148,15 @@ describe('payment method routes', async () => {
   });
 
   it("should favorite payment method - 'POST /:id/favorite'", async () => {
-    vi.spyOn(servicePM, 'favoritePaymentMethod').mockResolvedValue(
-      paymentMethodResult as any,
-    );
+    favoriteImpl.mockResolvedValue(paymentMethodResult);
 
     const response = await app.inject({
       method: 'POST',
       url: `/${CASH_PAYMENT_METHOD_ID_STR}/favorite`,
     });
 
-    expect(servicePM.favoritePaymentMethod).toHaveBeenCalledOnce();
-    expect(servicePM.favoritePaymentMethod).toHaveBeenCalledWith(
+    expect(favoriteImpl).toHaveBeenCalledWith(
+      'paymentMethod',
       CASH_PAYMENT_METHOD_ID_STR,
       USER_ID_STR,
     );
@@ -146,15 +165,15 @@ describe('payment method routes', async () => {
   });
 
   it("should unfavorite payment method - 'DELETE /:id/favorite'", async () => {
-    vi.spyOn(servicePM, 'unfavoritePaymentMethod').mockResolvedValue(deleteResult as any);
+    unfavoriteImpl.mockResolvedValue(deleteResult);
 
     const response = await app.inject({
       method: 'DELETE',
       url: `/${CASH_PAYMENT_METHOD_ID_STR}/favorite`,
     });
 
-    expect(servicePM.unfavoritePaymentMethod).toHaveBeenCalledOnce();
-    expect(servicePM.unfavoritePaymentMethod).toHaveBeenCalledWith(
+    expect(unfavoriteImpl).toHaveBeenCalledWith(
+      'paymentMethod',
       CASH_PAYMENT_METHOD_ID_STR,
       USER_ID_STR,
     );
@@ -163,15 +182,15 @@ describe('payment method routes', async () => {
   });
 
   it("should delete payment method - 'DELETE /:id'", async () => {
-    vi.spyOn(servicePM, 'deletePaymentMethod').mockResolvedValue(deleteResult as any);
+    deleteImpl.mockResolvedValue(deleteResult);
 
     const response = await app.inject({
       method: 'DELETE',
       url: `/${CASH_PAYMENT_METHOD_ID_STR}`,
     });
 
-    expect(servicePM.deletePaymentMethod).toHaveBeenCalledOnce();
-    expect(servicePM.deletePaymentMethod).toHaveBeenCalledWith(
+    expect(deleteImpl).toHaveBeenCalledWith(
+      'paymentMethod',
       CASH_PAYMENT_METHOD_ID_STR,
       USER_ID_STR,
     );

@@ -1,14 +1,23 @@
-export const getOrCreateNamedResource = <
-  TResource,
-  TResponse extends { name: string },
->(deps: {
-  findByName: (name: string, ownerId: string) => Promise<TResource | null>;
-  serialize: (resource: TResource) => TResponse;
-  create: (ownerId: string, dto: { name: string }) => Promise<TResponse>;
-}) => {
-  return async (ownerId: string, name: string) => {
-    const resource = await deps.findByName(name, ownerId);
-    if (resource) return deps.serialize(resource);
-    return deps.create(ownerId, { name });
-  };
+import { findNamedResourceByName } from '@shared/named-resource/db';
+import {
+  getNamedResourceKindConfig,
+  NamedResourceKind,
+  NamedResourceResponse,
+} from '@shared/named-resource/kind-config';
+
+import { createNamedResource } from '../create';
+
+export const getOrCreateNamedResource = async <
+  TResponse extends NamedResourceResponse = NamedResourceResponse,
+>(
+  kind: NamedResourceKind,
+  ownerId: string,
+  name: string,
+): Promise<TResponse> => {
+  const config = getNamedResourceKindConfig(kind);
+  const resource = await findNamedResourceByName(kind, name, ownerId);
+
+  if (resource) return config.serialize(resource) as TResponse;
+
+  return createNamedResource(kind, ownerId, { name });
 };

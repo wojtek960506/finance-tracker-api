@@ -1,7 +1,5 @@
-import { prepareAccountsMap } from '@account/services';
-import { prepareCategoriesMap } from '@category/services';
-import { preparePaymentMethodsMap } from '@payment-method/services';
 import { FilteredResponse } from '@shared/http';
+import { prepareNamedResourcesMap } from '@shared/named-resource/services';
 import { findTransactions, findTransactionsCount } from '@transaction/db';
 import { TransactionQuery, TransactionsResponseDTO } from '@transaction/schema';
 import { serializeTransaction } from '@transaction/serializers';
@@ -21,9 +19,21 @@ export const getTransactions = async (
   const totalPages = Math.ceil(total / query.limit);
 
   const [accountsMap, categoriesMap, paymentMethodsMap] = await Promise.all([
-    prepareAccountsMap(userId, transactions),
-    prepareCategoriesMap(userId, transactions),
-    preparePaymentMethodsMap(userId, transactions),
+    prepareNamedResourcesMap(
+      'account',
+      userId,
+      transactions.map((t) => t.accountId.toString()),
+    ),
+    prepareNamedResourcesMap(
+      'category',
+      userId,
+      transactions.map((t) => t.categoryId.toString()),
+    ),
+    prepareNamedResourcesMap(
+      'paymentMethod',
+      userId,
+      transactions.map((t) => t.paymentMethodId.toString()),
+    ),
   ]);
 
   return {

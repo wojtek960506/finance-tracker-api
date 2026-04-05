@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { favoritePaymentMethod } from '@payment-method/services';
+import { PaymentMethodResponseDTO } from '@payment-method/schema';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { favoriteNamedResource } from '@shared/named-resource/services';
 
 export const favoritePaymentMethodHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
@@ -9,6 +10,10 @@ export const favoritePaymentMethodHandler = async (
 ) => {
   const paymentMethodId = req.params.id;
   const userId = (req as AuthenticatedRequest).userId;
-  const result = await favoritePaymentMethod(paymentMethodId, userId);
+  const result = await favoriteNamedResource<PaymentMethodResponseDTO>(
+    'paymentMethod',
+    paymentMethodId,
+    userId,
+  );
   return res.code(200).send(result);
 };

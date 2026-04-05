@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { unfavoriteAccount } from '@account/services';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { unfavoriteNamedResource } from '@shared/named-resource/services';
 
 export const unfavoriteAccountHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
@@ -9,6 +9,6 @@ export const unfavoriteAccountHandler = async (
 ) => {
   const accountId = req.params.id;
   const userId = (req as AuthenticatedRequest).userId;
-  const result = await unfavoriteAccount(accountId, userId);
+  const result = await unfavoriteNamedResource('account', accountId, userId);
   return res.code(200).send(result);
 };

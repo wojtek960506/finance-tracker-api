@@ -1,33 +1,38 @@
+import {
+  findNamedResourceByName,
+  persistNamedResource,
+} from '@shared/named-resource/db';
+import {
+  getNamedResourceKindConfig,
+  NamedResourceKind,
+  NamedResourceResponse,
+} from '@shared/named-resource/kind-config';
 import { normalizeWhitespace } from '@utils/strings';
 
-import { NamedResourceMinimal, NameDTO } from '../types';
+import { NameDTO } from '../types';
 
-export const createNamedResource = <TDTO extends NameDTO, TResponse>(deps: {
-  findByName: (name: string, ownerId: string) => Promise<NamedResourceMinimal | null>;
-  persist: (props: {
-    ownerId: string;
-    type: 'user' | 'system';
-    name: string;
-    nameNormalized: string;
-  }) => Promise<TResponse>;
-  alreadyExistsErrorFactory: (name: string) => Error;
-  systemNameConflictErrorFactory: (name: string) => Error;
-}) => {
-  return async (ownerId: string, dto: TDTO): Promise<TResponse> => {
-    const { name } = dto;
+export const createNamedResource = async <
+  TDTO extends NameDTO,
+  TResponse extends NamedResourceResponse = NamedResourceResponse,
+>(
+  kind: NamedResourceKind,
+  ownerId: string,
+  dto: TDTO,
+): Promise<TResponse> => {
+  const { name } = dto;
+  const config = getNamedResourceKindConfig(kind);
 
-    const resource = await deps.findByName(name, ownerId);
-    if (resource) {
-      if (resource.type === 'system') throw deps.systemNameConflictErrorFactory(name);
-      throw deps.alreadyExistsErrorFactory(name);
-    }
+  const resource = await findNamedResourceByName(kind, name, ownerId);
+  if (resource) {
+    if (resource.type === 'system') throw config.systemNameConflictErrorFactory(name);
+    throw config.alreadyExistsErrorFactory(name);
+  }
 
-    const normalizedName = normalizeWhitespace(name);
-    return deps.persist({
-      ownerId,
-      type: 'user',
-      name: normalizedName,
-      nameNormalized: normalizedName.toLowerCase(),
-    });
-  };
+  const normalizedName = normalizeWhitespace(name);
+  return persistNamedResource<TResponse>(kind, {
+    ownerId,
+    type: 'user',
+    name: normalizedName,
+    nameNormalized: normalizedName.toLowerCase(),
+  });
 };

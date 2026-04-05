@@ -1,1 +1,3 @@
-export type FavoriteNamedResourceType = 'account' | 'category' | 'paymentMethod';
+import { NamedResourceKind } from '@shared/named-resource/kind-config';
+
+export type FavoriteNamedResourceType = NamedResourceKind;

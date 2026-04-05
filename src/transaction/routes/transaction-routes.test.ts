@@ -31,10 +31,8 @@ import {
 } from 'fastify-type-provider-zod';
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
-import * as serviceA from '@account/services';
 import { registerErrorHandler } from '@app/plugins/errorHandler';
-import * as serviceC from '@category/services';
-import * as servicePM from '@payment-method/services';
+import * as namedResourceServices from '@shared/named-resource/services';
 import { streamTransactions } from '@transaction/db';
 import * as serviceT from '@transaction/services';
 
@@ -163,17 +161,18 @@ describe('transaction routes', async () => {
   });
 
   it("should export transactions - 'GET /export'", async () => {
-    vi.spyOn(serviceC, 'prepareCategoriesMap').mockResolvedValue({
-      [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } as any,
-    });
-    vi.spyOn(serviceA, 'prepareAccountsMap').mockResolvedValue({
-      [ACCOUNT_EXPENSE_ID_STR]: { name: ACCOUNT_EXPENSE_NAME } as any,
-    });
-    vi.spyOn(servicePM, 'preparePaymentMethodsMap').mockResolvedValue({
-      [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: {
-        name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
-      } as any,
-    });
+    vi.spyOn(namedResourceServices, 'prepareNamedResourcesMap')
+      .mockResolvedValueOnce({
+        [ACCOUNT_EXPENSE_ID_STR]: { name: ACCOUNT_EXPENSE_NAME } as any,
+      })
+      .mockResolvedValueOnce({
+        [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } as any,
+      })
+      .mockResolvedValueOnce({
+        [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: {
+          name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
+        } as any,
+      });
     (streamTransactions as Mock).mockReturnValue(
       mockAsyncCursor([
         {

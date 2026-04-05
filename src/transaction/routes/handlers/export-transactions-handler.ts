@@ -1,10 +1,8 @@
 import { stringify } from 'csv-stringify';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { prepareAccountsMap } from '@account/services';
-import { prepareCategoriesMap } from '@category/services';
-import { preparePaymentMethodsMap } from '@payment-method/services';
 import { AuthenticatedRequest } from '@shared/http';
+import { prepareNamedResourcesMap } from '@shared/named-resource/services';
 import { streamTransactions } from '@transaction/db';
 import { csvExportColumns, transactionToCsvRow } from '@transaction/services';
 
@@ -26,9 +24,9 @@ export async function exportTransacionsHandler(req: FastifyRequest, res: Fastify
   const userId = (req as AuthenticatedRequest).userId;
   const cursor = streamTransactions(userId);
   const [accountsMap, categoriesMap, paymentMethodsMap] = await Promise.all([
-    prepareAccountsMap(userId),
-    prepareCategoriesMap(userId),
-    preparePaymentMethodsMap(userId),
+    prepareNamedResourcesMap('account', userId),
+    prepareNamedResourcesMap('category', userId),
+    prepareNamedResourcesMap('paymentMethod', userId),
   ]);
 
   for await (const transaction of cursor) {

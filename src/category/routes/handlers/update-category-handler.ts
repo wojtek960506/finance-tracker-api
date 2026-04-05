@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { CategoryDTO } from '@category/schema';
-import { updateCategory } from '@category/services';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { updateNamedResource } from '@shared/named-resource/services';
 
 export const updateCategoryHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId; Body: CategoryDTO }>,
@@ -12,6 +12,6 @@ export const updateCategoryHandler = async (
   const userId = (req as AuthenticatedRequest).userId;
   const dto = req.body;
 
-  const result = await updateCategory(categoryId, userId, dto);
+  const result = await updateNamedResource<CategoryDTO>('category', categoryId, userId, dto);
   res.code(200).send(result);
 };

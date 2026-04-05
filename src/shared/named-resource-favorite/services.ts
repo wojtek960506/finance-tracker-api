@@ -1,7 +1,7 @@
 import { DeleteResult } from 'mongoose';
 
 import { NamedResourceMinimal } from '@shared/named-resource';
-import { CheckOwnerType, checkOwner } from '@shared/services';
+import { checkOwner, CheckOwnerType } from '@shared/services';
 
 import { FavoriteNamedResourceType } from './types';
 

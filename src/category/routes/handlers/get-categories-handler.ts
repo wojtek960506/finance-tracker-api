@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { findCategories } from '@category/db';
-import { serializeCategory } from '@category/serializers';
+import { CategoriesResponseDTO } from '@category/schema';
 import { AuthenticatedRequest } from '@shared/http';
+import { listNamedResources } from '@shared/named-resource/services';
 
 export const getCategoriesHandler = async (req: FastifyRequest, res: FastifyReply) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result = await findCategories(userId);
-  return res.code(200).send(result.map((c) => serializeCategory(c)));
+  const result = await listNamedResources<CategoriesResponseDTO[number]>('category', userId);
+  return res.code(200).send(result);
 };

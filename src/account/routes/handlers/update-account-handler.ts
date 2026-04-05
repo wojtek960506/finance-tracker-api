@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { AccountDTO } from '@account/schema';
-import { updateAccount } from '@account/services';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { updateNamedResource } from '@shared/named-resource/services';
 
 export const updateAccountHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId; Body: AccountDTO }>,
@@ -12,6 +12,6 @@ export const updateAccountHandler = async (
   const userId = (req as AuthenticatedRequest).userId;
   const dto = req.body;
 
-  const result = await updateAccount(accountId, userId, dto);
+  const result = await updateNamedResource<AccountDTO>('account', accountId, userId, dto);
   return res.code(200).send(result);
 };

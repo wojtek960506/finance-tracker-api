@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { deleteAccount } from '@account/services';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { deleteNamedResource } from '@shared/named-resource/services';
 
 export const deleteAccountHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
@@ -10,6 +10,6 @@ export const deleteAccountHandler = async (
   const accountId = req.params.id;
   const userId = (req as AuthenticatedRequest).userId;
 
-  const result = await deleteAccount(accountId, userId);
+  const result = await deleteNamedResource('account', accountId, userId);
   return res.code(200).send(result);
 };

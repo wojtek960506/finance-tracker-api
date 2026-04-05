@@ -1,4 +1,10 @@
-export const prepareNamedResourcesMap = <
+import { findNamedResources } from '@shared/named-resource/db';
+import {
+  NamedResourceKind,
+  NamedResourcesMap,
+} from '@shared/named-resource/kind-config';
+
+const buildNamedResourcesMap = <
   TResource extends {
     _id: { toString: () => string };
     type: 'user' | 'system';
@@ -17,4 +23,13 @@ export const prepareNamedResourcesMap = <
       },
     ]),
   );
+};
+
+export const prepareNamedResourcesMap = async (
+  kind: NamedResourceKind,
+  ownerId: string,
+  resourceIds?: string[],
+): Promise<NamedResourcesMap> => {
+  const resources = await findNamedResources(kind, ownerId, resourceIds);
+  return buildNamedResourcesMap(resources);
 };

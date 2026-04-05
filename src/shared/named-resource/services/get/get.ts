@@ -1,19 +1,23 @@
-import { checkOwner, CheckOwnerType } from '@shared/services';
+import { findNamedResourceById } from '@shared/named-resource/db';
+import {
+  getNamedResourceKindConfig,
+  NamedResourceKind,
+  NamedResourceResponse,
+} from '@shared/named-resource/kind-config';
+import { checkOwner } from '@shared/services';
 
-import { NamedResourceMinimal } from '../types';
+export const getNamedResource = async <
+  TResponse extends NamedResourceResponse = NamedResourceResponse,
+>(
+  kind: NamedResourceKind,
+  resourceId: string,
+  ownerId: string,
+): Promise<TResponse> => {
+  const config = getNamedResourceKindConfig(kind);
+  const resource = await findNamedResourceById(kind, resourceId);
 
-export const getNamedResource = <
-  TResource extends NamedResourceMinimal,
-  TResponse,
->(deps: {
-  findById: (id: string) => Promise<TResource>;
-  serialize: (resource: TResource) => TResponse;
-  checkOwnerType: CheckOwnerType;
-}) => {
-  return async (resourceId: string, ownerId: string): Promise<TResponse> => {
-    const resource = await deps.findById(resourceId);
-    if (resource.type !== 'system')
-      checkOwner(ownerId, resourceId, resource.ownerId!, deps.checkOwnerType);
-    return deps.serialize(resource);
-  };
+  if (resource.type !== 'system')
+    checkOwner(ownerId, resourceId, resource.ownerId!, config.checkOwnerType);
+
+  return config.serialize(resource) as TResponse;
 };

@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { unfavoritePaymentMethod } from '@payment-method/services';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { unfavoriteNamedResource } from '@shared/named-resource/services';
 
 export const unfavoritePaymentMethodHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
@@ -9,6 +9,6 @@ export const unfavoritePaymentMethodHandler = async (
 ) => {
   const paymentMethodId = req.params.id;
   const userId = (req as AuthenticatedRequest).userId;
-  const result = await unfavoritePaymentMethod(paymentMethodId, userId);
+  const result = await unfavoriteNamedResource('paymentMethod', paymentMethodId, userId);
   return res.code(200).send(result);
 };

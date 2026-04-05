@@ -1,6 +1,4 @@
-import { findAccountById } from '@account/db';
-import { findCategoryById } from '@category/db';
-import { findPaymentMethodById } from '@payment-method/db';
+import { findNamedResourceById } from '@shared/named-resource/db';
 import { checkOwner } from '@shared/services';
 import { persistTransaction } from '@transaction/db';
 import {
@@ -19,21 +17,24 @@ import { SystemCategoryNotAllowed } from '@utils/errors';
 import { createTransactionPair } from './create-transaction-pair';
 
 const ensureCategoryAllowed = async (categoryId: string, ownerId: string) => {
-  const category = await findCategoryById(categoryId);
+  const category = await findNamedResourceById('category', categoryId);
   if (category.type === 'system') throw new SystemCategoryNotAllowed(category.id);
   checkOwner(ownerId, category.id, category.ownerId!, 'category');
   return category;
 };
 
 const ensurePaymentMethodAllowed = async (paymentMethodId: string, ownerId: string) => {
-  const paymentMethod = await findPaymentMethodById(paymentMethodId);
+  const paymentMethod = await findNamedResourceById(
+    'paymentMethod',
+    paymentMethodId,
+  );
   if (paymentMethod.type !== 'system')
     checkOwner(ownerId, paymentMethod.id, paymentMethod.ownerId!, 'paymentMethod');
   return paymentMethod;
 };
 
 const ensureAccountAllowed = async (accountId: string, ownerId: string) => {
-  const account = await findAccountById(accountId);
+  const account = await findNamedResourceById('account', accountId);
   if (account.type !== 'system')
     checkOwner(ownerId, account.id, account.ownerId!, 'account');
   return account;

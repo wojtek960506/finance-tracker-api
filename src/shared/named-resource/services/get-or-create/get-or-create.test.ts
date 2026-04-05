@@ -1,32 +1,43 @@
 import { describe, expect, it, vi } from 'vitest';
 
+vi.mock('@shared/named-resource/db', () => ({
+  findNamedResourceByName: vi.fn(),
+}));
+
+vi.mock('@shared/named-resource/kind-config', () => ({
+  getNamedResourceKindConfig: vi.fn(() => ({
+    serialize: vi.fn((resource) => ({ id: resource.id, name: resource.name })),
+  })),
+}));
+
+vi.mock('../create', () => ({
+  createNamedResource: vi.fn(),
+}));
+
+import * as namedResourceDb from '@shared/named-resource/db';
+
+import { createNamedResource } from '../create';
+
 import { getOrCreateNamedResource } from './get-or-create';
 
 describe('getOrCreateNamedResource', () => {
   it('returns serialized resource when it already exists', async () => {
     const resource = { id: '1', name: 'Food' };
-    const findByName = vi.fn().mockResolvedValue(resource);
-    const serialize = vi.fn().mockReturnValue({ id: '1', name: 'Food' });
-    const create = vi.fn();
+    vi.mocked(namedResourceDb.findNamedResourceByName).mockResolvedValue(resource as any);
 
-    const getOrCreate = getOrCreateNamedResource({ findByName, serialize, create });
-    const result = await getOrCreate('u1', 'Food');
+    const result = await getOrCreateNamedResource('category', 'u1', 'Food');
 
-    expect(serialize).toHaveBeenCalledWith(resource);
-    expect(create).not.toHaveBeenCalled();
+    expect(createNamedResource).not.toHaveBeenCalled();
     expect(result).toEqual({ id: '1', name: 'Food' });
   });
 
   it('creates resource when it does not exist', async () => {
-    const findByName = vi.fn().mockResolvedValue(null);
-    const serialize = vi.fn();
-    const create = vi.fn().mockResolvedValue({ id: '1', name: 'Food' });
+    vi.mocked(namedResourceDb.findNamedResourceByName).mockResolvedValue(null as any);
+    vi.mocked(createNamedResource).mockResolvedValue({ id: '1', name: 'Food' } as any);
 
-    const getOrCreate = getOrCreateNamedResource({ findByName, serialize, create });
-    const result = await getOrCreate('u1', 'Food');
+    const result = await getOrCreateNamedResource('category', 'u1', 'Food');
 
-    expect(create).toHaveBeenCalledWith('u1', { name: 'Food' });
-    expect(serialize).not.toHaveBeenCalled();
+    expect(createNamedResource).toHaveBeenCalledWith('category', 'u1', { name: 'Food' });
     expect(result).toEqual({ id: '1', name: 'Food' });
   });
 });

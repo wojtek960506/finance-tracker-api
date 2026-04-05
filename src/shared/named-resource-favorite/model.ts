@@ -9,8 +9,7 @@ export interface FavoriteNamedResourceAttributes {
 }
 
 export interface IFavoriteNamedResource
-  extends FavoriteNamedResourceAttributes,
-    Document {
+  extends FavoriteNamedResourceAttributes, Document {
   _id: Types.ObjectId;
 }
 

@@ -1,9 +1,8 @@
+import { createNamedResourceModel, INamedResource } from '@shared/named-resource/model';
 import {
-  createNamedResourceModel,
-  INamedResource,
   NamedResourceAttributes,
   NamedResourceType,
-} from '@shared/named-resource';
+} from '@shared/named-resource/types';
 
 export type AccountType = NamedResourceType;
 
