@@ -16,8 +16,11 @@ import { validateBody } from '@utils/validation';
 import {
   createAccountHandler,
   deleteAccountHandler,
+  favoriteAccountHandler,
   getAccountHandler,
   getAccountsHandler,
+  getFavoriteAccountsHandler,
+  unfavoriteAccountHandler,
   updateAccountHandler,
 } from './handlers';
 
@@ -38,6 +41,22 @@ export async function accountRoutes(
       },
     },
     getAccountsHandler,
+  );
+
+  app.get<{ Reply: AccountsResponseDTO }>(
+    '/favorites',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Accounts'],
+        summary: 'List favorite accounts',
+        description: 'Return all favorite accounts for the authenticated user.',
+        response: {
+          200: AccountsResponseSchema,
+        },
+      },
+    },
+    getFavoriteAccountsHandler,
   );
 
   app.get<{ Params: ParamsJustId; Reply: AccountResponseDTO }>(
@@ -90,6 +109,40 @@ export async function accountRoutes(
       },
     },
     updateAccountHandler,
+  );
+
+  app.post<{ Params: ParamsJustId; Reply: AccountResponseDTO }>(
+    '/:id/favorite',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Accounts'],
+        summary: 'Favorite account',
+        description: 'Mark account as favorite for the authenticated user.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: AccountResponseSchema,
+        },
+      },
+    },
+    favoriteAccountHandler,
+  );
+
+  app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
+    '/:id/favorite',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Accounts'],
+        summary: 'Unfavorite account',
+        description: 'Remove account from favorites for the authenticated user.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: DeleteResultSchema,
+        },
+      },
+    },
+    unfavoriteAccountHandler,
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(

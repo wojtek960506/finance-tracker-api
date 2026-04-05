@@ -18,6 +18,14 @@ import {
   prepareNamedResourcesMap,
   updateNamedResource,
 } from '@shared/named-resource';
+import {
+  favoriteNamedResource,
+  findFavoriteNamedResourceIds,
+  getFavoriteNamedResources,
+  persistFavoriteNamedResource,
+  removeFavoriteNamedResource,
+  unfavoriteNamedResource,
+} from '@shared/named-resource-favorite';
 import { ITransaction } from '@transaction/model';
 // prettier-ignore
 import {
@@ -75,6 +83,33 @@ export const prepareAccountsMap = async (
   const accountIds = transactions?.map((t) => t.accountId.toString());
   const accounts = await findAccounts(ownerId, accountIds);
   return prepareNamedResourcesMap(accounts);
+};
+
+export const getFavoriteAccounts = getFavoriteNamedResources<
+  IAccount,
+  AccountResponseDTO
+>({
+  resourceType: 'account',
+  findFavoriteIds: findFavoriteNamedResourceIds,
+  findResources: findAccounts,
+  serialize: serializeAccount,
+});
+
+export const favoriteAccount = favoriteNamedResource<IAccount, AccountResponseDTO>({
+  resourceType: 'account',
+  findById: findAccountById,
+  persistFavorite: persistFavoriteNamedResource,
+  serialize: serializeAccount,
+  checkOwnerType: 'account',
+});
+
+export const unfavoriteAccount = (accountId: string, ownerId: string) => {
+  return unfavoriteNamedResource<IAccount>({
+    resourceType: 'account',
+    findById: findAccountById,
+    removeFavorite: removeFavoriteNamedResource,
+    checkOwnerType: 'account',
+  })(accountId, ownerId);
 };
 
 export const deleteAccount = (

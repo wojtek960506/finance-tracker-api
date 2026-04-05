@@ -72,6 +72,19 @@ describe('payment method routes', async () => {
     expect(response.json()).toEqual(paymentMethodResult);
   });
 
+  it("should get favorite payment methods - 'GET /favorites'", async () => {
+    vi.spyOn(servicePM, 'getFavoritePaymentMethods').mockResolvedValue(
+      [paymentMethodResult] as any,
+    );
+
+    const response = await app.inject({ method: 'GET', url: '/favorites' });
+
+    expect(servicePM.getFavoritePaymentMethods).toHaveBeenCalledOnce();
+    expect(servicePM.getFavoritePaymentMethods).toHaveBeenCalledWith(USER_ID_STR);
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual([paymentMethodResult]);
+  });
+
   it("should create payment method - 'POST /'", async () => {
     vi.spyOn(servicePM, 'createPaymentMethod').mockResolvedValue(
       paymentMethodResult as any,
@@ -111,6 +124,42 @@ describe('payment method routes', async () => {
     );
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(paymentMethodResult);
+  });
+
+  it("should favorite payment method - 'POST /:id/favorite'", async () => {
+    vi.spyOn(servicePM, 'favoritePaymentMethod').mockResolvedValue(
+      paymentMethodResult as any,
+    );
+
+    const response = await app.inject({
+      method: 'POST',
+      url: `/${CASH_PAYMENT_METHOD_ID_STR}/favorite`,
+    });
+
+    expect(servicePM.favoritePaymentMethod).toHaveBeenCalledOnce();
+    expect(servicePM.favoritePaymentMethod).toHaveBeenCalledWith(
+      CASH_PAYMENT_METHOD_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(paymentMethodResult);
+  });
+
+  it("should unfavorite payment method - 'DELETE /:id/favorite'", async () => {
+    vi.spyOn(servicePM, 'unfavoritePaymentMethod').mockResolvedValue(deleteResult as any);
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/${CASH_PAYMENT_METHOD_ID_STR}/favorite`,
+    });
+
+    expect(servicePM.unfavoritePaymentMethod).toHaveBeenCalledOnce();
+    expect(servicePM.unfavoritePaymentMethod).toHaveBeenCalledWith(
+      CASH_PAYMENT_METHOD_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(deleteResult);
   });
 
   it("should delete payment method - 'DELETE /:id'", async () => {

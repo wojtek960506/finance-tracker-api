@@ -72,6 +72,17 @@ describe('account routes', async () => {
     expect(response.json()).toEqual(accountResult);
   });
 
+  it("should get favorite accounts - 'GET /favorites'", async () => {
+    vi.spyOn(accountServices, 'getFavoriteAccounts').mockResolvedValue([accountResult] as any);
+
+    const response = await app.inject({ method: 'GET', url: '/favorites' });
+
+    expect(accountServices.getFavoriteAccounts).toHaveBeenCalledOnce();
+    expect(accountServices.getFavoriteAccounts).toHaveBeenCalledWith(USER_ID_STR);
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual([accountResult]);
+  });
+
   it("should create account - 'POST /'", async () => {
     vi.spyOn(accountServices, 'createAccount').mockResolvedValue(accountResult as any);
 
@@ -104,6 +115,40 @@ describe('account routes', async () => {
     );
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(accountResult);
+  });
+
+  it("should favorite account - 'POST /:id/favorite'", async () => {
+    vi.spyOn(accountServices, 'favoriteAccount').mockResolvedValue(accountResult as any);
+
+    const response = await app.inject({
+      method: 'POST',
+      url: `/${ACCOUNT_EXPENSE_ID_STR}/favorite`,
+    });
+
+    expect(accountServices.favoriteAccount).toHaveBeenCalledOnce();
+    expect(accountServices.favoriteAccount).toHaveBeenCalledWith(
+      ACCOUNT_EXPENSE_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(accountResult);
+  });
+
+  it("should unfavorite account - 'DELETE /:id/favorite'", async () => {
+    vi.spyOn(accountServices, 'unfavoriteAccount').mockResolvedValue(deleteResult as any);
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/${ACCOUNT_EXPENSE_ID_STR}/favorite`,
+    });
+
+    expect(accountServices.unfavoriteAccount).toHaveBeenCalledOnce();
+    expect(accountServices.unfavoriteAccount).toHaveBeenCalledWith(
+      ACCOUNT_EXPENSE_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(deleteResult);
   });
 
   it("should delete account - 'DELETE /:id'", async () => {

@@ -18,6 +18,14 @@ import {
   prepareNamedResourcesMap,
   updateNamedResource,
 } from '@shared/named-resource';
+import {
+  favoriteNamedResource,
+  findFavoriteNamedResourceIds,
+  getFavoriteNamedResources,
+  persistFavoriteNamedResource,
+  removeFavoriteNamedResource,
+  unfavoriteNamedResource,
+} from '@shared/named-resource-favorite';
 import { ITransaction } from '@transaction/model';
 // prettier-ignore
 import {
@@ -87,6 +95,39 @@ export const preparePaymentMethodsMap = async (
   const paymentMethodIds = transactions?.map((t) => t.paymentMethodId.toString());
   const paymentMethods = await findPaymentMethods(ownerId, paymentMethodIds);
   return prepareNamedResourcesMap(paymentMethods);
+};
+
+export const getFavoritePaymentMethods = getFavoriteNamedResources<
+  IPaymentMethod,
+  PaymentMethodResponseDTO
+>({
+  resourceType: 'paymentMethod',
+  findFavoriteIds: findFavoriteNamedResourceIds,
+  findResources: findPaymentMethods,
+  serialize: serializePaymentMethod,
+});
+
+export const favoritePaymentMethod = favoriteNamedResource<
+  IPaymentMethod,
+  PaymentMethodResponseDTO
+>({
+  resourceType: 'paymentMethod',
+  findById: findPaymentMethodById,
+  persistFavorite: persistFavoriteNamedResource,
+  serialize: serializePaymentMethod,
+  checkOwnerType: 'paymentMethod',
+});
+
+export const unfavoritePaymentMethod = (
+  paymentMethodId: string,
+  ownerId: string,
+) => {
+  return unfavoriteNamedResource<IPaymentMethod>({
+    resourceType: 'paymentMethod',
+    findById: findPaymentMethodById,
+    removeFavorite: removeFavoriteNamedResource,
+    checkOwnerType: 'paymentMethod',
+  })(paymentMethodId, ownerId);
 };
 
 export const deletePaymentMethod = (

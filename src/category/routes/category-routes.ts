@@ -16,8 +16,11 @@ import { validateBody } from '@utils/validation';
 import {
   createCategoryHandler,
   deleteCategoryHandler,
+  favoriteCategoryHandler,
   getCategoriesHandler,
   getCategoryHandler,
+  getFavoriteCategoriesHandler,
+  unfavoriteCategoryHandler,
   updateCategoryHandler,
 } from './handlers';
 
@@ -38,6 +41,22 @@ export async function categoryRoutes(
       },
     },
     getCategoriesHandler,
+  );
+
+  app.get<{ Reply: CategoriesResponseDTO }>(
+    '/favorites',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Categories'],
+        summary: 'List favorite categories',
+        description: 'Return all favorite categories for the authenticated user.',
+        response: {
+          200: CategoriesResponseSchema,
+        },
+      },
+    },
+    getFavoriteCategoriesHandler,
   );
 
   app.get<{ Params: ParamsJustId; Reply: CategoryResponseDTO }>(
@@ -90,6 +109,40 @@ export async function categoryRoutes(
       },
     },
     updateCategoryHandler,
+  );
+
+  app.post<{ Params: ParamsJustId; Reply: CategoryResponseDTO }>(
+    '/:id/favorite',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Categories'],
+        summary: 'Favorite category',
+        description: 'Mark category as favorite for the authenticated user.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: CategoryResponseSchema,
+        },
+      },
+    },
+    favoriteCategoryHandler,
+  );
+
+  app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
+    '/:id/favorite',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Categories'],
+        summary: 'Unfavorite category',
+        description: 'Remove category from favorites for the authenticated user.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: DeleteResultSchema,
+        },
+      },
+    },
+    unfavoriteCategoryHandler,
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(

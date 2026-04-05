@@ -18,6 +18,14 @@ import {
   prepareNamedResourcesMap,
   updateNamedResource,
 } from '@shared/named-resource';
+import {
+  favoriteNamedResource,
+  findFavoriteNamedResourceIds,
+  getFavoriteNamedResources,
+  persistFavoriteNamedResource,
+  removeFavoriteNamedResource,
+  unfavoriteNamedResource,
+} from '@shared/named-resource-favorite';
 import { ITransaction } from '@transaction/model';
 import { checkTransactionDependencies } from '@transaction/services/check-transaction-dependencies';
 import {
@@ -79,6 +87,36 @@ export const prepareCategoriesMap = async (
   const categoryIds = transactions?.map((t) => t.categoryId.toString());
   const categories = await findCategories(ownerId, categoryIds);
   return prepareNamedResourcesMap(categories);
+};
+
+export const getFavoriteCategories = getFavoriteNamedResources<
+  ICategory,
+  CategoryResponseDTO
+>({
+  resourceType: 'category',
+  findFavoriteIds: findFavoriteNamedResourceIds,
+  findResources: findCategories,
+  serialize: serializeCategory,
+});
+
+export const favoriteCategory = favoriteNamedResource<
+  ICategory,
+  CategoryResponseDTO
+>({
+  resourceType: 'category',
+  findById: findCategoryById,
+  persistFavorite: persistFavoriteNamedResource,
+  serialize: serializeCategory,
+  checkOwnerType,
+});
+
+export const unfavoriteCategory = (categoryId: string, ownerId: string) => {
+  return unfavoriteNamedResource<ICategory>({
+    resourceType: 'category',
+    findById: findCategoryById,
+    removeFavorite: removeFavoriteNamedResource,
+    checkOwnerType,
+  })(categoryId, ownerId);
 };
 
 export const deleteCategory = (

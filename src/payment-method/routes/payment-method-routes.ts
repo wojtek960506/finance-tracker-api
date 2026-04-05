@@ -16,8 +16,11 @@ import { validateBody } from '@utils/validation';
 import {
   createPaymentMethodHandler,
   deletePaymentMethodHandler,
+  favoritePaymentMethodHandler,
+  getFavoritePaymentMethodsHandler,
   getPaymentMethodHandler,
   getPaymentMethodsHandler,
+  unfavoritePaymentMethodHandler,
   updatePaymentMethodHandler,
 } from './handlers';
 
@@ -38,6 +41,22 @@ export async function paymentMethodRoutes(
       },
     },
     getPaymentMethodsHandler,
+  );
+
+  app.get<{ Reply: PaymentMethodsResponseDTO }>(
+    '/favorites',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Payment Methods'],
+        summary: 'List favorite payment methods',
+        description: 'Return all favorite payment methods for the authenticated user.',
+        response: {
+          200: PaymentMethodsResponseSchema,
+        },
+      },
+    },
+    getFavoritePaymentMethodsHandler,
   );
 
   app.get<{ Params: ParamsJustId; Reply: PaymentMethodResponseDTO }>(
@@ -94,6 +113,40 @@ export async function paymentMethodRoutes(
       },
     },
     updatePaymentMethodHandler,
+  );
+
+  app.post<{ Params: ParamsJustId; Reply: PaymentMethodResponseDTO }>(
+    '/:id/favorite',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Payment Methods'],
+        summary: 'Favorite payment method',
+        description: 'Mark payment method as favorite for the authenticated user.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: PaymentMethodResponseSchema,
+        },
+      },
+    },
+    favoritePaymentMethodHandler,
+  );
+
+  app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(
+    '/:id/favorite',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Payment Methods'],
+        summary: 'Unfavorite payment method',
+        description: 'Remove payment method from favorites for the authenticated user.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: DeleteResultSchema,
+        },
+      },
+    },
+    unfavoritePaymentMethodHandler,
   );
 
   app.delete<{ Params: ParamsJustId; Reply: DeleteResult }>(

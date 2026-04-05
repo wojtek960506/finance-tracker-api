@@ -66,6 +66,17 @@ describe('category routes', async () => {
     expect(response.json()).toEqual(categoryResult);
   });
 
+  it("should get favorite categories - 'GET /favorites'", async () => {
+    vi.spyOn(serviceC, 'getFavoriteCategories').mockResolvedValue([categoryResult] as any);
+
+    const response = await app.inject({ method: 'GET', url: '/favorites' });
+
+    expect(serviceC.getFavoriteCategories).toHaveBeenCalledOnce();
+    expect(serviceC.getFavoriteCategories).toHaveBeenCalledWith(USER_ID_STR);
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual([categoryResult]);
+  });
+
   it("should create category - 'POST /'", async () => {
     vi.spyOn(serviceC, 'createCategory').mockResolvedValue(categoryResult as any);
 
@@ -94,6 +105,40 @@ describe('category routes', async () => {
     );
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(categoryResult);
+  });
+
+  it("should favorite category - 'POST /:id/favorite'", async () => {
+    vi.spyOn(serviceC, 'favoriteCategory').mockResolvedValue(categoryResult as any);
+
+    const response = await app.inject({
+      method: 'POST',
+      url: `/${FOOD_CATEGORY_ID_STR}/favorite`,
+    });
+
+    expect(serviceC.favoriteCategory).toHaveBeenCalledOnce();
+    expect(serviceC.favoriteCategory).toHaveBeenCalledWith(
+      FOOD_CATEGORY_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(categoryResult);
+  });
+
+  it("should unfavorite category - 'DELETE /:id/favorite'", async () => {
+    vi.spyOn(serviceC, 'unfavoriteCategory').mockResolvedValue(deleteResult as any);
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/${FOOD_CATEGORY_ID_STR}/favorite`,
+    });
+
+    expect(serviceC.unfavoriteCategory).toHaveBeenCalledOnce();
+    expect(serviceC.unfavoriteCategory).toHaveBeenCalledWith(
+      FOOD_CATEGORY_ID_STR,
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(deleteResult);
   });
 
   it("should delete category - 'DELETE /:id'", async () => {
