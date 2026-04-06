@@ -1,9 +1,7 @@
 import { z } from 'zod/v4';
 
-import { AccountResponseSchema } from '@account/schema';
-import { CategoryResponseSchema } from '@category/schema';
 import { CurrencyCodeSchema } from '@currency/schema';
-import { PaymentMethodResponseSchema } from '@payment-method/schema';
+import { NamedResourceResponseSchema } from '@shared/named-resource';
 import { OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
 
 const TransactionCommonSchema = z.object({
@@ -90,9 +88,9 @@ export const TransactionResponseSchema = TransactionStandardSchema.omit({
     .max(7, "'currencies' must be in format 'XXX/XXX'")
     .optional(),
   exchangeRate: z.number().optional(),
-  category: CategoryResponseSchema.pick({ id: true, type: true, name: true }),
-  paymentMethod: PaymentMethodResponseSchema.pick({ id: true, type: true, name: true }),
-  account: AccountResponseSchema.pick({ id: true, type: true, name: true }),
+  category: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
+  paymentMethod: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
+  account: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
 });
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);

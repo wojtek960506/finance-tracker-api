@@ -1,7 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { AccountDTO, AccountResponseDTO } from '@account/schema';
-import { CategoryDTO, CategoryResponseDTO } from '@category/schema';
 import {
   createNamedResource,
   deleteNamedResource,
@@ -16,19 +14,19 @@ import {
   getFavoriteNamedResources,
   unfavoriteNamedResource,
 } from '@named-resource-favorite/services';
-import { PaymentMethodDTO, PaymentMethodResponseDTO } from '@payment-method/schema';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
+import { NamedResourceDTO, NamedResourceResponseDTO } from '@shared/named-resource';
 
 type NamedResourceBodyByKind = {
-  account: AccountDTO;
-  category: CategoryDTO;
-  paymentMethod: PaymentMethodDTO;
+  account: NamedResourceDTO;
+  category: NamedResourceDTO;
+  paymentMethod: NamedResourceDTO;
 };
 
 type NamedResourceResponseByKind = {
-  account: AccountResponseDTO;
-  category: CategoryResponseDTO;
-  paymentMethod: PaymentMethodResponseDTO;
+  account: NamedResourceResponseDTO;
+  category: NamedResourceResponseDTO;
+  paymentMethod: NamedResourceResponseDTO;
 };
 
 export const getNamedResourcesHandler =

@@ -1,16 +1,16 @@
 import { FastifyInstance } from 'fastify';
 import { DeleteResult } from 'mongoose';
 
-import {
-  AccountDTO,
-  AccountResponseDTO,
-  AccountResponseSchema,
-  AccountSchema,
-  AccountsResponseDTO,
-  AccountsResponseSchema,
-} from '@account/schema';
 import { authorizeAccessToken } from '@auth/services';
 import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
+import {
+  NamedResourceDTO,
+  NamedResourceResponseDTO,
+  NamedResourceResponseSchema,
+  NamedResourceSchema,
+  NamedResourcesResponseDTO,
+  NamedResourcesResponseSchema,
+} from '@shared/named-resource';
 import {
   createNamedResourceHandler,
   deleteNamedResourceHandler,
@@ -26,7 +26,7 @@ import { validateBody } from '@utils/validation';
 export async function accountRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
 ) {
-  app.get<{ Reply: AccountsResponseDTO }>(
+  app.get<{ Reply: NamedResourcesResponseDTO }>(
     '/',
     {
       preHandler: authorizeAccessToken(),
@@ -35,14 +35,14 @@ export async function accountRoutes(
         summary: 'List accounts',
         description: 'Return all accounts for the authenticated user.',
         response: {
-          200: AccountsResponseSchema,
+          200: NamedResourcesResponseSchema,
         },
       },
     },
     getNamedResourcesHandler('account'),
   );
 
-  app.get<{ Reply: AccountsResponseDTO }>(
+  app.get<{ Reply: NamedResourcesResponseDTO }>(
     '/favorites',
     {
       preHandler: authorizeAccessToken(),
@@ -51,14 +51,14 @@ export async function accountRoutes(
         summary: 'List favorite accounts',
         description: 'Return all favorite accounts for the authenticated user.',
         response: {
-          200: AccountsResponseSchema,
+          200: NamedResourcesResponseSchema,
         },
       },
     },
     getFavoriteNamedResourcesHandler('account'),
   );
 
-  app.get<{ Params: ParamsJustId; Reply: AccountResponseDTO }>(
+  app.get<{ Params: ParamsJustId; Reply: NamedResourceResponseDTO }>(
     '/:id',
     {
       preHandler: authorizeAccessToken(),
@@ -68,49 +68,53 @@ export async function accountRoutes(
         description: 'Return a single account by id.',
         params: ParamsJustIdSchema,
         response: {
-          200: AccountResponseSchema,
+          200: NamedResourceResponseSchema,
         },
       },
     },
     getNamedResourceHandler('account'),
   );
 
-  app.post<{ Body: AccountDTO; Reply: AccountResponseDTO }>(
+  app.post<{ Body: NamedResourceDTO; Reply: NamedResourceResponseDTO }>(
     '/',
     {
-      preHandler: [validateBody(AccountSchema), authorizeAccessToken()],
+      preHandler: [validateBody(NamedResourceSchema), authorizeAccessToken()],
       schema: {
         tags: ['Accounts'],
         summary: 'Create account',
         description: 'Create a new account for the authenticated user.',
-        body: AccountSchema,
+        body: NamedResourceSchema,
         response: {
-          201: AccountResponseSchema,
+          201: NamedResourceResponseSchema,
         },
       },
     },
     createNamedResourceHandler('account'),
   );
 
-  app.put<{ Params: ParamsJustId; Body: AccountDTO; Reply: AccountResponseDTO }>(
+  app.put<{
+    Params: ParamsJustId;
+    Body: NamedResourceDTO;
+    Reply: NamedResourceResponseDTO;
+  }>(
     '/:id',
     {
-      preHandler: [validateBody(AccountSchema), authorizeAccessToken()],
+      preHandler: [validateBody(NamedResourceSchema), authorizeAccessToken()],
       schema: {
         tags: ['Accounts'],
         summary: 'Update account',
         description: 'Update an account by id.',
         params: ParamsJustIdSchema,
-        body: AccountSchema,
+        body: NamedResourceSchema,
         response: {
-          200: AccountResponseSchema,
+          200: NamedResourceResponseSchema,
         },
       },
     },
     updateNamedResourceHandler('account'),
   );
 
-  app.post<{ Params: ParamsJustId; Reply: AccountResponseDTO }>(
+  app.post<{ Params: ParamsJustId; Reply: NamedResourceResponseDTO }>(
     '/:id/favorite',
     {
       preHandler: authorizeAccessToken(),
@@ -120,7 +124,7 @@ export async function accountRoutes(
         description: 'Mark account as favorite for the authenticated user.',
         params: ParamsJustIdSchema,
         response: {
-          200: AccountResponseSchema,
+          200: NamedResourceResponseSchema,
         },
       },
     },

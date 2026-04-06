@@ -2,15 +2,15 @@ import { FastifyInstance } from 'fastify';
 import { DeleteResult } from 'mongoose';
 
 import { authorizeAccessToken } from '@auth/services';
-import {
-  PaymentMethodDTO,
-  PaymentMethodResponseDTO,
-  PaymentMethodResponseSchema,
-  PaymentMethodSchema,
-  PaymentMethodsResponseDTO,
-  PaymentMethodsResponseSchema,
-} from '@payment-method/schema';
 import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
+import {
+  NamedResourceDTO,
+  NamedResourceResponseDTO,
+  NamedResourceResponseSchema,
+  NamedResourceSchema,
+  NamedResourcesResponseDTO,
+  NamedResourcesResponseSchema,
+} from '@shared/named-resource';
 import {
   createNamedResourceHandler,
   deleteNamedResourceHandler,
@@ -26,7 +26,7 @@ import { validateBody } from '@utils/validation';
 export async function paymentMethodRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
 ) {
-  app.get<{ Reply: PaymentMethodsResponseDTO }>(
+  app.get<{ Reply: NamedResourcesResponseDTO }>(
     '/',
     {
       preHandler: authorizeAccessToken(),
@@ -35,14 +35,14 @@ export async function paymentMethodRoutes(
         summary: 'List payment methods',
         description: 'Return all payment methods for the authenticated user.',
         response: {
-          200: PaymentMethodsResponseSchema,
+          200: NamedResourcesResponseSchema,
         },
       },
     },
     getNamedResourcesHandler('paymentMethod'),
   );
 
-  app.get<{ Reply: PaymentMethodsResponseDTO }>(
+  app.get<{ Reply: NamedResourcesResponseDTO }>(
     '/favorites',
     {
       preHandler: authorizeAccessToken(),
@@ -51,14 +51,14 @@ export async function paymentMethodRoutes(
         summary: 'List favorite payment methods',
         description: 'Return all favorite payment methods for the authenticated user.',
         response: {
-          200: PaymentMethodsResponseSchema,
+          200: NamedResourcesResponseSchema,
         },
       },
     },
     getFavoriteNamedResourcesHandler('paymentMethod'),
   );
 
-  app.get<{ Params: ParamsJustId; Reply: PaymentMethodResponseDTO }>(
+  app.get<{ Params: ParamsJustId; Reply: NamedResourceResponseDTO }>(
     '/:id',
     {
       preHandler: authorizeAccessToken(),
@@ -68,24 +68,24 @@ export async function paymentMethodRoutes(
         description: 'Return a single payment method by id.',
         params: ParamsJustIdSchema,
         response: {
-          200: PaymentMethodResponseSchema,
+          200: NamedResourceResponseSchema,
         },
       },
     },
     getNamedResourceHandler('paymentMethod'),
   );
 
-  app.post<{ Body: PaymentMethodDTO; Reply: PaymentMethodResponseDTO }>(
+  app.post<{ Body: NamedResourceDTO; Reply: NamedResourceResponseDTO }>(
     '/',
     {
-      preHandler: [validateBody(PaymentMethodSchema), authorizeAccessToken()],
+      preHandler: [validateBody(NamedResourceSchema), authorizeAccessToken()],
       schema: {
         tags: ['Payment Methods'],
         summary: 'Create payment method',
         description: 'Create a new payment method for the authenticated user.',
-        body: PaymentMethodSchema,
+        body: NamedResourceSchema,
         response: {
-          201: PaymentMethodResponseSchema,
+          201: NamedResourceResponseSchema,
         },
       },
     },
@@ -94,27 +94,27 @@ export async function paymentMethodRoutes(
 
   app.put<{
     Params: ParamsJustId;
-    Body: PaymentMethodDTO;
-    Reply: PaymentMethodResponseDTO;
+    Body: NamedResourceDTO;
+    Reply: NamedResourceResponseDTO;
   }>(
     '/:id',
     {
-      preHandler: [validateBody(PaymentMethodSchema), authorizeAccessToken()],
+      preHandler: [validateBody(NamedResourceSchema), authorizeAccessToken()],
       schema: {
         tags: ['Payment Methods'],
         summary: 'Update payment method',
         description: 'Update a payment method by id.',
         params: ParamsJustIdSchema,
-        body: PaymentMethodSchema,
+        body: NamedResourceSchema,
         response: {
-          200: PaymentMethodResponseSchema,
+          200: NamedResourceResponseSchema,
         },
       },
     },
     updateNamedResourceHandler('paymentMethod'),
   );
 
-  app.post<{ Params: ParamsJustId; Reply: PaymentMethodResponseDTO }>(
+  app.post<{ Params: ParamsJustId; Reply: NamedResourceResponseDTO }>(
     '/:id/favorite',
     {
       preHandler: authorizeAccessToken(),
@@ -124,7 +124,7 @@ export async function paymentMethodRoutes(
         description: 'Mark payment method as favorite for the authenticated user.',
         params: ParamsJustIdSchema,
         response: {
-          200: PaymentMethodResponseSchema,
+          200: NamedResourceResponseSchema,
         },
       },
     },

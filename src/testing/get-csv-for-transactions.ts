@@ -1,6 +1,4 @@
-import { AccountResponseDTO } from '@account/schema';
-import { CategoryResponseDTO } from '@category/schema';
-import { PaymentMethodResponseDTO } from '@payment-method/schema';
+import { NamedResourceResponseDTO } from '@shared/named-resource';
 import { TransactionResponseDTO } from '@transaction/schema';
 
 type GetCSVPayload = Omit<
@@ -15,9 +13,9 @@ type GetCSVPayload = Omit<
   | 'paymentMethod'
   | 'account'
 > & { date: string } & {
-  category: Pick<CategoryResponseDTO, 'name'>;
-  paymentMethod: Pick<PaymentMethodResponseDTO, 'name'>;
-  account: Pick<AccountResponseDTO, 'name'>;
+  category: Pick<NamedResourceResponseDTO, 'name'>;
+  paymentMethod: Pick<NamedResourceResponseDTO, 'name'>;
+  account: Pick<NamedResourceResponseDTO, 'name'>;
 };
 
 export function getCsvForTransactions(payload: GetCSVPayload) {
