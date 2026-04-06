@@ -10,12 +10,17 @@
     "build": "tsup",
     "start": "node dist/server.js",
     "test": "vitest --run",
+    "test:quiet": "vitest --run --reporter=dot",
     "test:watch": "vitest",
+    "test:coverage": "vitest --run --reporter=dot --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --check",
     "format:fix": "prettier . --write",
-    "fix": "pnpm lint:fix && pnpm format:fix"
+    "fix": "node scripts/fix.mjs",
+    "coverage:missing": "node scripts/coverage-missing.mjs",
+    "coverage:summary-only": "pnpm test:coverage --coverage.reporter=json-summary",
+    "coverage:check-missing": "vitest --run --reporter=dot --coverage --coverage.reporter=json-summary --coverage.reporter=lcov && node scripts/coverage-missing.mjs"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",

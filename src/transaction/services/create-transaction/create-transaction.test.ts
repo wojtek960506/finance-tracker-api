@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as namedResourceDb from '@shared/named-resource/db';
+import * as namedResourceConfig from '@shared/named-resource/kind-config';
 import {
   ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
@@ -35,7 +36,9 @@ import * as dbTransactions from '@transaction/db';
 import { getNextSourceIndex } from '@transaction/services';
 import {
   AccountOwnershipError,
+  CategoryNotFoundError,
   PaymentMethodOwnershipError,
+  SystemCategoryHasOwner,
   SystemCategoryNotAllowed,
   SystemCategoryWrongType,
 } from '@utils/errors';
@@ -125,6 +128,34 @@ describe('create transaction', () => {
     expect(result).toEqual(transactionPair);
   });
 
+  it('creates exchange transaction pair from a model-like system category', async () => {
+    const transactionPair = getExchangeTransactionResultSerialized();
+    const categoryModel = { toObject: vi.fn() };
+
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
+      categoryModel as any,
+    );
+    vi.spyOn(namedResourceConfig, 'getNamedResourceKindConfig').mockReturnValue({
+      serialize: vi.fn().mockReturnValue(exchangeCategory),
+    } as any);
+    vi.spyOn(dbTransactions, 'persistTransactionPair').mockResolvedValue(
+      transactionPair as any,
+    );
+    (getNextSourceIndex as Mock)
+      .mockResolvedValueOnce(EXCHANGE_TXN_EXPENSE_SRC_IDX)
+      .mockResolvedValueOnce(EXCHANGE_TXN_INCOME_SRC_IDX);
+
+    const result = await createExchangeTransaction(exchangeDTO, USER_ID_STR);
+
+    expect(namedResourceConfig.getNamedResourceKindConfig).toHaveBeenCalledWith(
+      'category',
+    );
+    expect(result).toEqual(transactionPair);
+  });
+
   it('creates transfer transaction pair', async () => {
     const transactionPair = getTransferTransactionResultSerialized();
 
@@ -204,6 +235,31 @@ describe('create transaction', () => {
 
     await expect(createExchangeTransaction(exchangeDTO, USER_ID_STR)).rejects.toThrow(
       SystemCategoryWrongType,
+    );
+  });
+
+  it('throws when pair transaction system category has owner', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
+      ...exchangeCategory,
+      ownerId: USER_ID_STR,
+    } as any);
+
+    await expect(createExchangeTransaction(exchangeDTO, USER_ID_STR)).rejects.toThrow(
+      SystemCategoryHasOwner,
+    );
+  });
+
+  it('throws when pair transaction category is missing', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(null);
+
+    await expect(createExchangeTransaction(exchangeDTO, USER_ID_STR)).rejects.toThrow(
+      CategoryNotFoundError,
     );
   });
 });

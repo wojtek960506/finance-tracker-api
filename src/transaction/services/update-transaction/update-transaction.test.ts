@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as namedResourceDb from '@shared/named-resource/db';
+import * as namedResourceConfig from '@shared/named-resource/kind-config';
 import {
   ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
@@ -34,7 +35,9 @@ import {
 } from '@transaction/services';
 import {
   AccountOwnershipError,
+  CategoryNotFoundError,
   PaymentMethodOwnershipError,
+  SystemCategoryHasOwner,
   SystemCategoryNotAllowed,
   SystemCategoryWrongType,
 } from '@utils/errors';
@@ -129,6 +132,37 @@ describe('update transaction', () => {
     expect(result).toEqual(exchangePair);
   });
 
+  it('updates exchange transaction pair from a model-like system category', async () => {
+    const categoryModel = { toObject: vi.fn() };
+
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
+      categoryModel as any,
+    );
+    vi.spyOn(namedResourceConfig, 'getNamedResourceKindConfig').mockReturnValue({
+      serialize: vi.fn().mockReturnValue(exchangeCategory),
+    } as any);
+    vi.spyOn(dbTransactions, 'loadTransactionWithReference').mockResolvedValue(
+      exchangePair as any,
+    );
+    vi.spyOn(dbTransactions, 'saveTransactionPairChanges').mockResolvedValue(
+      exchangePair as any,
+    );
+
+    const result = await updateExchangeTransaction(
+      EXCHANGE_TXN_EXPENSE_ID_STR,
+      USER_ID_STR,
+      exchangeDTO,
+    );
+
+    expect(namedResourceConfig.getNamedResourceKindConfig).toHaveBeenCalledWith(
+      'category',
+    );
+    expect(result).toEqual(exchangePair);
+  });
+
   it('throws when updating standard transaction with system category', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById').mockResolvedValueOnce({
       ...foodCategory,
@@ -187,5 +221,30 @@ describe('update transaction', () => {
     await expect(
       updateExchangeTransaction(EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, exchangeDTO),
     ).rejects.toThrow(SystemCategoryWrongType);
+  });
+
+  it('throws when updating pair transaction system category has owner', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
+      ...exchangeCategory,
+      ownerId: USER_ID_STR,
+    } as any);
+
+    await expect(
+      updateExchangeTransaction(EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, exchangeDTO),
+    ).rejects.toThrow(SystemCategoryHasOwner);
+  });
+
+  it('throws when updating pair transaction category is missing', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(null);
+
+    await expect(
+      updateExchangeTransaction(EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, exchangeDTO),
+    ).rejects.toThrow(CategoryNotFoundError);
   });
 });
