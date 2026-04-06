@@ -33,7 +33,10 @@ describe('getFavoriteNamedResources', () => {
 
     expect(findFavoriteNamedResourceIds).toHaveBeenCalledWith('u1', 'category');
     expect(findNamedResources).toHaveBeenCalledWith('category', 'u1', ['r1', 'r2']);
-    expect(result).toEqual([{ id: 'r1' }, { id: 'r2' }]);
+    expect(result).toEqual([
+      { id: 'r1', isFavorite: true },
+      { id: 'r2', isFavorite: true },
+    ]);
   });
 
   it('returns empty list when there are no favorite ids', async () => {

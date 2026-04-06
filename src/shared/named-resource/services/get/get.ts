@@ -1,3 +1,4 @@
+import { isFavoriteNamedResource } from '@named-resource-favorite/db';
 import { findNamedResourceById } from '@shared/named-resource/db';
 import {
   getNamedResourceKindConfig,
@@ -19,5 +20,8 @@ export const getNamedResource = async <
   if (resource.type !== 'system')
     checkOwner(ownerId, resourceId, resource.ownerId!, config.checkOwnerType);
 
-  return config.serialize(resource) as TResponse;
+  return {
+    ...(config.serialize(resource) as TResponse),
+    isFavorite: await isFavoriteNamedResource(ownerId, kind, resourceId),
+  };
 };

@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('@named-resource-favorite/model', () => ({
   FavoriteNamedResourceModel: {
     deleteOne: vi.fn(),
+    exists: vi.fn(),
     find: vi.fn(),
     findOneAndUpdate: vi.fn(),
   },
@@ -13,6 +14,7 @@ import { FavoriteNamedResourceModel } from '@named-resource-favorite/model';
 
 import {
   findFavoriteNamedResourceIds,
+  isFavoriteNamedResource,
   persistFavoriteNamedResource,
   removeFavoriteNamedResource,
 } from './db';
@@ -65,6 +67,39 @@ describe('persistFavoriteNamedResource', () => {
       },
     );
     expect(result).toEqual(favorite);
+  });
+});
+
+describe('isFavoriteNamedResource', () => {
+  it('returns true when favorite relation exists', async () => {
+    vi.mocked(FavoriteNamedResourceModel.exists).mockResolvedValue({
+      _id: new Types.ObjectId('507f1f77bcf86cd799439017'),
+    } as any);
+
+    const result = await isFavoriteNamedResource(
+      '507f1f77bcf86cd799439013',
+      'paymentMethod',
+      '507f1f77bcf86cd799439014',
+    );
+
+    expect(FavoriteNamedResourceModel.exists).toHaveBeenCalledWith({
+      userId: new Types.ObjectId('507f1f77bcf86cd799439013'),
+      resourceType: 'paymentMethod',
+      resourceId: new Types.ObjectId('507f1f77bcf86cd799439014'),
+    });
+    expect(result).toBe(true);
+  });
+
+  it('returns false when favorite relation does not exist', async () => {
+    vi.mocked(FavoriteNamedResourceModel.exists).mockResolvedValue(null);
+
+    const result = await isFavoriteNamedResource(
+      '507f1f77bcf86cd799439013',
+      'paymentMethod',
+      '507f1f77bcf86cd799439014',
+    );
+
+    expect(result).toBe(false);
   });
 });
 

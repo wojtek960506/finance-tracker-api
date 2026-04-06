@@ -17,5 +17,8 @@ export const getFavoriteNamedResources = async <
   if (!favoriteIds.length) return [];
 
   const resources = await findNamedResources(kind, ownerId, favoriteIds);
-  return resources.map((resource) => config.serialize(resource) as TResponse);
+  return resources.map((resource) => ({
+    ...(config.serialize(resource) as TResponse),
+    isFavorite: true,
+  }));
 };

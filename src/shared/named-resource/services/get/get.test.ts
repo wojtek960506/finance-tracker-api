@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
+vi.mock('@named-resource-favorite/db', () => ({
+  isFavoriteNamedResource: vi.fn(),
+}));
+
 vi.mock('@shared/services', () => ({
   checkOwner: vi.fn(),
 }));
@@ -15,6 +19,7 @@ vi.mock('@shared/named-resource/kind-config', () => ({
   })),
 }));
 
+import * as namedResourceFavoriteDb from '@named-resource-favorite/db';
 import * as namedResourceDb from '@shared/named-resource/db';
 import * as sharedServices from '@shared/services';
 
@@ -27,11 +32,17 @@ describe('getNamedResource', () => {
       ownerId: undefined,
       name: 'Transfer',
     } as any);
+    vi.mocked(namedResourceFavoriteDb.isFavoriteNamedResource).mockResolvedValue(true);
 
     const result = await getNamedResource('category', 'r1', 'u1');
 
     expect(sharedServices.checkOwner).not.toHaveBeenCalled();
-    expect(result).toEqual({ id: '1', name: 'Transfer' });
+    expect(namedResourceFavoriteDb.isFavoriteNamedResource).toHaveBeenCalledWith(
+      'u1',
+      'category',
+      'r1',
+    );
+    expect(result).toEqual({ id: '1', name: 'Transfer', isFavorite: true });
   });
 
   it('checks ownership for user resource', async () => {
@@ -40,9 +51,11 @@ describe('getNamedResource', () => {
       ownerId: 'u1',
       name: 'Food',
     } as any);
+    vi.mocked(namedResourceFavoriteDb.isFavoriteNamedResource).mockResolvedValue(false);
 
-    await getNamedResource('category', 'r1', 'u1');
+    const result = await getNamedResource('category', 'r1', 'u1');
 
     expect(sharedServices.checkOwner).toHaveBeenCalledWith('u1', 'r1', 'u1', 'category');
+    expect(result).toEqual({ id: '1', name: 'Food', isFavorite: false });
   });
 });

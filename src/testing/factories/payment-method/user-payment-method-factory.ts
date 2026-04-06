@@ -31,4 +31,5 @@ export const getUserPaymentMethodResultSerialized = () => ({
   ...commonProps,
   ownerId: USER_ID_STR,
   id: CASH_PAYMENT_METHOD_ID_STR,
+  isFavorite: false,
 });

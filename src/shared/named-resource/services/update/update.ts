@@ -1,3 +1,4 @@
+import { isFavoriteNamedResource } from '@named-resource-favorite/db';
 import {
   findNamedResourceById,
   findNamedResourceByName,
@@ -43,10 +44,15 @@ export const updateNamedResource = async <
   }
 
   try {
-    return await saveNamedResourceChanges<TResponse>(kind, resource, {
+    const updatedResource = await saveNamedResourceChanges<TResponse>(kind, resource, {
       name: normalizedName,
       nameNormalized: normalizedName.toLowerCase(),
     });
+
+    return {
+      ...updatedResource,
+      isFavorite: await isFavoriteNamedResource(ownerId, kind, resourceId),
+    };
   } catch (err) {
     if ((err as { code: number }).code === 11000)
       throw config.alreadyExistsErrorFactory(dto.name);

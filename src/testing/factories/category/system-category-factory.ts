@@ -33,6 +33,7 @@ export const getExchangeCategoryResultSerialized = () => ({
   ...commonProps,
   ...propsExchange,
   id: EXCHANGE_CATEGORY_ID_STR,
+  isFavorite: false,
 });
 
 export const getTransferCategoryResultJSON = () => ({
@@ -45,4 +46,5 @@ export const getTransferCategoryResultSerialized = () => ({
   ...commonProps,
   ...propsTransfer,
   id: TRANSFER_CATEGORY_ID_STR,
+  isFavorite: false,
 });

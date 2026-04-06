@@ -26,10 +26,15 @@ export const createNamedResource = async <
   }
 
   const normalizedName = normalizeWhitespace(name);
-  return persistNamedResource<TResponse>(kind, {
+  const createdResource = await persistNamedResource<TResponse>(kind, {
     ownerId,
     type: 'user',
     name: normalizedName,
     nameNormalized: normalizedName.toLowerCase(),
   });
+
+  return {
+    ...createdResource,
+    isFavorite: false,
+  };
 };

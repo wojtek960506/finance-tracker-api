@@ -35,6 +35,7 @@ export const getBankTransferPaymentMethodResultSerialized = () => ({
   ...commonProps,
   ...propsBankTransfer,
   id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  isFavorite: false,
 });
 
 export const getCashPaymentMethodResultJSON = () => ({
@@ -47,4 +48,5 @@ export const getCashPaymentMethodResultSerialized = () => ({
   ...commonProps,
   ...propsCash,
   id: CASH_PAYMENT_METHOD_ID_STR,
+  isFavorite: false,
 });

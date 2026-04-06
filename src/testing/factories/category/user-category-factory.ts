@@ -31,4 +31,5 @@ export const getUserCategoryResultSerialized = () => ({
   ...commonProps,
   ownerId: USER_ID_STR,
   id: FOOD_CATEGORY_ID_STR,
+  isFavorite: false,
 });

@@ -41,7 +41,7 @@ describe('favoriteNamedResource', () => {
 
     expect(checkOwner).not.toHaveBeenCalled();
     expect(persistFavoriteNamedResource).toHaveBeenCalledWith('u1', 'category', 'r1');
-    expect(result).toEqual({ id: 'r1', name: 'Transfer' });
+    expect(result).toEqual({ id: 'r1', name: 'Transfer', isFavorite: true });
   });
 
   it('favorites user resource with owner check', async () => {

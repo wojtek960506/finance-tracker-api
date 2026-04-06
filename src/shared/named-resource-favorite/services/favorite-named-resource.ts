@@ -18,5 +18,8 @@ export const favoriteNamedResource = async <
   const resource = await assertNamedResourceAccess(kind, resourceId, ownerId);
 
   await persistFavoriteNamedResource(ownerId, kind, resourceId);
-  return config.serialize(resource) as TResponse;
+  return {
+    ...(config.serialize(resource) as TResponse),
+    isFavorite: true,
+  };
 };

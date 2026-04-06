@@ -38,7 +38,7 @@ describe('createNamedResource', () => {
       name: 'Foo Bar',
       nameNormalized: 'foo bar',
     });
-    expect(result).toEqual({ id: '1' });
+    expect(result).toEqual({ id: '1', isFavorite: false });
   });
 
   it('throws when resource with given name already exists', async () => {

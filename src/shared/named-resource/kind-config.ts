@@ -31,6 +31,7 @@ export type NamedResourceResponse = {
   type: 'user' | 'system';
   name: string;
   nameNormalized: string;
+  isFavorite: boolean;
 };
 
 export type NamedResourceMapItem = Pick<NamedResourceResponse, 'id' | 'type' | 'name'>;

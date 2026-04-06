@@ -14,6 +14,7 @@ export const PaymentMethodResponseSchema = PaymentMethodSchema.extend({
     .optional(),
   type: z.enum(['user', 'system']),
   nameNormalized: z.string().min(1).max(30),
+  isFavorite: z.boolean(),
 });
 
 export const PaymentMethodsResponseSchema = z.array(PaymentMethodResponseSchema);

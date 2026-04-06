@@ -31,4 +31,5 @@ export const getUserAccountResultSerialized = () => ({
   ...commonProps,
   ownerId: USER_ID_STR,
   id: ACCOUNT_EXPENSE_ID_STR,
+  isFavorite: false,
 });

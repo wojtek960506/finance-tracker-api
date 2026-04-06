@@ -35,6 +35,7 @@ export const getSystemExpenseAccountResultSerialized = () => ({
   ...commonProps,
   ...propsExpense,
   id: ACCOUNT_EXPENSE_ID_STR,
+  isFavorite: false,
 });
 
 export const getSystemIncomeAccountResultJSON = () => ({
@@ -47,4 +48,5 @@ export const getSystemIncomeAccountResultSerialized = () => ({
   ...commonProps,
   ...propsIncome,
   id: ACCOUNT_INCOME_ID_STR,
+  isFavorite: false,
 });

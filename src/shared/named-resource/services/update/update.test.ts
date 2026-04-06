@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('@named-resource-favorite/db', () => ({
+  isFavoriteNamedResource: vi.fn(),
+}));
+
 vi.mock('@shared/services', () => ({
   checkOwner: vi.fn(),
 }));
@@ -20,6 +24,7 @@ vi.mock('@shared/named-resource/kind-config', () => ({
   })),
 }));
 
+import * as namedResourceFavoriteDb from '@named-resource-favorite/db';
 import * as namedResourceDb from '@shared/named-resource/db';
 import * as sharedServices from '@shared/services';
 import { AppError } from '@utils/errors';
@@ -44,6 +49,7 @@ describe('updateNamedResource', () => {
       id: 'r1',
       name: 'New Name',
     } as any);
+    vi.mocked(namedResourceFavoriteDb.isFavoriteNamedResource).mockResolvedValue(true);
 
     const result = await updateNamedResource('category', 'r1', 'u1', {
       name: '  New   Name ',
@@ -63,7 +69,12 @@ describe('updateNamedResource', () => {
         nameNormalized: 'new name',
       },
     );
-    expect(result).toEqual({ id: 'r1', name: 'New Name' });
+    expect(namedResourceFavoriteDb.isFavoriteNamedResource).toHaveBeenCalledWith(
+      'u1',
+      'category',
+      'r1',
+    );
+    expect(result).toEqual({ id: 'r1', name: 'New Name', isFavorite: true });
   });
 
   it('throws when updating system resource', async () => {

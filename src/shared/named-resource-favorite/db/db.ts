@@ -15,6 +15,20 @@ export const findFavoriteNamedResourceIds = async (
   return favorites.map((favorite) => favorite.resourceId.toString());
 };
 
+export const isFavoriteNamedResource = async (
+  userId: string,
+  resourceType: FavoriteNamedResourceType,
+  resourceId: string,
+) => {
+  const favorite = await FavoriteNamedResourceModel.exists({
+    userId: new Types.ObjectId(userId),
+    resourceType,
+    resourceId: new Types.ObjectId(resourceId),
+  });
+
+  return Boolean(favorite);
+};
+
 export const persistFavoriteNamedResource = async (
   userId: string,
   resourceType: FavoriteNamedResourceType,
