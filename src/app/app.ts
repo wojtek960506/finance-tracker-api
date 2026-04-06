@@ -12,7 +12,6 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 
-import { accountRoutes } from '@account/routes';
 import { getEnv } from '@app/config';
 import { mainRoutes } from '@app/routes';
 import {
@@ -22,9 +21,12 @@ import {
   upsertSystemPaymentMethods,
 } from '@app/setup';
 import { authRoutes } from '@auth/routes';
-import { categoryRoutes } from '@category/routes';
 import { currencyRoutes } from '@currency/routes';
-import { paymentMethodRoutes } from '@payment-method/routes';
+import {
+  accountRoutes,
+  categoryRoutes,
+  paymentMethodRoutes,
+} from '@named-resource/routes';
 import { transactionRoutes } from '@transaction/routes';
 import { userRoutes } from '@user/routes';
 
