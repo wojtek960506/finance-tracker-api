@@ -1,4 +1,4 @@
-import { AccountType } from '@account/model';
+import { NamedResourceType } from '@named-resource';
 
 import {
   ACCOUNT_EXPENSE_ID_OBJ,
@@ -11,7 +11,7 @@ import {
 } from './account-consts';
 
 const commonProps = {
-  type: ACCOUNT_TYPE_SYSTEM as AccountType,
+  type: ACCOUNT_TYPE_SYSTEM as NamedResourceType,
   ownerId: undefined,
 };
 
@@ -35,6 +35,7 @@ export const getSystemExpenseAccountResultSerialized = () => ({
   ...commonProps,
   ...propsExpense,
   id: ACCOUNT_EXPENSE_ID_STR,
+  isFavorite: false,
 });
 
 export const getSystemIncomeAccountResultJSON = () => ({
@@ -47,4 +48,5 @@ export const getSystemIncomeAccountResultSerialized = () => ({
   ...commonProps,
   ...propsIncome,
   id: ACCOUNT_INCOME_ID_STR,
+  isFavorite: false,
 });

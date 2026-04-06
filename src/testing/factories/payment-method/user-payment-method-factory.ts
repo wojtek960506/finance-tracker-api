@@ -1,6 +1,5 @@
+import { NamedResourceType } from '@named-resource';
 import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
-
-import { PaymentMethodType } from '@payment-method/model';
 
 import {
   CASH_PAYMENT_METHOD_ID_OBJ,
@@ -10,7 +9,7 @@ import {
 } from './payment-method-consts';
 
 const commonProps = {
-  type: PAYMENT_METHOD_TYPE_USER as PaymentMethodType,
+  type: PAYMENT_METHOD_TYPE_USER as NamedResourceType,
   name: PAYMENT_METHOD_CASH_NAME,
   nameNormalized: PAYMENT_METHOD_CASH_NAME.toLowerCase(),
 };
@@ -32,4 +31,5 @@ export const getUserPaymentMethodResultSerialized = () => ({
   ...commonProps,
   ownerId: USER_ID_STR,
   id: CASH_PAYMENT_METHOD_ID_STR,
+  isFavorite: false,
 });

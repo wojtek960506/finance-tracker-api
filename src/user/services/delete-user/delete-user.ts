@@ -1,8 +1,6 @@
 import { ClientSession } from 'mongoose';
 
-import { AccountModel } from '@account/model';
-import { CategoryModel } from '@category/model';
-import { PaymentMethodModel } from '@payment-method/model';
+import { getNamedResourceModel } from '@named-resource';
 import { TransactionModel } from '@transaction/model';
 import { UserModel } from '@user/model';
 import { UserResponseDTO } from '@user/schema';
@@ -27,18 +25,17 @@ const deleteUserCore = async (
     { session },
   );
   // delete all categories of the user
-  const { deletedCount: deletedCategoriesCount } = await CategoryModel.deleteMany(
-    { ownerId: id },
-    { session },
-  );
+  const { deletedCount: deletedCategoriesCount } = await getNamedResourceModel(
+    'category',
+  ).deleteMany({ ownerId: id }, { session });
   // delete all payment methods of the user
-  const { deletedCount: deletedPaymentMethodsCount } =
-    await PaymentMethodModel.deleteMany({ ownerId: id }, { session });
+  const { deletedCount: deletedPaymentMethodsCount } = await getNamedResourceModel(
+    'paymentMethod',
+  ).deleteMany({ ownerId: id }, { session });
 
-  const { deletedCount: deletedAccountsCount } = await AccountModel.deleteMany(
-    { ownerId: id },
-    { session },
-  );
+  const { deletedCount: deletedAccountsCount } = await getNamedResourceModel(
+    'account',
+  ).deleteMany({ ownerId: id }, { session });
 
   const { deletedCount } = await UserModel.deleteOne({ _id: id }, { session });
   if (deletedCount !== 1) throw new UserNotDeletedError(id);

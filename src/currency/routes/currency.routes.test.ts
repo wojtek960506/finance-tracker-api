@@ -1,4 +1,3 @@
-import { USER_ID_STR } from '@testing/factories/general';
 import Fastify from 'fastify';
 import {
   serializerCompiler,
@@ -9,6 +8,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
 import { currencyRoutes } from '@currency/routes';
+import { USER_ID_STR } from '@testing/factories/general';
 
 const mockPrehandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;

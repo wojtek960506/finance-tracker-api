@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { FOOD_CATEGORY_ID_OBJ, FOOD_CATEGORY_ID_STR } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
 import {
@@ -14,8 +16,6 @@ import {
   START_DATE_FILTER,
   TRANSACTION_TYPE_EXPENSE,
 } from '@testing/factories/transaction';
-import { describe, expect, it } from 'vitest';
-
 import { ValidationError } from '@utils/errors';
 
 import { buildTransactionFilterQuery } from './build-transaction-query';

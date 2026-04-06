@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import {
   getSystemExpenseAccountResultSerialized,
   getSystemIncomeAccountResultSerialized,
@@ -10,7 +12,6 @@ import {
   TRANSFER_TXN_EXPENSE_SRC_IDX,
   TRANSFER_TXN_INCOME_SRC_IDX,
 } from '@testing/factories/transaction';
-import { describe, expect, it } from 'vitest';
 
 import { prepareTransferProps } from './prepare-transfer-props';
 

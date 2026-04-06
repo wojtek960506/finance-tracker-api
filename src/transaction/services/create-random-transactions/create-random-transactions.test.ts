@@ -1,8 +1,5 @@
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
-import { getOrCreateAccount } from '@account/services';
-import { getOrCreateCategory } from '@category/services';
-import { getOrCreatePaymentMethod } from '@payment-method/services';
 import { TransactionModel } from '@transaction/model';
 import { AppError } from '@utils/errors';
 import { randomDate, randomFromSet } from '@utils/random';
@@ -15,9 +12,23 @@ import {
 } from './prepare-random-transaction';
 import { TEST_CATEGORIES, TEST_DATE, TEST_OWNER_ID } from './test-fixtures';
 
-vi.mock('@category/services', () => ({ getOrCreateCategory: vi.fn() }));
-vi.mock('@payment-method/services', () => ({ getOrCreatePaymentMethod: vi.fn() }));
-vi.mock('@account/services', () => ({ getOrCreateAccount: vi.fn() }));
+const { accountImpl, categoryImpl, paymentMethodImpl } = vi.hoisted(() => ({
+  accountImpl: vi.fn(),
+  categoryImpl: vi.fn(),
+  paymentMethodImpl: vi.fn(),
+}));
+
+vi.mock('@named-resource/services', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@named-resource/services')>();
+  return {
+    ...actual,
+    getOrCreateNamedResource: vi.fn((kind: string, ownerId: string, name: string) => {
+      if (kind === 'account') return accountImpl(ownerId, name);
+      if (kind === 'category') return categoryImpl(ownerId, name);
+      return paymentMethodImpl(ownerId, name);
+    }),
+  };
+});
 
 vi.mock('@utils/random', () => ({
   randomDate: vi.fn(),
@@ -96,7 +107,7 @@ describe('createRandomTransactions', () => {
       transactionDate: TEST_DATE,
     };
 
-    (getOrCreateCategory as Mock)
+    (categoryImpl as Mock)
       .mockResolvedValueOnce(TEST_CATEGORIES[0])
       .mockResolvedValueOnce(TEST_CATEGORIES[1])
       .mockResolvedValueOnce(TEST_CATEGORIES[2])
@@ -104,12 +115,12 @@ describe('createRandomTransactions', () => {
       .mockResolvedValueOnce(TEST_CATEGORIES[4])
       .mockResolvedValueOnce(TEST_CATEGORIES[5])
       .mockResolvedValueOnce(TEST_CATEGORIES[6]);
-    (getOrCreatePaymentMethod as Mock)
+    (paymentMethodImpl as Mock)
       .mockResolvedValueOnce(paymentMethod)
       .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
       .mockResolvedValueOnce({ id: 'pm-card', name: 'card' })
       .mockResolvedValueOnce({ id: 'pm-blik', name: 'blik' });
-    (getOrCreateAccount as Mock)
+    (accountImpl as Mock)
       .mockResolvedValueOnce({ id: 'acc-cash', name: 'cash' })
       .mockResolvedValueOnce({ id: 'acc-wallet', name: 'wallet' })
       .mockResolvedValueOnce({ id: 'acc-bank', name: 'bank' });
@@ -146,7 +157,7 @@ describe('createRandomTransactions', () => {
 
     const result = await createRandomTransactions(TEST_OWNER_ID, 5, session);
 
-    expect(getOrCreateCategory).toHaveBeenCalledTimes(7);
+    expect(categoryImpl).toHaveBeenCalledTimes(7);
     expect(randomFromSet).toHaveBeenCalledTimes(12);
     expect(prepareRandomStandardTransaction).toHaveBeenCalledOnce();
     expect(prepareRandomStandardTransaction).toHaveBeenCalledWith(
@@ -252,7 +263,7 @@ describe('createRandomTransactions', () => {
       transactionDate: TEST_DATE,
     };
 
-    (getOrCreateCategory as Mock)
+    (categoryImpl as Mock)
       .mockResolvedValueOnce(TEST_CATEGORIES[0])
       .mockResolvedValueOnce(TEST_CATEGORIES[1])
       .mockResolvedValueOnce(TEST_CATEGORIES[2])
@@ -260,7 +271,7 @@ describe('createRandomTransactions', () => {
       .mockResolvedValueOnce(TEST_CATEGORIES[4])
       .mockResolvedValueOnce(TEST_CATEGORIES[5])
       .mockResolvedValueOnce(TEST_CATEGORIES[6]);
-    (getOrCreatePaymentMethod as Mock)
+    (paymentMethodImpl as Mock)
       .mockResolvedValueOnce(paymentMethod)
       .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
       .mockResolvedValueOnce({ id: 'pm-card', name: 'card' })
@@ -325,7 +336,7 @@ describe('createRandomTransactions', () => {
         transactionDate: TEST_DATE,
       };
 
-      (getOrCreateCategory as Mock)
+      (categoryImpl as Mock)
         .mockResolvedValueOnce(TEST_CATEGORIES[0])
         .mockResolvedValueOnce(TEST_CATEGORIES[1])
         .mockResolvedValueOnce(TEST_CATEGORIES[2])
@@ -333,7 +344,7 @@ describe('createRandomTransactions', () => {
         .mockResolvedValueOnce(TEST_CATEGORIES[4])
         .mockResolvedValueOnce(TEST_CATEGORIES[5])
         .mockResolvedValueOnce(TEST_CATEGORIES[6]);
-      (getOrCreatePaymentMethod as Mock)
+      (paymentMethodImpl as Mock)
         .mockResolvedValueOnce(paymentMethod)
         .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
         .mockResolvedValueOnce({ id: 'pm-card', name: 'card' })

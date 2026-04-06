@@ -1,6 +1,6 @@
-import { FOOD_CATEGORY_ID_STR } from '@testing/factories/category';
 import { describe, expect, it, Mock, vi } from 'vitest';
 
+import { FOOD_CATEGORY_ID_STR } from '@testing/factories/category';
 import {
   findTransactionTotalsByCurrency,
   findTransactionTotalsOverall,

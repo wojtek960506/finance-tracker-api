@@ -1,7 +1,7 @@
 import { describe, expect, it, Mock, vi } from 'vitest';
 
-import { AccountModel } from '@account/model';
 import { upsertSystemNamedResources } from '@app/setup';
+import { getNamedResourceModel } from '@named-resource';
 import { SYSTEM_ACCOUNT_NAMES } from '@utils/consts';
 
 import { upsertSystemAccounts } from './upsert-system-accounts';
@@ -18,7 +18,7 @@ describe('upsertSystemAccounts', () => {
 
     expect(upsertSystemNamedResources).toHaveBeenCalledOnce();
     expect(upsertSystemNamedResources).toHaveBeenCalledWith(
-      AccountModel,
+      getNamedResourceModel('account'),
       SYSTEM_ACCOUNT_NAMES,
     );
   });

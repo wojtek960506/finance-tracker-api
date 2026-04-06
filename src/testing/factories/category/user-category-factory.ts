@@ -1,6 +1,5 @@
+import { NamedResourceType } from '@named-resource';
 import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
-
-import { CategoryType } from '@category/model';
 
 import {
   CATEGORY_TYPE_USER,
@@ -10,7 +9,7 @@ import {
 } from './category-consts';
 
 const commonProps = {
-  type: CATEGORY_TYPE_USER as CategoryType,
+  type: CATEGORY_TYPE_USER as NamedResourceType,
   name: FOOD_CATEGORY_NAME,
   nameNormalized: FOOD_CATEGORY_NAME.toLowerCase(),
 };
@@ -32,4 +31,5 @@ export const getUserCategoryResultSerialized = () => ({
   ...commonProps,
   ownerId: USER_ID_STR,
   id: FOOD_CATEGORY_ID_STR,
+  isFavorite: false,
 });

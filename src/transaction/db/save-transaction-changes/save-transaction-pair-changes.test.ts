@@ -1,9 +1,9 @@
+import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
+
 import {
   getExchangeTransactionProps,
   getExchangeTransactionResultSerialized,
 } from '@testing/factories/transaction';
-import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
-
 import { saveTransactionPairChanges } from '@transaction/db';
 import { serializeTransaction } from '@transaction/serializers';
 import { withSession } from '@utils/with-session';

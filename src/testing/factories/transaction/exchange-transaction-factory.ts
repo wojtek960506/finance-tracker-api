@@ -29,7 +29,6 @@ import {
   TRANSACTION_TYPE_EXPENSE,
   TRANSACTION_TYPE_INCOME,
 } from '@testing/factories/transaction';
-
 import {
   TransactionExchangeCreateProps,
   TransactionExchangeUpdateProps,

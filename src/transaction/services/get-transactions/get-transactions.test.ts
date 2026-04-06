@@ -1,3 +1,6 @@
+import { describe, expect, it, Mock, vi } from 'vitest';
+
+import * as namedResourceServices from '@named-resource/services';
 import { getSystemExpenseAccountResultSerialized } from '@testing/factories/account';
 import { USER_ID_STR } from '@testing/factories/general';
 import {
@@ -6,11 +9,6 @@ import {
   getTransferTransactionNotPopulatedResultJSON,
   getTransferTransactionResultSerialized,
 } from '@testing/factories/transaction';
-import { describe, expect, it, Mock, vi } from 'vitest';
-
-import * as accountServices from '@account/services';
-import * as services from '@category/services';
-import * as paymentMethodServices from '@payment-method/services';
 import { findTransactions, findTransactionsCount } from '@transaction/db';
 import { serializeTransaction } from '@transaction/serializers';
 import { getTransactions } from '@transaction/services';
@@ -48,11 +46,10 @@ describe('getTransactionsTest', () => {
       .mockReturnValueOnce(transactionSerialized)
       .mockReturnValueOnce(expenseTransactionSerialized)
       .mockReturnValueOnce(incomeTransactionSerialized);
-    vi.spyOn(services, 'prepareCategoriesMap').mockResolvedValue(tmpCategoriesMap);
-    vi.spyOn(paymentMethodServices, 'preparePaymentMethodsMap').mockResolvedValue(
-      tmpPaymentMethodsMap,
-    );
-    vi.spyOn(accountServices, 'prepareAccountsMap').mockResolvedValue(tmpAccountsMap);
+    vi.spyOn(namedResourceServices, 'prepareNamedResourcesMap')
+      .mockResolvedValueOnce(tmpAccountsMap)
+      .mockResolvedValueOnce(tmpCategoriesMap)
+      .mockResolvedValueOnce(tmpPaymentMethodsMap);
 
     const result = await getTransactions(query, USER_ID_STR);
 

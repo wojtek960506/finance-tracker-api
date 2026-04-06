@@ -1,5 +1,5 @@
-import { findCategoryByName } from '@category/db';
-import { serializeCategory } from '@category/serializers';
+import { findNamedResourceByName } from '@named-resource/db';
+import { getNamedResourceKindConfig } from '@named-resource/kind-config';
 import { persistTransactionPair } from '@transaction/db';
 import { TransactionResponseDTO } from '@transaction/schema';
 import { getNextSourceIndex } from '@transaction/services';
@@ -23,10 +23,13 @@ export const createTransactionPair = async <T extends TransactionCreateProps>(
     context: PrepareTransactionPropsContext,
   ) => PreparedTransactionCreateProps<T>,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-  const categoryDB = await findCategoryByName(systemCategoryName);
+  const categoryDB = await findNamedResourceByName('category', systemCategoryName);
   if (!categoryDB) throw new CategoryNotFoundError(undefined, systemCategoryName);
 
-  const category = serializeCategory(categoryDB);
+  const category =
+    'toObject' in categoryDB
+      ? getNamedResourceKindConfig('category').serialize(categoryDB)
+      : categoryDB;
   if (category.type !== 'system')
     throw new SystemCategoryWrongType(category.id, systemCategoryName);
   if (category.ownerId) throw new SystemCategoryHasOwner(category.id);

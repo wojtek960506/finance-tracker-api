@@ -1,8 +1,8 @@
-import { ENV_TEST_VALUES, MONGO_URI_TEST } from '@testing/env-consts';
 import mongoose from 'mongoose';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as config from '@app/config';
+import { ENV_TEST_VALUES, MONGO_URI_TEST } from '@testing/env-consts';
 
 import { connectDB } from './connect-db';
 

@@ -1,6 +1,5 @@
+import { NamedResourceType } from '@named-resource';
 import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
-
-import { AccountType } from '@account/model';
 
 import {
   ACCOUNT_EXPENSE_ID_OBJ,
@@ -10,7 +9,7 @@ import {
 } from './account-consts';
 
 const commonProps = {
-  type: ACCOUNT_TYPE_USER as AccountType,
+  type: ACCOUNT_TYPE_USER as NamedResourceType,
   name: ACCOUNT_EXPENSE_NAME,
   nameNormalized: ACCOUNT_EXPENSE_NAME.toLowerCase(),
 };
@@ -32,4 +31,5 @@ export const getUserAccountResultSerialized = () => ({
   ...commonProps,
   ownerId: USER_ID_STR,
   id: ACCOUNT_EXPENSE_ID_STR,
+  isFavorite: false,
 });

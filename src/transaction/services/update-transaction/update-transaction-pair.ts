@@ -1,5 +1,5 @@
-import { findCategoryByName } from '@category/db';
-import { serializeCategory } from '@category/serializers';
+import { findNamedResourceByName } from '@named-resource/db';
+import { getNamedResourceKindConfig } from '@named-resource/kind-config';
 import {
   loadTransactionWithReference,
   saveTransactionPairChanges,
@@ -25,10 +25,13 @@ export const updateTransactionPair = async <T extends TransactionUpdateProps>(
     objectIds: PrepareTransactionPropsObjectIds,
   ) => PreparedTransactionUpdateProps<T>,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-  const categoryDB = await findCategoryByName(systemCategoryName);
+  const categoryDB = await findNamedResourceByName('category', systemCategoryName);
   if (!categoryDB) throw new CategoryNotFoundError(undefined, systemCategoryName);
 
-  const category = serializeCategory(categoryDB);
+  const category =
+    'toObject' in categoryDB
+      ? getNamedResourceKindConfig('category').serialize(categoryDB)
+      : categoryDB;
   if (category.type !== 'system')
     throw new SystemCategoryWrongType(category.id, systemCategoryName);
   if (category.ownerId) throw new SystemCategoryHasOwner(category.id);

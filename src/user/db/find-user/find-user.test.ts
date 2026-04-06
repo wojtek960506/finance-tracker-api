@@ -1,7 +1,7 @@
-import { USER_ID_STR } from '@testing/factories/general';
-import { getUserResultJSON } from '@testing/factories/user';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultJSON } from '@testing/factories/user';
 import { UserModel } from '@user/model';
 import { UserNotFoundError } from '@utils/errors/user-errors';
 

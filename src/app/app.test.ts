@@ -1,12 +1,12 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import * as config from '@app/config';
 import {
   COOKIE_SECRET_TEST,
   ENV_TEST_VALUES,
   JWT_ACCESS_SECRET_TEST,
   PORT_TEST,
 } from '@testing/env-consts';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import * as config from '@app/config';
 
 const {
   appMock,
@@ -79,12 +79,12 @@ vi.mock('@app/routes', () => ({
 
 vi.mock('@auth/routes', () => ({ authRoutes: authRoutesMock }));
 vi.mock('@user/routes', () => ({ userRoutes: userRoutesMock }));
-vi.mock('@category/routes', () => ({ categoryRoutes: categoryRoutesMock }));
-vi.mock('@account/routes', () => ({ accountRoutes: accountRoutesMock }));
-vi.mock('@currency/routes', () => ({ currencyRoutes: currencyRoutesMock }));
-vi.mock('@payment-method/routes', () => ({
+vi.mock('@named-resource/routes', () => ({
+  accountRoutes: accountRoutesMock,
+  categoryRoutes: categoryRoutesMock,
   paymentMethodRoutes: paymentMethodRoutesMock,
 }));
+vi.mock('@currency/routes', () => ({ currencyRoutes: currencyRoutesMock }));
 vi.mock('@transaction/routes', () => ({ transactionRoutes: transactionRoutesMock }));
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));

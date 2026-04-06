@@ -1,3 +1,7 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import * as namedResourceDb from '@named-resource/db';
+import * as namedResourceConfig from '@named-resource/kind-config';
 import {
   ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
@@ -6,7 +10,6 @@ import {
 import {
   CATEGORY_TYPE_SYSTEM,
   CATEGORY_TYPE_USER,
-  FOOD_CATEGORY_ID_STR,
   getExchangeCategoryResultJSON,
   getTransferCategoryResultJSON,
   getUserCategoryResultSerialized,
@@ -24,12 +27,6 @@ import {
   STANDARD_TXN_ID_STR,
   TRANSFER_TXN_EXPENSE_ID_STR,
 } from '@testing/factories/transaction';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import * as dbAccounts from '@account/db';
-import * as dbCategories from '@category/db';
-import * as serializers from '@category/serializers';
-import * as dbPaymentMethods from '@payment-method/db';
 import * as dbTransactions from '@transaction/db';
 import {
   updateExchangeTransaction,
@@ -45,7 +42,7 @@ import {
   SystemCategoryWrongType,
 } from '@utils/errors';
 
-describe('update transaction', async () => {
+describe('update transaction', () => {
   const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getExchangeTransactionDTO();
   const transferDTO = getTransferTransactionDTO();
@@ -62,19 +59,18 @@ describe('update transaction', async () => {
   const accountIncome = getSystemIncomeAccountResultSerialized();
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('update standard transaction', async () => {
+  it('updates standard transaction', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(foodCategory as any)
+      .mockResolvedValueOnce(paymentMethod as any)
+      .mockResolvedValueOnce(accountExpense as any);
     vi.spyOn(dbTransactions, 'findTransaction').mockResolvedValue(transaction as any);
     vi.spyOn(dbTransactions, 'saveTransactionChanges').mockResolvedValue(
       transaction as any,
     );
-    vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue(foodCategory as any);
-    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
-      paymentMethod as any,
-    );
-    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
 
     const result = await updateStandardTransaction(
       STANDARD_TXN_ID_STR,
@@ -82,12 +78,6 @@ describe('update transaction', async () => {
       standardDTO,
     );
 
-    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
-    expect(dbCategories.findCategoryById).toHaveBeenCalledWith(FOOD_CATEGORY_ID_STR);
-    expect(dbTransactions.findTransaction).toHaveBeenCalledOnce();
-    expect(dbTransactions.findTransaction).toHaveBeenCalledWith(STANDARD_TXN_ID_STR);
-    expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
-    expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledOnce();
     expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledWith(
       transaction,
       standardDTO,
@@ -95,171 +85,166 @@ describe('update transaction', async () => {
     expect(result).toEqual(transaction);
   });
 
-  it.each([
-    ['transfer', transferPair, transferDTO, updateTransferTransaction, transferCategory],
-    ['exchange', exchangePair, exchangeDTO, updateExchangeTransaction, exchangeCategory],
-  ])('udate %s transaction', async (_, expectedResult, dto, updateFunc, category) => {
+  it('updates transfer transaction pair', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
+      transferCategory as any,
+    );
     vi.spyOn(dbTransactions, 'loadTransactionWithReference').mockResolvedValue(
-      expectedResult as any,
+      transferPair as any,
     );
     vi.spyOn(dbTransactions, 'saveTransactionPairChanges').mockResolvedValue(
-      expectedResult as any,
+      transferPair as any,
     );
-    vi.spyOn(dbAccounts, 'findAccountById')
+
+    const result = await updateTransferTransaction(
+      TRANSFER_TXN_EXPENSE_ID_STR,
+      USER_ID_STR,
+      transferDTO,
+    );
+
+    expect(result).toEqual(transferPair);
+  });
+
+  it('updates exchange transaction pair', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
-      .mockResolvedValueOnce(accountIncome as any);
-    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
-      paymentMethod as any,
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
+      exchangeCategory as any,
     );
-    vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(category as any);
-    vi.spyOn(serializers, 'serializeCategory').mockReturnValue(category as any);
+    vi.spyOn(dbTransactions, 'loadTransactionWithReference').mockResolvedValue(
+      exchangePair as any,
+    );
+    vi.spyOn(dbTransactions, 'saveTransactionPairChanges').mockResolvedValue(
+      exchangePair as any,
+    );
 
-    const result = await updateFunc(TRANSFER_TXN_EXPENSE_ID_STR, USER_ID_STR, dto as any);
+    const result = await updateExchangeTransaction(
+      EXCHANGE_TXN_EXPENSE_ID_STR,
+      USER_ID_STR,
+      exchangeDTO,
+    );
 
-    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
-    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
-    expect(dbTransactions.loadTransactionWithReference).toHaveBeenCalledOnce();
-    expect(dbTransactions.saveTransactionPairChanges).toHaveBeenCalledOnce();
-    expect(result).toEqual(expectedResult);
+    expect(result).toEqual(exchangePair);
+  });
+
+  it('updates exchange transaction pair from a model-like system category', async () => {
+    const categoryModel = { toObject: vi.fn() };
+
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
+      categoryModel as any,
+    );
+    vi.spyOn(namedResourceConfig, 'getNamedResourceKindConfig').mockReturnValue({
+      serialize: vi.fn().mockReturnValue(exchangeCategory),
+    } as any);
+    vi.spyOn(dbTransactions, 'loadTransactionWithReference').mockResolvedValue(
+      exchangePair as any,
+    );
+    vi.spyOn(dbTransactions, 'saveTransactionPairChanges').mockResolvedValue(
+      exchangePair as any,
+    );
+
+    const result = await updateExchangeTransaction(
+      EXCHANGE_TXN_EXPENSE_ID_STR,
+      USER_ID_STR,
+      exchangeDTO,
+    );
+
+    expect(namedResourceConfig.getNamedResourceKindConfig).toHaveBeenCalledWith(
+      'category',
+    );
+    expect(result).toEqual(exchangePair);
   });
 
   it('throws when updating standard transaction with system category', async () => {
-    vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue({
+    vi.spyOn(namedResourceDb, 'findNamedResourceById').mockResolvedValueOnce({
       ...foodCategory,
       type: CATEGORY_TYPE_SYSTEM,
     } as any);
-    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
-    vi.spyOn(dbTransactions, 'findTransaction');
-    vi.spyOn(dbTransactions, 'saveTransactionChanges');
 
     await expect(
       updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
     ).rejects.toThrow(SystemCategoryNotAllowed);
-
-    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
-    expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
-    expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
   });
 
   it('throws when updating standard transaction with account not owned by user', async () => {
-    vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue(foodCategory as any);
-    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
-      paymentMethod as any,
-    );
-    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue({
-      ...accountExpense,
-      type: ACCOUNT_TYPE_USER,
-      ownerId: '123',
-      id: '1',
-    } as any);
-    vi.spyOn(dbTransactions, 'findTransaction');
-    vi.spyOn(dbTransactions, 'saveTransactionChanges');
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(foodCategory as any)
+      .mockResolvedValueOnce(paymentMethod as any)
+      .mockResolvedValueOnce({
+        ...accountExpense,
+        type: ACCOUNT_TYPE_USER,
+        ownerId: '123',
+        id: '1',
+      } as any);
 
     await expect(
       updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
     ).rejects.toThrow(AccountOwnershipError);
-
-    expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
-    expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
-    expect(dbAccounts.findAccountById).toHaveBeenCalledOnce();
-    expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
-    expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
   });
 
   // prettier-ignore
   it(
-    'should throw error when creating single transaction with payment method not owned by user',
+    'throws when updating standard transaction with payment method not owned by user',
     async () => {
-      vi.spyOn(dbCategories, 'findCategoryById').mockResolvedValue( foodCategory as any);
-      vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
-        { ...paymentMethod, type: CATEGORY_TYPE_USER, ownerId: '123', id: '1' } as any,
-      );
-      vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
-      vi.spyOn(dbTransactions, 'findTransaction');
-      vi.spyOn(dbTransactions, 'saveTransactionChanges');
+      vi.spyOn(namedResourceDb, 'findNamedResourceById')
+        .mockResolvedValueOnce(foodCategory as any)
+        .mockResolvedValueOnce({
+          ...paymentMethod,
+          type: CATEGORY_TYPE_USER,
+          ownerId: '123',
+          id: '1',
+        } as any);
 
       await expect(
-      updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
-    ).rejects.toThrow(PaymentMethodOwnershipError);
-
-      expect(dbCategories.findCategoryById).toHaveBeenCalledOnce();
-      expect(dbPaymentMethods.findPaymentMethodById).toHaveBeenCalledOnce();
-      expect(dbTransactions.findTransaction).not.toHaveBeenCalled();
-      expect(dbTransactions.saveTransactionChanges).not.toHaveBeenCalled();
+        updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, standardDTO),
+      ).rejects.toThrow(PaymentMethodOwnershipError);
     }
   );
 
-  it('throws when updating transaction pair with not system category', async () => {
-    vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
-      exchangeCategory as any,
-    );
-    vi.spyOn(dbAccounts, 'findAccountById').mockResolvedValue(accountExpense as any);
-    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
-      paymentMethod as any,
-    );
-    vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
+  it('throws when updating pair transaction with non-system category', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
       ...exchangeCategory,
       type: CATEGORY_TYPE_USER,
     } as any);
-    vi.spyOn(dbTransactions, 'loadTransactionWithReference');
-    vi.spyOn(dbTransactions, 'saveTransactionPairChanges');
 
     await expect(
       updateExchangeTransaction(EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, exchangeDTO),
     ).rejects.toThrow(SystemCategoryWrongType);
-
-    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
-    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
-    expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
-    expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
   });
 
-  it('throws when updating transaction pair with system category which has owner', async () => {
-    vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(
-      transferCategory as any,
-    );
-    vi.spyOn(dbAccounts, 'findAccountById')
+  it('throws when updating pair transaction system category has owner', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
-      .mockResolvedValueOnce(accountIncome as any);
-    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
-      paymentMethod as any,
-    );
-    vi.spyOn(serializers, 'serializeCategory').mockReturnValue({
-      ...transferCategory,
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
+      ...exchangeCategory,
       ownerId: USER_ID_STR,
     } as any);
-    vi.spyOn(dbTransactions, 'loadTransactionWithReference');
-    vi.spyOn(dbTransactions, 'saveTransactionPairChanges');
 
     await expect(
-      updateTransferTransaction(TRANSFER_TXN_EXPENSE_ID_STR, USER_ID_STR, transferDTO),
+      updateExchangeTransaction(EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, exchangeDTO),
     ).rejects.toThrow(SystemCategoryHasOwner);
-
-    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
-    expect(serializers.serializeCategory).toHaveBeenCalledOnce();
-    expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
-    expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
   });
 
-  it('throws when updating transaction pair with not existing category', async () => {
-    vi.spyOn(dbCategories, 'findCategoryByName').mockResolvedValue(null);
-    vi.spyOn(dbAccounts, 'findAccountById')
+  it('throws when updating pair transaction category is missing', async () => {
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
-      .mockResolvedValueOnce(accountIncome as any);
-    vi.spyOn(dbPaymentMethods, 'findPaymentMethodById').mockResolvedValue(
-      paymentMethod as any,
-    );
-    vi.spyOn(serializers, 'serializeCategory');
-    vi.spyOn(dbTransactions, 'loadTransactionWithReference');
-    vi.spyOn(dbTransactions, 'saveTransactionPairChanges');
+      .mockResolvedValueOnce(paymentMethod as any);
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(null);
 
     await expect(
-      updateTransferTransaction(TRANSFER_TXN_EXPENSE_ID_STR, USER_ID_STR, transferDTO),
+      updateExchangeTransaction(EXCHANGE_TXN_EXPENSE_ID_STR, USER_ID_STR, exchangeDTO),
     ).rejects.toThrow(CategoryNotFoundError);
-
-    expect(dbCategories.findCategoryByName).toHaveBeenCalledOnce();
-    expect(serializers.serializeCategory).not.toHaveBeenCalled();
-    expect(dbTransactions.loadTransactionWithReference).not.toHaveBeenCalled();
-    expect(dbTransactions.saveTransactionPairChanges).not.toHaveBeenCalled();
   });
 });

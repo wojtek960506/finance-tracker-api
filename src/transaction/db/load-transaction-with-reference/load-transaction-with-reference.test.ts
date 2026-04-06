@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+
 import {
   EXCHANGE_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_NAME,
@@ -13,8 +15,6 @@ import {
   TRANSACTION_TYPE_EXPENSE,
   TRANSFER_TXN_EXPENSE_ID_STR,
 } from '@testing/factories/transaction';
-import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-
 import * as db from '@transaction/db';
 import { loadTransactionWithReference, SystemCategoryName } from '@transaction/db';
 import { findTransaction } from '@transaction/db/find-transaction';

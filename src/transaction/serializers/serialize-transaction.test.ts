@@ -1,3 +1,6 @@
+import { describe, expect, it } from 'vitest';
+
+import { NamedResourceType } from '@named-resource';
 import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_ID_STR,
@@ -17,10 +20,6 @@ import {
   ACCOUNT_EXPENSE_ID_STR,
   ACCOUNT_EXPENSE_NAME,
 } from '@testing/factories/transaction/transaction-consts';
-import { describe, expect, it } from 'vitest';
-
-import { CategoryType } from '@category/model';
-import { PaymentMethodType } from '@payment-method/model';
 import { serializeTransaction } from '@transaction/serializers';
 
 describe('serializeTransaction', () => {
@@ -39,21 +38,21 @@ describe('serializeTransaction', () => {
   const categoriesMap = {
     [FOOD_CATEGORY_ID_STR]: {
       id: FOOD_CATEGORY_ID_STR,
-      type: CATEGORY_TYPE_USER as CategoryType,
+      type: CATEGORY_TYPE_USER as NamedResourceType,
       name: FOOD_CATEGORY_NAME,
     },
   };
   const paymentMethodsMap = {
     [BANK_TRANSFER_PAYMENT_METHOD_ID_STR]: {
       id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-      type: PAYMENT_METHOD_TYPE_SYSTEM as PaymentMethodType,
+      type: PAYMENT_METHOD_TYPE_SYSTEM as NamedResourceType,
       name: PAYMENT_METHOD_BANK_TRANSFER_NAME,
     },
   };
   const accountsMap = {
     [ACCOUNT_EXPENSE_ID_STR]: {
       id: ACCOUNT_EXPENSE_ID_STR,
-      type: PAYMENT_METHOD_TYPE_SYSTEM as PaymentMethodType,
+      type: PAYMENT_METHOD_TYPE_SYSTEM as NamedResourceType,
       name: ACCOUNT_EXPENSE_NAME,
     },
   };

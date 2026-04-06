@@ -15,17 +15,18 @@
     "noEmit": true,
     "baseUrl": "./src",
     "paths": {
-      "@utils/*": ["utils/*"],
       "@app/*": ["app/*"],
-      "@shared/*": ["shared/*"],
       "@auth/*": ["auth/*"],
-      "@user/*": ["user/*"],
-      "@account/*": ["account/*"],
-      "@category/*": ["category/*"],
-      "@transaction/*": ["transaction/*"],
-      "@payment-method/*": ["payment-method/*"],
+      "@currency/*": ["currency/*"],
+      "@named-resource": ["named-resource/index.ts"],
+      "@named-resource/*": ["named-resource/*"],
+      "@named-resource-favorite": ["named-resource-favorite/index.ts"],
+      "@named-resource-favorite/*": ["named-resource-favorite/*"],
+      "@shared/*": ["shared/*"],
       "@testing/*": ["testing/*"],
-      "@currency/*": ["currency/*"]
+      "@transaction/*": ["transaction/*"],
+      "@user/*": ["user/*"],
+      "@utils/*": ["utils/*"]
     },
     "types": ["node", "vitest"]
   },

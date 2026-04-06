@@ -1,11 +1,11 @@
+import { describe, expect, it, Mock, vi } from 'vitest';
+
 import { USER_ID_STR } from '@testing/factories/general';
 import {
   getStandardTransactionResultJSON,
   getStandardTransactionResultSerialized,
   STANDARD_TXN_ID_STR,
 } from '@testing/factories/transaction';
-import { describe, expect, it, Mock, vi } from 'vitest';
-
 import { findTransaction } from '@transaction/db';
 import { serializeTransaction } from '@transaction/serializers';
 import { getTransaction } from '@transaction/services';

@@ -1,10 +1,8 @@
-import { USER_ID_STR } from '@testing/factories/general';
-import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { AccountModel } from '@account/model';
-import { CategoryModel } from '@category/model';
-import { PaymentMethodModel } from '@payment-method/model';
+import { getNamedResourceModel } from '@named-resource';
+import { USER_ID_STR } from '@testing/factories/general';
+import { getUserResultJSON, getUserResultSerialized } from '@testing/factories/user';
 import { TransactionModel } from '@transaction/model';
 import { UserModel } from '@user/model';
 import * as serializers from '@user/serializers';
@@ -27,6 +25,9 @@ vi.mock('@utils/with-session', () => ({
 }));
 
 describe('deleteUser', () => {
+  const CategoryModel = getNamedResourceModel('category');
+  const AccountModel = getNamedResourceModel('account');
+  const PaymentMethodModel = getNamedResourceModel('paymentMethod');
   const user = getUserResultJSON();
   const userSerialized = getUserResultSerialized();
   const anotherUserId = randomObjectIdString();

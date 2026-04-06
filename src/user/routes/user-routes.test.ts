@@ -1,11 +1,3 @@
-import { USER_ID_STR } from '@testing/factories/general';
-import {
-  getUserDTO,
-  getUserResultSerialized,
-  TEST_USER_TOTAL_TRANSACTIONS,
-  TEST_USER_USERNAME,
-  USER_EMAIL,
-} from '@testing/factories/user';
 import Fastify from 'fastify';
 import {
   serializerCompiler,
@@ -15,6 +7,14 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
+import { USER_ID_STR } from '@testing/factories/general';
+import {
+  getUserDTO,
+  getUserResultSerialized,
+  TEST_USER_TOTAL_TRANSACTIONS,
+  TEST_USER_USERNAME,
+  USER_EMAIL,
+} from '@testing/factories/user';
 import * as serviceU from '@user/services';
 
 import { userRoutes } from './user-routes';

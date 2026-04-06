@@ -1,4 +1,4 @@
-import { PaymentMethodType } from '@payment-method/model';
+import { NamedResourceType } from '@named-resource';
 
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
@@ -11,7 +11,7 @@ import {
 } from './payment-method-consts';
 
 const commonProps = {
-  type: PAYMENT_METHOD_TYPE_SYSTEM as PaymentMethodType,
+  type: PAYMENT_METHOD_TYPE_SYSTEM as NamedResourceType,
   ownerId: undefined,
 };
 
@@ -35,6 +35,7 @@ export const getBankTransferPaymentMethodResultSerialized = () => ({
   ...commonProps,
   ...propsBankTransfer,
   id: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  isFavorite: false,
 });
 
 export const getCashPaymentMethodResultJSON = () => ({
@@ -47,4 +48,5 @@ export const getCashPaymentMethodResultSerialized = () => ({
   ...commonProps,
   ...propsCash,
   id: CASH_PAYMENT_METHOD_ID_STR,
+  isFavorite: false,
 });

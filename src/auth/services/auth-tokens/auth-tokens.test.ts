@@ -1,8 +1,8 @@
-import { ENV_TEST_VALUES } from '@testing/env-consts';
 import type { JwtPayload } from 'jsonwebtoken';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as config from '@app/config';
+import { ENV_TEST_VALUES } from '@testing/env-consts';
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 

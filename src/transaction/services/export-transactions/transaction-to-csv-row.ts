@@ -1,13 +1,11 @@
-import { AccountsMap } from '@account/services';
-import { CategoriesMap } from '@category/services';
-import { PaymentMethodsMap } from '@payment-method/services';
+import { NamedResourcesMap } from '@named-resource/kind-config';
 import { ITransaction } from '@transaction/model';
 
 export const transactionToCsvRow = (
   transaction: ITransaction,
-  categoriesMap: CategoriesMap,
-  paymentMethodsMap: PaymentMethodsMap,
-  accountsMap: AccountsMap,
+  categoriesMap: NamedResourcesMap,
+  paymentMethodsMap: NamedResourcesMap,
+  accountsMap: NamedResourcesMap,
 ) => ({
   sourceIndex: transaction.sourceIndex,
   date: transaction.date.toISOString().slice(0, 10),
