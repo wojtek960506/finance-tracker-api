@@ -1,4 +1,4 @@
-import { findNamedResourceById } from '@shared/named-resource/db';
+import { findNamedResourceById } from '@named-resource/db';
 import { checkOwner } from '@shared/services';
 import { persistTransaction } from '@transaction/db';
 import {

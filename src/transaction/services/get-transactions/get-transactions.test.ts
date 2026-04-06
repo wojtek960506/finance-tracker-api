@@ -1,6 +1,6 @@
 import { describe, expect, it, Mock, vi } from 'vitest';
 
-import * as namedResourceServices from '@shared/named-resource/services';
+import * as namedResourceServices from '@named-resource/services';
 import { getSystemExpenseAccountResultSerialized } from '@testing/factories/account';
 import { USER_ID_STR } from '@testing/factories/general';
 import {

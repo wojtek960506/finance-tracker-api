@@ -1,4 +1,4 @@
-import { NamedResourceResponseDTO } from '@shared/named-resource';
+import { NamedResourceResponseDTO } from '@named-resource';
 import { TransactionResponseDTO } from '@transaction/schema';
 
 type GetCSVPayload = Omit<

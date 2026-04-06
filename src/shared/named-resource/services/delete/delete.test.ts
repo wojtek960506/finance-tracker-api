@@ -4,12 +4,12 @@ vi.mock('@shared/services', () => ({
   checkOwner: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResourceById: vi.fn(),
   removeNamedResourceById: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(() => ({
     checkOwnerType: 'category',
     checkOccurrences: vi.fn(),
@@ -17,8 +17,8 @@ vi.mock('@shared/named-resource/kind-config', () => ({
   })),
 }));
 
-import * as namedResourceDb from '@shared/named-resource/db';
-import * as namedResourceKindConfig from '@shared/named-resource/kind-config';
+import * as namedResourceDb from '@named-resource/db';
+import * as namedResourceKindConfig from '@named-resource/kind-config';
 import { checkOwner } from '@shared/services';
 
 import { deleteNamedResource } from './delete';

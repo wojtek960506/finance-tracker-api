@@ -8,19 +8,19 @@ vi.mock('@shared/services', () => ({
   checkOwner: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResourceById: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(() => ({
     checkOwnerType: 'category',
     serialize: vi.fn((resource) => ({ id: '1', name: resource.name })),
   })),
 }));
 
+import * as namedResourceDb from '@named-resource/db';
 import * as namedResourceFavoriteDb from '@named-resource-favorite/db';
-import * as namedResourceDb from '@shared/named-resource/db';
 import * as sharedServices from '@shared/services';
 
 import { getNamedResource } from './get';

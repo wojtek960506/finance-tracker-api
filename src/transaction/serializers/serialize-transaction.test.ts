@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { NamedResourceType } from '@shared/named-resource';
+import { NamedResourceType } from '@named-resource';
 import {
   CATEGORY_TYPE_USER,
   FOOD_CATEGORY_ID_STR,

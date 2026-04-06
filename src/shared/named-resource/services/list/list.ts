@@ -1,10 +1,10 @@
-import { findFavoriteNamedResourceIds } from '@named-resource-favorite/db';
-import { findNamedResources } from '@shared/named-resource/db';
+import { findNamedResources } from '@named-resource/db';
 import {
   getNamedResourceKindConfig,
   NamedResourceResponse,
-} from '@shared/named-resource/kind-config';
-import { NamedResourceKind } from '@shared/named-resource/types';
+} from '@named-resource/kind-config';
+import { NamedResourceKind } from '@named-resource/types';
+import { findFavoriteNamedResourceIds } from '@named-resource-favorite/db';
 
 export const listNamedResources = async <
   TResponse extends NamedResourceResponse = NamedResourceResponse,

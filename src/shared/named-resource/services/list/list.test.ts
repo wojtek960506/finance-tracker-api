@@ -4,17 +4,17 @@ vi.mock('@named-resource-favorite/db', () => ({
   findFavoriteNamedResourceIds: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResources: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(),
 }));
 
+import { findNamedResources } from '@named-resource/db';
+import { getNamedResourceKindConfig } from '@named-resource/kind-config';
 import { findFavoriteNamedResourceIds } from '@named-resource-favorite/db';
-import { findNamedResources } from '@shared/named-resource/db';
-import { getNamedResourceKindConfig } from '@shared/named-resource/kind-config';
 
 import { listNamedResources } from './list';
 

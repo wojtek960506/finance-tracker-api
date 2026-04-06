@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { NamedResourceDTO, NamedResourceResponseDTO } from '@named-resource';
 import {
   createNamedResource,
   deleteNamedResource,
@@ -15,7 +16,6 @@ import {
   unfavoriteNamedResource,
 } from '@named-resource-favorite/services';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
-import { NamedResourceDTO, NamedResourceResponseDTO } from '@shared/named-resource';
 
 type NamedResourceBodyByKind = {
   account: NamedResourceDTO;

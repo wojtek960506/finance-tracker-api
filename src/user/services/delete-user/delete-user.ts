@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 
-import { getNamedResourceModel } from '@shared/named-resource';
+import { getNamedResourceModel } from '@named-resource';
 import { TransactionModel } from '@transaction/model';
 import { UserModel } from '@user/model';
 import { UserResponseDTO } from '@user/schema';

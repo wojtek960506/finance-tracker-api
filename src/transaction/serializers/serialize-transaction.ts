@@ -1,4 +1,4 @@
-import { NamedResourcesMap } from '@shared/named-resource/kind-config';
+import { NamedResourcesMap } from '@named-resource/kind-config';
 import { ITransaction } from '@transaction/model';
 import { TransactionResponseDTO } from '@transaction/schema';
 

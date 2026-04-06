@@ -1,4 +1,4 @@
-import { NamedResourceType } from '@shared/named-resource';
+import { NamedResourceType } from '@named-resource';
 
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,

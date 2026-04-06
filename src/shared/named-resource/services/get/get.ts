@@ -1,10 +1,10 @@
-import { isFavoriteNamedResource } from '@named-resource-favorite/db';
-import { findNamedResourceById } from '@shared/named-resource/db';
+import { findNamedResourceById } from '@named-resource/db';
 import {
   getNamedResourceKindConfig,
   NamedResourceResponse,
-} from '@shared/named-resource/kind-config';
-import { NamedResourceKind } from '@shared/named-resource/types';
+} from '@named-resource/kind-config';
+import { NamedResourceKind } from '@named-resource/types';
+import { isFavoriteNamedResource } from '@named-resource-favorite/db';
 import { checkOwner } from '@shared/services';
 
 export const getNamedResource = async <

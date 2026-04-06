@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 
-import { getOrCreateNamedResource } from '@shared/named-resource/services';
+import { getOrCreateNamedResource } from '@named-resource/services';
 import { TransactionModel } from '@transaction/model';
 import {
   SYSTEM_ACCOUNT_NAMES,

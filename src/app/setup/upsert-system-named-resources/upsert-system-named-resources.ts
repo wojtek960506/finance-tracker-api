@@ -1,6 +1,6 @@
 import { ClientSession, Model } from 'mongoose';
 
-import { NamedResourceMinimal } from '@shared/named-resource';
+import { NamedResourceMinimal } from '@named-resource';
 import { normalizeWhitespace } from '@utils/strings';
 import { withSession } from '@utils/with-session';
 

@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResources: vi.fn(),
 }));
 
-import * as namedResourceDb from '@shared/named-resource/db';
+import * as namedResourceDb from '@named-resource/db';
 
 import { prepareNamedResourcesMap } from './prepare-map';
 

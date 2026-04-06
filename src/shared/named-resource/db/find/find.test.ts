@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(),
 }));
 
-import * as kindConfig from '@shared/named-resource/kind-config';
+import * as kindConfig from '@named-resource/kind-config';
 
 import {
   findNamedResourceById,

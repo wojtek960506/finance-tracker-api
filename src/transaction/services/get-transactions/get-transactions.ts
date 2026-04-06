@@ -1,5 +1,5 @@
+import { prepareNamedResourcesMap } from '@named-resource/services';
 import { FilteredResponse } from '@shared/http';
-import { prepareNamedResourcesMap } from '@shared/named-resource/services';
 import { findTransactions, findTransactionsCount } from '@transaction/db';
 import { TransactionQuery, TransactionsResponseDTO } from '@transaction/schema';
 import { serializeTransaction } from '@transaction/serializers';

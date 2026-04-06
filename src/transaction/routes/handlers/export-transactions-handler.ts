@@ -1,8 +1,8 @@
 import { stringify } from 'csv-stringify';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { prepareNamedResourcesMap } from '@named-resource/services';
 import { AuthenticatedRequest } from '@shared/http';
-import { prepareNamedResourcesMap } from '@shared/named-resource/services';
 import { streamTransactions } from '@transaction/db';
 import { csvExportColumns, transactionToCsvRow } from '@transaction/services';
 

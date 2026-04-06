@@ -2,7 +2,6 @@ import { FastifyInstance } from 'fastify';
 import { DeleteResult } from 'mongoose';
 
 import { authorizeAccessToken } from '@auth/services';
-import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
 import {
   NamedResourceDTO,
   NamedResourceResponseDTO,
@@ -10,7 +9,7 @@ import {
   NamedResourceSchema,
   NamedResourcesResponseDTO,
   NamedResourcesResponseSchema,
-} from '@shared/named-resource';
+} from '@named-resource';
 import {
   createNamedResourceHandler,
   deleteNamedResourceHandler,
@@ -20,7 +19,8 @@ import {
   getNamedResourcesHandler,
   unfavoriteNamedResourceHandler,
   updateNamedResourceHandler,
-} from '@shared/named-resource/routes/handlers';
+} from '@named-resource/routes/handlers';
+import { DeleteResultSchema, ParamsJustId, ParamsJustIdSchema } from '@shared/http';
 import { validateBody } from '@utils/validation';
 
 export async function paymentMethodRoutes(

@@ -1,7 +1,7 @@
 import { describe, expect, it, Mock, vi } from 'vitest';
 
 import { upsertSystemNamedResources } from '@app/setup';
-import { getNamedResourceModel } from '@shared/named-resource';
+import { getNamedResourceModel } from '@named-resource';
 import { SYSTEM_CATEGORY_NAMES } from '@utils/consts';
 
 import { upsertSystemCategories } from './upsert-system-categories';

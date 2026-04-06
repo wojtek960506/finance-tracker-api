@@ -1,5 +1,5 @@
 import { upsertSystemNamedResources } from '@app/setup';
-import { getNamedResourceModel } from '@shared/named-resource';
+import { getNamedResourceModel } from '@named-resource';
 import { SYSTEM_PAYMENT_METHOD_NAMES } from '@utils/consts';
 
 export const upsertSystemPaymentMethods = async () =>

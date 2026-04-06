@@ -7,7 +7,7 @@ import {
 import { afterEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import { registerErrorHandler } from '@app/plugins/errorHandler';
-import * as namedResourceServices from '@shared/named-resource/services';
+import * as namedResourceServices from '@named-resource/services';
 import {
   FOOD_CATEGORY_ID_OBJ,
   FOOD_CATEGORY_ID_STR,

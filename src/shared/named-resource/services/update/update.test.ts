@@ -8,13 +8,13 @@ vi.mock('@shared/services', () => ({
   checkOwner: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResourceById: vi.fn(),
   findNamedResourceByName: vi.fn(),
   saveNamedResourceChanges: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(() => ({
     checkOwnerType: 'category',
     systemUpdateNotAllowedFactory: (id: string) => new Error(`system:${id}`),
@@ -24,8 +24,8 @@ vi.mock('@shared/named-resource/kind-config', () => ({
   })),
 }));
 
+import * as namedResourceDb from '@named-resource/db';
 import * as namedResourceFavoriteDb from '@named-resource-favorite/db';
-import * as namedResourceDb from '@shared/named-resource/db';
 import * as sharedServices from '@shared/services';
 import { AppError } from '@utils/errors';
 

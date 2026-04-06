@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResourceByName: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(() => ({
     serialize: vi.fn((resource) => ({ id: resource.id, name: resource.name })),
   })),
@@ -14,7 +14,7 @@ vi.mock('../create', () => ({
   createNamedResource: vi.fn(),
 }));
 
-import * as namedResourceDb from '@shared/named-resource/db';
+import * as namedResourceDb from '@named-resource/db';
 
 import { createNamedResource } from '../create';
 

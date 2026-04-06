@@ -18,8 +18,8 @@ const { accountImpl, categoryImpl, paymentMethodImpl } = vi.hoisted(() => ({
   paymentMethodImpl: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/services', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@shared/named-resource/services')>();
+vi.mock('@named-resource/services', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@named-resource/services')>();
   return {
     ...actual,
     getOrCreateNamedResource: vi.fn((kind: string, ownerId: string, name: string) => {

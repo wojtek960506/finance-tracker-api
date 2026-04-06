@@ -1,4 +1,4 @@
-import { NamedResourceType } from '@shared/named-resource';
+import { NamedResourceType } from '@named-resource';
 import { USER_ID_OBJ, USER_ID_STR } from '@testing/factories/general';
 
 import {

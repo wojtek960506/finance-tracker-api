@@ -1,9 +1,9 @@
-import { findNamedResourceByName, persistNamedResource } from '@shared/named-resource/db';
+import { findNamedResourceByName, persistNamedResource } from '@named-resource/db';
 import {
   getNamedResourceKindConfig,
   NamedResourceResponse,
-} from '@shared/named-resource/kind-config';
-import { NamedResourceKind } from '@shared/named-resource/types';
+} from '@named-resource/kind-config';
+import { NamedResourceKind } from '@named-resource/types';
 import { normalizeWhitespace } from '@utils/strings';
 
 import { NameDTO } from '../types';

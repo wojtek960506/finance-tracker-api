@@ -1,18 +1,18 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@shared/named-resource/db', () => ({
+vi.mock('@named-resource/db', () => ({
   findNamedResourceByName: vi.fn(),
   persistNamedResource: vi.fn(),
 }));
 
-vi.mock('@shared/named-resource/kind-config', () => ({
+vi.mock('@named-resource/kind-config', () => ({
   getNamedResourceKindConfig: vi.fn(() => ({
     alreadyExistsErrorFactory: (name: string) => new Error(`exists:${name}`),
     systemNameConflictErrorFactory: (name: string) => new Error(`systemExists:${name}`),
   })),
 }));
 
-import * as namedResourceDb from '@shared/named-resource/db';
+import * as namedResourceDb from '@named-resource/db';
 
 import { createNamedResource } from './create';
 

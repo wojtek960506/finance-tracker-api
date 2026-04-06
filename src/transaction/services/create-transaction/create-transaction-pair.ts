@@ -1,5 +1,5 @@
-import { findNamedResourceByName } from '@shared/named-resource/db';
-import { getNamedResourceKindConfig } from '@shared/named-resource/kind-config';
+import { findNamedResourceByName } from '@named-resource/db';
+import { getNamedResourceKindConfig } from '@named-resource/kind-config';
 import { persistTransactionPair } from '@transaction/db';
 import { TransactionResponseDTO } from '@transaction/schema';
 import { getNextSourceIndex } from '@transaction/services';

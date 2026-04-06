@@ -1,7 +1,7 @@
 import { z } from 'zod/v4';
 
 import { CurrencyCodeSchema } from '@currency/schema';
-import { NamedResourceResponseSchema } from '@shared/named-resource';
+import { NamedResourceResponseSchema } from '@named-resource';
 import { OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
 
 const TransactionCommonSchema = z.object({

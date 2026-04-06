@@ -1,4 +1,4 @@
-import { NamedResourceType } from '@shared/named-resource';
+import { NamedResourceType } from '@named-resource';
 
 import {
   CATEGORY_TYPE_SYSTEM,

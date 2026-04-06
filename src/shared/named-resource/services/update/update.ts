@@ -1,14 +1,14 @@
-import { isFavoriteNamedResource } from '@named-resource-favorite/db';
 import {
   findNamedResourceById,
   findNamedResourceByName,
   saveNamedResourceChanges,
-} from '@shared/named-resource/db';
+} from '@named-resource/db';
 import {
   getNamedResourceKindConfig,
   NamedResourceResponse,
-} from '@shared/named-resource/kind-config';
-import { NamedResourceKind } from '@shared/named-resource/types';
+} from '@named-resource/kind-config';
+import { NamedResourceKind } from '@named-resource/types';
+import { isFavoriteNamedResource } from '@named-resource-favorite/db';
 import { checkOwner } from '@shared/services';
 import { AppError } from '@utils/errors';
 import { normalizeWhitespace } from '@utils/strings';

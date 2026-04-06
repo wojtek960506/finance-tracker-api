@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import * as namedResourceDb from '@shared/named-resource/db';
-import * as namedResourceConfig from '@shared/named-resource/kind-config';
+import * as namedResourceDb from '@named-resource/db';
+import * as namedResourceConfig from '@named-resource/kind-config';
 import {
   ACCOUNT_TYPE_USER,
   getSystemExpenseAccountResultSerialized,
