@@ -7,3 +7,4 @@ export * from './remove-transaction';
 export * from './remove-transactions';
 export * from './save-transaction-changes';
 export * from './stream-transactions';
+export * from './update-transactions-deletion';

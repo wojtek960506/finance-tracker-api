@@ -93,7 +93,28 @@ export const TransactionResponseSchema = TransactionStandardSchema.omit({
   account: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
 });
 
+export const TransactionDeletionSchema = z.object({
+  deletedAt: z.coerce.date(),
+  purgeAt: z.coerce.date(),
+});
+
+export const TransactionDetailsResponseSchema = TransactionResponseSchema.extend({
+  reference: TransactionResponseSchema.optional(),
+});
+
+export const TrashedTransactionResponseSchema = TransactionResponseSchema.extend({
+  deletion: TransactionDeletionSchema,
+});
+
+export const TrashedTransactionDetailsResponseSchema =
+  TrashedTransactionResponseSchema.extend({
+    reference: TrashedTransactionResponseSchema.optional(),
+  });
+
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
+export const TrashedTransactionsResponseSchema = z.array(
+  TrashedTransactionResponseSchema,
+);
 
 export const TestTransactionsCreateSchema = z
   .object({
@@ -112,7 +133,20 @@ export type TransactionStandardDTO = z.infer<typeof TransactionStandardSchema>;
 export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
+export type TransactionDetailsResponseDTO = z.infer<
+  typeof TransactionDetailsResponseSchema
+>;
+export type TransactionDeletionDTO = z.infer<typeof TransactionDeletionSchema>;
+export type TrashedTransactionResponseDTO = z.infer<
+  typeof TrashedTransactionResponseSchema
+>;
+export type TrashedTransactionDetailsResponseDTO = z.infer<
+  typeof TrashedTransactionDetailsResponseSchema
+>;
 export type TransactionsResponseDTO = z.infer<typeof TransactionsResponseSchema>;
+export type TrashedTransactionsResponseDTO = z.infer<
+  typeof TrashedTransactionsResponseSchema
+>;
 export type TestTransactionsCreateDTO = z.infer<typeof TestTransactionsCreateSchema>;
 export type TestTransactionsCreateResponse = z.infer<
   typeof TestTransactionsCreateResponseSchema
@@ -122,7 +156,20 @@ z.globalRegistry.add(TransactionStandardSchema, { id: 'TransactionStandard' });
 z.globalRegistry.add(TransactionExchangeSchema, { id: 'TransactionExchange' });
 z.globalRegistry.add(TransactionTransferSchema, { id: 'TransactionTransfer' });
 z.globalRegistry.add(TransactionResponseSchema, { id: 'TransactionResponse' });
+z.globalRegistry.add(TransactionDetailsResponseSchema, {
+  id: 'TransactionDetailsResponse',
+});
+z.globalRegistry.add(TransactionDeletionSchema, { id: 'TransactionDeletion' });
+z.globalRegistry.add(TrashedTransactionResponseSchema, {
+  id: 'TrashedTransactionResponse',
+});
+z.globalRegistry.add(TrashedTransactionDetailsResponseSchema, {
+  id: 'TrashedTransactionDetailsResponse',
+});
 z.globalRegistry.add(TransactionsResponseSchema, { id: 'TransactionsResponse' });
+z.globalRegistry.add(TrashedTransactionsResponseSchema, {
+  id: 'TrashedTransactionsResponse',
+});
 z.globalRegistry.add(TestTransactionsCreateSchema, { id: 'TestTransactionsCreate' });
 z.globalRegistry.add(TestTransactionsCreateResponseSchema, {
   id: 'TestTransactionsCreateResponse',

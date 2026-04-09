@@ -28,7 +28,7 @@ describe('getTransaction', () => {
     const result = await getTransaction(STANDARD_TXN_ID_STR, USER_ID_STR);
 
     expect(findTransaction).toHaveBeenCalledOnce();
-    expect(findTransaction).toHaveBeenCalledWith(STANDARD_TXN_ID_STR);
+    expect(findTransaction).toHaveBeenCalledWith(STANDARD_TXN_ID_STR, {});
     expect(serializeTransaction).toHaveBeenCalledOnce();
     expect(serializeTransaction).toHaveBeenCalledWith(transaction);
     expect(result).toEqual(transactionSerialized);

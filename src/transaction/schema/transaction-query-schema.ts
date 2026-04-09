@@ -43,6 +43,16 @@ export const TransactionQuerySchema = TransactionFiltersQuerySchema.extend({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
+export const TrashTransactionQuerySchema = TransactionFiltersQuerySchema.extend({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  sortBy: z
+    .enum(['deletedAt', 'purgeAt', 'date', 'amount'])
+    .optional()
+    .default('deletedAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
 export const TransactionStatisticsQuerySchema = TransactionCommonQuerySchema.extend({
   year: z.coerce.number().min(0).optional(),
   month: z.coerce.number().min(1).max(12).optional(),
@@ -52,4 +62,5 @@ export const TransactionStatisticsQuerySchema = TransactionCommonQuerySchema.ext
 
 export type TransactionQuery = z.infer<typeof TransactionQuerySchema>;
 export type TransactionFiltersQuery = z.infer<typeof TransactionFiltersQuerySchema>;
+export type TrashTransactionQuery = z.infer<typeof TrashTransactionQuerySchema>;
 export type TransactionStatisticsQuery = z.infer<typeof TransactionStatisticsQuerySchema>;

@@ -1,16 +1,31 @@
 import { FilterQuery } from 'mongoose';
 
 import { ITransaction, TransactionModel } from '@transaction/model';
-import { TransactionQuery } from '@transaction/schema';
+
+type FindTransactionsQuery = {
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+};
 
 export const findTransactions = async (
   filter: FilterQuery<ITransaction>,
-  query: Pick<TransactionQuery, 'page' | 'limit' | 'sortBy' | 'sortOrder'>,
+  query: FindTransactionsQuery,
 ) => {
+  const sortDirection = query.sortOrder === 'asc' ? 1 : -1;
+  const primarySortField =
+    query.sortBy === 'deletedAt'
+      ? 'deletion.deletedAt'
+      : query.sortBy === 'purgeAt'
+        ? 'deletion.purgeAt'
+        : query.sortBy;
+
   return TransactionModel.find(filter)
     .sort({
-      [query.sortBy]: query.sortOrder === 'asc' ? 1 : -1,
-      sourceIndex: query.sortOrder === 'asc' ? 1 : -1,
+      [primarySortField]: sortDirection,
+      ...(primarySortField.startsWith('deletion.') ? { date: sortDirection } : {}),
+      sourceIndex: sortDirection,
     })
     .skip((query.page - 1) * query.limit)
     .limit(query.limit);

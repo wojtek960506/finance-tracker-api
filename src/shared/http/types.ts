@@ -9,6 +9,12 @@ export interface DeleteManyReply {
   deletedCount: number;
 }
 
+export interface UpdateManyReply {
+  acknowledged: boolean;
+  matchedCount: number;
+  modifiedCount: number;
+}
+
 export type AuthenticatedRequest = FastifyRequest & {
   userId: string;
 };

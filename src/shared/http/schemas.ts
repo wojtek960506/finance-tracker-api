@@ -10,3 +10,9 @@ export const DeleteResultSchema = z.object({
 });
 
 export const DeleteManyReplySchema = DeleteResultSchema;
+
+export const UpdateManyReplySchema = z.object({
+  acknowledged: z.boolean(),
+  matchedCount: z.number(),
+  modifiedCount: z.number(),
+});

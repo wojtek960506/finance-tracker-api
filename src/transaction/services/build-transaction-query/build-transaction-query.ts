@@ -7,6 +7,7 @@ import { ValidationError } from '@utils/errors';
 export const buildTransactionFilterQuery = (
   q: TransactionFiltersQuery,
   ownerId: string,
+  deletionState: 'active' | 'trash' | 'any' = 'active',
 ): FilterQuery<ITransaction> => {
   if (q.categoryId && q.excludeCategoryIds) {
     throw new ValidationError(
@@ -41,6 +42,8 @@ export const buildTransactionFilterQuery = (
 
   // always fitler transactions by query id
   query.ownerId = new Types.ObjectId(ownerId);
+  if (deletionState === 'active') query.deletion = null;
+  if (deletionState === 'trash') query['deletion.deletedAt'] = { $exists: true };
 
   return query;
 };

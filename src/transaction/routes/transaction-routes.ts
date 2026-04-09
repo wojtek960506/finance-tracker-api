@@ -8,12 +8,16 @@ import {
   FilteredResponse,
   ParamsJustId,
   ParamsJustIdSchema,
+  UpdateManyReply,
+  UpdateManyReplySchema,
 } from '@shared/http';
 import {
   TestTransactionsCreateDTO,
   TestTransactionsCreateResponse,
   TestTransactionsCreateResponseSchema,
   TestTransactionsCreateSchema,
+  TransactionDetailsResponseDTO,
+  TransactionDetailsResponseSchema,
   TransactionExchangeDTO,
   TransactionExchangeSchema,
   TransactionFiltersQuery,
@@ -30,6 +34,12 @@ import {
   TransactionStatisticsQuerySchema,
   TransactionTransferDTO,
   TransactionTransferSchema,
+  TrashedTransactionDetailsResponseDTO,
+  TrashedTransactionDetailsResponseSchema,
+  TrashedTransactionsResponseDTO,
+  TrashedTransactionsResponseSchema,
+  TrashTransactionQuery,
+  TrashTransactionQuerySchema,
 } from '@transaction/schema';
 import { validateBody, validateQuery } from '@utils/validation';
 
@@ -38,11 +48,17 @@ import {
   createTransactionHandler,
   deleteTransactionHandler,
   deleteTransactionsHandler,
+  deleteTrashedTransactionHandler,
+  emptyTrashHandler,
   exportTransacionsHandler,
   getTransactionHandler,
   getTransactionsHandler,
   getTransactionStatisticsHandler,
   getTransactionTotalsHandler,
+  getTrashedTransactionHandler,
+  getTrashedTransactionsHandler,
+  restoreTransactionHandler,
+  restoreTransactionsHandler,
   updateTransactionHandler,
 } from './handlers';
 import { TransactionStatisticsResponse, TransactionTotalsResponse } from './types';
@@ -122,6 +138,32 @@ export async function transactionRoutes(
     getTransactionsHandler,
   );
 
+  app.get<{
+    Querystring: TrashTransactionQuery;
+    Reply: FilteredResponse<TrashedTransactionsResponseDTO>;
+  }>(
+    '/trash',
+    {
+      preHandler: [validateQuery(TrashTransactionQuerySchema), authorizeAccessToken()],
+      schema: {
+        tags: ['Transactions'],
+        summary: 'List trashed transactions',
+        description: 'Return paginated trashed transactions for the authenticated user.',
+        querystring: TrashTransactionQuerySchema,
+        response: {
+          200: z.object({
+            page: z.number(),
+            limit: z.number(),
+            total: z.number(),
+            totalPages: z.number(),
+            items: TrashedTransactionsResponseSchema,
+          }),
+        },
+      },
+    },
+    getTrashedTransactionsHandler,
+  );
+
   app.get(
     '/export',
     {
@@ -181,7 +223,93 @@ export async function transactionRoutes(
     getTransactionStatisticsHandler,
   );
 
-  app.get<{ Params: ParamsJustId; Reply: TransactionResponseDTO }>(
+  app.get<{ Params: ParamsJustId; Reply: TrashedTransactionDetailsResponseDTO }>(
+    '/trash/:id',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Get trashed transaction by id',
+        description: 'Return a single trashed transaction by id.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: TrashedTransactionDetailsResponseSchema,
+        },
+      },
+    },
+    getTrashedTransactionHandler,
+  );
+
+  app.post<{ Params: ParamsJustId; Reply: UpdateManyReply }>(
+    '/trash/:id/restore',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Restore trashed transaction',
+        description:
+          'Restore a trashed transaction by id. Linked transaction is restored as well.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: UpdateManyReplySchema,
+        },
+      },
+    },
+    restoreTransactionHandler,
+  );
+
+  app.post<{ Reply: UpdateManyReply }>(
+    '/trash/restore',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Restore all trashed transactions',
+        description: 'Restore all trashed transactions for the authenticated user.',
+        response: {
+          200: UpdateManyReplySchema,
+        },
+      },
+    },
+    restoreTransactionsHandler,
+  );
+
+  app.delete<{ Params: ParamsJustId; Reply: DeleteManyReply }>(
+    '/trash/:id',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Delete trashed transaction permanently',
+        description:
+          'Permanently delete a trashed transaction by id. Linked transaction is deleted as well.',
+        params: ParamsJustIdSchema,
+        response: {
+          200: DeleteManyReplySchema,
+        },
+      },
+    },
+    deleteTrashedTransactionHandler,
+  );
+
+  app.delete<{ Reply: DeleteManyReply }>(
+    '/trash',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Empty trash',
+        description:
+          'Permanently delete all trashed transactions for the authenticated user.',
+        response: {
+          200: DeleteManyReplySchema,
+        },
+      },
+    },
+    emptyTrashHandler,
+  );
+
+  app.get<{ Params: ParamsJustId; Reply: TransactionDetailsResponseDTO }>(
     '/:id',
     {
       preHandler: authorizeAccessToken(),
@@ -191,7 +319,7 @@ export async function transactionRoutes(
         description: 'Return a single transaction by id.',
         params: ParamsJustIdSchema,
         response: {
-          200: TransactionResponseSchema,
+          200: TransactionDetailsResponseSchema,
         },
       },
     },
@@ -321,34 +449,34 @@ export async function transactionRoutes(
     updateTransactionHandler,
   );
 
-  app.delete<{ Params: ParamsJustId; Reply: DeleteManyReply }>(
+  app.delete<{ Params: ParamsJustId; Reply: UpdateManyReply }>(
     '/:id',
     {
       preHandler: authorizeAccessToken(),
       schema: {
         tags: ['Transactions'],
         summary: 'Delete transaction',
-        description: 'Delete a transaction by id.',
+        description: 'Move a transaction to trash by id.',
         params: ParamsJustIdSchema,
         response: {
-          200: DeleteManyReplySchema,
+          200: UpdateManyReplySchema,
         },
       },
     },
     deleteTransactionHandler,
   );
 
-  // delete all transactions of an authenticated user
-  app.delete<{ Reply: DeleteManyReply }>(
+  // move all transactions of an authenticated user to trash
+  app.delete<{ Reply: UpdateManyReply }>(
     '/',
     {
       preHandler: authorizeAccessToken(),
       schema: {
         tags: ['Transactions'],
-        summary: 'Delete all transactions',
-        description: 'Delete all transactions for the authenticated user.',
+        summary: 'Move all transactions to trash',
+        description: 'Move all active transactions for the authenticated user to trash.',
         response: {
-          200: DeleteManyReplySchema,
+          200: UpdateManyReplySchema,
         },
       },
     },

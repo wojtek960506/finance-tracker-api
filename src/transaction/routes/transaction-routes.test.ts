@@ -108,7 +108,7 @@ describe('transaction routes', async () => {
     totalPages: 1,
     items: [standardResponse],
   };
-  const deleteManyResult = { acknowledged: true, deletedCount: 1 };
+  const updateManyResult = { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
   const totalsResult = {
     byCurrency: {
       PLN: {
@@ -290,21 +290,21 @@ describe('transaction routes', async () => {
   });
 
   it("should delete transaction - 'DELETE /:id'", async () => {
-    vi.spyOn(serviceT, 'deleteTransaction').mockResolvedValue(deleteManyResult as any);
+    vi.spyOn(serviceT, 'deleteTransaction').mockResolvedValue(updateManyResult as any);
     const response = await app.inject({ method: 'DELETE', url: `/${T_ID}` });
     expect(serviceT.deleteTransaction).toHaveBeenCalledOnce();
     expect(serviceT.deleteTransaction).toHaveBeenCalledWith(T_ID, USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(deleteManyResult);
+    expect(response.json()).toEqual(updateManyResult);
   });
 
   it("should delete all transactions of given user - 'DELETE /'", async () => {
-    vi.spyOn(serviceT, 'deleteTransactions').mockResolvedValue(deleteManyResult as any);
+    vi.spyOn(serviceT, 'deleteTransactions').mockResolvedValue(updateManyResult as any);
     const response = await app.inject({ method: 'DELETE', url: '/' });
     expect(serviceT.deleteTransactions).toHaveBeenCalledOnce();
     expect(serviceT.deleteTransactions).toHaveBeenCalledWith(USER_ID_STR);
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(deleteManyResult);
+    expect(response.json()).toEqual(updateManyResult);
   });
 
   it("should create test transactions for a given user - 'POST /test'", async () => {
