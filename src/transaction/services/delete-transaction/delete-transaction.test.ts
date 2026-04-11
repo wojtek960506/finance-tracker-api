@@ -7,6 +7,7 @@ import {
 } from '@testing/factories/transaction';
 import { findTransaction, updateTransactionsDeletion } from '@transaction/db';
 import { deleteTransaction } from '@transaction/services';
+import { NotFoundError } from '@utils/errors';
 
 vi.mock('@transaction/db', () => ({
   findTransaction: vi.fn(),
@@ -32,5 +33,19 @@ describe('deleteTransaction', () => {
       },
     ]);
     expect(result).toEqual(deleteResult);
+  });
+
+  it('throws when not all transactions were moved to trash', async () => {
+    const transaction = getStandardTransactionResultJSON();
+    (findTransaction as Mock).mockResolvedValue(transaction);
+    (updateTransactionsDeletion as Mock).mockResolvedValue({
+      acknowledged: true,
+      matchedCount: 0,
+      modifiedCount: 0,
+    });
+
+    await expect(deleteTransaction(STANDARD_TXN_ID_STR, USER_ID_STR)).rejects.toThrow(
+      NotFoundError,
+    );
   });
 });

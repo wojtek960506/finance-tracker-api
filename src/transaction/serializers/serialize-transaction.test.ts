@@ -20,7 +20,10 @@ import {
   ACCOUNT_EXPENSE_ID_STR,
   ACCOUNT_EXPENSE_NAME,
 } from '@testing/factories/transaction/transaction-consts';
-import { serializeTransaction } from '@transaction/serializers';
+import {
+  serializeTransaction,
+  serializeTrashedTransaction,
+} from '@transaction/serializers';
 
 describe('serializeTransaction', () => {
   const transaction = getStandardTransactionResultJSON();
@@ -70,5 +73,26 @@ describe('serializeTransaction', () => {
       accountsMap,
     );
     expect(result).toEqual(transactionSerialized);
+  });
+
+  it('serialize trashed transaction with deletion details', () => {
+    const trashedTransaction = {
+      ...transaction,
+      deletion: {
+        deletedAt: new Date('2026-01-01'),
+        purgeAt: new Date('2026-02-01'),
+      },
+    };
+    const iTrashedTransaction = {
+      ...trashedTransaction,
+      toObject: () => ({ ...trashedTransaction, __v: 3 }),
+    };
+
+    const result = serializeTrashedTransaction(iTrashedTransaction as any);
+
+    expect(result).toEqual({
+      ...transactionSerialized,
+      deletion: trashedTransaction.deletion,
+    });
   });
 });
