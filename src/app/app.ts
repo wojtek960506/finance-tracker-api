@@ -44,7 +44,7 @@ import { registerErrorHandler } from './plugins/errorHandler';
 //############################################################################################
 
 export const buildApp = async (env = getEnv()) => {
-  const { cookieSecret, jwtAccessSecret } = env;
+  const { cookieSecret, corsOrigins, jwtAccessSecret } = env;
 
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
@@ -113,14 +113,7 @@ export const buildApp = async (env = getEnv()) => {
 
   // register CORS
   await app.register(cors, {
-    origin: [
-      'http://localhost:3000',
-      'http://192.168.0.244:3000',
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'http://192.168.0.244:5173',
-      'https://finance-tracker-web-three.vercel.app',
-    ],
+    origin: corsOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
