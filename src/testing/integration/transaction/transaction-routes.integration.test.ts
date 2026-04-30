@@ -1,33 +1,17 @@
-import { FastifyInstance } from 'fastify';
 import { Types } from 'mongoose';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { clearIntegrationMongo, disconnectIntegrationMongo } from '@testing/integration/mongo';
-
-import { createIntegrationApp } from '../app';
 import { createIntegrationAccessToken } from '../auth';
+import { getSystemNamedResources } from '../fixtures/named-resources';
 import {
   buildStandardTransactionDoc,
   insertTransactions,
 } from '../fixtures/transactions';
-import { getSystemNamedResources } from '../fixtures/named-resources';
 import { createIntegrationUser } from '../fixtures/users';
+import { setupIntegrationSuite } from '../suite';
 
 describe('transaction app integration', () => {
-  let app: FastifyInstance;
-
-  beforeEach(async () => {
-    app = await createIntegrationApp();
-  });
-
-  afterEach(async () => {
-    await app.close();
-    await clearIntegrationMongo();
-  });
-
-  afterAll(async () => {
-    await disconnectIntegrationMongo();
-  });
+  const { getApp } = setupIntegrationSuite();
 
   // prettier-ignore
   it(
@@ -81,7 +65,7 @@ describe('transaction app integration', () => {
         }),
       ]);
 
-      const response = await app.inject({
+      const response = await getApp().inject({
         method: 'GET',
         url: '/api/transactions',
         headers: {
