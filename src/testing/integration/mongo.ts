@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const DEFAULT_INTEGRATION_MONGO_URI = 'mongodb://127.0.0.1:27018/finance-tracker-test';
+const DEFAULT_INTEGRATION_MONGO_URI =
+  'mongodb://127.0.0.1:27018/finance-tracker-test?replicaSet=rs0';
 
 const DEFAULT_JWT_ACCESS_SECRET = 'integration-test-jwt-secret';
 const DEFAULT_COOKIE_SECRET = 'integration-test-cookie-secret';

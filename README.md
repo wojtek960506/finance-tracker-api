@@ -13,7 +13,8 @@ itself runs locally.
 pnpm test:integration:db:up
 ```
 
-This starts MongoDB on `127.0.0.1:27018`.
+This starts MongoDB on `127.0.0.1:27018` as a single-node replica set so app
+startup transactions work in integration tests.
 
 ### Run integration tests
 
@@ -24,7 +25,7 @@ pnpm test:integration
 By default, integration tests use:
 
 ```text
-mongodb://127.0.0.1:27018/finance-tracker-test
+mongodb://127.0.0.1:27018/finance-tracker-test?replicaSet=rs0
 ```
 
 You can override that per run with `INTEGRATION_MONGO_URI`.
