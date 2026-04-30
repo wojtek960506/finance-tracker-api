@@ -111,4 +111,105 @@ describe('transaction app integration', () => {
       });
     }
   );
+
+  // prettier-ignore
+  it(
+    "applies pagination and sorting for active transactions - " +
+    "'GET /api/transactions?page=2&limit=1&sortOrder=asc'",
+    async () => {
+      const ownerId = await createIntegrationUser({
+        firstName: 'Paged',
+        lastName: 'Owner',
+        email: 'paged-owner@example.com',
+      });
+
+      const { category, paymentMethod, account } = await getSystemNamedResources();
+      const firstTransactionId = new Types.ObjectId();
+      const secondTransactionId = new Types.ObjectId();
+
+      await insertTransactions([
+        buildStandardTransactionDoc({
+          _id: firstTransactionId,
+          ownerId,
+          categoryId: category._id,
+          paymentMethodId: paymentMethod._id,
+          accountId: account._id,
+          description: 'Earlier transaction',
+          amount: 10,
+          date: new Date('2026-02-10T00:00:00.000Z'),
+          sourceIndex: 1,
+        }),
+        buildStandardTransactionDoc({
+          _id: secondTransactionId,
+          ownerId,
+          categoryId: category._id,
+          paymentMethodId: paymentMethod._id,
+          accountId: account._id,
+          description: 'Later transaction',
+          amount: 20,
+          date: new Date('2026-02-11T00:00:00.000Z'),
+          sourceIndex: 2,
+        }),
+        buildStandardTransactionDoc({
+          ownerId,
+          categoryId: category._id,
+          paymentMethodId: paymentMethod._id,
+          accountId: account._id,
+          description: 'Trashed transaction',
+          amount: 30,
+          date: new Date('2026-02-12T00:00:00.000Z'),
+          sourceIndex: 3,
+          deletion: {
+            deletedAt: new Date('2026-02-13T00:00:00.000Z'),
+            purgeAt: new Date('2026-03-15T00:00:00.000Z'),
+          },
+        }),
+      ]);
+
+      const response = await getApp().inject({
+        method: 'GET',
+        url: '/api/transactions?page=2&limit=1&sortBy=date&sortOrder=asc',
+        headers: {
+          authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({
+        page: 2,
+        limit: 1,
+        total: 2,
+        totalPages: 2,
+        items: [
+          {
+            id: secondTransactionId.toString(),
+            ownerId: ownerId.toString(),
+            date: '2026-02-11T00:00:00.000Z',
+            description: 'Later transaction',
+            amount: 20,
+            currency: 'PLN',
+            transactionType: 'expense',
+            sourceIndex: 2,
+            category: {
+              id: category._id.toString(),
+              type: 'system',
+              name: category.name,
+            },
+            paymentMethod: {
+              id: paymentMethod._id.toString(),
+              type: 'system',
+              name: paymentMethod.name,
+            },
+            account: {
+              id: account._id.toString(),
+              type: 'system',
+              name: account.name,
+            },
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+          },
+        ],
+      });
+    }
+  );
 });
