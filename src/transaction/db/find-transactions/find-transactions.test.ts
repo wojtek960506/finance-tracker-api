@@ -43,6 +43,29 @@ describe('find transactions', () => {
     expect(result).toEqual(mockResult);
   });
 
+  it.each([
+    ['deletedAt', 'deletion.deletedAt'],
+    ['purgeAt', 'deletion.purgeAt'],
+  ])(
+    'findTransactions - maps %s sort to deletion field',
+    async (sortBy, mappedSortBy) => {
+      (TransactionModel.find as Mock).mockReturnValue(mockQuery);
+
+      const result = await findTransactions(filter, {
+        ...query,
+        sortBy,
+      });
+
+      expect(mockQuery.sort).toHaveBeenCalledOnce();
+      expect(mockQuery.sort).toHaveBeenCalledWith({
+        [mappedSortBy]: -1,
+        date: -1,
+        sourceIndex: -1,
+      });
+      expect(result).toEqual(mockResult);
+    },
+  );
+
   it('findTranscationCount', async () => {
     const COUNT = 1;
     (TransactionModel.countDocuments as Mock).mockResolvedValue(COUNT);

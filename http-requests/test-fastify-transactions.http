@@ -79,9 +79,10 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 # &startDate=2024-12-01&endDate=2024-12-31
+# ?categoryId=69a9c24ee2c1284ee32aa406
 
 ### GET TOTALS FOR TRANSACTIONS
-GET {{baseUrl}}/totals?categoryId=69a9c24ee2c1284ee32aa406
+GET {{baseUrl}}/totals
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -268,10 +269,25 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-### DELETE ALL TRANSACTIONS (of an authenticated user)
+### MOVE ALL TRANSACTIONS TO TRASH (of an authenticated user)
 # !!! BE CAREFUL !!!
-# DELETE {{baseUrl}}
-# Authorization: Bearer {{accessToken}}
+DELETE {{baseUrl}}
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### RESTORE ALL TRANSACTIONS FROM TRASH (of an authenticated user)
+POST {{baseUrl}}/trash/restore
+Authorization: Bearer {{accessToken}}
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
+### DELETE ALL TRANSACTIONS FROM TRASH (of an authenticated user)
+# !!! BE CAREFUL !!!
+DELETE {{baseUrl}}/trash
+Authorization: Bearer {{accessToken}}
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
@@ -279,9 +295,9 @@ Authorization: Bearer {{accessToken}}
 ### CREATE TEST TRANSACTIONS (only when user has no transactions)
 POST {{baseUrl}}/test
 Authorization: Bearer {{accessToken}}
-# Content-Type: application/json
+Content-Type: application/json
 
-# { "totalTransactions": 300 }
+{ "totalTransactions": 15000 }
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------

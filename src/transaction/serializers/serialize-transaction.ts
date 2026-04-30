@@ -1,22 +1,29 @@
 import { NamedResourcesMap } from '@named-resource/kind-config';
 import { ITransaction } from '@transaction/model';
-import { TransactionResponseDTO } from '@transaction/schema';
+import {
+  TransactionResponseDTO,
+  TrashedTransactionResponseDTO,
+} from '@transaction/schema';
 
-export function serializeTransaction(transaction: ITransaction): TransactionResponseDTO;
-export function serializeTransaction(
-  transaction: ITransaction,
-  categoriesMap: NamedResourcesMap,
-  paymentMethodsMap: NamedResourcesMap,
-  accountsMap: NamedResourcesMap,
-): TransactionResponseDTO;
-export function serializeTransaction(
-  transaction: ITransaction,
+type TransactionObject = any;
+
+const buildTransactionPayload = (
+  transaction: TransactionObject,
   categoriesMap?: NamedResourcesMap,
   paymentMethodsMap?: NamedResourcesMap,
   accountsMap?: NamedResourcesMap,
-): TransactionResponseDTO {
-  const { _id, __v, ownerId, refId, categoryId, paymentMethodId, accountId, ...rest } =
-    transaction.toObject();
+) => {
+  const {
+    _id,
+    __v,
+    ownerId,
+    refId,
+    deletion,
+    categoryId,
+    paymentMethodId,
+    accountId,
+    ...rest
+  } = transaction;
 
   const category = categoriesMap
     ? categoriesMap[categoryId.toString()]
@@ -40,5 +47,58 @@ export function serializeTransaction(
     category,
     paymentMethod,
     account,
+  };
+};
+
+export function serializeTransaction(transaction: ITransaction): TransactionResponseDTO;
+export function serializeTransaction(
+  transaction: ITransaction,
+  categoriesMap: NamedResourcesMap,
+  paymentMethodsMap: NamedResourcesMap,
+  accountsMap: NamedResourcesMap,
+): TransactionResponseDTO;
+export function serializeTransaction(
+  transaction: ITransaction,
+  categoriesMap?: NamedResourcesMap,
+  paymentMethodsMap?: NamedResourcesMap,
+  accountsMap?: NamedResourcesMap,
+): TransactionResponseDTO {
+  return buildTransactionPayload(
+    transaction.toObject(),
+    categoriesMap,
+    paymentMethodsMap,
+    accountsMap,
+  );
+}
+
+export function serializeTrashedTransaction(
+  transaction: ITransaction,
+): TrashedTransactionResponseDTO;
+export function serializeTrashedTransaction(
+  transaction: ITransaction,
+  categoriesMap: NamedResourcesMap,
+  paymentMethodsMap: NamedResourcesMap,
+  accountsMap: NamedResourcesMap,
+): TrashedTransactionResponseDTO;
+export function serializeTrashedTransaction(
+  transaction: ITransaction,
+  categoriesMap?: NamedResourcesMap,
+  paymentMethodsMap?: NamedResourcesMap,
+  accountsMap?: NamedResourcesMap,
+): TrashedTransactionResponseDTO {
+  const serialized = buildTransactionPayload(
+    transaction.toObject(),
+    categoriesMap,
+    paymentMethodsMap,
+    accountsMap,
+  );
+  const deletion = transaction.toObject().deletion;
+
+  return {
+    ...serialized,
+    deletion: {
+      deletedAt: deletion!.deletedAt,
+      purgeAt: deletion!.purgeAt,
+    },
   };
 }

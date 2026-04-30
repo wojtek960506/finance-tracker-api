@@ -18,6 +18,12 @@ export interface TransactionAttributes {
   currencies?: string;
   sourceIndex: number;
   sourceRefIndex?: number;
+  deletion?: TransactionDeletion | null;
+}
+
+export interface TransactionDeletion {
+  deletedAt: Date;
+  purgeAt: Date;
 }
 
 export interface ITransaction extends TransactionAttributes, Document {
@@ -25,6 +31,14 @@ export interface ITransaction extends TransactionAttributes, Document {
   ownerId: Types.ObjectId;
   refId: Types.ObjectId;
 }
+
+const transactionDeletionSchema = new Schema<TransactionDeletion>(
+  {
+    deletedAt: { type: Date, required: true },
+    purgeAt: { type: Date, required: true },
+  },
+  { _id: false },
+);
 
 const transactionSchema = new Schema<ITransaction>(
   {
@@ -69,8 +83,15 @@ const transactionSchema = new Schema<ITransaction>(
       required: false,
       index: true,
     },
+    deletion: {
+      type: transactionDeletionSchema,
+      required: false,
+      default: null,
+    },
   },
   { timestamps: true },
 );
+
+transactionSchema.index({ ownerId: 1, 'deletion.deletedAt': -1 });
 
 export const TransactionModel = model<ITransaction>('Transaction', transactionSchema);

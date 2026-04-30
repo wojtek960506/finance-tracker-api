@@ -7,9 +7,9 @@ import {
 import { TransactionModel } from '@transaction/model';
 import { TransactionNotFoundError } from '@utils/errors';
 
-import { findTransaction } from './find-transaction';
+import { findTransaction, findTransactionNullable } from './find-transaction';
 
-vi.mock('@transaction/model', () => ({ TransactionModel: { findById: vi.fn() } }));
+vi.mock('@transaction/model', () => ({ TransactionModel: { findOne: vi.fn() } }));
 
 describe('findTransaction', () => {
   const transaction = getStandardTransactionResultJSON();
@@ -19,23 +19,58 @@ describe('findTransaction', () => {
   });
 
   it('transaction exists', async () => {
-    (TransactionModel.findById as Mock).mockResolvedValue(transaction);
+    (TransactionModel.findOne as Mock).mockResolvedValue(transaction);
 
     const result = await findTransaction(STANDARD_TXN_ID_STR);
 
-    expect(TransactionModel.findById).toHaveBeenCalledOnce();
-    expect(TransactionModel.findById).toHaveBeenCalledWith(STANDARD_TXN_ID_STR);
+    expect(TransactionModel.findOne).toHaveBeenCalledOnce();
+    expect(TransactionModel.findOne).toHaveBeenCalledWith({
+      _id: STANDARD_TXN_ID_STR,
+      deletion: null,
+    });
     expect(result).toEqual(transaction);
   });
 
   it('transaction does not exist', async () => {
-    (TransactionModel.findById as Mock).mockResolvedValue(undefined);
+    (TransactionModel.findOne as Mock).mockResolvedValue(undefined);
 
     await expect(findTransaction(STANDARD_TXN_ID_STR)).rejects.toThrow(
       TransactionNotFoundError,
     );
 
-    expect(TransactionModel.findById).toHaveBeenCalledOnce();
-    expect(TransactionModel.findById).toHaveBeenCalledWith(STANDARD_TXN_ID_STR);
+    expect(TransactionModel.findOne).toHaveBeenCalledOnce();
+    expect(TransactionModel.findOne).toHaveBeenCalledWith({
+      _id: STANDARD_TXN_ID_STR,
+      deletion: null,
+    });
+  });
+
+  it("finds trashed transaction when deletionState is 'trash'", async () => {
+    (TransactionModel.findOne as Mock).mockResolvedValue(transaction);
+
+    const result = await findTransactionNullable(STANDARD_TXN_ID_STR, {
+      deletionState: 'trash',
+    });
+
+    expect(TransactionModel.findOne).toHaveBeenCalledOnce();
+    expect(TransactionModel.findOne).toHaveBeenCalledWith({
+      _id: STANDARD_TXN_ID_STR,
+      'deletion.deletedAt': { $exists: true },
+    });
+    expect(result).toEqual(transaction);
+  });
+
+  it("finds transaction without deletion filter when deletionState is 'any'", async () => {
+    (TransactionModel.findOne as Mock).mockResolvedValue(transaction);
+
+    const result = await findTransactionNullable(STANDARD_TXN_ID_STR, {
+      deletionState: 'any',
+    });
+
+    expect(TransactionModel.findOne).toHaveBeenCalledOnce();
+    expect(TransactionModel.findOne).toHaveBeenCalledWith({
+      _id: STANDARD_TXN_ID_STR,
+    });
+    expect(result).toEqual(transaction);
   });
 });

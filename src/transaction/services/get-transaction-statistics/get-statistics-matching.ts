@@ -29,6 +29,7 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
   }
 
   matching.ownerId = new Types.ObjectId(userId);
+  matching.deletion = null;
   matching.transactionType = q.transactionType;
   matching.currency = q.currency;
 

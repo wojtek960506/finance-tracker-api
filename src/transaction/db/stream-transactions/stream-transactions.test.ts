@@ -22,7 +22,10 @@ describe('streamTransactions', () => {
     const result = streamTransactions(OWNER_ID);
 
     expect(TransactionModel.find).toHaveBeenCalledOnce();
-    expect(TransactionModel.find).toHaveBeenCalledWith({ ownerId: OWNER_ID });
+    expect(TransactionModel.find).toHaveBeenCalledWith({
+      ownerId: OWNER_ID,
+      deletion: null,
+    });
     expect(mockQuery.sort).toHaveBeenCalledOnce();
     expect(mockQuery.sort).toHaveBeenCalledWith({ sourceIndex: 1 });
     expect(mockQuery.cursor).toHaveBeenCalledOnce();

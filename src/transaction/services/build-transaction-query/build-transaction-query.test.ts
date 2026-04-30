@@ -98,4 +98,18 @@ describe('build-transaction-query', () => {
     };
     expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
   });
+
+  it("adds trash filter when deletionState is 'trash'", () => {
+    const query = buildTransactionFilterQuery({}, USER_ID_STR, 'trash');
+
+    expect(query.deletion).toBeUndefined();
+    expect(query['deletion.deletedAt']).toEqual({ $exists: true });
+  });
+
+  it("does not add deletion filter when deletionState is 'any'", () => {
+    const query = buildTransactionFilterQuery({}, USER_ID_STR, 'any');
+
+    expect(query.deletion).toBeUndefined();
+    expect(query['deletion.deletedAt']).toBeUndefined();
+  });
 });
