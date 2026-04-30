@@ -7,8 +7,6 @@ describe('getEnv', () => {
 
   const setRequiredEnv = () => {
     process.env.MONGO_URI = 'mongodb://localhost:27017/finance-tracker-test';
-    process.env.DATABASE_USER = 'db-user';
-    process.env.DATABASE_PASSWORD = 'db-password';
     process.env.JWT_ACCESS_SECRET = 'jwt-secret';
     process.env.COOKIE_SECRET = 'cookie-secret';
   };
@@ -30,8 +28,6 @@ describe('getEnv', () => {
       nodeEnv: 'production',
       port: 8080,
       mongoUri: 'mongodb://localhost:27017/finance-tracker-test',
-      databaseUser: 'db-user',
-      databasePassword: 'db-password',
       jwtAccessSecret: 'jwt-secret',
       cookieSecret: 'cookie-secret',
       jwtAccessExpiresIn: '30m',
@@ -56,8 +52,6 @@ describe('getEnv', () => {
 
   it.each([
     ['MONGO_URI', 'MONGO_URI is not defined in environment variables'],
-    ['DATABASE_USER', 'DATABASE_USER is not defined in environment variables'],
-    ['DATABASE_PASSWORD', 'DATABASE_PASSWORD is not defined in environment variables'],
     ['JWT_ACCESS_SECRET', 'JWT_ACCESS_SECRET is not defined in environment variables'],
     ['COOKIE_SECRET', 'COOKIE_SECRET is not defined in environment variables'],
   ])('throws when %s is missing', (key, message) => {
