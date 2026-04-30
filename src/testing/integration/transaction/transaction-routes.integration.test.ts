@@ -8,10 +8,10 @@ import { createIntegrationApp } from '../app';
 import { createIntegrationAccessToken } from '../auth';
 import {
   buildStandardTransactionDoc,
-  createIntegrationUser,
-  getSystemNamedResources,
   insertTransactions,
-} from '../fixtures';
+} from '../fixtures/transactions';
+import { getSystemNamedResources } from '../fixtures/named-resources';
+import { createIntegrationUser } from '../fixtures/users';
 
 describe('transaction app integration', () => {
   let app: FastifyInstance;
