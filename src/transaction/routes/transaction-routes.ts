@@ -41,7 +41,7 @@ import {
   TrashTransactionQuery,
   TrashTransactionQuerySchema,
 } from '@transaction/schema';
-import { validateBody, validateQuery } from '@utils/validation';
+import { validateBody } from '@utils/validation';
 
 import {
   createTestTransactionsHandler,
@@ -124,7 +124,7 @@ export async function transactionRoutes(
   }>(
     '/',
     {
-      preHandler: [validateQuery(TransactionQuerySchema), authorizeAccessToken()],
+      preHandler: [authorizeAccessToken()],
       schema: {
         tags: ['Transactions'],
         summary: 'List transactions',
@@ -144,7 +144,7 @@ export async function transactionRoutes(
   }>(
     '/trash',
     {
-      preHandler: [validateQuery(TrashTransactionQuerySchema), authorizeAccessToken()],
+      preHandler: [authorizeAccessToken()],
       schema: {
         tags: ['Transactions'],
         summary: 'List trashed transactions',
@@ -186,7 +186,7 @@ export async function transactionRoutes(
   }>(
     '/totals',
     {
-      preHandler: [validateQuery(TransactionFiltersQuerySchema), authorizeAccessToken()],
+      preHandler: [authorizeAccessToken()],
       schema: {
         tags: ['Transactions'],
         summary: 'Get transaction totals',
@@ -206,10 +206,7 @@ export async function transactionRoutes(
   }>(
     '/statistics',
     {
-      preHandler: [
-        validateQuery(TransactionStatisticsQuerySchema),
-        authorizeAccessToken(),
-      ],
+      preHandler: [authorizeAccessToken()],
       schema: {
         tags: ['Transactions'],
         summary: 'Get transaction statistics',

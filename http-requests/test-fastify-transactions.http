@@ -79,9 +79,10 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 # &startDate=2024-12-01&endDate=2024-12-31
+# ?categoryId=69a9c24ee2c1284ee32aa406
 
 ### GET TOTALS FOR TRANSACTIONS
-GET {{baseUrl}}/totals?categoryId=69a9c24ee2c1284ee32aa406
+GET {{baseUrl}}/totals
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
