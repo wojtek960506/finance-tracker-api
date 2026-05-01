@@ -1,48 +1,56 @@
-type EnvType = {
+import { z } from 'zod/v4';
+
+const requiredEnvString = (message: string) =>
+  z.preprocess((value) => (value == null ? '' : value), z.string().min(1, message));
+
+const envSchema = z.object({
+  NODE_ENV: z.string().default('development'),
+  PORT: z.coerce.number().int().default(5000),
+  MONGO_URI: requiredEnvString('MONGO_URI is not defined in environment variables'),
+  CORS_ORIGINS: z
+    .preprocess(
+      (value) => (value == null ? '' : value),
+      z.string().min(1, 'CORS_ORIGINS is not defined in environment variables'),
+    )
+    .transform((value) =>
+      value
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    )
+    .refine((value) => value.length > 0, {
+      message: 'CORS_ORIGINS is not defined in environment variables',
+    }),
+  JWT_ACCESS_SECRET: requiredEnvString(
+    'JWT_ACCESS_SECRET is not defined in environment variables',
+  ),
+  JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
+  JWT_REFRESH_EXPIRES_DAYS: z.coerce.number().int().default(30),
+  COOKIE_SECRET: requiredEnvString('COOKIE_SECRET is not defined in environment variables'),
+});
+
+export type EnvType = {
   port: number;
   nodeEnv: string;
   mongoUri: string;
-  databaseUser: string;
+  corsOrigins: string[];
   cookieSecret: string;
   jwtAccessSecret: string;
-  databasePassword: string;
   jwtAccessExpiresIn: string;
   jwtRefreshExpiresDays: number;
 };
 
 export const getEnv = (): EnvType => {
-  const nodeEnv = process.env.NODE_ENV || 'development';
-  const port = parseInt(process.env.PORT || '5000', 10);
-  const jwtAccessExpiresIn = process.env.JWT_ACCESS_EXPIRES_IN || '15m';
-  const jwtRefreshExpiresDays = parseInt(
-    process.env.JWT_REFRESH_EXPIRES_DAYS || '30',
-    10,
-  );
-  const mongoUri = process.env.MONGO_URI;
-  const databaseUser = process.env.DATABASE_USER;
-  const databasePassword = process.env.DATABASE_PASSWORD;
-  const jwtAccessSecret = process.env.JWT_ACCESS_SECRET;
-  const cookieSecret = process.env.COOKIE_SECRET;
-
-  if (!mongoUri) throw new Error('MONGO_URI is not defined in environment variables');
-  if (!databaseUser)
-    throw new Error('DATABASE_USER is not defined in environment variables');
-  if (!databasePassword)
-    throw new Error('DATABASE_PASSWORD is not defined in environment variables');
-  if (!jwtAccessSecret)
-    throw new Error('JWT_ACCESS_SECRET is not defined in environment variables');
-  if (!cookieSecret)
-    throw new Error('COOKIE_SECRET is not defined in environment variables');
+  const parsed = envSchema.parse(process.env);
 
   return {
-    port,
-    nodeEnv,
-    mongoUri,
-    databaseUser,
-    cookieSecret,
-    jwtAccessSecret,
-    databasePassword,
-    jwtAccessExpiresIn,
-    jwtRefreshExpiresDays,
+    port: parsed.PORT,
+    nodeEnv: parsed.NODE_ENV,
+    mongoUri: parsed.MONGO_URI,
+    corsOrigins: parsed.CORS_ORIGINS,
+    cookieSecret: parsed.COOKIE_SECRET,
+    jwtAccessSecret: parsed.JWT_ACCESS_SECRET,
+    jwtAccessExpiresIn: parsed.JWT_ACCESS_EXPIRES_IN,
+    jwtRefreshExpiresDays: parsed.JWT_REFRESH_EXPIRES_DAYS,
   };
 };

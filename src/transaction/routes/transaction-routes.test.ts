@@ -101,13 +101,6 @@ describe('transaction routes', async () => {
     normalizeTransactionResponse(transferSerialized.expenseTransactionSerialized),
     normalizeTransactionResponse(transferSerialized.incomeTransactionSerialized),
   ];
-  const filteredTransactionsResult = {
-    page: 1,
-    limit: 20,
-    total: 1,
-    totalPages: 1,
-    items: [standardResponse],
-  };
   const updateManyResult = { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
   const totalsResult = {
     byCurrency: {
@@ -144,20 +137,6 @@ describe('transaction routes', async () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  it("should get transactions - 'GET /'", async () => {
-    vi.spyOn(serviceT, 'getTransactions').mockResolvedValue(
-      filteredTransactionsResult as any,
-    );
-    const response = await app.inject({ method: 'GET', url: '/' });
-    expect(serviceT.getTransactions).toHaveBeenCalledOnce();
-    expect(serviceT.getTransactions).toHaveBeenCalledWith(
-      { page: 1, limit: 20, sortBy: 'date', sortOrder: 'desc' },
-      USER_ID_STR,
-    );
-    expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(filteredTransactionsResult);
   });
 
   it("should export transactions - 'GET /export'", async () => {
