@@ -20,6 +20,7 @@ export const verifyEmail = async ({ token }: VerifyEmailDTO): Promise<void> => {
   }
 
   user.emailVerifiedAt = new Date();
+  user.emailVerificationMethod = 'self-verified';
   user.emailVerificationTokenHash = null;
   user.emailVerificationExpiresAt = null;
 

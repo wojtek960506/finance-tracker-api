@@ -22,6 +22,7 @@ export const createUser = async (
           ...rest,
           passwordHash,
           emailVerifiedAt: null,
+          emailVerificationMethod: null,
           emailVerificationTokenHash: tokenHash,
           emailVerificationExpiresAt: expiresAt,
         },

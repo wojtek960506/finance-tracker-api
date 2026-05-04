@@ -9,6 +9,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsup",
     "start": "node dist/server.js",
+    "migrate:legacy-email-verification": "tsx src/scripts/migrate-legacy-email-verification.ts",
     "test": "vitest --run",
     "test:integration": "vitest --run --config vitest.integration.config.ts",
     "test:integration:db:up": "docker compose -f compose.integration.yml up -d --wait mongo-integration",
