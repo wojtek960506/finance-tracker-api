@@ -4,14 +4,11 @@ const requiredEnvString = (message: string) =>
   z.preprocess((value) => (value == null ? '' : value), z.string().min(1, message));
 
 const optionalEnvString = () =>
-  z.preprocess(
-    (value) => {
-      if (value == null) return undefined;
-      const trimmed = String(value).trim();
-      return trimmed.length > 0 ? trimmed : undefined;
-    },
-    z.string().optional(),
-  );
+  z.preprocess((value) => {
+    if (value == null) return undefined;
+    const trimmed = String(value).trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }, z.string().optional());
 
 const splitCsv = (value: string) =>
   value
@@ -53,7 +50,8 @@ const envSchema = z.object({
       } catch (error) {
         ctx.addIssue({
           code: 'custom',
-          message: error instanceof Error ? error.message : 'Invalid CORS_ORIGIN_PATTERNS',
+          message:
+            error instanceof Error ? error.message : 'Invalid CORS_ORIGIN_PATTERNS',
         });
 
         return z.NEVER;
@@ -67,7 +65,9 @@ const envSchema = z.object({
   EMAIL_VERIFICATION_EXPIRES_HOURS: z.coerce.number().int().positive().default(24),
   RESEND_API_KEY: optionalEnvString(),
   RESEND_FROM_EMAIL: optionalEnvString(),
-  COOKIE_SECRET: requiredEnvString('COOKIE_SECRET is not defined in environment variables'),
+  COOKIE_SECRET: requiredEnvString(
+    'COOKIE_SECRET is not defined in environment variables',
+  ),
 });
 
 export type EnvType = {

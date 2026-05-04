@@ -4,6 +4,8 @@ import { z } from 'zod/v4';
 import {
   LoginDTO,
   LoginSchema,
+  ResendVerificationDTO,
+  ResendVerificationSchema,
   TokenDTO,
   TokenSchema,
   VerifyEmailDTO,
@@ -18,6 +20,7 @@ import {
   loginHandler,
   logoutHandler,
   refreshHandler,
+  resendVerificationHandler,
   verifyEmailHandler,
 } from './handlers';
 
@@ -56,6 +59,25 @@ export async function authRoutes(app: FastifyInstance) {
       },
     },
     verifyEmailHandler,
+  );
+
+  app.post<{ Body: ResendVerificationDTO }>(
+    '/resend-verification',
+    {
+      preHandler: validateBody(ResendVerificationSchema),
+      schema: {
+        tags: ['Auth'],
+        summary: 'Resend verification email',
+        description:
+          'Send a fresh verification email when the account still needs email confirmation.',
+        security: [],
+        body: ResendVerificationSchema,
+        response: {
+          204: z.undefined(),
+        },
+      },
+    },
+    resendVerificationHandler,
   );
 
   app.get<{ Reply: TokenDTO }>(

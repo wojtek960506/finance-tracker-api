@@ -38,9 +38,7 @@ describe('getEnv', () => {
       appOrigin: 'https://finance-tracker.example.com',
       mongoUri: 'mongodb://localhost:27017/finance-tracker-test',
       corsOrigins: ['http://localhost:3000', 'http://localhost:5173'],
-      corsOriginPatterns: [
-        /^https:\/\/example-frontend(?:-[a-z0-9-]+)?\.vercel\.app$/,
-      ],
+      corsOriginPatterns: [/^https:\/\/example-frontend(?:-[a-z0-9-]+)?\.vercel\.app$/],
       jwtAccessSecret: 'jwt-secret',
       cookieSecret: 'cookie-secret',
       jwtAccessExpiresIn: '30m',

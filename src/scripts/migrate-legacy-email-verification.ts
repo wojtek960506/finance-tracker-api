@@ -7,7 +7,6 @@ import { UserModel } from '@user/model';
 dotenv.config();
 
 const run = async () => {
-
   const { mongoUri } = getEnv();
   const migratedAt = new Date();
 

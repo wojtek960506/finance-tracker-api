@@ -17,6 +17,7 @@ import * as serviceU from '@user/services';
 import { authRoutes } from './auth-routes';
 
 const LOGIN_DTO = { email: 'john@example.com', password: 'secret-password' };
+const RESEND_VERIFICATION_DTO = { email: 'john@example.com' };
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
 });
@@ -27,6 +28,7 @@ vi.mock('@auth/services', () => ({
   login: vi.fn(),
   refresh: vi.fn(),
   logout: vi.fn(),
+  resendVerification: vi.fn(),
   authorizeAccessToken: vi.fn(() => mockPreHandler),
 }));
 
@@ -89,6 +91,24 @@ describe('auth routes', async () => {
       setCookie.some((header) => header.includes('refreshToken=new-refresh-token')),
     ).toBe(true);
   });
+
+  // prettier-ignore
+  it(
+    "should resend email verification and return no content - 'POST /resend-verification'",
+    async () => {
+      vi.spyOn(serviceA, 'resendVerification').mockResolvedValue(undefined);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/resend-verification',
+        body: RESEND_VERIFICATION_DTO,
+      });
+
+      expect(serviceA.resendVerification).toHaveBeenCalledOnce();
+      expect(serviceA.resendVerification).toHaveBeenCalledWith(RESEND_VERIFICATION_DTO);
+      expect(response.statusCode).toBe(204);
+    }
+  );
 
   it("should logout user and clear refresh cookie - 'POST /logout'", async () => {
     vi.spyOn(serviceA, 'logout').mockResolvedValue(undefined as any);

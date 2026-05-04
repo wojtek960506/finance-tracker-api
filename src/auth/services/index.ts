@@ -4,6 +4,7 @@ export * from './email-verification';
 export * from './login';
 export * from './logout';
 export * from './refresh';
+export * from './resend-verification';
 export * from './send-email-verification';
 export * from './types';
 export * from './verify-email';

@@ -120,7 +120,9 @@ export const buildApp = async (env = getEnv()) => {
       }
 
       const isAllowedOrigin = corsOrigins.includes(origin);
-      const matchesAllowedPattern = corsOriginPatterns.some((pattern) => pattern.test(origin));
+      const matchesAllowedPattern = corsOriginPatterns.some((pattern) =>
+        pattern.test(origin),
+      );
 
       callback(null, isAllowedOrigin || matchesAllowedPattern);
     },
