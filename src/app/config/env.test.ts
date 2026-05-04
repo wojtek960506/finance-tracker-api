@@ -27,6 +27,8 @@ describe('getEnv', () => {
     process.env.JWT_ACCESS_EXPIRES_IN = '30m';
     process.env.JWT_REFRESH_EXPIRES_DAYS = '14';
     process.env.EMAIL_VERIFICATION_EXPIRES_HOURS = '48';
+    process.env.RESEND_API_KEY = 're_test_key';
+    process.env.RESEND_FROM_EMAIL = 'no-reply@example.com';
 
     const env = getEnv();
 
@@ -44,6 +46,8 @@ describe('getEnv', () => {
       jwtAccessExpiresIn: '30m',
       jwtRefreshExpiresDays: 14,
       emailVerificationExpiresHours: 48,
+      resendApiKey: 're_test_key',
+      resendFromEmail: 'no-reply@example.com',
     });
   });
 
@@ -63,6 +67,8 @@ describe('getEnv', () => {
     expect(env.jwtAccessExpiresIn).toBe('15m');
     expect(env.jwtRefreshExpiresDays).toBe(30);
     expect(env.emailVerificationExpiresHours).toBe(24);
+    expect(env.resendApiKey).toBeUndefined();
+    expect(env.resendFromEmail).toBeUndefined();
   });
 
   it('throws when CORS_ORIGIN_PATTERNS contains invalid regex', () => {

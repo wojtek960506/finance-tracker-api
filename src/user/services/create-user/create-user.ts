@@ -36,6 +36,7 @@ export const createUser = async (
 
     return serializeUser(newUser);
   } catch (err) {
+    if (err instanceof AppError) throw err;
     if ((err as { code: number }).code === 11000)
       throw new AppError(
         409,

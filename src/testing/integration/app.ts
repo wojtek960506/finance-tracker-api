@@ -21,6 +21,7 @@ export const INTEGRATION_TEST_ENV = {
   jwtAccessExpiresIn: '15m',
   jwtRefreshExpiresDays: 30,
   emailVerificationExpiresHours: 24,
+  resendFromName: 'Finance Tracker',
 };
 
 export const createIntegrationApp = async (): Promise<FastifyInstance> => {

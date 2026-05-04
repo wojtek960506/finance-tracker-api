@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createAccessToken, createRefreshToken } from '@auth/services';
 import { UserModel } from '@user/model';
 import {
+  UnauthorizedEmailNotVerifiedError,
   UnauthorizedInvalidCredentialsError,
   UnauthorizedUserNotFoundError,
 } from '@utils/errors';
@@ -38,6 +39,7 @@ describe('login', () => {
       _id: { toString: () => 'user-123' },
       email: 'john@example.com',
       passwordHash: 'stored-password-hash',
+      emailVerifiedAt: null,
       save: vi.fn(),
     } as any;
 
@@ -52,12 +54,31 @@ describe('login', () => {
     expect(user.save).not.toHaveBeenCalled();
   });
 
+  it('throws when email is not verified', async () => {
+    const user = {
+      _id: { toString: () => 'user-123' },
+      email: 'john@example.com',
+      passwordHash: 'stored-password-hash',
+      emailVerifiedAt: null,
+      save: vi.fn(),
+    } as any;
+
+    vi.spyOn(UserModel, 'findOne').mockResolvedValue(user);
+    (argon2.verify as any).mockResolvedValue(true);
+
+    await expect(
+      login({ email: 'john@example.com', password: 'correct-password' }),
+    ).rejects.toBeInstanceOf(UnauthorizedEmailNotVerifiedError);
+    expect(user.save).not.toHaveBeenCalled();
+  });
+
   it('returns access and refresh token and stores refresh token hash', async () => {
     const userSaveMock = vi.fn().mockResolvedValue(undefined);
     const user = {
       _id: { toString: () => 'user-123' },
       email: 'john@example.com',
       passwordHash: 'stored-password-hash',
+      emailVerifiedAt: new Date('2026-05-05T10:00:00.000Z'),
       save: userSaveMock,
     } as any;
 
