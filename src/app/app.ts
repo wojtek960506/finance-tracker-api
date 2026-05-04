@@ -34,13 +34,12 @@ import { registerErrorHandler } from './plugins/errorHandler';
 
 //############################################################################################
 // TODOS                                                                                     #
-// * revisit `user-routes` logic because maybe it is too complicated for now                 #
-//   and sometimes I do not understand why I am logged out due to problem with tokens        #
 // * write some logic to update all transactions in other currencies with exchange rate      #
 //   from the day of given transaction - from server perspective I need to write some        #
 //   script to do it on the whole old data from spreadsheets                                 #
-// * when adding old transactions from CSV file I need to update the exchange                #
-//   transactions to have real IDs as references (FastAPI)                                   #
+// * auth follow-ups after initial email verification rollout:                               #
+//   add rate limiting for login / verify-email / resend-verification, implement password    #
+//   recovery, add change-email flow, and consider moving registration into `/api/auth`      #
 //############################################################################################
 
 export const buildApp = async (env = getEnv()) => {
