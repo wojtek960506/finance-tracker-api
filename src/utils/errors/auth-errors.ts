@@ -24,6 +24,14 @@ export class UnauthorizedInvalidCredentialsError extends AppError {
   }
 }
 
+export class UnauthorizedEmailNotVerifiedError extends AppError {
+  readonly code = 'AUTH_EMAIL_NOT_VERIFIED';
+
+  constructor() {
+    super(403, 'Email verification required');
+  }
+}
+
 export class UnauthorizedUserNotFoundError extends AppError {
   readonly code = 'UNAUTHORIZED_USER_NOT_FOUND_ERROR';
 
@@ -45,5 +53,21 @@ export class UnauthorizedInvalidRefreshTokenError extends AppError {
 
   constructor() {
     super(401, 'Invalid refresh token');
+  }
+}
+
+export class InvalidEmailVerificationTokenError extends AppError {
+  readonly code = 'AUTH_INVALID_EMAIL_VERIFICATION_TOKEN';
+
+  constructor() {
+    super(400, 'Invalid email verification token');
+  }
+}
+
+export class ExpiredEmailVerificationTokenError extends AppError {
+  readonly code = 'AUTH_EXPIRED_EMAIL_VERIFICATION_TOKEN';
+
+  constructor() {
+    super(400, 'Email verification token expired');
   }
 }

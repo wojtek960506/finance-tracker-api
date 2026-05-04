@@ -21,6 +21,7 @@ const parseRegexPatterns = (value: string) =>
 const envSchema = z.object({
   NODE_ENV: z.string().default('development'),
   PORT: z.coerce.number().int().default(5000),
+  APP_ORIGIN: z.url().default('http://localhost:3000'),
   MONGO_URI: requiredEnvString('MONGO_URI is not defined in environment variables'),
   CORS_ORIGINS: z
     .preprocess(
@@ -53,10 +54,12 @@ const envSchema = z.object({
   ),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_DAYS: z.coerce.number().int().default(30),
+  EMAIL_VERIFICATION_EXPIRES_HOURS: z.coerce.number().int().positive().default(24),
   COOKIE_SECRET: requiredEnvString('COOKIE_SECRET is not defined in environment variables'),
 });
 
 export type EnvType = {
+  appOrigin: string;
   port: number;
   nodeEnv: string;
   mongoUri: string;
@@ -66,12 +69,14 @@ export type EnvType = {
   jwtAccessSecret: string;
   jwtAccessExpiresIn: string;
   jwtRefreshExpiresDays: number;
+  emailVerificationExpiresHours: number;
 };
 
 export const getEnv = (): EnvType => {
   const parsed = envSchema.parse(process.env);
 
   return {
+    appOrigin: parsed.APP_ORIGIN,
     port: parsed.PORT,
     nodeEnv: parsed.NODE_ENV,
     mongoUri: parsed.MONGO_URI,
@@ -81,5 +86,6 @@ export const getEnv = (): EnvType => {
     jwtAccessSecret: parsed.JWT_ACCESS_SECRET,
     jwtAccessExpiresIn: parsed.JWT_ACCESS_EXPIRES_IN,
     jwtRefreshExpiresDays: parsed.JWT_REFRESH_EXPIRES_DAYS,
+    emailVerificationExpiresHours: parsed.EMAIL_VERIFICATION_EXPIRES_HOURS,
   };
 };

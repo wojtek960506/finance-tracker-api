@@ -21,16 +21,19 @@ describe('getEnv', () => {
     setRequiredEnv();
     process.env.NODE_ENV = 'production';
     process.env.PORT = '8080';
+    process.env.APP_ORIGIN = 'https://finance-tracker.example.com';
     process.env.CORS_ORIGIN_PATTERNS =
       '^https://example-frontend(?:-[a-z0-9-]+)?\\.vercel\\.app$';
     process.env.JWT_ACCESS_EXPIRES_IN = '30m';
     process.env.JWT_REFRESH_EXPIRES_DAYS = '14';
+    process.env.EMAIL_VERIFICATION_EXPIRES_HOURS = '48';
 
     const env = getEnv();
 
     expect(env).toEqual({
       nodeEnv: 'production',
       port: 8080,
+      appOrigin: 'https://finance-tracker.example.com',
       mongoUri: 'mongodb://localhost:27017/finance-tracker-test',
       corsOrigins: ['http://localhost:3000', 'http://localhost:5173'],
       corsOriginPatterns: [
@@ -40,6 +43,7 @@ describe('getEnv', () => {
       cookieSecret: 'cookie-secret',
       jwtAccessExpiresIn: '30m',
       jwtRefreshExpiresDays: 14,
+      emailVerificationExpiresHours: 48,
     });
   });
 
@@ -54,9 +58,11 @@ describe('getEnv', () => {
 
     expect(env.nodeEnv).toBe('development');
     expect(env.port).toBe(5000);
+    expect(env.appOrigin).toBe('http://localhost:3000');
     expect(env.corsOriginPatterns).toEqual([]);
     expect(env.jwtAccessExpiresIn).toBe('15m');
     expect(env.jwtRefreshExpiresDays).toBe(30);
+    expect(env.emailVerificationExpiresHours).toBe(24);
   });
 
   it('throws when CORS_ORIGIN_PATTERNS contains invalid regex', () => {

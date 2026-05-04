@@ -12,6 +12,7 @@ import {
 export const INTEGRATION_TEST_ENV = {
   port: 5000,
   nodeEnv: 'test',
+  appOrigin: 'http://localhost:3000',
   mongoUri: getIntegrationMongoUri(),
   corsOrigins: ['http://localhost:3000'],
   corsOriginPatterns: [],
@@ -19,6 +20,7 @@ export const INTEGRATION_TEST_ENV = {
   jwtAccessSecret: 'integration-test-jwt-secret',
   jwtAccessExpiresIn: '15m',
   jwtRefreshExpiresDays: 30,
+  emailVerificationExpiresHours: 24,
 };
 
 export const createIntegrationApp = async (): Promise<FastifyInstance> => {

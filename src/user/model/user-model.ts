@@ -5,6 +5,9 @@ export interface UserAttributes {
   lastName: string;
   email: string;
   passwordHash: string;
+  emailVerifiedAt?: Date | null;
+  emailVerificationTokenHash?: string | null;
+  emailVerificationExpiresAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
   refreshTokenHash?: { tokenHash: string; createdAt: Date };
@@ -20,6 +23,9 @@ const UserSchema = new Schema<IUser>(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
+    emailVerifiedAt: { type: Date, default: null },
+    emailVerificationTokenHash: { type: String, default: null, index: true },
+    emailVerificationExpiresAt: { type: Date, default: null },
     refreshTokenHash: {
       tokenHash: { type: String, index: true },
       createdAt: { type: Date, default: () => new Date() },
