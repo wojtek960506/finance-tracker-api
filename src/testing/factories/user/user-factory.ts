@@ -23,6 +23,8 @@ export const getUserResultJSON = () => ({
   ...commonProps,
   _id: USER_ID_OBJ,
   passwordHash: USER_PASSWORD_HASH,
+  emailVerifiedAt: DATE_ISO_STR,
+  emailVerificationMethod: 'self-verified',
   refreshTokenHash: {
     tokenHash: USER_REFRESH_TOKEN_HASH,
     createdAt: DATE_ISO_STR,
@@ -34,6 +36,8 @@ export const getUserResultJSON = () => ({
 export const getUserResultSerialized = () => ({
   ...commonProps,
   id: USER_ID_STR,
+  emailVerifiedAt: DATE_ISO_STR,
+  emailVerificationMethod: 'self-verified',
   createdAt: DATE_ISO_STR,
   updatedAt: DATE_ISO_STR,
 });

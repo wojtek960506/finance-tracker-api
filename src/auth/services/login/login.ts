@@ -8,6 +8,7 @@ import {
 } from '@auth/services';
 import { UserModel } from '@user/model';
 import {
+  UnauthorizedEmailNotVerifiedError,
   UnauthorizedInvalidCredentialsError,
   UnauthorizedUserNotFoundError,
 } from '@utils/errors';
@@ -19,6 +20,7 @@ export const login = async (dto: LoginDTO): Promise<AccessRefreshTokens> => {
 
   const valid = await argon2.verify(user.passwordHash, password);
   if (!valid) throw new UnauthorizedInvalidCredentialsError();
+  if (!user.emailVerifiedAt) throw new UnauthorizedEmailNotVerifiedError();
 
   // create access token (include minimal claims)
   const accessToken = createAccessToken({

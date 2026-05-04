@@ -1,5 +1,7 @@
 import { z } from 'zod/v4';
 
+import { USER_EMAIL_VERIFICATION_METHODS } from '@user/model';
+
 const UserCommonSchema = z.object({
   firstName: z.string().min(2, 'First name must have at least 2 characters.'),
   lastName: z.string().min(2, 'Last name must have at least 2 characters.'),
@@ -28,6 +30,8 @@ export const UserPatchSchema = UserCreateSchema.partial();
 
 export const UserResponseSchema = UserCommonSchema.extend({
   id: z.string(),
+  emailVerifiedAt: z.coerce.date().nullable(),
+  emailVerificationMethod: z.enum(USER_EMAIL_VERIFICATION_METHODS).nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

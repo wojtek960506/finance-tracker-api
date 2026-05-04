@@ -9,6 +9,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsup",
     "start": "node dist/server.js",
+    "migrate:legacy-email-verification": "tsx src/scripts/migrate-legacy-email-verification.ts",
     "test": "vitest --run",
     "test:integration": "vitest --run --config vitest.integration.config.ts",
     "test:integration:db:up": "docker compose -f compose.integration.yml up -d --wait mongo-integration",
@@ -41,6 +42,7 @@
     "fastify-zod-openapi": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
+    "resend": "^6.12.2",
     "zod": "^4.1.12"
   },
   "devDependencies": {

@@ -3,6 +3,13 @@ import { z } from 'zod/v4';
 const requiredEnvString = (message: string) =>
   z.preprocess((value) => (value == null ? '' : value), z.string().min(1, message));
 
+const optionalEnvString = () =>
+  z.preprocess((value) => {
+    if (value == null) return undefined;
+    const trimmed = String(value).trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }, z.string().optional());
+
 const splitCsv = (value: string) =>
   value
     .split(',')
@@ -21,6 +28,7 @@ const parseRegexPatterns = (value: string) =>
 const envSchema = z.object({
   NODE_ENV: z.string().default('development'),
   PORT: z.coerce.number().int().default(5000),
+  APP_ORIGIN: z.url().default('http://localhost:3000'),
   MONGO_URI: requiredEnvString('MONGO_URI is not defined in environment variables'),
   CORS_ORIGINS: z
     .preprocess(
@@ -42,7 +50,8 @@ const envSchema = z.object({
       } catch (error) {
         ctx.addIssue({
           code: 'custom',
-          message: error instanceof Error ? error.message : 'Invalid CORS_ORIGIN_PATTERNS',
+          message:
+            error instanceof Error ? error.message : 'Invalid CORS_ORIGIN_PATTERNS',
         });
 
         return z.NEVER;
@@ -53,10 +62,16 @@ const envSchema = z.object({
   ),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_DAYS: z.coerce.number().int().default(30),
-  COOKIE_SECRET: requiredEnvString('COOKIE_SECRET is not defined in environment variables'),
+  EMAIL_VERIFICATION_EXPIRES_HOURS: z.coerce.number().int().positive().default(24),
+  RESEND_API_KEY: optionalEnvString(),
+  RESEND_FROM_EMAIL: optionalEnvString(),
+  COOKIE_SECRET: requiredEnvString(
+    'COOKIE_SECRET is not defined in environment variables',
+  ),
 });
 
 export type EnvType = {
+  appOrigin: string;
   port: number;
   nodeEnv: string;
   mongoUri: string;
@@ -66,12 +81,16 @@ export type EnvType = {
   jwtAccessSecret: string;
   jwtAccessExpiresIn: string;
   jwtRefreshExpiresDays: number;
+  emailVerificationExpiresHours: number;
+  resendApiKey?: string;
+  resendFromEmail?: string;
 };
 
 export const getEnv = (): EnvType => {
   const parsed = envSchema.parse(process.env);
 
   return {
+    appOrigin: parsed.APP_ORIGIN,
     port: parsed.PORT,
     nodeEnv: parsed.NODE_ENV,
     mongoUri: parsed.MONGO_URI,
@@ -81,5 +100,8 @@ export const getEnv = (): EnvType => {
     jwtAccessSecret: parsed.JWT_ACCESS_SECRET,
     jwtAccessExpiresIn: parsed.JWT_ACCESS_EXPIRES_IN,
     jwtRefreshExpiresDays: parsed.JWT_REFRESH_EXPIRES_DAYS,
+    emailVerificationExpiresHours: parsed.EMAIL_VERIFICATION_EXPIRES_HOURS,
+    resendApiKey: parsed.RESEND_API_KEY,
+    resendFromEmail: parsed.RESEND_FROM_EMAIL,
   };
 };

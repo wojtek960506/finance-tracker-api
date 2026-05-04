@@ -1,6 +1,7 @@
 import argon2 from 'argon2';
 import { ClientSession } from 'mongoose';
 
+import { createEmailVerificationToken, sendEmailVerification } from '@auth/services';
 import { UserModel } from '@user/model';
 import { UserCreateDTO, UserResponseDTO } from '@user/schema';
 import { serializeUser } from '@user/serializers';
@@ -12,13 +13,30 @@ export const createUser = async (
 ): Promise<UserResponseDTO> => {
   const { password, ...rest } = dto;
   const passwordHash = await argon2.hash(password);
+  const { token, tokenHash, expiresAt } = createEmailVerificationToken();
 
   try {
-    const [newUser] = await UserModel.create([{ ...rest, passwordHash: passwordHash }], {
-      session,
-    });
+    const [newUser] = await UserModel.create(
+      [
+        {
+          ...rest,
+          passwordHash,
+          emailVerifiedAt: null,
+          emailVerificationMethod: null,
+          emailVerificationTokenHash: tokenHash,
+          emailVerificationExpiresAt: expiresAt,
+        },
+      ],
+      {
+        session,
+      },
+    );
+
+    await sendEmailVerification({ email: newUser.email, token });
+
     return serializeUser(newUser);
   } catch (err) {
+    if (err instanceof AppError) throw err;
     if ((err as { code: number }).code === 11000)
       throw new AppError(
         409,
