@@ -5,15 +5,19 @@ const DEFAULT_INTEGRATION_MONGO_URI =
 
 const DEFAULT_JWT_ACCESS_SECRET = 'integration-test-jwt-secret';
 const DEFAULT_COOKIE_SECRET = 'integration-test-cookie-secret';
+const DEFAULT_CORS_ORIGINS = 'http://localhost:3000';
+const DEFAULT_CORS_ORIGIN_PATTERNS = '';
 
 export const getIntegrationMongoUri = () =>
   process.env.INTEGRATION_MONGO_URI || DEFAULT_INTEGRATION_MONGO_URI;
 
 export const setIntegrationTestEnv = () => {
-  process.env.NODE_ENV ??= 'test';
-  process.env.MONGO_URI ??= getIntegrationMongoUri();
-  process.env.JWT_ACCESS_SECRET ??= DEFAULT_JWT_ACCESS_SECRET;
-  process.env.COOKIE_SECRET ??= DEFAULT_COOKIE_SECRET;
+  process.env.NODE_ENV = 'test';
+  process.env.MONGO_URI = getIntegrationMongoUri();
+  process.env.CORS_ORIGINS = DEFAULT_CORS_ORIGINS;
+  process.env.CORS_ORIGIN_PATTERNS = DEFAULT_CORS_ORIGIN_PATTERNS;
+  process.env.JWT_ACCESS_SECRET = DEFAULT_JWT_ACCESS_SECRET;
+  process.env.COOKIE_SECRET = DEFAULT_COOKIE_SECRET;
 };
 
 export const connectIntegrationMongo = async () => {

@@ -21,6 +21,8 @@ describe('getEnv', () => {
     setRequiredEnv();
     process.env.NODE_ENV = 'production';
     process.env.PORT = '8080';
+    process.env.CORS_ORIGIN_PATTERNS =
+      '^https://example-frontend(?:-[a-z0-9-]+)?\\.vercel\\.app$';
     process.env.JWT_ACCESS_EXPIRES_IN = '30m';
     process.env.JWT_REFRESH_EXPIRES_DAYS = '14';
 
@@ -31,6 +33,9 @@ describe('getEnv', () => {
       port: 8080,
       mongoUri: 'mongodb://localhost:27017/finance-tracker-test',
       corsOrigins: ['http://localhost:3000', 'http://localhost:5173'],
+      corsOriginPatterns: [
+        /^https:\/\/example-frontend(?:-[a-z0-9-]+)?\.vercel\.app$/,
+      ],
       jwtAccessSecret: 'jwt-secret',
       cookieSecret: 'cookie-secret',
       jwtAccessExpiresIn: '30m',
@@ -49,8 +54,17 @@ describe('getEnv', () => {
 
     expect(env.nodeEnv).toBe('development');
     expect(env.port).toBe(5000);
+    expect(env.corsOriginPatterns).toEqual([]);
     expect(env.jwtAccessExpiresIn).toBe('15m');
     expect(env.jwtRefreshExpiresDays).toBe(30);
+  });
+
+  it('throws when CORS_ORIGIN_PATTERNS contains invalid regex', () => {
+    setRequiredEnv();
+    process.env.CORS_ORIGIN_PATTERNS = '[invalid-regex';
+
+    expect(() => getEnv()).toThrow(ZodError);
+    expect(() => getEnv()).toThrow('Invalid CORS_ORIGIN_PATTERNS regex: [invalid-regex');
   });
 
   it.each([

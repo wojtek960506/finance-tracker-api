@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as config from '@app/config';
 import {
   COOKIE_SECRET_TEST,
+  CORS_ORIGIN_PATTERNS_TEST,
+  CORS_ORIGINS_TEST,
   ENV_TEST_VALUES,
   JWT_ACCESS_SECRET_TEST,
   PORT_TEST,
@@ -144,6 +146,50 @@ describe('app bootstrap', () => {
       }),
     );
     expect(result).toBe(appMock);
+  });
+
+  it('allows configured static and pattern-based CORS origins', async () => {
+    const { buildApp } = await import('./app');
+
+    await buildApp();
+
+    const corsCall = appMock.register.mock.calls.find(
+      ([plugin]: [unknown, unknown]) => plugin === corsPluginMock,
+    );
+    const corsOptions = corsCall?.[1];
+
+    expect(corsOptions).toBeDefined();
+    expect(typeof corsOptions.origin).toBe('function');
+
+    const staticOrigin = CORS_ORIGINS_TEST[0];
+    const previewOrigin = 'https://example-frontend-l8883h29p-preview.vercel.app';
+    const deniedOrigin = 'https://example.com';
+
+    const allowedStatic = await new Promise<boolean>((resolve, reject) => {
+      corsOptions.origin(staticOrigin, (error: Error | null, allowed: boolean) => {
+        if (error) reject(error);
+        else resolve(allowed);
+      });
+    });
+
+    const allowedPreview = await new Promise<boolean>((resolve, reject) => {
+      corsOptions.origin(previewOrigin, (error: Error | null, allowed: boolean) => {
+        if (error) reject(error);
+        else resolve(allowed);
+      });
+    });
+
+    const denied = await new Promise<boolean>((resolve, reject) => {
+      corsOptions.origin(deniedOrigin, (error: Error | null, allowed: boolean) => {
+        if (error) reject(error);
+        else resolve(allowed);
+      });
+    });
+
+    expect(CORS_ORIGIN_PATTERNS_TEST[0].test(previewOrigin)).toBe(true);
+    expect(allowedStatic).toBe(true);
+    expect(allowedPreview).toBe(true);
+    expect(denied).toBe(false);
   });
 
   it('does not auto-start on app module import', async () => {

@@ -44,7 +44,7 @@ import { registerErrorHandler } from './plugins/errorHandler';
 //############################################################################################
 
 export const buildApp = async (env = getEnv()) => {
-  const { cookieSecret, corsOrigins, jwtAccessSecret } = env;
+  const { cookieSecret, corsOriginPatterns, corsOrigins, jwtAccessSecret } = env;
 
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
@@ -113,7 +113,17 @@ export const buildApp = async (env = getEnv()) => {
 
   // register CORS
   await app.register(cors, {
-    origin: corsOrigins,
+    origin: (origin, callback) => {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      const isAllowedOrigin = corsOrigins.includes(origin);
+      const matchesAllowedPattern = corsOriginPatterns.some((pattern) => pattern.test(origin));
+
+      callback(null, isAllowedOrigin || matchesAllowedPattern);
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

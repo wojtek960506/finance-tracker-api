@@ -13,6 +13,8 @@ export const INTEGRATION_TEST_ENV = {
   port: 5000,
   nodeEnv: 'test',
   mongoUri: getIntegrationMongoUri(),
+  corsOrigins: ['http://localhost:3000'],
+  corsOriginPatterns: [],
   cookieSecret: 'integration-test-cookie-secret',
   jwtAccessSecret: 'integration-test-jwt-secret',
   jwtAccessExpiresIn: '15m',

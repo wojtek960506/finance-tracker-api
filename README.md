@@ -77,6 +77,7 @@ NODE_ENV=development
 PORT=5000
 MONGO_URI=mongodb+srv://<username>:<password>@<cluster>/some-db-dev
 CORS_ORIGINS=http://localhost:3000,http://localhost:5173,http://localhost:5174,https://some-web.app
+CORS_ORIGIN_PATTERNS=^https://example-frontend(?:-[a-z0-9-]+)?\\.vercel\\.app$
 JWT_ACCESS_SECRET=replace-with-a-strong-secret
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_DAYS=30
@@ -87,6 +88,8 @@ Notes:
 
 - `MONGO_URI` is required for app startup.
 - `CORS_ORIGINS` should be a comma-separated list of allowed frontend origins.
+- `CORS_ORIGIN_PATTERNS` is optional and can be used for dynamic origins such as Vercel
+  preview deployments.
 - In `production`, refresh cookies are sent with `Secure` and `SameSite=None`.
 
 ### 3. Start development server
