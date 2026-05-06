@@ -35,7 +35,7 @@ export const sendEmailVerification = async ({
   const resend = new Resend(resendApiKey);
 
   const { error } = await resend.emails.send({
-    from: `${resendFromEmail}`,
+    from: `Finance Tracker <${resendFromEmail}>`,
     to: [email],
     subject: 'Finance Tracker - Verify your email address',
     html: [

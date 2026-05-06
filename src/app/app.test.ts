@@ -148,6 +148,20 @@ describe('app bootstrap', () => {
     expect(result).toBe(appMock);
   });
 
+  it('registers CORS before application routes', async () => {
+    const { buildApp } = await import('./app');
+
+    await buildApp();
+
+    const registeredPlugins = appMock.register.mock.calls.map(([plugin]: [unknown]) => plugin);
+    const corsIndex = registeredPlugins.indexOf(corsPluginMock);
+    const firstRouteIndex = registeredPlugins.indexOf(mainRoutesMock);
+
+    expect(corsIndex).toBeGreaterThanOrEqual(0);
+    expect(firstRouteIndex).toBeGreaterThanOrEqual(0);
+    expect(corsIndex).toBeLessThan(firstRouteIndex);
+  });
+
   it('allows configured static and pattern-based CORS origins', async () => {
     const { buildApp } = await import('./app');
 
