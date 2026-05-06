@@ -97,20 +97,7 @@ export const buildApp = async (env = getEnv()) => {
     },
   });
 
-  // register routes
-  await app.register(mainRoutes, { prefix: '' });
-  await app.register(authRoutes, { prefix: '/api/auth' });
-  await app.register(userRoutes, { prefix: '/api/users' });
-  await app.register(accountRoutes, { prefix: '/api/accounts' });
-  await app.register(categoryRoutes, { prefix: '/api/categories' });
-  await app.register(paymentMethodRoutes, { prefix: '/api/paymentMethods' });
-  await app.register(currencyRoutes, { prefix: '/api/currencies' });
-  await app.register(transactionRoutes, { prefix: '/api/transactions' });
-
-  // register error handler
-  await registerErrorHandler(app);
-
-  // register CORS
+  // register CORS before routes so hooks apply to the whole route tree
   await app.register(cors, {
     origin: (origin, callback) => {
       if (!origin) {
@@ -129,6 +116,19 @@ export const buildApp = async (env = getEnv()) => {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
+
+  // register routes
+  await app.register(mainRoutes, { prefix: '' });
+  await app.register(authRoutes, { prefix: '/api/auth' });
+  await app.register(userRoutes, { prefix: '/api/users' });
+  await app.register(accountRoutes, { prefix: '/api/accounts' });
+  await app.register(categoryRoutes, { prefix: '/api/categories' });
+  await app.register(paymentMethodRoutes, { prefix: '/api/paymentMethods' });
+  await app.register(currencyRoutes, { prefix: '/api/currencies' });
+  await app.register(transactionRoutes, { prefix: '/api/transactions' });
+
+  // register error handler
+  await registerErrorHandler(app);
 
   return app;
 };
