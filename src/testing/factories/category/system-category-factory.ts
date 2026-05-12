@@ -5,6 +5,9 @@ import {
   EXCHANGE_CATEGORY_ID_OBJ,
   EXCHANGE_CATEGORY_ID_STR,
   EXCHANGE_CATEGORY_NAME,
+  OTHER_CATEGORY_ID_OBJ,
+  OTHER_CATEGORY_ID_STR,
+  OTHER_CATEGORY_NAME,
   TRANSFER_CATEGORY_ID_OBJ,
   TRANSFER_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_NAME,
@@ -21,6 +24,10 @@ const propsTransfer = {
 const propsExchange = {
   name: EXCHANGE_CATEGORY_NAME,
   nameNormalized: EXCHANGE_CATEGORY_NAME.toLowerCase(),
+};
+const propsOther = {
+  name: OTHER_CATEGORY_NAME,
+  nameNormalized: OTHER_CATEGORY_NAME.toLowerCase(),
 };
 
 export const getExchangeCategoryResultJSON = () => ({
@@ -46,5 +53,18 @@ export const getTransferCategoryResultSerialized = () => ({
   ...commonProps,
   ...propsTransfer,
   id: TRANSFER_CATEGORY_ID_STR,
+  isFavorite: false,
+});
+
+export const getOtherCategoryResultJSON = () => ({
+  ...commonProps,
+  ...propsOther,
+  _id: OTHER_CATEGORY_ID_OBJ,
+});
+
+export const getOtherCategoryResultSerialized = () => ({
+  ...commonProps,
+  ...propsOther,
+  id: OTHER_CATEGORY_ID_STR,
   isFavorite: false,
 });

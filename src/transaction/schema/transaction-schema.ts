@@ -4,8 +4,15 @@ import { CurrencyCodeSchema } from '@currency/schema';
 import { NamedResourceResponseSchema } from '@named-resource';
 import { OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
 
+const OptionalObjectIdSchema = z
+  .string()
+  .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format')
+  .nullable()
+  .optional();
+
 const TransactionCommonSchema = z.object({
   date: z.coerce.date(), // allows strings like "2025-10-24" -> Date
+  description: z.string().min(1, 'Description is required'),
 });
 
 /**
@@ -13,16 +20,11 @@ const TransactionCommonSchema = z.object({
  * Used for POST /transactions/standard and PUT /transactions/standard
  */
 export const TransactionStandardSchema = TransactionCommonSchema.extend({
-  description: z.string().min(1, 'Description is required'),
   amount: z.number().positive('Amount must be positive'),
   currency: CurrencyCodeSchema,
-  categoryId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `categoryId`'),
-  paymentMethodId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `paymentMethodId`'),
-  accountId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountId`'),
+  categoryId: OptionalObjectIdSchema,
+  paymentMethodId: OptionalObjectIdSchema,
+  accountId: OptionalObjectIdSchema,
   transactionType: z.enum([...TRANSACTION_TYPES]),
 });
 
@@ -31,18 +33,12 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/exchange and PUT /transactions/exchange
  */
 export const TransactionExchangeSchema = TransactionCommonSchema.extend({
-  additionalDescription: z
-    .string()
-    .min(1, 'Additional description cannot be empty')
-    .optional(),
   amountExpense: z.number().positive('Amount of expense in exchange must be positive'),
   amountIncome: z.number().positive('Amount of income in exchange must be positive'),
   currencyExpense: CurrencyCodeSchema,
   currencyIncome: CurrencyCodeSchema,
-  accountId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountId`'),
-  paymentMethodId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `paymentMethodId`'),
+  accountId: OptionalObjectIdSchema,
+  paymentMethodId: OptionalObjectIdSchema,
 });
 
 /**
@@ -50,21 +46,11 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/transfer and PUT /transactions/transfer
  */
 export const TransactionTransferSchema = TransactionCommonSchema.extend({
-  additionalDescription: z
-    .string()
-    .min(1, 'Additional description cannot be empty')
-    .optional(),
   amount: z.number().positive('Amount must be positive'),
   currency: CurrencyCodeSchema,
-  accountExpenseId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountExpenseId`'),
-  accountIncomeId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountIncomeId`'),
-  paymentMethodId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `paymentMethodId`'),
+  accountExpenseId: OptionalObjectIdSchema,
+  accountIncomeId: OptionalObjectIdSchema,
+  paymentMethodId: OptionalObjectIdSchema,
 });
 
 export const TransactionResponseSchema = TransactionStandardSchema.omit({

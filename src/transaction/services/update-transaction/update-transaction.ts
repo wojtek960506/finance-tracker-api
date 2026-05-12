@@ -1,4 +1,4 @@
-import { findNamedResourceById } from '@named-resource/db';
+import { findNamedResourceById, findNamedResourceByName } from '@named-resource/db';
 import { checkOwner } from '@shared/services';
 import { findTransaction, saveTransactionChanges } from '@transaction/db';
 import {
@@ -8,29 +8,57 @@ import {
   TransactionTransferDTO,
 } from '@transaction/schema';
 import { prepareExchangeProps, prepareTransferProps } from '@transaction/services';
-import { SystemCategoryNotAllowed } from '@utils/errors';
+import {
+  OTHER_ACCOUNT_NAME,
+  OTHER_CATEGORY_NAME,
+  OTHER_PAYMENT_METHOD_NAME,
+} from '@utils/consts';
+import { CategoryNotFoundError, SystemCategoryNotAllowed } from '@utils/errors';
 
 import { updateTransactionPair } from './update-transaction-pair';
 
-const ensureCategoryAllowed = async (categoryId: string, ownerId: string) => {
-  const category = await findNamedResourceById('category', categoryId);
-  if (category.type === 'system') throw new SystemCategoryNotAllowed(category.id);
-  checkOwner(ownerId, category.id, category.ownerId!, 'category');
-  return category;
+type OptionalObjectId = string | null | undefined;
+
+const findRequiredSystemResource = async (
+  kind: 'category' | 'paymentMethod' | 'account',
+  systemName: string,
+) => {
+  const resource = await findNamedResourceByName(kind, systemName);
+  if (!resource && kind === 'category') throw new CategoryNotFoundError(undefined, systemName);
+  if (!resource) throw new Error(`Missing required system ${kind}: '${systemName}'`);
+  return resource;
 };
 
-const ensurePaymentMethodAllowed = async (paymentMethodId: string, ownerId: string) => {
-  const paymentMethod = await findNamedResourceById('paymentMethod', paymentMethodId);
+const resolveCategoryId = async (categoryId: OptionalObjectId, ownerId: string) => {
+  const category = categoryId
+    ? await findNamedResourceById('category', categoryId)
+    : await findRequiredSystemResource('category', OTHER_CATEGORY_NAME);
+
+  if (category.type === 'system' && category.name !== OTHER_CATEGORY_NAME)
+    throw new SystemCategoryNotAllowed(category.id);
+  if (category.type !== 'system') checkOwner(ownerId, category.id, category.ownerId!, 'category');
+  return category.id;
+};
+
+const resolvePaymentMethodId = async (
+  paymentMethodId: OptionalObjectId,
+  ownerId: string,
+) => {
+  const paymentMethod = paymentMethodId
+    ? await findNamedResourceById('paymentMethod', paymentMethodId)
+    : await findRequiredSystemResource('paymentMethod', OTHER_PAYMENT_METHOD_NAME);
   if (paymentMethod.type !== 'system')
     checkOwner(ownerId, paymentMethod.id, paymentMethod.ownerId!, 'paymentMethod');
-  return paymentMethod;
+  return paymentMethod.id;
 };
 
-const ensureAccountAllowed = async (accountId: string, ownerId: string) => {
-  const account = await findNamedResourceById('account', accountId);
+const resolveAccountId = async (accountId: OptionalObjectId, ownerId: string) => {
+  const account = accountId
+    ? await findNamedResourceById('account', accountId)
+    : await findRequiredSystemResource('account', OTHER_ACCOUNT_NAME);
   if (account.type !== 'system')
     checkOwner(ownerId, account.id, account.ownerId!, 'account');
-  return account;
+  return account.id;
 };
 
 export const updateStandardTransaction = async (
@@ -38,14 +66,21 @@ export const updateStandardTransaction = async (
   ownerId: string,
   dto: TransactionStandardDTO,
 ) => {
-  await ensureCategoryAllowed(dto.categoryId, ownerId);
-  await ensurePaymentMethodAllowed(dto.paymentMethodId, ownerId);
-  await ensureAccountAllowed(dto.accountId, ownerId);
+  const [categoryId, paymentMethodId, accountId] = await Promise.all([
+    resolveCategoryId(dto.categoryId, ownerId),
+    resolvePaymentMethodId(dto.paymentMethodId, ownerId),
+    resolveAccountId(dto.accountId, ownerId),
+  ]);
 
   const transaction = await findTransaction(transactionId);
   checkOwner(ownerId, transactionId, transaction.ownerId, 'transaction');
 
-  return saveTransactionChanges(transaction, dto);
+  return saveTransactionChanges(transaction, {
+    ...dto,
+    categoryId,
+    paymentMethodId,
+    accountId,
+  });
 };
 
 export const updateTransferTransaction = async (
@@ -53,16 +88,21 @@ export const updateTransferTransaction = async (
   ownerId: string,
   dto: TransactionTransferDTO,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-  const [accountExpense, accountIncome] = await Promise.all([
-    ensureAccountAllowed(dto.accountExpenseId, ownerId),
-    ensureAccountAllowed(dto.accountIncomeId, ownerId),
+  const [accountExpenseId, accountIncomeId, paymentMethodId] = await Promise.all([
+    resolveAccountId(dto.accountExpenseId, ownerId),
+    resolveAccountId(dto.accountIncomeId, ownerId),
+    resolvePaymentMethodId(dto.paymentMethodId, ownerId),
   ]);
-  await ensurePaymentMethodAllowed(dto.paymentMethodId, ownerId);
   return updateTransactionPair(transactionId, ownerId, 'myAccount', (objectIds) =>
-    prepareTransferProps(dto, objectIds, {
-      accountExpenseName: accountExpense.name,
-      accountIncomeName: accountIncome.name,
-    }),
+    prepareTransferProps(
+      {
+        ...dto,
+        accountExpenseId,
+        accountIncomeId,
+        paymentMethodId,
+      },
+      objectIds,
+    ),
   );
 };
 
@@ -71,9 +111,11 @@ export const updateExchangeTransaction = async (
   ownerId: string,
   dto: TransactionExchangeDTO,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-  await ensureAccountAllowed(dto.accountId, ownerId);
-  await ensurePaymentMethodAllowed(dto.paymentMethodId, ownerId);
+  const [accountId, paymentMethodId] = await Promise.all([
+    resolveAccountId(dto.accountId, ownerId),
+    resolvePaymentMethodId(dto.paymentMethodId, ownerId),
+  ]);
   return updateTransactionPair(transactionId, ownerId, 'exchange', (objectIds) =>
-    prepareExchangeProps(dto, objectIds),
+    prepareExchangeProps({ ...dto, accountId, paymentMethodId }, objectIds),
   );
 };

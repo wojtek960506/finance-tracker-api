@@ -4,6 +4,7 @@ import * as namedResourceDb from '@named-resource/db';
 import * as namedResourceConfig from '@named-resource/kind-config';
 import {
   ACCOUNT_TYPE_USER,
+  getOtherAccountResultSerialized,
   getSystemExpenseAccountResultSerialized,
   getSystemIncomeAccountResultSerialized,
 } from '@testing/factories/account';
@@ -11,11 +12,15 @@ import {
   CATEGORY_TYPE_SYSTEM,
   CATEGORY_TYPE_USER,
   getExchangeCategoryResultJSON,
+  getOtherCategoryResultSerialized,
   getTransferCategoryResultJSON,
   getUserCategoryResultSerialized,
 } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
-import { getBankTransferPaymentMethodResultJSON } from '@testing/factories/payment-method';
+import {
+  getBankTransferPaymentMethodResultSerialized,
+  getOtherPaymentMethodResultSerialized,
+} from '@testing/factories/payment-method';
 import {
   EXCHANGE_TXN_EXPENSE_ID_STR,
   getExchangeTransactionDTO,
@@ -54,9 +59,12 @@ describe('update transaction', () => {
   const foodCategory = getUserCategoryResultSerialized();
   const transferCategory = getTransferCategoryResultJSON();
   const exchangeCategory = getExchangeCategoryResultJSON();
-  const paymentMethod = getBankTransferPaymentMethodResultJSON();
+  const paymentMethod = getBankTransferPaymentMethodResultSerialized();
   const accountExpense = getSystemExpenseAccountResultSerialized();
   const accountIncome = getSystemIncomeAccountResultSerialized();
+  const otherCategory = getOtherCategoryResultSerialized();
+  const otherPaymentMethod = getOtherPaymentMethodResultSerialized();
+  const otherAccount = getOtherAccountResultSerialized();
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -83,6 +91,33 @@ describe('update transaction', () => {
       standardDTO,
     );
     expect(result).toEqual(transaction);
+  });
+
+  it('maps omitted standard resource ids to Other system resources on update', async () => {
+    const dto = {
+      ...standardDTO,
+      categoryId: undefined,
+      paymentMethodId: null,
+      accountId: undefined,
+    };
+
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName')
+      .mockResolvedValueOnce(otherCategory as any)
+      .mockResolvedValueOnce(otherPaymentMethod as any)
+      .mockResolvedValueOnce(otherAccount as any);
+    vi.spyOn(dbTransactions, 'findTransaction').mockResolvedValue(transaction as any);
+    vi.spyOn(dbTransactions, 'saveTransactionChanges').mockResolvedValue(
+      transaction as any,
+    );
+
+    await updateStandardTransaction(STANDARD_TXN_ID_STR, USER_ID_STR, dto);
+
+    expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledWith(transaction, {
+      ...dto,
+      categoryId: otherCategory.id,
+      paymentMethodId: otherPaymentMethod.id,
+      accountId: otherAccount.id,
+    });
   });
 
   it('updates transfer transaction pair', async () => {
@@ -167,6 +202,7 @@ describe('update transaction', () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById').mockResolvedValueOnce({
       ...foodCategory,
       type: CATEGORY_TYPE_SYSTEM,
+      name: 'exchange',
     } as any);
 
     await expect(

@@ -5,8 +5,11 @@ import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   CASH_PAYMENT_METHOD_ID_OBJ,
   CASH_PAYMENT_METHOD_ID_STR,
+  OTHER_PAYMENT_METHOD_ID_OBJ,
+  OTHER_PAYMENT_METHOD_ID_STR,
   PAYMENT_METHOD_BANK_TRANSFER_NAME,
   PAYMENT_METHOD_CASH_NAME,
+  PAYMENT_METHOD_OTHER_NAME,
   PAYMENT_METHOD_TYPE_SYSTEM,
 } from './payment-method-consts';
 
@@ -23,6 +26,10 @@ const propsBankTransfer = {
 const propsCash = {
   name: PAYMENT_METHOD_CASH_NAME,
   nameNormalized: PAYMENT_METHOD_CASH_NAME.toLowerCase(),
+};
+const propsOther = {
+  name: PAYMENT_METHOD_OTHER_NAME,
+  nameNormalized: PAYMENT_METHOD_OTHER_NAME.toLowerCase(),
 };
 
 export const getBankTransferPaymentMethodResultJSON = () => ({
@@ -48,5 +55,18 @@ export const getCashPaymentMethodResultSerialized = () => ({
   ...commonProps,
   ...propsCash,
   id: CASH_PAYMENT_METHOD_ID_STR,
+  isFavorite: false,
+});
+
+export const getOtherPaymentMethodResultJSON = () => ({
+  ...commonProps,
+  ...propsOther,
+  _id: OTHER_PAYMENT_METHOD_ID_OBJ,
+});
+
+export const getOtherPaymentMethodResultSerialized = () => ({
+  ...commonProps,
+  ...propsOther,
+  id: OTHER_PAYMENT_METHOD_ID_STR,
   isFavorite: false,
 });

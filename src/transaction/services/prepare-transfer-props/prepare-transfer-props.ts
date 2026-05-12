@@ -8,15 +8,10 @@ import {
   PrepareTransactionPropsObjectIds,
 } from '@transaction/services/types';
 
-type PrepareTransferPropsContext = Partial<PrepareTransactionPropsContext> & {
-  accountExpenseName?: string;
-  accountIncomeName?: string;
-};
-
 export function prepareTransferProps(
   body: TransactionTransferDTO,
   objectIds: PrepareTransactionPropsObjectIds,
-  additionalProps: PrepareTransferPropsContext,
+  additionalProps: PrepareTransactionPropsContext,
 ): {
   expenseTransactionProps: TransactionTransferCreateProps;
   incomeTransactionProps: TransactionTransferCreateProps;
@@ -31,16 +26,9 @@ export function prepareTransferProps(
 export function prepareTransferProps(
   body: TransactionTransferDTO,
   objectIds: PrepareTransactionPropsObjectIds,
-  additionalProps?: PrepareTransferPropsContext,
+  additionalProps?: PrepareTransactionPropsContext,
 ) {
   const { categoryId } = objectIds;
-
-  const accountExpenseLabel =
-    additionalProps?.accountExpenseName ?? body.accountExpenseId;
-  const accountIncomeLabel = additionalProps?.accountIncomeName ?? body.accountIncomeId;
-
-  let description = `${accountExpenseLabel} --> ${accountIncomeLabel}`;
-  if (body.additionalDescription) description += ` (${body.additionalDescription})`;
 
   const commonTransactionProps = {
     categoryId,
@@ -48,7 +36,7 @@ export function prepareTransferProps(
     amount: body.amount,
     currency: body.currency,
     paymentMethodId: body.paymentMethodId,
-    description,
+    description: body.description,
   };
 
   const commonExpenseTransactionProps = {

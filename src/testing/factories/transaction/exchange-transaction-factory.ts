@@ -38,12 +38,12 @@ import { TransactionExchangeDTO } from '@transaction/schema';
 export const getExchangeTransactionDTO = () =>
   ({
     date: DATE_OBJ,
+    description: DESCRPTION,
     accountId: ACCOUNT_EXPENSE_ID_STR,
     amountIncome: AMOUNT_INCOME,
     amountExpense: AMOUNT_EXPENSE,
     currencyIncome: CURRENCY_INCOME,
     currencyExpense: CURRENCY_EXPENSE,
-    additionalDescription: DESCRPTION,
     paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   }) as TransactionExchangeDTO;
 
@@ -61,7 +61,7 @@ export function getExchangeTransactionProps(isCreate?: true) {
     date: DATE_OBJ,
     accountId: ACCOUNT_EXPENSE_ID_STR,
     paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-    description: `${CURRENCY_EXPENSE} -> ${CURRENCY_INCOME} (${DESCRPTION})`,
+    description: DESCRPTION,
     currencies: `${CURRENCY_INCOME}/${CURRENCY_EXPENSE}`,
     exchangeRate: AMOUNT_EXPENSE / AMOUNT_INCOME,
   };

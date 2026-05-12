@@ -157,7 +157,7 @@ describe('createRandomTransactions', () => {
 
     const result = await createRandomTransactions(TEST_OWNER_ID, 5, session);
 
-    expect(categoryImpl).toHaveBeenCalledTimes(7);
+    expect(categoryImpl).toHaveBeenCalledTimes(8);
     expect(randomFromSet).toHaveBeenCalledTimes(12);
     expect(prepareRandomStandardTransaction).toHaveBeenCalledOnce();
     expect(prepareRandomStandardTransaction).toHaveBeenCalledWith(
