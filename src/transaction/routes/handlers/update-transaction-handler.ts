@@ -24,10 +24,16 @@ export const updateTransactionHandler = async (
   const dto = req.body;
 
   if ('currencyExpense' in dto) {
-    return res.code(200).send(await updateExchangeTransaction(id, userId, dto));
+    return res
+      .code(200)
+      .send(await updateExchangeTransaction(id, userId, dto as TransactionExchangeDTO));
   } else if ('accountExpenseId' in dto) {
-    return res.code(200).send(await updateTransferTransaction(id, userId, dto));
+    return res
+      .code(200)
+      .send(await updateTransferTransaction(id, userId, dto as TransactionTransferDTO));
   } else {
-    return res.code(200).send(await updateStandardTransaction(id, userId, dto));
+    return res
+      .code(200)
+      .send(await updateStandardTransaction(id, userId, dto as TransactionStandardDTO));
   }
 };

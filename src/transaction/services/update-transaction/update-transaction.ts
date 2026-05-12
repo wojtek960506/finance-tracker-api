@@ -1,4 +1,3 @@
-import { findNamedResourceById } from '@named-resource/db';
 import { checkOwner } from '@shared/services';
 import { findTransaction, saveTransactionChanges } from '@transaction/db';
 import {
@@ -8,44 +7,34 @@ import {
   TransactionTransferDTO,
 } from '@transaction/schema';
 import { prepareExchangeProps, prepareTransferProps } from '@transaction/services';
-import { SystemCategoryNotAllowed } from '@utils/errors';
+import {
+  resolveAccountId,
+  resolveCategoryId,
+  resolvePaymentMethodId,
+} from '@transaction/services/resolve-transaction-resource-id';
 
 import { updateTransactionPair } from './update-transaction-pair';
-
-const ensureCategoryAllowed = async (categoryId: string, ownerId: string) => {
-  const category = await findNamedResourceById('category', categoryId);
-  if (category.type === 'system') throw new SystemCategoryNotAllowed(category.id);
-  checkOwner(ownerId, category.id, category.ownerId!, 'category');
-  return category;
-};
-
-const ensurePaymentMethodAllowed = async (paymentMethodId: string, ownerId: string) => {
-  const paymentMethod = await findNamedResourceById('paymentMethod', paymentMethodId);
-  if (paymentMethod.type !== 'system')
-    checkOwner(ownerId, paymentMethod.id, paymentMethod.ownerId!, 'paymentMethod');
-  return paymentMethod;
-};
-
-const ensureAccountAllowed = async (accountId: string, ownerId: string) => {
-  const account = await findNamedResourceById('account', accountId);
-  if (account.type !== 'system')
-    checkOwner(ownerId, account.id, account.ownerId!, 'account');
-  return account;
-};
 
 export const updateStandardTransaction = async (
   transactionId: string,
   ownerId: string,
   dto: TransactionStandardDTO,
 ) => {
-  await ensureCategoryAllowed(dto.categoryId, ownerId);
-  await ensurePaymentMethodAllowed(dto.paymentMethodId, ownerId);
-  await ensureAccountAllowed(dto.accountId, ownerId);
+  const [categoryId, paymentMethodId, accountId] = await Promise.all([
+    resolveCategoryId(dto.categoryId, ownerId),
+    resolvePaymentMethodId(dto.paymentMethodId, ownerId),
+    resolveAccountId(dto.accountId, ownerId),
+  ]);
 
   const transaction = await findTransaction(transactionId);
   checkOwner(ownerId, transactionId, transaction.ownerId, 'transaction');
 
-  return saveTransactionChanges(transaction, dto);
+  return saveTransactionChanges(transaction, {
+    ...dto,
+    categoryId,
+    paymentMethodId,
+    accountId,
+  });
 };
 
 export const updateTransferTransaction = async (
@@ -53,16 +42,21 @@ export const updateTransferTransaction = async (
   ownerId: string,
   dto: TransactionTransferDTO,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-  const [accountExpense, accountIncome] = await Promise.all([
-    ensureAccountAllowed(dto.accountExpenseId, ownerId),
-    ensureAccountAllowed(dto.accountIncomeId, ownerId),
+  const [accountExpenseId, accountIncomeId, paymentMethodId] = await Promise.all([
+    resolveAccountId(dto.accountExpenseId, ownerId),
+    resolveAccountId(dto.accountIncomeId, ownerId),
+    resolvePaymentMethodId(dto.paymentMethodId, ownerId),
   ]);
-  await ensurePaymentMethodAllowed(dto.paymentMethodId, ownerId);
   return updateTransactionPair(transactionId, ownerId, 'myAccount', (objectIds) =>
-    prepareTransferProps(dto, objectIds, {
-      accountExpenseName: accountExpense.name,
-      accountIncomeName: accountIncome.name,
-    }),
+    prepareTransferProps(
+      {
+        ...dto,
+        accountExpenseId,
+        accountIncomeId,
+        paymentMethodId,
+      },
+      objectIds,
+    ),
   );
 };
 
@@ -71,9 +65,15 @@ export const updateExchangeTransaction = async (
   ownerId: string,
   dto: TransactionExchangeDTO,
 ): Promise<[TransactionResponseDTO, TransactionResponseDTO]> => {
-  await ensureAccountAllowed(dto.accountId, ownerId);
-  await ensurePaymentMethodAllowed(dto.paymentMethodId, ownerId);
+  const [accountExpenseId, accountIncomeId, paymentMethodId] = await Promise.all([
+    resolveAccountId(dto.accountExpenseId, ownerId),
+    resolveAccountId(dto.accountIncomeId, ownerId),
+    resolvePaymentMethodId(dto.paymentMethodId, ownerId),
+  ]);
   return updateTransactionPair(transactionId, ownerId, 'exchange', (objectIds) =>
-    prepareExchangeProps(dto, objectIds),
+    prepareExchangeProps(
+      { ...dto, accountExpenseId, accountIncomeId, paymentMethodId },
+      objectIds,
+    ),
   );
 };

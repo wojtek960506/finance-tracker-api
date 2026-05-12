@@ -39,11 +39,11 @@ import { TransactionTransferDTO } from '@transaction/schema';
 export const getTransferTransactionDTO = () =>
   ({
     date: DATE_OBJ,
+    description: DESCRPTION,
     amount: AMOUNT_EXPENSE,
     currency: CURRENCY_EXPENSE,
     accountIncomeId: ACCOUNT_INCOME_ID_STR,
     accountExpenseId: ACCOUNT_EXPENSE_ID_STR,
-    additionalDescription: DESCRPTION,
     paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   }) as TransactionTransferDTO;
 
@@ -62,7 +62,7 @@ export function getTransferTransactionProps(isCreate?: true) {
     currency: CURRENCY_EXPENSE,
     paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
     categoryId: TRANSFER_CATEGORY_ID_STR,
-    description: `${ACCOUNT_EXPENSE_NAME} --> ${ACCOUNT_INCOME_NAME} (${DESCRPTION})`,
+    description: DESCRPTION,
   };
 
   const commonExpenseProps = {

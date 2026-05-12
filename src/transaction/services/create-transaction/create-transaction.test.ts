@@ -4,6 +4,7 @@ import * as namedResourceDb from '@named-resource/db';
 import * as namedResourceConfig from '@named-resource/kind-config';
 import {
   ACCOUNT_TYPE_USER,
+  getOtherAccountResultSerialized,
   getSystemExpenseAccountResultSerialized,
   getSystemIncomeAccountResultSerialized,
 } from '@testing/factories/account';
@@ -13,12 +14,16 @@ import {
   EXCHANGE_CATEGORY_NAME,
   FOOD_CATEGORY_ID_STR,
   getExchangeCategoryResultJSON,
+  getOtherCategoryResultSerialized,
   getTransferCategoryResultJSON,
   getUserCategoryResultSerialized,
   TRANSFER_CATEGORY_NAME,
 } from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
-import { getBankTransferPaymentMethodResultJSON } from '@testing/factories/payment-method';
+import {
+  getBankTransferPaymentMethodResultSerialized,
+  getOtherPaymentMethodResultSerialized,
+} from '@testing/factories/payment-method';
 import {
   EXCHANGE_TXN_EXPENSE_SRC_IDX,
   EXCHANGE_TXN_INCOME_SRC_IDX,
@@ -60,9 +65,12 @@ describe('create transaction', () => {
   const standardDTO = getStandardTransactionDTO();
   const exchangeDTO = getExchangeTransactionDTO();
   const transferDTO = getTransferTransactionDTO();
-  const paymentMethod = getBankTransferPaymentMethodResultJSON();
+  const paymentMethod = getBankTransferPaymentMethodResultSerialized();
   const accountExpense = getSystemExpenseAccountResultSerialized();
   const accountIncome = getSystemIncomeAccountResultSerialized();
+  const otherCategory = getOtherCategoryResultSerialized();
+  const otherPaymentMethod = getOtherPaymentMethodResultSerialized();
+  const otherAccount = getOtherAccountResultSerialized();
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -103,11 +111,75 @@ describe('create transaction', () => {
     expect(result).toEqual(transaction);
   });
 
+  it('maps omitted standard resource ids to Other system resources', async () => {
+    const transaction = getStandardTransactionResultSerialized();
+    const dto = {
+      ...standardDTO,
+      categoryId: undefined,
+      paymentMethodId: null,
+      accountId: undefined,
+    };
+
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName')
+      .mockResolvedValueOnce(otherCategory as any)
+      .mockResolvedValueOnce(otherPaymentMethod as any)
+      .mockResolvedValueOnce(otherAccount as any);
+    vi.spyOn(dbTransactions, 'persistTransaction').mockResolvedValue(transaction as any);
+    (getNextSourceIndex as Mock).mockResolvedValue(STANDARD_TXN_SRC_IDX);
+
+    await createStandardTransaction(dto, USER_ID_STR);
+
+    expect(namedResourceDb.findNamedResourceByName).toHaveBeenNthCalledWith(
+      1,
+      'category',
+      'otherCategory',
+    );
+    expect(namedResourceDb.findNamedResourceByName).toHaveBeenNthCalledWith(
+      2,
+      'paymentMethod',
+      'otherPaymentMethod',
+    );
+    expect(namedResourceDb.findNamedResourceByName).toHaveBeenNthCalledWith(
+      3,
+      'account',
+      'otherAccount',
+    );
+    expect(dbTransactions.persistTransaction).toHaveBeenCalledWith({
+      ...dto,
+      categoryId: otherCategory.id,
+      paymentMethodId: otherPaymentMethod.id,
+      accountId: otherAccount.id,
+      ownerId: USER_ID_STR,
+      sourceIndex: STANDARD_TXN_SRC_IDX,
+    });
+  });
+
+  it('allows explicit Other category for standard transaction', async () => {
+    const transaction = getStandardTransactionResultSerialized();
+    const dto = { ...standardDTO, categoryId: otherCategory.id };
+
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(otherCategory as any)
+      .mockResolvedValueOnce(paymentMethod as any)
+      .mockResolvedValueOnce(accountExpense as any);
+    vi.spyOn(dbTransactions, 'persistTransaction').mockResolvedValue(transaction as any);
+    (getNextSourceIndex as Mock).mockResolvedValue(STANDARD_TXN_SRC_IDX);
+
+    await createStandardTransaction(dto, USER_ID_STR);
+
+    expect(dbTransactions.persistTransaction).toHaveBeenCalledWith({
+      ...dto,
+      ownerId: USER_ID_STR,
+      sourceIndex: STANDARD_TXN_SRC_IDX,
+    });
+  });
+
   it('creates exchange transaction pair', async () => {
     const transactionPair = getExchangeTransactionResultSerialized();
 
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
       exchangeCategory as any,
@@ -134,6 +206,7 @@ describe('create transaction', () => {
 
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
       categoryModel as any,
@@ -186,6 +259,7 @@ describe('create transaction', () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById').mockResolvedValueOnce({
       ...foodCategory,
       type: CATEGORY_TYPE_SYSTEM,
+      name: EXCHANGE_CATEGORY_NAME,
     } as any);
 
     await expect(createStandardTransaction(standardDTO, USER_ID_STR)).rejects.toThrow(
@@ -227,6 +301,7 @@ describe('create transaction', () => {
   it('throws when pair transaction resolves non-system category', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
       ...exchangeCategory,
@@ -241,6 +316,7 @@ describe('create transaction', () => {
   it('throws when pair transaction system category has owner', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
       ...exchangeCategory,
@@ -255,6 +331,7 @@ describe('create transaction', () => {
   it('throws when pair transaction category is missing', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(null);
 

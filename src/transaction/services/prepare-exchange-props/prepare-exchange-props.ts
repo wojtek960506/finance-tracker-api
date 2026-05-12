@@ -28,22 +28,22 @@ export function prepareExchangeProps(
   objectIds: PrepareTransactionPropsObjectIds,
   additionalProps?: PrepareTransactionPropsContext,
 ) {
-  const { description, currencies, exchangeRate } = prepareExchangeSpecificProps(dto);
+  const { currencies, exchangeRate } = prepareExchangeSpecificProps(dto);
   const { categoryId } = objectIds;
 
   // TODO - probably paymentMethodId has to be placed in 'objectIds`
   const commonTransactionProps = {
     categoryId,
     date: dto.date,
-    accountId: dto.accountId,
     paymentMethodId: dto.paymentMethodId,
-    description,
+    description: dto.description,
     currencies,
     exchangeRate,
   };
 
   const commonExpenseTransactionProps = {
     ...commonTransactionProps,
+    accountId: dto.accountExpenseId,
     transactionType: 'expense',
     amount: dto.amountExpense,
     currency: dto.currencyExpense,
@@ -51,6 +51,7 @@ export function prepareExchangeProps(
 
   const commonIncomeTransactionProps = {
     ...commonTransactionProps,
+    accountId: dto.accountIncomeId,
     transactionType: 'income',
     amount: dto.amountIncome,
     currency: dto.currencyIncome,
