@@ -37,7 +37,8 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
   amountIncome: z.number().positive('Amount of income in exchange must be positive'),
   currencyExpense: CurrencyCodeSchema,
   currencyIncome: CurrencyCodeSchema,
-  accountId: OptionalObjectIdSchema,
+  accountExpenseId: OptionalObjectIdSchema,
+  accountIncomeId: OptionalObjectIdSchema,
   paymentMethodId: OptionalObjectIdSchema,
 });
 

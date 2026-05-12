@@ -147,6 +147,7 @@ describe('update transaction', () => {
   it('updates exchange transaction pair', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
       exchangeCategory as any,
@@ -172,6 +173,7 @@ describe('update transaction', () => {
 
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
       categoryModel as any,
@@ -248,6 +250,7 @@ describe('update transaction', () => {
   it('throws when updating pair transaction with non-system category', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
       ...exchangeCategory,
@@ -262,6 +265,7 @@ describe('update transaction', () => {
   it('throws when updating pair transaction system category has owner', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
       ...exchangeCategory,
@@ -276,6 +280,7 @@ describe('update transaction', () => {
   it('throws when updating pair transaction category is missing', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(null);
 

@@ -179,6 +179,7 @@ describe('create transaction', () => {
 
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
       exchangeCategory as any,
@@ -205,6 +206,7 @@ describe('create transaction', () => {
 
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
       categoryModel as any,
@@ -299,6 +301,7 @@ describe('create transaction', () => {
   it('throws when pair transaction resolves non-system category', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
       ...exchangeCategory,
@@ -313,6 +316,7 @@ describe('create transaction', () => {
   it('throws when pair transaction system category has owner', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue({
       ...exchangeCategory,
@@ -327,6 +331,7 @@ describe('create transaction', () => {
   it('throws when pair transaction category is missing', async () => {
     vi.spyOn(namedResourceDb, 'findNamedResourceById')
       .mockResolvedValueOnce(accountExpense as any)
+      .mockResolvedValueOnce(accountIncome as any)
       .mockResolvedValueOnce(paymentMethod as any);
     vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(null);
 
