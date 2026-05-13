@@ -83,9 +83,9 @@ describe('validation', () => {
   it('parses multi-value transaction filters in TransactionFiltersQuerySchema', async () => {
     const req = {
       query: {
-        categoryId: `${FOOD_CATEGORY_ID_STR},${EXCHANGE_CATEGORY_ID_STR}`,
-        paymentMethodId: `${BANK_TRANSFER_PAYMENT_METHOD_ID_STR},${CASH_PAYMENT_METHOD_ID_STR}`,
-        accountId: `${ACCOUNT_EXPENSE_ID_STR},${ACCOUNT_INCOME_ID_STR}`,
+        categoryIds: `${FOOD_CATEGORY_ID_STR},${EXCHANGE_CATEGORY_ID_STR}`,
+        paymentMethodIds: `${BANK_TRANSFER_PAYMENT_METHOD_ID_STR},${CASH_PAYMENT_METHOD_ID_STR}`,
+        accountIds: `${ACCOUNT_EXPENSE_ID_STR},${ACCOUNT_INCOME_ID_STR}`,
         excludePaymentMethodIds: CASH_PAYMENT_METHOD_ID_STR,
         excludeAccountIds: ACCOUNT_INCOME_ID_STR,
       },
@@ -95,9 +95,9 @@ describe('validation', () => {
     await validateFunc(req as any, {} as any);
 
     expect(req.query).toEqual({
-      categoryId: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
-      paymentMethodId: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
-      accountId: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
+      categoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
+      accountIds: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
       excludePaymentMethodIds: [CASH_PAYMENT_METHOD_ID_STR],
       excludeAccountIds: [ACCOUNT_INCOME_ID_STR],
     });

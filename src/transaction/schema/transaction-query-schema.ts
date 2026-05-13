@@ -13,9 +13,9 @@ const parseObjectIdList = (fieldName: string) =>
     );
 
 const TransactionCommonQuerySchema = z.object({
-  categoryId: parseObjectIdList('categoryId').optional(),
-  paymentMethodId: parseObjectIdList('paymentMethodId').optional(),
-  accountId: parseObjectIdList('accountId').optional(),
+  categoryIds: parseObjectIdList('categoryIds').optional(),
+  paymentMethodIds: parseObjectIdList('paymentMethodIds').optional(),
+  accountIds: parseObjectIdList('accountIds').optional(),
   excludeCategoryIds: parseObjectIdList('excludeCategoryIds').optional(),
   excludePaymentMethodIds: parseObjectIdList('excludePaymentMethodIds').optional(),
   excludeAccountIds: parseObjectIdList('excludeAccountIds').optional(),

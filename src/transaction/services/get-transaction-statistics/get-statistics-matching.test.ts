@@ -71,10 +71,10 @@ describe('getStatisticsMatching', () => {
     checkRequiredProps(result, USER_ID_STR, TRANSACTION_TYPE_EXPENSE, CURRENCY_EXPENSE);
   });
 
-  it("throws error when 'category' and 'excludeCategories' provided together", () => {
+  it("throws error when 'categoryIds' and 'excludeCategoryIds' provided together", () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      categoryId: [FOOD_CATEGORY_ID_STR],
+      categoryIds: [FOOD_CATEGORY_ID_STR],
       excludeCategoryIds: [TRANSFER_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
     };
 
@@ -84,7 +84,7 @@ describe('getStatisticsMatching', () => {
   it('category and no excluded categories', () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      categoryId: [FOOD_CATEGORY_ID_STR],
+      categoryIds: [FOOD_CATEGORY_ID_STR],
     };
 
     const result = getStatisticsMatching(query, USER_ID_STR);
@@ -108,8 +108,8 @@ describe('getStatisticsMatching', () => {
   it("has 'accountId' and 'paymentMethodId'", () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      accountId: [ACCOUNT_EXPENSE_ID_STR],
-      paymentMethodId: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+      accountIds: [ACCOUNT_EXPENSE_ID_STR],
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
     };
 
     const result = getStatisticsMatching(query, USER_ID_STR);
@@ -121,9 +121,9 @@ describe('getStatisticsMatching', () => {
   it('supports multi-value include filters', () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      categoryId: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
-      paymentMethodId: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
-      accountId: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
+      categoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
+      accountIds: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
     };
 
     const result = getStatisticsMatching(query, USER_ID_STR);
@@ -157,20 +157,20 @@ describe('getStatisticsMatching', () => {
     expect(result.accountId).toEqual({ $nin: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
   });
 
-  it("throws error when 'paymentMethodId' and 'excludePaymentMethodIds' provided together", () => {
+  it("throws error when 'paymentMethodIds' and 'excludePaymentMethodIds' provided together", () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      paymentMethodId: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
       excludePaymentMethodIds: [CASH_PAYMENT_METHOD_ID_STR],
     };
 
     expect(() => getStatisticsMatching(query, USER_ID_STR)).toThrow(ValidationError);
   });
 
-  it("throws error when 'accountId' and 'excludeAccountIds' provided together", () => {
+  it("throws error when 'accountIds' and 'excludeAccountIds' provided together", () => {
     const query: TransactionStatisticsQuery = {
       ...COMMON_QUERY_PROPS,
-      accountId: [ACCOUNT_EXPENSE_ID_STR],
+      accountIds: [ACCOUNT_EXPENSE_ID_STR],
       excludeAccountIds: [ACCOUNT_INCOME_ID_STR],
     };
 

@@ -19,19 +19,19 @@ export const buildTransactionFilterQuery = (
   ownerId: string,
   deletionState: 'active' | 'trash' | 'any' = 'active',
 ): FilterQuery<ITransaction> => {
-  if (q.categoryId && q.excludeCategoryIds) {
+  if (q.categoryIds && q.excludeCategoryIds) {
     throw new ValidationError(
-      `'categoryId' and 'excludeCategoryIds' cannot be provided together in query`,
+      `'categoryIds' and 'excludeCategoryIds' cannot be provided together in query`,
     );
   }
-  if (q.paymentMethodId && q.excludePaymentMethodIds) {
+  if (q.paymentMethodIds && q.excludePaymentMethodIds) {
     throw new ValidationError(
-      `'paymentMethodId' and 'excludePaymentMethodIds' cannot be provided together in query`,
+      `'paymentMethodIds' and 'excludePaymentMethodIds' cannot be provided together in query`,
     );
   }
-  if (q.accountId && q.excludeAccountIds) {
+  if (q.accountIds && q.excludeAccountIds) {
     throw new ValidationError(
-      `'accountId' and 'excludeAccountIds' cannot be provided together in query`,
+      `'accountIds' and 'excludeAccountIds' cannot be provided together in query`,
     );
   }
 
@@ -39,13 +39,13 @@ export const buildTransactionFilterQuery = (
 
   if (q.transactionType) query.transactionType = q.transactionType;
   if (q.currency) query.currency = q.currency;
-  if (q.paymentMethodId) query.paymentMethodId = getObjectIdMatch(q.paymentMethodId);
+  if (q.paymentMethodIds) query.paymentMethodId = getObjectIdMatch(q.paymentMethodIds);
   if (q.excludePaymentMethodIds)
     query.paymentMethodId = getExcludedObjectIdMatch(q.excludePaymentMethodIds);
-  if (q.accountId) query.accountId = getObjectIdMatch(q.accountId);
+  if (q.accountIds) query.accountId = getObjectIdMatch(q.accountIds);
   if (q.excludeAccountIds) query.accountId = getExcludedObjectIdMatch(q.excludeAccountIds);
 
-  if (q.categoryId) query.categoryId = getObjectIdMatch(q.categoryId);
+  if (q.categoryIds) query.categoryId = getObjectIdMatch(q.categoryIds);
   if (q.excludeCategoryIds) query.categoryId = getExcludedObjectIdMatch(q.excludeCategoryIds);
 
   if (q.minAmount || q.maxAmount) {

@@ -33,9 +33,9 @@ describe('build-transaction-query', () => {
   const basicFilters = {
     transactionType: TRANSACTION_TYPE_EXPENSE,
     currency: CURRENCY_EXPENSE,
-    categoryId: [FOOD_CATEGORY_ID_STR],
-    paymentMethodId: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
-    accountId: [ACCOUNT_EXPENSE_ID_STR],
+    categoryIds: [FOOD_CATEGORY_ID_STR],
+    paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+    accountIds: [ACCOUNT_EXPENSE_ID_STR],
   };
   const advancedFilters = {
     startDate: START_DATE_FILTER,
@@ -103,9 +103,9 @@ describe('build-transaction-query', () => {
   it('build query with multi-value include filters', () => {
     const query = buildTransactionFilterQuery(
       {
-        categoryId: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
-        paymentMethodId: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
-        accountId: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
+        categoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
+        paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
+        accountIds: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
       },
       USER_ID_STR,
     );
@@ -137,25 +137,25 @@ describe('build-transaction-query', () => {
     expect(query.accountId).toEqual({ $nin: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
   });
 
-  it("throws when 'category' and 'excludeCategories' are provided together", () => {
+  it("throws when 'categoryIds' and 'excludeCategoryIds' are provided together", () => {
     const q = {
-      categoryId: [FOOD_CATEGORY_ID_STR],
+      categoryIds: [FOOD_CATEGORY_ID_STR],
       excludeCategoryIds: [FOOD_CATEGORY_ID_STR],
     };
     expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
   });
 
-  it("throws when 'paymentMethodId' and 'excludePaymentMethodIds' are provided together", () => {
+  it("throws when 'paymentMethodIds' and 'excludePaymentMethodIds' are provided together", () => {
     const q = {
-      paymentMethodId: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
       excludePaymentMethodIds: [CASH_PAYMENT_METHOD_ID_STR],
     };
     expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
   });
 
-  it("throws when 'accountId' and 'excludeAccountIds' are provided together", () => {
+  it("throws when 'accountIds' and 'excludeAccountIds' are provided together", () => {
     const q = {
-      accountId: [ACCOUNT_EXPENSE_ID_STR],
+      accountIds: [ACCOUNT_EXPENSE_ID_STR],
       excludeAccountIds: [ACCOUNT_INCOME_ID_STR],
     };
     expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
