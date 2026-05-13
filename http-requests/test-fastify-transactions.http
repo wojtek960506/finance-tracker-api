@@ -38,6 +38,9 @@ Content-Type: application/json
 @sorting = sortBy=date&sortOrder=asc
 @pagination = limit=44&page=1
 @type = transactionType=expense
+@categoryIds = categoryIds=69812ea8e6de6ef869bfba38,6983be0a1f23bdc4ac4b2edc
+@paymentMethodIds = paymentMethodIds=69a7fb11e7e4554a4e559e19,69b0002be7e4554a4e562cff
+@accountIds = accountIds=69b16e8aeb8e59fdad7a2761,69b173a78ef9c23d50217479
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
@@ -69,6 +72,9 @@ Authorization: Bearer {{accessToken}}
 
 # {{PLN}}&{{type}}&{{yearAndMonth}}&
 
+# &{{categoryIds}}
+# &{{paymentMethodIds}}
+# &{{accountIds}}
 # &{{excludeCategoryIds}}
 
 GET {{baseUrl}}/statistics?{{PLN}}&{{type}}
@@ -79,7 +85,7 @@ Authorization: Bearer {{accessToken}}
 #--------------------------------------------------------------------------------------
 
 # &startDate=2024-12-01&endDate=2024-12-31
-# ?categoryId=69a9c24ee2c1284ee32aa406
+# ?categoryIds=69a9c24ee2c1284ee32aa406,6980aef7f9f1739803300ef5
 
 ### GET TOTALS FOR TRANSACTIONS
 GET {{baseUrl}}/totals

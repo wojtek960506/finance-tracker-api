@@ -1,14 +1,23 @@
 import { describe, expect, it } from 'vitest';
 
-import { FOOD_CATEGORY_ID_OBJ, FOOD_CATEGORY_ID_STR } from '@testing/factories/category';
+import {
+  EXCHANGE_CATEGORY_ID_OBJ,
+  EXCHANGE_CATEGORY_ID_STR,
+  FOOD_CATEGORY_ID_OBJ,
+  FOOD_CATEGORY_ID_STR,
+} from '@testing/factories/category';
 import { USER_ID_STR } from '@testing/factories/general';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ,
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  CASH_PAYMENT_METHOD_ID_OBJ,
+  CASH_PAYMENT_METHOD_ID_STR,
 } from '@testing/factories/payment-method';
 import {
   ACCOUNT_EXPENSE_ID_OBJ,
   ACCOUNT_EXPENSE_ID_STR,
+  ACCOUNT_INCOME_ID_OBJ,
+  ACCOUNT_INCOME_ID_STR,
   CURRENCY_EXPENSE,
   END_DATE_FILTER,
   MAX_AMOUNT_FILTER,
@@ -24,9 +33,9 @@ describe('build-transaction-query', () => {
   const basicFilters = {
     transactionType: TRANSACTION_TYPE_EXPENSE,
     currency: CURRENCY_EXPENSE,
-    categoryId: FOOD_CATEGORY_ID_STR,
-    paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
-    accountId: ACCOUNT_EXPENSE_ID_STR,
+    categoryIds: [FOOD_CATEGORY_ID_STR],
+    paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+    accountIds: [ACCOUNT_EXPENSE_ID_STR],
   };
   const advancedFilters = {
     startDate: START_DATE_FILTER,
@@ -91,10 +100,63 @@ describe('build-transaction-query', () => {
     expect(query.amount).toEqual({ $lte: MAX_AMOUNT_FILTER });
   });
 
-  it("throws when 'category' and 'excludeCategories' are provided together", () => {
+  it('build query with multi-value include filters', () => {
+    const query = buildTransactionFilterQuery(
+      {
+        categoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
+        paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
+        accountIds: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
+      },
+      USER_ID_STR,
+    );
+
+    expect(query.categoryId).toEqual({ $in: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ] });
+    expect(query.paymentMethodId).toEqual({
+      $in: [BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ, CASH_PAYMENT_METHOD_ID_OBJ],
+    });
+    expect(query.accountId).toEqual({ $in: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
+  });
+
+  it('build query with multi-value exclude filters', () => {
+    const query = buildTransactionFilterQuery(
+      {
+        excludeCategoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
+        excludePaymentMethodIds: [
+          BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+          CASH_PAYMENT_METHOD_ID_STR,
+        ],
+        excludeAccountIds: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
+      },
+      USER_ID_STR,
+    );
+
+    expect(query.categoryId).toEqual({ $nin: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ] });
+    expect(query.paymentMethodId).toEqual({
+      $nin: [BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ, CASH_PAYMENT_METHOD_ID_OBJ],
+    });
+    expect(query.accountId).toEqual({ $nin: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
+  });
+
+  it("throws when 'categoryIds' and 'excludeCategoryIds' are provided together", () => {
     const q = {
-      categoryId: FOOD_CATEGORY_ID_STR,
+      categoryIds: [FOOD_CATEGORY_ID_STR],
       excludeCategoryIds: [FOOD_CATEGORY_ID_STR],
+    };
+    expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
+  });
+
+  it("throws when 'paymentMethodIds' and 'excludePaymentMethodIds' are provided together", () => {
+    const q = {
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+      excludePaymentMethodIds: [CASH_PAYMENT_METHOD_ID_STR],
+    };
+    expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
+  });
+
+  it("throws when 'accountIds' and 'excludeAccountIds' are provided together", () => {
+    const q = {
+      accountIds: [ACCOUNT_EXPENSE_ID_STR],
+      excludeAccountIds: [ACCOUNT_INCOME_ID_STR],
     };
     expect(() => buildTransactionFilterQuery(q, USER_ID_STR)).toThrow(ValidationError);
   });

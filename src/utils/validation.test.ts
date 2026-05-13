@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
+import {
+  EXCHANGE_CATEGORY_ID_STR,
+  FOOD_CATEGORY_ID_STR,
+} from '@testing/factories/category';
+import { ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR } from '@testing/factories/transaction';
+import {
+  BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+  CASH_PAYMENT_METHOD_ID_STR,
+} from '@testing/factories/payment-method';
 import { getStandardTransactionDTO } from '@testing/factories/transaction';
 import {
   TransactionFiltersQuerySchema,
@@ -69,5 +78,28 @@ describe('validation', () => {
     const validateFunc = validateQuery(TransactionFiltersQuerySchema);
 
     expectValidationError(validateFunc(req as any, {} as any));
+  });
+
+  it('parses multi-value transaction filters in TransactionFiltersQuerySchema', async () => {
+    const req = {
+      query: {
+        categoryIds: `${FOOD_CATEGORY_ID_STR},${EXCHANGE_CATEGORY_ID_STR}`,
+        paymentMethodIds: `${BANK_TRANSFER_PAYMENT_METHOD_ID_STR},${CASH_PAYMENT_METHOD_ID_STR}`,
+        accountIds: `${ACCOUNT_EXPENSE_ID_STR},${ACCOUNT_INCOME_ID_STR}`,
+        excludePaymentMethodIds: CASH_PAYMENT_METHOD_ID_STR,
+        excludeAccountIds: ACCOUNT_INCOME_ID_STR,
+      },
+    };
+    const validateFunc = validateQuery(TransactionFiltersQuerySchema);
+
+    await validateFunc(req as any, {} as any);
+
+    expect(req.query).toEqual({
+      categoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
+      accountIds: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
+      excludePaymentMethodIds: [CASH_PAYMENT_METHOD_ID_STR],
+      excludeAccountIds: [ACCOUNT_INCOME_ID_STR],
+    });
   });
 });

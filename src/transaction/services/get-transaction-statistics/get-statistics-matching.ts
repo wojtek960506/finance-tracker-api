@@ -3,10 +3,30 @@ import { FilterQuery, Types } from 'mongoose';
 import { TransactionStatisticsQuery } from '@transaction/schema';
 import { ValidationError } from '@utils/errors';
 
+const getObjectIdMatch = (ids: string[]) => {
+  const objectIds = ids.map((id) => new Types.ObjectId(id));
+
+  return objectIds.length === 1 ? objectIds[0] : { $in: objectIds };
+};
+
+const getExcludedObjectIdMatch = (ids: string[]) => ({
+  $nin: ids.map((id) => new Types.ObjectId(id)),
+});
+
 export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: string) => {
-  if (q.categoryId && q.excludeCategoryIds) {
+  if (q.categoryIds && q.excludeCategoryIds) {
     throw new ValidationError(
-      `'categoryId' and 'excludeCategoryIds' cannot be provided together in query`,
+      `'categoryIds' and 'excludeCategoryIds' cannot be provided together in query`,
+    );
+  }
+  if (q.paymentMethodIds && q.excludePaymentMethodIds) {
+    throw new ValidationError(
+      `'paymentMethodIds' and 'excludePaymentMethodIds' cannot be provided together in query`,
+    );
+  }
+  if (q.accountIds && q.excludeAccountIds) {
+    throw new ValidationError(
+      `'accountIds' and 'excludeAccountIds' cannot be provided together in query`,
     );
   }
 
@@ -33,13 +53,14 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
   matching.transactionType = q.transactionType;
   matching.currency = q.currency;
 
-  if (q.categoryId) matching.categoryId = new Types.ObjectId(q.categoryId);
+  if (q.categoryIds) matching.categoryId = getObjectIdMatch(q.categoryIds);
   if (q.excludeCategoryIds)
-    matching.categoryId = {
-      $nin: q.excludeCategoryIds.map((id) => new Types.ObjectId(id)),
-    };
-  if (q.paymentMethodId) matching.paymentMethodId = new Types.ObjectId(q.paymentMethodId);
-  if (q.accountId) matching.accountId = new Types.ObjectId(q.accountId);
+    matching.categoryId = getExcludedObjectIdMatch(q.excludeCategoryIds);
+  if (q.paymentMethodIds) matching.paymentMethodId = getObjectIdMatch(q.paymentMethodIds);
+  if (q.excludePaymentMethodIds)
+    matching.paymentMethodId = getExcludedObjectIdMatch(q.excludePaymentMethodIds);
+  if (q.accountIds) matching.accountId = getObjectIdMatch(q.accountIds);
+  if (q.excludeAccountIds) matching.accountId = getExcludedObjectIdMatch(q.excludeAccountIds);
 
   return matching;
 };

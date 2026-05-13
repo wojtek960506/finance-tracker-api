@@ -1,7 +1,7 @@
 {
   "name": "finance-tracker-api",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.2.9",
   "description": "",
   "main": "src/server.ts",
   "packageManager": "pnpm@10.20.0",
