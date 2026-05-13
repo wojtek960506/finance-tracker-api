@@ -3,27 +3,22 @@ import { z } from 'zod/v4';
 import { CurrencyCodeSchema } from '@currency/schema';
 import { OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
 
-const TransactionCommonQuerySchema = z.object({
-  categoryId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `categoryId`')
-    .optional(),
-  paymentMethodId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `paymentMethodId`')
-    .optional(),
-  accountId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `accountId`')
-    .optional(),
-  excludeCategoryIds: z
+const parseObjectIdList = (fieldName: string) =>
+  z
     .string()
     .transform((value) => value.split(','))
     .refine(
       (values) => values.every((v) => OBJECT_ID_REGEX.test(v)),
-      "Some value from `excludeCategoryIds` doesn't have format of ObjectId",
-    )
-    .optional(),
+      `Some value from \`${fieldName}\` doesn't have format of ObjectId`,
+    );
+
+const TransactionCommonQuerySchema = z.object({
+  categoryId: parseObjectIdList('categoryId').optional(),
+  paymentMethodId: parseObjectIdList('paymentMethodId').optional(),
+  accountId: parseObjectIdList('accountId').optional(),
+  excludeCategoryIds: parseObjectIdList('excludeCategoryIds').optional(),
+  excludePaymentMethodIds: parseObjectIdList('excludePaymentMethodIds').optional(),
+  excludeAccountIds: parseObjectIdList('excludeAccountIds').optional(),
 });
 
 export const TransactionFiltersQuerySchema = TransactionCommonQuerySchema.extend({

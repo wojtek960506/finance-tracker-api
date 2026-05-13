@@ -3,10 +3,30 @@ import { FilterQuery, Types } from 'mongoose';
 import { TransactionStatisticsQuery } from '@transaction/schema';
 import { ValidationError } from '@utils/errors';
 
+const getObjectIdMatch = (ids: string[]) => {
+  const objectIds = ids.map((id) => new Types.ObjectId(id));
+
+  return objectIds.length === 1 ? objectIds[0] : { $in: objectIds };
+};
+
+const getExcludedObjectIdMatch = (ids: string[]) => ({
+  $nin: ids.map((id) => new Types.ObjectId(id)),
+});
+
 export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: string) => {
   if (q.categoryId && q.excludeCategoryIds) {
     throw new ValidationError(
       `'categoryId' and 'excludeCategoryIds' cannot be provided together in query`,
+    );
+  }
+  if (q.paymentMethodId && q.excludePaymentMethodIds) {
+    throw new ValidationError(
+      `'paymentMethodId' and 'excludePaymentMethodIds' cannot be provided together in query`,
+    );
+  }
+  if (q.accountId && q.excludeAccountIds) {
+    throw new ValidationError(
+      `'accountId' and 'excludeAccountIds' cannot be provided together in query`,
     );
   }
 
@@ -33,13 +53,14 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
   matching.transactionType = q.transactionType;
   matching.currency = q.currency;
 
-  if (q.categoryId) matching.categoryId = new Types.ObjectId(q.categoryId);
+  if (q.categoryId) matching.categoryId = getObjectIdMatch(q.categoryId);
   if (q.excludeCategoryIds)
-    matching.categoryId = {
-      $nin: q.excludeCategoryIds.map((id) => new Types.ObjectId(id)),
-    };
-  if (q.paymentMethodId) matching.paymentMethodId = new Types.ObjectId(q.paymentMethodId);
-  if (q.accountId) matching.accountId = new Types.ObjectId(q.accountId);
+    matching.categoryId = getExcludedObjectIdMatch(q.excludeCategoryIds);
+  if (q.paymentMethodId) matching.paymentMethodId = getObjectIdMatch(q.paymentMethodId);
+  if (q.excludePaymentMethodIds)
+    matching.paymentMethodId = getExcludedObjectIdMatch(q.excludePaymentMethodIds);
+  if (q.accountId) matching.accountId = getObjectIdMatch(q.accountId);
+  if (q.excludeAccountIds) matching.accountId = getExcludedObjectIdMatch(q.excludeAccountIds);
 
   return matching;
 };
