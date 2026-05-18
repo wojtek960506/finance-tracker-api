@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 
 import { buildApp } from '@app/app';
+import type { EnvType } from '@app/config';
 
 import {
   clearIntegrationMongo,
@@ -21,8 +22,7 @@ export const INTEGRATION_TEST_ENV = {
   jwtAccessExpiresIn: '15m',
   jwtRefreshExpiresDays: 30,
   emailVerificationExpiresHours: 24,
-  resendFromName: 'Finance Tracker',
-};
+} satisfies EnvType;
 
 export const createIntegrationApp = async (): Promise<FastifyInstance> => {
   setIntegrationTestEnv();

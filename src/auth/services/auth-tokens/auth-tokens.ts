@@ -5,8 +5,8 @@ import { getEnv } from '@app/config';
 
 // create JWT access token
 export function createAccessToken(payload: object) {
-  const { jwtAccessSecret } = getEnv();
-  return jwt.sign(payload, jwtAccessSecret, { expiresIn: '30m' });
+  const { jwtAccessSecret, jwtAccessExpiresIn } = getEnv();
+  return jwt.sign(payload, jwtAccessSecret, { expiresIn: jwtAccessExpiresIn});
 }
 
 // create secure random refresh token (opaque) and return both token and its hashed form

@@ -1,4 +1,7 @@
+import type { SignOptions } from 'jsonwebtoken';
 import { z } from 'zod/v4';
+
+type JwtExpiresIn = NonNullable<SignOptions['expiresIn']>;
 
 const requiredEnvString = (message: string) =>
   z.preprocess((value) => (value == null ? '' : value), z.string().min(1, message));
@@ -79,7 +82,7 @@ export type EnvType = {
   corsOriginPatterns: RegExp[];
   cookieSecret: string;
   jwtAccessSecret: string;
-  jwtAccessExpiresIn: string;
+  jwtAccessExpiresIn: JwtExpiresIn;
   jwtRefreshExpiresDays: number;
   emailVerificationExpiresHours: number;
   resendApiKey?: string;
@@ -98,7 +101,7 @@ export const getEnv = (): EnvType => {
     corsOriginPatterns: parsed.CORS_ORIGIN_PATTERNS,
     cookieSecret: parsed.COOKIE_SECRET,
     jwtAccessSecret: parsed.JWT_ACCESS_SECRET,
-    jwtAccessExpiresIn: parsed.JWT_ACCESS_EXPIRES_IN,
+    jwtAccessExpiresIn: parsed.JWT_ACCESS_EXPIRES_IN as JwtExpiresIn,
     jwtRefreshExpiresDays: parsed.JWT_REFRESH_EXPIRES_DAYS,
     emailVerificationExpiresHours: parsed.EMAIL_VERIFICATION_EXPIRES_HOURS,
     resendApiKey: parsed.RESEND_API_KEY,
