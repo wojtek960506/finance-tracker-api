@@ -26,7 +26,7 @@ describe('getTransactionTotals', () => {
     (findTransactionTotalsOverall as Mock).mockResolvedValue(TOTALS_OVERALL);
 
     const result = await getTransactionTotals(
-      { categoryId: FOOD_CATEGORY_ID_STR },
+      { categoryIds: [FOOD_CATEGORY_ID_STR] },
       randomObjectIdString(),
     );
 

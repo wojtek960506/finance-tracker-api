@@ -16,6 +16,8 @@ import {
   TestTransactionsCreateResponse,
   TestTransactionsCreateResponseSchema,
   TestTransactionsCreateSchema,
+  TransactionBulkCreateDTO,
+  TransactionBulkCreateSchema,
   TransactionDetailsResponseDTO,
   TransactionDetailsResponseSchema,
   TransactionExchangeDTO,
@@ -46,6 +48,7 @@ import { validateBody } from '@utils/validation';
 import {
   createTestTransactionsHandler,
   createTransactionHandler,
+  createTransactionsHandler,
   deleteTransactionHandler,
   deleteTransactionsHandler,
   deleteTrashedTransactionHandler,
@@ -338,6 +341,25 @@ export async function transactionRoutes(
       },
     },
     createTransactionHandler,
+  );
+
+  app.post<{ Body: TransactionBulkCreateDTO; Reply: TransactionsResponseDTO }>(
+    '/bulk',
+    {
+      preHandler: [validateBody(TransactionBulkCreateSchema), authorizeAccessToken()],
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Create transactions in bulk',
+        description:
+          'Create multiple transactions at once. Standard transactions create one entry, ' +
+          'exchange and transfer transactions create linked pairs.',
+        body: TransactionBulkCreateSchema,
+        response: {
+          201: TransactionsResponseSchema,
+        },
+      },
+    },
+    createTransactionsHandler,
   );
 
   app.post<{

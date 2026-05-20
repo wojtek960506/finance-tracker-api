@@ -1,5 +1,6 @@
 export * from './create-test-transactions-handler';
 export * from './create-transaction-handler';
+export * from './create-transactions-handler';
 export * from './delete-transaction-handler';
 export * from './delete-transactions-handler';
 export * from './delete-trashed-transaction-handler';
