@@ -24,6 +24,7 @@ import {
   verifyEmailHandler,
 } from './handlers';
 
+// TODO add support for refreshing token independently on multiple devices
 export async function authRoutes(app: FastifyInstance) {
   app.post<{ Body: LoginDTO; Reply: TokenDTO }>(
     '/login',

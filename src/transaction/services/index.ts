@@ -3,6 +3,7 @@ export * from './check-transaction-dependencies';
 export * from './create-random-transactions';
 export * from './create-test-transactions';
 export * from './create-transaction';
+export * from './create-transactions';
 export * from './delete-transaction';
 export * from './delete-transactions';
 export * from './delete-trashed-transaction';

@@ -54,6 +54,29 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
   paymentMethodId: OptionalObjectIdSchema,
 });
 
+export const TransactionCreateBulkItemSchema = z.unknown().transform((value, ctx) => {
+  const schema =
+    value && typeof value === 'object' && value !== null && 'currencyExpense' in value
+      ? TransactionExchangeSchema
+      : value && typeof value === 'object' && value !== null && 'transactionType' in value
+        ? TransactionStandardSchema
+        : TransactionTransferSchema;
+
+  const parsed = schema.safeParse(value);
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) {
+      ctx.addIssue({ ...issue });
+    }
+    return z.NEVER;
+  }
+
+  return parsed.data;
+});
+
+export const TransactionBulkCreateSchema = z.object({
+  transactions: z.array(TransactionCreateBulkItemSchema).min(1),
+});
+
 export const TransactionResponseSchema = TransactionStandardSchema.omit({
   categoryId: true,
   paymentMethodId: true,
@@ -119,6 +142,8 @@ export const TestTransactionsCreateResponseSchema = z.object({
 export type TransactionStandardDTO = z.infer<typeof TransactionStandardSchema>;
 export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
+export type TransactionCreateBulkItemDTO = z.infer<typeof TransactionCreateBulkItemSchema>;
+export type TransactionBulkCreateDTO = z.infer<typeof TransactionBulkCreateSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionDetailsResponseDTO = z.infer<
   typeof TransactionDetailsResponseSchema
@@ -142,6 +167,10 @@ export type TestTransactionsCreateResponse = z.infer<
 z.globalRegistry.add(TransactionStandardSchema, { id: 'TransactionStandard' });
 z.globalRegistry.add(TransactionExchangeSchema, { id: 'TransactionExchange' });
 z.globalRegistry.add(TransactionTransferSchema, { id: 'TransactionTransfer' });
+z.globalRegistry.add(TransactionCreateBulkItemSchema, {
+  id: 'TransactionCreateBulkItem',
+});
+z.globalRegistry.add(TransactionBulkCreateSchema, { id: 'TransactionBulkCreate' });
 z.globalRegistry.add(TransactionResponseSchema, { id: 'TransactionResponse' });
 z.globalRegistry.add(TransactionDetailsResponseSchema, {
   id: 'TransactionDetailsResponse',
