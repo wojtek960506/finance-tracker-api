@@ -20,9 +20,10 @@ import { resolveSystemCategoryId } from './resolve-system-category-id';
 import { PreparedTransactionCreateProps, TransactionKindObjectIds } from './types';
 
 export const createTransactions = async (
-  dtoList: TransactionBulkCreateDTO,
+  dtoTransactions: TransactionBulkCreateDTO,
   ownerId: string,
 ): Promise<TransactionResponseDTO[]> => {
+  const dtoList = dtoTransactions.transactions;
   const totalTransactions = dtoList.reduce(
     (sum, dto) => sum + countPreparedTransactions(dto),
     0,

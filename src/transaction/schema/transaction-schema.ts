@@ -73,7 +73,9 @@ export const TransactionCreateBulkItemSchema = z.unknown().transform((value, ctx
   return parsed.data;
 });
 
-export const TransactionBulkCreateSchema = z.array(TransactionCreateBulkItemSchema).min(1);
+export const TransactionBulkCreateSchema = z.object({
+  transactions: z.array(TransactionCreateBulkItemSchema).min(1),
+});
 
 export const TransactionResponseSchema = TransactionStandardSchema.omit({
   categoryId: true,

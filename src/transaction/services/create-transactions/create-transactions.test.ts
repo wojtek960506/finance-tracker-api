@@ -76,7 +76,7 @@ describe('create transactions in bulk', () => {
     vi.spyOn(transactionDb, 'persistTransactions').mockResolvedValue([] as any);
     (getNextSourceIndices as Mock).mockResolvedValue([1, 2, 3, 4, 5]);
 
-    await createTransactions([standardDTO, exchangeDTO, transferDTO], USER_ID_STR);
+    await createTransactions({transactions: [standardDTO, exchangeDTO, transferDTO]}, USER_ID_STR);
 
     expect(getNextSourceIndices).toHaveBeenCalledOnce();
     expect(getNextSourceIndices).toHaveBeenCalledWith(USER_ID_STR, 5);
