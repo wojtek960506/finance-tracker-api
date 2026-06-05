@@ -4,16 +4,21 @@ import {
   EXCHANGE_CATEGORY_ID_STR,
   FOOD_CATEGORY_ID_STR,
 } from '@testing/factories/category';
-import { ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR } from '@testing/factories/transaction';
 import {
   BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
   CASH_PAYMENT_METHOD_ID_STR,
 } from '@testing/factories/payment-method';
-import { getStandardTransactionDTO } from '@testing/factories/transaction';
+import {
+  ACCOUNT_EXPENSE_ID_STR,
+  ACCOUNT_INCOME_ID_STR,
+  getStandardTransactionDTO,
+  getTransferTransactionDTO,
+} from '@testing/factories/transaction';
 import {
   TransactionFiltersQuerySchema,
   TransactionStandardSchema,
   TransactionStatisticsQuerySchema,
+  TransactionTransferSchema,
 } from '@transaction/schema';
 
 import { ValidationError } from './errors';
@@ -29,12 +34,27 @@ const expectValidationError = async (promise: Promise<unknown>) => {
 
 describe('validation', () => {
   const validBody = getStandardTransactionDTO();
+  const zeroAmountBody = {
+    ...validBody,
+    amount: 0,
+  };
+  const validTransferBody = {
+    ...getTransferTransactionDTO(),
+    accountIncomeId: ACCOUNT_EXPENSE_ID_STR,
+  };
+  const zeroTransferBody = {
+    ...validTransferBody,
+    amount: 0,
+  };
   const validQuery = { transactionType: 'expense', currency: 'PLN' };
   const { date, ...notValidBody } = validBody;
   const notValidQuery = { transactionType: 'expense' };
 
   it.each([
     ['validateBody', validateBody, 'body', validBody, TransactionStandardSchema],
+    ['validateBody', validateBody, 'body', zeroAmountBody, TransactionStandardSchema],
+    ['validateBody', validateBody, 'body', validTransferBody, TransactionTransferSchema],
+    ['validateBody', validateBody, 'body', zeroTransferBody, TransactionTransferSchema],
     [
       'validateQuery',
       validateQuery,
