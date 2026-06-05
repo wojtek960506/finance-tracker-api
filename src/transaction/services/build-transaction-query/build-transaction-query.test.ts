@@ -104,17 +104,24 @@ describe('build-transaction-query', () => {
     const query = buildTransactionFilterQuery(
       {
         categoryIds: [FOOD_CATEGORY_ID_STR, EXCHANGE_CATEGORY_ID_STR],
-        paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR, CASH_PAYMENT_METHOD_ID_STR],
+        paymentMethodIds: [
+          BANK_TRANSFER_PAYMENT_METHOD_ID_STR,
+          CASH_PAYMENT_METHOD_ID_STR,
+        ],
         accountIds: [ACCOUNT_EXPENSE_ID_STR, ACCOUNT_INCOME_ID_STR],
       },
       USER_ID_STR,
     );
 
-    expect(query.categoryId).toEqual({ $in: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ] });
+    expect(query.categoryId).toEqual({
+      $in: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ],
+    });
     expect(query.paymentMethodId).toEqual({
       $in: [BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ, CASH_PAYMENT_METHOD_ID_OBJ],
     });
-    expect(query.accountId).toEqual({ $in: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
+    expect(query.accountId).toEqual({
+      $in: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ],
+    });
   });
 
   it('build query with multi-value exclude filters', () => {
@@ -130,11 +137,15 @@ describe('build-transaction-query', () => {
       USER_ID_STR,
     );
 
-    expect(query.categoryId).toEqual({ $nin: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ] });
+    expect(query.categoryId).toEqual({
+      $nin: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ],
+    });
     expect(query.paymentMethodId).toEqual({
       $nin: [BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ, CASH_PAYMENT_METHOD_ID_OBJ],
     });
-    expect(query.accountId).toEqual({ $nin: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
+    expect(query.accountId).toEqual({
+      $nin: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ],
+    });
   });
 
   it("throws when 'categoryIds' and 'excludeCategoryIds' are provided together", () => {

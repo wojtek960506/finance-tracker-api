@@ -142,7 +142,9 @@ export const TestTransactionsCreateResponseSchema = z.object({
 export type TransactionStandardDTO = z.infer<typeof TransactionStandardSchema>;
 export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
-export type TransactionCreateBulkItemDTO = z.infer<typeof TransactionCreateBulkItemSchema>;
+export type TransactionCreateBulkItemDTO = z.infer<
+  typeof TransactionCreateBulkItemSchema
+>;
 export type TransactionBulkCreateDTO = z.infer<typeof TransactionBulkCreateSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionDetailsResponseDTO = z.infer<

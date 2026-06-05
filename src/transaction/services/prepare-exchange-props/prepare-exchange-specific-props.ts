@@ -6,12 +6,7 @@ type PropsType = Pick<
 >;
 
 export const prepareExchangeSpecificProps = (props: PropsType) => {
-  const {
-    amountExpense,
-    amountIncome,
-    currencyExpense,
-    currencyIncome,
-  } = props;
+  const { amountExpense, amountIncome, currencyExpense, currencyIncome } = props;
 
   let currencies;
   let exchangeRate;

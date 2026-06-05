@@ -14,7 +14,8 @@ const findRequiredSystemResource = async (
   systemName: string,
 ) => {
   const resource = await findNamedResourceByName(kind, systemName);
-  if (!resource && kind === 'category') throw new CategoryNotFoundError(undefined, systemName);
+  if (!resource && kind === 'category')
+    throw new CategoryNotFoundError(undefined, systemName);
   if (!resource) throw new Error(`Missing required system ${kind}: '${systemName}'`);
   return resource;
 };
@@ -29,7 +30,8 @@ export const resolveCategoryId = async (
 
   if (category.type === 'system' && category.name !== OTHER_CATEGORY_NAME)
     throw new SystemCategoryNotAllowed(category.id);
-  if (category.type !== 'system') checkOwner(ownerId, category.id, category.ownerId!, 'category');
+  if (category.type !== 'system')
+    checkOwner(ownerId, category.id, category.ownerId!, 'category');
   return category.id;
 };
 
@@ -45,10 +47,7 @@ export const resolvePaymentMethodId = async (
   return paymentMethod.id;
 };
 
-export const resolveAccountId = async (
-  accountId: OptionalObjectId,
-  ownerId: string,
-) => {
+export const resolveAccountId = async (accountId: OptionalObjectId, ownerId: string) => {
   const account = accountId
     ? await findNamedResourceById('account', accountId)
     : await findRequiredSystemResource('account', OTHER_ACCOUNT_NAME);

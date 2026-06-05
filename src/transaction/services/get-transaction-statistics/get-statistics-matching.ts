@@ -60,7 +60,8 @@ export const getStatisticsMatching = (q: TransactionStatisticsQuery, userId: str
   if (q.excludePaymentMethodIds)
     matching.paymentMethodId = getExcludedObjectIdMatch(q.excludePaymentMethodIds);
   if (q.accountIds) matching.accountId = getObjectIdMatch(q.accountIds);
-  if (q.excludeAccountIds) matching.accountId = getExcludedObjectIdMatch(q.excludeAccountIds);
+  if (q.excludeAccountIds)
+    matching.accountId = getExcludedObjectIdMatch(q.excludeAccountIds);
 
   return matching;
 };

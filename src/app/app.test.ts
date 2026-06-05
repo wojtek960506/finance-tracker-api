@@ -153,7 +153,9 @@ describe('app bootstrap', () => {
 
     await buildApp();
 
-    const registeredPlugins = appMock.register.mock.calls.map(([plugin]: [unknown]) => plugin);
+    const registeredPlugins = appMock.register.mock.calls.map(
+      ([plugin]: [unknown]) => plugin,
+    );
     const corsIndex = registeredPlugins.indexOf(corsPluginMock);
     const firstRouteIndex = registeredPlugins.indexOf(mainRoutesMock);
 
