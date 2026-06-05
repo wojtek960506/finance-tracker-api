@@ -239,7 +239,7 @@ describe('transaction routes', async () => {
   });
 
   it("should create transactions in bulk - 'POST /bulk'", async () => {
-    const body = [standardDTO, exchangeDTO, transferDTO];
+    const body = { transactions: [standardDTO, exchangeDTO, transferDTO] };
     const mockedResult = [standardResponse, ...exchangeResponse, ...transferResponse];
 
     vi.spyOn(serviceT, 'createTransactions').mockResolvedValue(mockedResult as any);

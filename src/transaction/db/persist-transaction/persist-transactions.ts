@@ -47,15 +47,16 @@ const persistTransactionsCore = async (
     );
 
   const sourceIndexToIdMap = Object.fromEntries(
-    transactions.map((transaction, index) => [transaction.sourceIndex, insertedIds[index]]),
+    transactions.map((transaction, index) => [
+      transaction.sourceIndex,
+      insertedIds[index],
+    ]),
   );
 
-  const refIdUpdates = transactions
-    .filter(hasSourceRefIndex)
-    .map((transaction) => ({
-      id: sourceIndexToIdMap[transaction.sourceIndex],
-      refId: sourceIndexToIdMap[transaction.sourceRefIndex],
-    }));
+  const refIdUpdates = transactions.filter(hasSourceRefIndex).map((transaction) => ({
+    id: sourceIndexToIdMap[transaction.sourceIndex],
+    refId: sourceIndexToIdMap[transaction.sourceRefIndex],
+  }));
 
   if (refIdUpdates.length > 0) {
     const updateResult = await TransactionModel.bulkWrite(
@@ -101,6 +102,5 @@ const persistTransactionsCore = async (
   });
 };
 
-export const persistTransactions = async (
-  transactions: TransactionCreateProps[],
-) => withSession(persistTransactionsCore, transactions);
+export const persistTransactions = async (transactions: TransactionCreateProps[]) =>
+  withSession(persistTransactionsCore, transactions);

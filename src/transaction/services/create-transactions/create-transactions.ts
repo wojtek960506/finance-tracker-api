@@ -1,8 +1,5 @@
 import { persistTransactions } from '@transaction/db';
-import {
-  TransactionBulkCreateDTO,
-  TransactionResponseDTO,
-} from '@transaction/schema';
+import { TransactionBulkCreateDTO, TransactionResponseDTO } from '@transaction/schema';
 import { getNextSourceIndices } from '@transaction/services/get-next-source-index';
 
 import {

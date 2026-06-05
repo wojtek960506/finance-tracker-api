@@ -20,7 +20,7 @@ const TransactionCommonSchema = z.object({
  * Used for POST /transactions/standard and PUT /transactions/standard
  */
 export const TransactionStandardSchema = TransactionCommonSchema.extend({
-  amount: z.number().positive('Amount must be positive'),
+  amount: z.number().min(0, 'Amount must be non-negative'),
   currency: CurrencyCodeSchema,
   categoryId: OptionalObjectIdSchema,
   paymentMethodId: OptionalObjectIdSchema,
@@ -33,8 +33,8 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/exchange and PUT /transactions/exchange
  */
 export const TransactionExchangeSchema = TransactionCommonSchema.extend({
-  amountExpense: z.number().positive('Amount of expense in exchange must be positive'),
-  amountIncome: z.number().positive('Amount of income in exchange must be positive'),
+  amountExpense: z.number().min(0, 'Amount of expense in exchange must be non-negative'),
+  amountIncome: z.number().min(0, 'Amount of income in exchange must be non-negative'),
   currencyExpense: CurrencyCodeSchema,
   currencyIncome: CurrencyCodeSchema,
   accountExpenseId: OptionalObjectIdSchema,
@@ -47,7 +47,7 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/transfer and PUT /transactions/transfer
  */
 export const TransactionTransferSchema = TransactionCommonSchema.extend({
-  amount: z.number().positive('Amount must be positive'),
+  amount: z.number().min(0, 'Amount must be non-negative'),
   currency: CurrencyCodeSchema,
   accountExpenseId: OptionalObjectIdSchema,
   accountIncomeId: OptionalObjectIdSchema,
@@ -142,7 +142,9 @@ export const TestTransactionsCreateResponseSchema = z.object({
 export type TransactionStandardDTO = z.infer<typeof TransactionStandardSchema>;
 export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
-export type TransactionCreateBulkItemDTO = z.infer<typeof TransactionCreateBulkItemSchema>;
+export type TransactionCreateBulkItemDTO = z.infer<
+  typeof TransactionCreateBulkItemSchema
+>;
 export type TransactionBulkCreateDTO = z.infer<typeof TransactionBulkCreateSchema>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionDetailsResponseDTO = z.infer<

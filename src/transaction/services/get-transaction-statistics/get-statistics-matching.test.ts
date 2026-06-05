@@ -128,11 +128,15 @@ describe('getStatisticsMatching', () => {
 
     const result = getStatisticsMatching(query, USER_ID_STR);
 
-    expect(result.categoryId).toEqual({ $in: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ] });
+    expect(result.categoryId).toEqual({
+      $in: [FOOD_CATEGORY_ID_OBJ, EXCHANGE_CATEGORY_ID_OBJ],
+    });
     expect(result.paymentMethodId).toEqual({
       $in: [BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ, CASH_PAYMENT_METHOD_ID_OBJ],
     });
-    expect(result.accountId).toEqual({ $in: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
+    expect(result.accountId).toEqual({
+      $in: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ],
+    });
   });
 
   it('supports multi-value exclude filters', () => {
@@ -154,7 +158,9 @@ describe('getStatisticsMatching', () => {
     expect(result.paymentMethodId).toEqual({
       $nin: [BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ, CASH_PAYMENT_METHOD_ID_OBJ],
     });
-    expect(result.accountId).toEqual({ $nin: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ] });
+    expect(result.accountId).toEqual({
+      $nin: [ACCOUNT_EXPENSE_ID_OBJ, ACCOUNT_INCOME_ID_OBJ],
+    });
   });
 
   it("throws error when 'paymentMethodIds' and 'excludePaymentMethodIds' provided together", () => {

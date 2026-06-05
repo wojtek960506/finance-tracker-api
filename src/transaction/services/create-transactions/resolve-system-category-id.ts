@@ -17,10 +17,16 @@ export const resolveSystemCategoryId = async (
     'toObject' in categoryDB
       ? getNamedResourceKindConfig('category').serialize(categoryDB)
       : categoryDB;
-  const categoryId = category.id ?? (category as { _id?: { toString(): string } })._id?.toString();
+  const categoryId =
+    category.id ?? (category as { _id?: { toString(): string } })._id?.toString();
 
   if (!categoryId)
-    throw new AppError(500, 'System category is missing id', undefined, 'CATEGORY_ID_MISSING');
+    throw new AppError(
+      500,
+      'System category is missing id',
+      undefined,
+      'CATEGORY_ID_MISSING',
+    );
   if (category.type !== 'system')
     throw new SystemCategoryWrongType(categoryId, systemCategoryName);
   if (category.ownerId) throw new SystemCategoryHasOwner(categoryId);

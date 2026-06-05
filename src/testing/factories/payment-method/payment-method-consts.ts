@@ -13,7 +13,9 @@ export const BANK_TRANSFER_PAYMENT_METHOD_ID_OBJ = new Types.ObjectId(
 export const CASH_PAYMENT_METHOD_ID_STR = randomObjectIdString();
 export const CASH_PAYMENT_METHOD_ID_OBJ = new Types.ObjectId(CASH_PAYMENT_METHOD_ID_STR);
 export const OTHER_PAYMENT_METHOD_ID_STR = randomObjectIdString();
-export const OTHER_PAYMENT_METHOD_ID_OBJ = new Types.ObjectId(OTHER_PAYMENT_METHOD_ID_STR);
+export const OTHER_PAYMENT_METHOD_ID_OBJ = new Types.ObjectId(
+  OTHER_PAYMENT_METHOD_ID_STR,
+);
 
 export const PAYMENT_METHOD_TYPE_SYSTEM = 'system';
 export const PAYMENT_METHOD_TYPE_USER = 'user';

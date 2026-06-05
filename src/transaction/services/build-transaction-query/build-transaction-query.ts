@@ -43,10 +43,12 @@ export const buildTransactionFilterQuery = (
   if (q.excludePaymentMethodIds)
     query.paymentMethodId = getExcludedObjectIdMatch(q.excludePaymentMethodIds);
   if (q.accountIds) query.accountId = getObjectIdMatch(q.accountIds);
-  if (q.excludeAccountIds) query.accountId = getExcludedObjectIdMatch(q.excludeAccountIds);
+  if (q.excludeAccountIds)
+    query.accountId = getExcludedObjectIdMatch(q.excludeAccountIds);
 
   if (q.categoryIds) query.categoryId = getObjectIdMatch(q.categoryIds);
-  if (q.excludeCategoryIds) query.categoryId = getExcludedObjectIdMatch(q.excludeCategoryIds);
+  if (q.excludeCategoryIds)
+    query.categoryId = getExcludedObjectIdMatch(q.excludeCategoryIds);
 
   if (q.minAmount || q.maxAmount) {
     query.amount = {};
