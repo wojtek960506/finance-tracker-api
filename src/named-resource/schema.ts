@@ -2,8 +2,10 @@ import { z } from 'zod/v4';
 
 import { OBJECT_ID_REGEX } from '@utils/consts';
 
+import { NAMED_RESOURCE_NAME_MAX_LENGTH } from './consts';
+
 export const NamedResourceSchema = z.object({
-  name: z.string().min(1).max(30),
+  name: z.string().min(1).max(NAMED_RESOURCE_NAME_MAX_LENGTH),
 });
 
 export const NamedResourceResponseSchema = NamedResourceSchema.extend({
@@ -13,7 +15,7 @@ export const NamedResourceResponseSchema = NamedResourceSchema.extend({
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`')
     .optional(),
   type: z.enum(['user', 'system']),
-  nameNormalized: z.string().min(1).max(30),
+  nameNormalized: z.string().min(1).max(NAMED_RESOURCE_NAME_MAX_LENGTH),
   isFavorite: z.boolean(),
 });
 
