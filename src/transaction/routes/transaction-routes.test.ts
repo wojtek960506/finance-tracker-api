@@ -138,6 +138,8 @@ describe('transaction routes', async () => {
     currencies: [
       {
         currency: 'PLN',
+        totalAmount: 250,
+        totalItems: 2,
         accounts: [
           {
             accountId: ACCOUNT_EXPENSE_ID_STR,
@@ -216,7 +218,9 @@ describe('transaction routes', async () => {
   });
 
   it("should get account balance statistics - 'GET /statistics/accounts'", async () => {
-    vi.spyOn(serviceT, 'getAccountStatistics').mockResolvedValue(accountStatisticsResult as any);
+    vi.spyOn(serviceT, 'getAccountStatistics').mockResolvedValue(
+      accountStatisticsResult as any,
+    );
     const query = { transactionType: 'income', currency: 'PLN', startDate: '2024-01-01' };
 
     const response = await app.inject({

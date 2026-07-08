@@ -29,6 +29,8 @@ export type CurrencyAccountBalance = {
 
 export type CurrencyBalanceStats = {
   currency: string;
+  totalAmount: number;
+  totalItems: number;
   accounts: CurrencyAccountBalance[];
 };
 

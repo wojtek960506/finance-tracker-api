@@ -57,22 +57,32 @@ export async function getAccountStatistics(
   const accountsMap = await prepareNamedResourcesMap('account', userId, accountIds);
 
   const currencies = Object.values(
-    result.reduce<Record<string, { currency: string; accounts: any[] }>>((acc, item) => {
+    result.reduce<
+      Record<
+        string,
+        { currency: string; totalAmount: number; totalItems: number; accounts: any[] }
+      >
+    >((acc, item) => {
       const accountId = item._id.accountId.toString();
       const currency = item._id.currency;
+      const roundedAmount = roundMoney(item.totalAmount);
 
       if (!acc[currency]) {
         acc[currency] = {
           currency,
+          totalAmount: 0,
+          totalItems: 0,
           accounts: [],
         };
       }
 
+      acc[currency].totalAmount = roundMoney(acc[currency].totalAmount + roundedAmount);
+      acc[currency].totalItems += item.totalItems;
       acc[currency].accounts.push({
         accountId,
         accountName: accountsMap[accountId]?.name ?? accountId,
         accountType: accountsMap[accountId]?.type ?? 'user',
-        totalAmount: roundMoney(item.totalAmount),
+        totalAmount: roundedAmount,
         totalItems: item.totalItems,
       });
 

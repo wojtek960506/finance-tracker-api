@@ -16,6 +16,8 @@ import {
   TestTransactionsCreateResponse,
   TestTransactionsCreateResponseSchema,
   TestTransactionsCreateSchema,
+  TransactionAccountStatisticsQuery,
+  TransactionAccountStatisticsQuerySchema,
   TransactionBulkCreateDTO,
   TransactionBulkCreateSchema,
   TransactionDetailsResponseDTO,
@@ -24,8 +26,6 @@ import {
   TransactionExchangeSchema,
   TransactionFiltersQuery,
   TransactionFiltersQuerySchema,
-  TransactionAccountStatisticsQuery,
-  TransactionAccountStatisticsQuerySchema,
   TransactionQuery,
   TransactionQuerySchema,
   TransactionResponseDTO,
@@ -132,6 +132,8 @@ export async function transactionRoutes(
     currencies: z.array(
       z.object({
         currency: z.string(),
+        totalAmount: z.number(),
+        totalItems: z.number(),
         accounts: z.array(
           z.object({
             accountId: z.string(),
