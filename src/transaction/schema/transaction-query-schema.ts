@@ -55,7 +55,17 @@ export const TransactionStatisticsQuerySchema = TransactionCommonQuerySchema.ext
   currency: CurrencyCodeSchema,
 });
 
+export const TransactionAccountStatisticsQuerySchema = TransactionFiltersQuerySchema.pick({
+  startDate: true,
+  endDate: true,
+  transactionType: true,
+  currency: true,
+});
+
 export type TransactionQuery = z.infer<typeof TransactionQuerySchema>;
 export type TransactionFiltersQuery = z.infer<typeof TransactionFiltersQuerySchema>;
 export type TrashTransactionQuery = z.infer<typeof TrashTransactionQuerySchema>;
 export type TransactionStatisticsQuery = z.infer<typeof TransactionStatisticsQuerySchema>;
+export type TransactionAccountStatisticsQuery = z.infer<
+  typeof TransactionAccountStatisticsQuerySchema
+>;

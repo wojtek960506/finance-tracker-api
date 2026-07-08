@@ -19,6 +19,22 @@ export type NoYearResult = {
 
 export type TransactionStatisticsResponse = MonthYearResult | YearResult | NoYearResult;
 
+export type CurrencyAccountBalance = {
+  accountId: string;
+  accountName: string;
+  totalAmount: number;
+  totalItems: number;
+};
+
+export type CurrencyBalanceStats = {
+  currency: string;
+  accounts: CurrencyAccountBalance[];
+};
+
+export type AccountStatisticsResponse = {
+  currencies: CurrencyBalanceStats[];
+};
+
 export type MonthlyResultItemServer = TotalAmountAndItems & { _id: { month: number } };
 
 export type YearlyResultItemServer = TotalAmountAndItems & { _id: { year: number } };

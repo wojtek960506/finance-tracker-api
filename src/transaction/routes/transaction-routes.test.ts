@@ -134,6 +134,21 @@ describe('transaction routes', async () => {
       1: { totalAmount: 100, totalItems: 1 },
     },
   };
+  const accountStatisticsResult = {
+    currencies: [
+      {
+        currency: 'PLN',
+        accounts: [
+          {
+            accountId: ACCOUNT_EXPENSE_ID_STR,
+            accountName: ACCOUNT_EXPENSE_NAME,
+            totalAmount: 250,
+            totalItems: 2,
+          },
+        ],
+      },
+    ],
+  };
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -197,6 +212,29 @@ describe('transaction routes', async () => {
     expect(serviceT[serviceName]).toHaveBeenCalledWith(query, USER_ID_STR);
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(mockedResult);
+  });
+
+  it("should get account balance statistics - 'GET /statistics/accounts'", async () => {
+    vi.spyOn(serviceT, 'getAccountStatistics').mockResolvedValue(accountStatisticsResult as any);
+    const query = { transactionType: 'income', currency: 'PLN', startDate: '2024-01-01' };
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/statistics/accounts',
+      query,
+    });
+
+    expect(serviceT.getAccountStatistics).toHaveBeenCalledOnce();
+    expect(serviceT.getAccountStatistics).toHaveBeenCalledWith(
+      {
+        transactionType: 'income',
+        currency: 'PLN',
+        startDate: new Date('2024-01-01T00:00:00.000Z'),
+      },
+      USER_ID_STR,
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(accountStatisticsResult);
   });
 
   it('should get transaction - `GET /:id`', async () => {

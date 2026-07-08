@@ -24,6 +24,8 @@ import {
   TransactionExchangeSchema,
   TransactionFiltersQuery,
   TransactionFiltersQuerySchema,
+  TransactionAccountStatisticsQuery,
+  TransactionAccountStatisticsQuerySchema,
   TransactionQuery,
   TransactionQuerySchema,
   TransactionResponseDTO,
@@ -54,6 +56,7 @@ import {
   deleteTrashedTransactionHandler,
   emptyTrashHandler,
   exportTransacionsHandler,
+  getAccountStatisticsHandler,
   getTransactionHandler,
   getTransactionsHandler,
   getTransactionStatisticsHandler,
@@ -64,7 +67,11 @@ import {
   restoreTransactionsHandler,
   updateTransactionHandler,
 } from './handlers';
-import { TransactionStatisticsResponse, TransactionTotalsResponse } from './types';
+import {
+  AccountStatisticsResponse,
+  TransactionStatisticsResponse,
+  TransactionTotalsResponse,
+} from './types';
 
 export async function transactionRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
@@ -120,6 +127,22 @@ export async function transactionRoutes(
       yearly: z.record(z.string(), TotalAmountAndItemsSchema),
     }),
   ]);
+
+  const AccountStatisticsResponseSchema = z.object({
+    currencies: z.array(
+      z.object({
+        currency: z.string(),
+        accounts: z.array(
+          z.object({
+            accountId: z.string(),
+            accountName: z.string(),
+            totalAmount: z.number(),
+            totalItems: z.number(),
+          }),
+        ),
+      }),
+    ),
+  });
 
   app.get<{
     Querystring: TransactionQuery;
@@ -201,6 +224,26 @@ export async function transactionRoutes(
       },
     },
     getTransactionTotalsHandler,
+  );
+
+  app.get<{
+    Querystring: TransactionAccountStatisticsQuery;
+    Reply: AccountStatisticsResponse;
+  }>(
+    '/statistics/accounts',
+    {
+      preHandler: [authorizeAccessToken()],
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Get account balance statistics',
+        description: 'Return transaction balances grouped by account and currency.',
+        querystring: TransactionAccountStatisticsQuerySchema,
+        response: {
+          200: AccountStatisticsResponseSchema,
+        },
+      },
+    },
+    getAccountStatisticsHandler,
   );
 
   app.get<{
