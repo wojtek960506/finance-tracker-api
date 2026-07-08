@@ -142,6 +142,7 @@ describe('transaction routes', async () => {
           {
             accountId: ACCOUNT_EXPENSE_ID_STR,
             accountName: ACCOUNT_EXPENSE_NAME,
+            accountType: 'user',
             totalAmount: 250,
             totalItems: 2,
           },

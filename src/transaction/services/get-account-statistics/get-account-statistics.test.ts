@@ -54,8 +54,8 @@ describe('getAccountStatistics', () => {
       },
     ]);
     (prepareNamedResourcesMap as Mock).mockResolvedValue({
-      [ACCOUNT_EXPENSE_ID_STR]: { name: ACCOUNT_EXPENSE_NAME },
-      [OTHER_ACCOUNT_ID_STR]: { name: OTHER_ACCOUNT_NAME },
+      [ACCOUNT_EXPENSE_ID_STR]: { name: ACCOUNT_EXPENSE_NAME, type: 'user' },
+      [OTHER_ACCOUNT_ID_STR]: { name: OTHER_ACCOUNT_NAME, type: 'system' },
     });
 
     const result = await getAccountStatistics(query, USER_ID_STR);
@@ -104,6 +104,7 @@ describe('getAccountStatistics', () => {
             {
               accountId: ACCOUNT_EXPENSE_ID_STR,
               accountName: ACCOUNT_EXPENSE_NAME,
+              accountType: 'user',
               totalAmount: 0,
               totalItems: 273,
             },
@@ -115,12 +116,14 @@ describe('getAccountStatistics', () => {
             {
               accountId: OTHER_ACCOUNT_ID_STR,
               accountName: OTHER_ACCOUNT_NAME,
+              accountType: 'system',
               totalAmount: 300,
               totalItems: 4,
             },
             {
               accountId: ACCOUNT_EXPENSE_ID_STR,
               accountName: ACCOUNT_EXPENSE_NAME,
+              accountType: 'user',
               totalAmount: 200,
               totalItems: 2,
             },
@@ -132,6 +135,7 @@ describe('getAccountStatistics', () => {
             {
               accountId: ACCOUNT_EXPENSE_ID_STR,
               accountName: ACCOUNT_EXPENSE_NAME,
+              accountType: 'user',
               totalAmount: 50,
               totalItems: 1,
             },

@@ -22,6 +22,7 @@ export type TransactionStatisticsResponse = MonthYearResult | YearResult | NoYea
 export type CurrencyAccountBalance = {
   accountId: string;
   accountName: string;
+  accountType: 'user' | 'system';
   totalAmount: number;
   totalItems: number;
 };

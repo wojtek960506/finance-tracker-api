@@ -136,6 +136,7 @@ export async function transactionRoutes(
           z.object({
             accountId: z.string(),
             accountName: z.string(),
+            accountType: z.enum(['user', 'system']),
             totalAmount: z.number(),
             totalItems: z.number(),
           }),

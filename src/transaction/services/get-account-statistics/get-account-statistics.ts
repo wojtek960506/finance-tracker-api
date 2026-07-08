@@ -71,6 +71,7 @@ export async function getAccountStatistics(
       acc[currency].accounts.push({
         accountId,
         accountName: accountsMap[accountId]?.name ?? accountId,
+        accountType: accountsMap[accountId]?.type ?? 'user',
         totalAmount: roundMoney(item.totalAmount),
         totalItems: item.totalItems,
       });
