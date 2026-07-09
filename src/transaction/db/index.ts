@@ -1,4 +1,5 @@
 export * from './find-transaction';
+export * from './find-transaction-resource-ids';
 export * from './find-transaction-totals';
 export * from './find-transactions';
 export * from './load-transaction-with-reference';

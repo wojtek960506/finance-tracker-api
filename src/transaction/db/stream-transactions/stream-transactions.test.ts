@@ -16,16 +16,16 @@ vi.mock('@transaction/model', () => ({ TransactionModel: { find: vi.fn() } }));
 
 describe('streamTransactions', () => {
   it('stream transactions', () => {
-    const OWNER_ID = randomObjectIdString();
+    const FILTER = {
+      ownerId: randomObjectIdString(),
+      deletion: null,
+    };
     (TransactionModel.find as Mock).mockReturnValue(mockQuery);
 
-    const result = streamTransactions(OWNER_ID);
+    const result = streamTransactions(FILTER as any);
 
     expect(TransactionModel.find).toHaveBeenCalledOnce();
-    expect(TransactionModel.find).toHaveBeenCalledWith({
-      ownerId: OWNER_ID,
-      deletion: null,
-    });
+    expect(TransactionModel.find).toHaveBeenCalledWith(FILTER);
     expect(mockQuery.sort).toHaveBeenCalledOnce();
     expect(mockQuery.sort).toHaveBeenCalledWith({ sourceIndex: 1 });
     expect(mockQuery.cursor).toHaveBeenCalledOnce();

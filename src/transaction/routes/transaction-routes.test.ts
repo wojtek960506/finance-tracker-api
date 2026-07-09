@@ -33,7 +33,7 @@ import {
 } from '@testing/factories/transaction';
 import { TEST_USER_TOTAL_TRANSACTIONS } from '@testing/factories/user';
 import { getCsvForTransactions } from '@testing/get-csv-for-transactions';
-import { streamTransactions } from '@transaction/db';
+import { findTransactionResourceIds, streamTransactions } from '@transaction/db';
 import * as serviceT from '@transaction/services';
 
 import { transactionRoutes } from './transaction-routes';
@@ -49,7 +49,10 @@ const mockPreHandler = vi.fn(async (req, _res) => {
 });
 
 vi.mock('@auth/services', () => ({ authorizeAccessToken: vi.fn(() => mockPreHandler) }));
-vi.mock('@transaction/db', () => ({ streamTransactions: vi.fn() }));
+vi.mock('@transaction/db', () => ({
+  findTransactionResourceIds: vi.fn(),
+  streamTransactions: vi.fn(),
+}));
 vi.mock('@transaction/model', () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
 describe('transaction routes', async () => {
@@ -162,6 +165,25 @@ describe('transaction routes', async () => {
   });
 
   it("should export transactions - 'GET /export'", async () => {
+    const exportFilter = {
+      ownerId: USER_ID_STR,
+      deletion: null,
+    };
+    const query = {
+      page: '27',
+      startDate: '2023-12-28',
+      endDate: '2024-12-24',
+      accountIds: ACCOUNT_EXPENSE_ID_STR,
+    };
+
+    vi.spyOn(serviceT, 'buildTransactionFilterQuery').mockReturnValue(
+      exportFilter as any,
+    );
+    vi.mocked(findTransactionResourceIds).mockResolvedValue({
+      accountIds: [ACCOUNT_EXPENSE_ID_STR],
+      categoryIds: [FOOD_CATEGORY_ID_STR],
+      paymentMethodIds: [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+    });
     vi.spyOn(namedResourceServices, 'prepareNamedResourcesMap')
       .mockResolvedValueOnce({
         [ACCOUNT_EXPENSE_ID_STR]: { name: ACCOUNT_EXPENSE_NAME } as any,
@@ -186,10 +208,47 @@ describe('transaction routes', async () => {
       ]),
     );
 
-    const response = await app.inject({ method: 'GET', url: '/export' });
+    const response = await app.inject({
+      method: 'GET',
+      url: '/export',
+      query,
+    });
 
+    expect(serviceT.buildTransactionFilterQuery).toHaveBeenCalledOnce();
+    expect(serviceT.buildTransactionFilterQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 27,
+        limit: 20,
+        sortBy: 'date',
+        sortOrder: 'desc',
+        startDate: new Date('2023-12-28T00:00:00.000Z'),
+        endDate: new Date('2024-12-24T00:00:00.000Z'),
+        accountIds: [ACCOUNT_EXPENSE_ID_STR],
+      }),
+      USER_ID_STR,
+    );
+    expect(findTransactionResourceIds).toHaveBeenCalledOnce();
+    expect(findTransactionResourceIds).toHaveBeenCalledWith(exportFilter);
     expect(streamTransactions).toHaveBeenCalledOnce();
-    expect(streamTransactions).toHaveBeenCalledWith(USER_ID_STR);
+    expect(streamTransactions).toHaveBeenCalledWith(exportFilter);
+    expect(namedResourceServices.prepareNamedResourcesMap).toHaveBeenNthCalledWith(
+      1,
+      'account',
+      USER_ID_STR,
+      [ACCOUNT_EXPENSE_ID_STR],
+    );
+    expect(namedResourceServices.prepareNamedResourcesMap).toHaveBeenNthCalledWith(
+      2,
+      'category',
+      USER_ID_STR,
+      [FOOD_CATEGORY_ID_STR],
+    );
+    expect(namedResourceServices.prepareNamedResourcesMap).toHaveBeenNthCalledWith(
+      3,
+      'paymentMethod',
+      USER_ID_STR,
+      [BANK_TRANSFER_PAYMENT_METHOD_ID_STR],
+    );
     expect(response.statusCode).toBe(200);
     expect(response.headers['content-type']).toContain('text/csv');
     expect(response.headers['content-disposition']).toContain('transactions-backup');

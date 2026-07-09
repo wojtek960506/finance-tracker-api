@@ -136,7 +136,7 @@ pnpm fix
 
 What they do:
 
-- `pnpm dev` - start the app in watch mode with `tsx`
+- `pnpm dev` - start the app in watch mode with `tsx` using polling so it works on systems with low file-watcher limits
 - `pnpm build` - bundle the app with `tsup`
 - `pnpm start` - run the built server from `dist`
 - `pnpm migrate:legacy-email-verification` - backfill pre-existing users as

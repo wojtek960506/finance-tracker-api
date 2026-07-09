@@ -3,38 +3,46 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { prepareNamedResourcesMap } from '@named-resource/services';
 import { AuthenticatedRequest } from '@shared/http';
-import { streamTransactions } from '@transaction/db';
-import { csvExportColumns, transactionToCsvRow } from '@transaction/services';
+import { findTransactionResourceIds, streamTransactions } from '@transaction/db';
+import { TransactionQuery } from '@transaction/schema';
+import {
+  buildTransactionFilterQuery,
+  csvExportColumns,
+  transactionToCsvRow,
+} from '@transaction/services';
 
 export async function exportTransacionsHandler(req: FastifyRequest, res: FastifyReply) {
-  // 1. Set headers first
+  const userId = (req as AuthenticatedRequest).userId;
+  const filter = buildTransactionFilterQuery(req.query as TransactionQuery, userId);
+  const cursor = streamTransactions(filter);
+  const { accountIds, categoryIds, paymentMethodIds } =
+    await findTransactionResourceIds(filter);
+  const [accountsMap, categoriesMap, paymentMethodsMap] = await Promise.all([
+    prepareNamedResourcesMap('account', userId, accountIds),
+    prepareNamedResourcesMap('category', userId, categoryIds),
+    prepareNamedResourcesMap('paymentMethod', userId, paymentMethodIds),
+  ]);
+
+  // Set headers before streaming the CSV body.
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const filename = `transactions-backup-${timestamp}.csv`;
   res
     .header('Content-Type', 'text/csv')
     .header('Content-Disposition', `attachment; filename="${filename}"`);
 
-  // 2. Create CSV stream
+  // Create the CSV stream.
   const csvStream = stringify({ header: true, columns: csvExportColumns });
 
-  // 3. Send stream to client
+  // Hand the stream to Fastify.
   res.send(csvStream);
 
-  // 4. Stream DB records into CSV
-  const userId = (req as AuthenticatedRequest).userId;
-  const cursor = streamTransactions(userId);
-  const [accountsMap, categoriesMap, paymentMethodsMap] = await Promise.all([
-    prepareNamedResourcesMap('account', userId),
-    prepareNamedResourcesMap('category', userId),
-    prepareNamedResourcesMap('paymentMethod', userId),
-  ]);
-
+  // Stream matching transactions into CSV.
   for await (const transaction of cursor) {
     csvStream.write(
       transactionToCsvRow(transaction, categoriesMap, paymentMethodsMap, accountsMap),
     );
   }
 
-  // 5. End CSV stream
+  // Close the CSV stream when finished.
   csvStream.end();
 }
