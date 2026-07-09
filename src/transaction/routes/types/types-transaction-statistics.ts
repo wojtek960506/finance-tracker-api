@@ -25,17 +25,21 @@ export type CurrencyAccountBalance = {
   accountType: 'user' | 'system';
   totalAmount: number;
   totalItems: number;
+  normalizedTotalAmount?: number;
 };
 
 export type CurrencyBalanceStats = {
   currency: string;
   totalAmount: number;
   totalItems: number;
+  normalizedTotalAmount?: number;
   accounts: CurrencyAccountBalance[];
 };
 
 export type AccountStatisticsResponse = {
   currencies: CurrencyBalanceStats[];
+  normalizedBaseCurrency?: string;
+  normalizedTotalAmount?: number;
 };
 
 export type MonthlyResultItemServer = TotalAmountAndItems & { _id: { month: number } };

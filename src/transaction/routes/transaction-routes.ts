@@ -134,6 +134,7 @@ export async function transactionRoutes(
         currency: z.string(),
         totalAmount: z.number(),
         totalItems: z.number(),
+        normalizedTotalAmount: z.number().optional(),
         accounts: z.array(
           z.object({
             accountId: z.string(),
@@ -141,10 +142,13 @@ export async function transactionRoutes(
             accountType: z.enum(['user', 'system']),
             totalAmount: z.number(),
             totalItems: z.number(),
+            normalizedTotalAmount: z.number().optional(),
           }),
         ),
       }),
     ),
+    normalizedBaseCurrency: z.string().optional(),
+    normalizedTotalAmount: z.number().optional(),
   });
 
   app.get<{

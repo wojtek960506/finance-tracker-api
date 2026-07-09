@@ -62,7 +62,14 @@ export const TransactionAccountStatisticsQuerySchema = TransactionFiltersQuerySc
     transactionType: true,
     currency: true,
   },
-);
+).extend({
+  baseCurrency: z.preprocess((value) => {
+    if (value == null) return undefined;
+
+    const trimmed = String(value).trim().toUpperCase();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }, z.string().optional()),
+});
 
 export type TransactionQuery = z.infer<typeof TransactionQuerySchema>;
 export type TransactionFiltersQuery = z.infer<typeof TransactionFiltersQuerySchema>;

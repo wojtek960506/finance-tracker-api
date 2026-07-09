@@ -135,11 +135,14 @@ describe('transaction routes', async () => {
     },
   };
   const accountStatisticsResult = {
+    normalizedBaseCurrency: 'PLN',
+    normalizedTotalAmount: 250,
     currencies: [
       {
         currency: 'PLN',
         totalAmount: 250,
         totalItems: 2,
+        normalizedTotalAmount: 250,
         accounts: [
           {
             accountId: ACCOUNT_EXPENSE_ID_STR,
@@ -147,6 +150,7 @@ describe('transaction routes', async () => {
             accountType: 'user',
             totalAmount: 250,
             totalItems: 2,
+            normalizedTotalAmount: 250,
           },
         ],
       },
@@ -221,7 +225,12 @@ describe('transaction routes', async () => {
     vi.spyOn(serviceT, 'getAccountStatistics').mockResolvedValue(
       accountStatisticsResult as any,
     );
-    const query = { transactionType: 'income', currency: 'PLN', startDate: '2024-01-01' };
+    const query = {
+      transactionType: 'income',
+      currency: 'PLN',
+      startDate: '2024-01-01',
+      baseCurrency: 'pln',
+    };
 
     const response = await app.inject({
       method: 'GET',
@@ -235,6 +244,7 @@ describe('transaction routes', async () => {
         transactionType: 'income',
         currency: 'PLN',
         startDate: new Date('2024-01-01T00:00:00.000Z'),
+        baseCurrency: 'PLN',
       },
       USER_ID_STR,
     );
