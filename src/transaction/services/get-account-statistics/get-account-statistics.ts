@@ -46,11 +46,16 @@ export async function getAccountStatistics(
 
   const accountIds = [...new Set(result.map((item) => item._id.accountId.toString()))];
   const accountsMap = await prepareNamedResourcesMap('account', userId, accountIds);
-  const normalizedBaseCurrency = isValidCurrencyCode(q.baseCurrency) ? q.baseCurrency : undefined;
+  const normalizedBaseCurrency = isValidCurrencyCode(q.baseCurrency)
+    ? q.baseCurrency
+    : undefined;
   const latestRates = normalizedBaseCurrency
     ? await fetchLatestRates(
-        [...new Set(result.map((item) => item._id.currency).concat(normalizedBaseCurrency))]
-          .filter((currency) => currency !== USD_CURRENCY_CODE),
+        [
+          ...new Set(
+            result.map((item) => item._id.currency).concat(normalizedBaseCurrency),
+          ),
+        ].filter((currency) => currency !== USD_CURRENCY_CODE),
       )
     : null;
 

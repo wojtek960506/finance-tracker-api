@@ -23,7 +23,8 @@ export const getCrossRate = (
 ) => {
   if (fromCurrency === toCurrency) return 1;
 
-  const fromRate = fromCurrency === USD_CURRENCY_CODE ? 1 : Number(usdBasedRates[fromCurrency]);
+  const fromRate =
+    fromCurrency === USD_CURRENCY_CODE ? 1 : Number(usdBasedRates[fromCurrency]);
   const toRate = toCurrency === USD_CURRENCY_CODE ? 1 : Number(usdBasedRates[toCurrency]);
 
   if (!Number.isFinite(fromRate) || fromRate <= 0) return null;

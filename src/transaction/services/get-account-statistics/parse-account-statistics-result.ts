@@ -39,7 +39,10 @@ export const parseAccountStatisticsResult = ({
         if (!canNormalize || !latestRates || !baseCurrency) return null;
 
         if (!crossRatesCache.has(rateCacheKey)) {
-          crossRatesCache.set(rateCacheKey, getCrossRate(currency, baseCurrency, latestRates));
+          crossRatesCache.set(
+            rateCacheKey,
+            getCrossRate(currency, baseCurrency, latestRates),
+          );
         }
 
         return crossRatesCache.get(rateCacheKey) ?? null;
