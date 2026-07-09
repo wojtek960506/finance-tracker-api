@@ -3,21 +3,15 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { prepareNamedResourcesMap } from '@named-resource/services';
 import { AuthenticatedRequest } from '@shared/http';
-import {
-  findTransactionResourceIds,
-  streamTransactions,
-} from '@transaction/db';
+import { findTransactionResourceIds, streamTransactions } from '@transaction/db';
+import { TransactionQuery } from '@transaction/schema';
 import {
   buildTransactionFilterQuery,
   csvExportColumns,
   transactionToCsvRow,
 } from '@transaction/services';
-import { TransactionQuery } from '@transaction/schema';
 
-export async function exportTransacionsHandler(
-  req: FastifyRequest,
-  res: FastifyReply,
-) {
+export async function exportTransacionsHandler(req: FastifyRequest, res: FastifyReply) {
   const userId = (req as AuthenticatedRequest).userId;
   const filter = buildTransactionFilterQuery(req.query as TransactionQuery, userId);
   const cursor = streamTransactions(filter);

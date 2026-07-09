@@ -176,7 +176,9 @@ describe('transaction routes', async () => {
       accountIds: ACCOUNT_EXPENSE_ID_STR,
     };
 
-    vi.spyOn(serviceT, 'buildTransactionFilterQuery').mockReturnValue(exportFilter as any);
+    vi.spyOn(serviceT, 'buildTransactionFilterQuery').mockReturnValue(
+      exportFilter as any,
+    );
     vi.mocked(findTransactionResourceIds).mockResolvedValue({
       accountIds: [ACCOUNT_EXPENSE_ID_STR],
       categoryIds: [FOOD_CATEGORY_ID_STR],
