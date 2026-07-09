@@ -204,7 +204,9 @@ export async function transactionRoutes(
       schema: {
         tags: ['Transactions'],
         summary: 'Export transactions',
-        description: 'Export transactions to CSV.',
+        description:
+          'Export filtered transactions to CSV. Pagination parameters are accepted but ignored.',
+        querystring: TransactionQuerySchema,
         response: {
           200: z.string(),
         },

@@ -1,4 +1,6 @@
-import { TransactionModel } from '@transaction/model';
+import { FilterQuery } from 'mongoose';
 
-export const streamTransactions = (ownerId: string) =>
-  TransactionModel.find({ ownerId, deletion: null }).sort({ sourceIndex: 1 }).cursor();
+import { ITransaction, TransactionModel } from '@transaction/model';
+
+export const streamTransactions = (filter: FilterQuery<ITransaction>) =>
+  TransactionModel.find(filter).sort({ sourceIndex: 1 }).cursor();
