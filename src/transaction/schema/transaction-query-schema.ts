@@ -55,7 +55,26 @@ export const TransactionStatisticsQuerySchema = TransactionCommonQuerySchema.ext
   currency: CurrencyCodeSchema,
 });
 
+export const TransactionAccountStatisticsQuerySchema = TransactionFiltersQuerySchema.pick(
+  {
+    startDate: true,
+    endDate: true,
+    transactionType: true,
+    currency: true,
+  },
+).extend({
+  baseCurrency: z.preprocess((value) => {
+    if (value == null) return undefined;
+
+    const trimmed = String(value).trim().toUpperCase();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }, z.string().optional()),
+});
+
 export type TransactionQuery = z.infer<typeof TransactionQuerySchema>;
 export type TransactionFiltersQuery = z.infer<typeof TransactionFiltersQuerySchema>;
 export type TrashTransactionQuery = z.infer<typeof TrashTransactionQuerySchema>;
 export type TransactionStatisticsQuery = z.infer<typeof TransactionStatisticsQuerySchema>;
+export type TransactionAccountStatisticsQuery = z.infer<
+  typeof TransactionAccountStatisticsQuerySchema
+>;

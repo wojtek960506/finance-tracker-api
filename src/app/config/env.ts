@@ -68,6 +68,7 @@ const envSchema = z.object({
   EMAIL_VERIFICATION_EXPIRES_HOURS: z.coerce.number().int().positive().default(24),
   RESEND_API_KEY: optionalEnvString(),
   RESEND_FROM_EMAIL: optionalEnvString(),
+  CURRENCY_FREAKS_API_KEY: optionalEnvString(),
   COOKIE_SECRET: requiredEnvString(
     'COOKIE_SECRET is not defined in environment variables',
   ),
@@ -87,6 +88,7 @@ export type EnvType = {
   emailVerificationExpiresHours: number;
   resendApiKey?: string;
   resendFromEmail?: string;
+  currencyFreaksApiKey?: string;
 };
 
 export const getEnv = (): EnvType => {
@@ -106,5 +108,6 @@ export const getEnv = (): EnvType => {
     emailVerificationExpiresHours: parsed.EMAIL_VERIFICATION_EXPIRES_HOURS,
     resendApiKey: parsed.RESEND_API_KEY,
     resendFromEmail: parsed.RESEND_FROM_EMAIL,
+    currencyFreaksApiKey: parsed.CURRENCY_FREAKS_API_KEY,
   };
 };

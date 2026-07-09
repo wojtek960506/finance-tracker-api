@@ -29,6 +29,7 @@ describe('getEnv', () => {
     process.env.EMAIL_VERIFICATION_EXPIRES_HOURS = '48';
     process.env.RESEND_API_KEY = 're_test_key';
     process.env.RESEND_FROM_EMAIL = 'no-reply@example.com';
+    process.env.CURRENCY_FREAKS_API_KEY = 'cf_test_key';
 
     const env = getEnv();
 
@@ -46,6 +47,7 @@ describe('getEnv', () => {
       emailVerificationExpiresHours: 48,
       resendApiKey: 're_test_key',
       resendFromEmail: 'no-reply@example.com',
+      currencyFreaksApiKey: 'cf_test_key',
     });
   });
 
@@ -67,6 +69,7 @@ describe('getEnv', () => {
     expect(env.emailVerificationExpiresHours).toBe(24);
     expect(env.resendApiKey).toBeUndefined();
     expect(env.resendFromEmail).toBeUndefined();
+    expect(env.currencyFreaksApiKey).toBeUndefined();
   });
 
   it('throws when CORS_ORIGIN_PATTERNS contains invalid regex', () => {

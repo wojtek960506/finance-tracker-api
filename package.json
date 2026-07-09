@@ -6,7 +6,7 @@
   "main": "src/server.ts",
   "packageManager": "pnpm@10.20.0",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=200 tsx watch src/server.ts",
     "build": "tsup",
     "start": "node dist/server.js",
     "migrate:legacy-email-verification": "tsx src/scripts/migrate-legacy-email-verification.ts",
