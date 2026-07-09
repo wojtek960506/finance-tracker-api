@@ -9,6 +9,7 @@ export * from './delete-transactions';
 export * from './delete-trashed-transaction';
 export * from './empty-trash';
 export * from './export-transactions';
+export * from './get-account-statistics';
 export * from './get-next-source-index';
 export * from './get-transaction';
 export * from './get-transaction-statistics';

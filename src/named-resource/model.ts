@@ -1,5 +1,6 @@
 import { Document, Model, model, Schema, Types } from 'mongoose';
 
+import { NAMED_RESOURCE_NAME_MAX_LENGTH } from './consts';
 import { NamedResourceAttributes, NamedResourceKind } from './types';
 
 export interface INamedResource extends NamedResourceAttributes, Document {
@@ -31,8 +32,18 @@ export const createNamedResourceModel = <TDocument extends INamedResource>(
         },
       },
       type: { type: String, required: true, enum: ['user', 'system'] },
-      name: { type: String, required: true, minLength: 1, maxLength: 30 },
-      nameNormalized: { type: String, required: true, minLength: 1, maxLength: 30 },
+      name: {
+        type: String,
+        required: true,
+        minLength: 1,
+        maxLength: NAMED_RESOURCE_NAME_MAX_LENGTH,
+      },
+      nameNormalized: {
+        type: String,
+        required: true,
+        minLength: 1,
+        maxLength: NAMED_RESOURCE_NAME_MAX_LENGTH,
+      },
     },
     { timestamps: true },
   );

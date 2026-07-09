@@ -6,6 +6,7 @@ export * from './delete-transactions-handler';
 export * from './delete-trashed-transaction-handler';
 export * from './empty-trash-handler';
 export * from './export-transactions-handler';
+export * from './get-account-statistics-handler';
 export * from './get-transaction-handler';
 export * from './get-transaction-statistics-handler';
 export * from './get-transaction-totals-handler';

@@ -1,0 +1,1 @@
+export const NAMED_RESOURCE_NAME_MAX_LENGTH = 60;
