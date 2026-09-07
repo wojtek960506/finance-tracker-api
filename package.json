@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=200 tsx watch src/server.ts",
     "build": "tsup",
+    "openapi:export": "tsx scripts/export-openapi.ts",
     "start": "node dist/server.js",
     "migrate:legacy-email-verification": "tsx src/scripts/migrate-legacy-email-verification.ts",
     "test": "vitest --run",

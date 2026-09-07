@@ -42,7 +42,10 @@ import { registerErrorHandler } from './plugins/errorHandler';
 //   recovery, add change-email flow, and consider moving registration into `/api/auth`      #
 //############################################################################################
 
-export const buildApp = async (env = getEnv()) => {
+export const buildApp = async (
+  env = getEnv(),
+  options: { skipDbSetup?: boolean } = {},
+) => {
   const { cookieSecret, corsOriginPatterns, corsOrigins, jwtAccessSecret } = env;
 
   const app = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
@@ -50,10 +53,12 @@ export const buildApp = async (env = getEnv()) => {
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
-  // upsert system categories
-  await upsertSystemAccounts();
-  await upsertSystemCategories();
-  await upsertSystemPaymentMethods();
+  if (!options.skipDbSetup) {
+    // upsert system categories
+    await upsertSystemAccounts();
+    await upsertSystemCategories();
+    await upsertSystemPaymentMethods();
+  }
 
   // register cookie
   await app.register(cookie, {

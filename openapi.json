@@ -1,0 +1,6051 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Finance Tracker API",
+    "description": "Documentation for API of Finance Tracker",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "WelcomeResponseInput": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "NamedResourceInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "NamedResourceResponseInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "type",
+          "nameNormalized",
+          "isFavorite"
+        ]
+      },
+      "NamedResourcesResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NamedResourceResponseInput"
+        }
+      },
+      "LoginInput": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 3
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "ResendVerificationInput": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "VerifyEmailInput": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "AccessTokenInput": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken"
+        ]
+      },
+      "UsersResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UserResponseInput"
+        }
+      },
+      "UserResponseInput": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "id": {
+            "type": "string"
+          },
+          "emailVerifiedAt": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "emailVerificationMethod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "legacy-backfill",
+                  "self-verified"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "id",
+          "emailVerifiedAt",
+          "emailVerificationMethod",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UserCreateInput": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 3
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password"
+        ]
+      },
+      "TestUserCreateInput": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_]+$"
+          },
+          "totalTransactions": {
+            "type": "number",
+            "minimum": 200,
+            "maximum": 20000
+          }
+        },
+        "required": [
+          "username"
+        ]
+      },
+      "TestUserCreateResponseInput": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "insertedTransactionsCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "userId",
+          "email",
+          "insertedTransactionsCount"
+        ]
+      },
+      "TransactionStandardInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "categoryId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType"
+        ]
+      },
+      "TransactionExchangeInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amountExpense": {
+            "type": "number",
+            "minimum": 0
+          },
+          "amountIncome": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currencyExpense": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "currencyIncome": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "accountExpenseId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountIncomeId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amountExpense",
+          "amountIncome",
+          "currencyExpense",
+          "currencyIncome"
+        ]
+      },
+      "TransactionTransferInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "accountExpenseId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountIncomeId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency"
+        ]
+      },
+      "TransactionCreateBulkItemInput": {},
+      "TransactionBulkCreateInput": {
+        "type": "object",
+        "properties": {
+          "transactions": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionCreateBulkItemInput"
+            }
+          }
+        },
+        "required": [
+          "transactions"
+        ]
+      },
+      "TransactionResponseInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {},
+          "updatedAt": {},
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account"
+        ]
+      },
+      "TransactionDetailsResponseInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {},
+          "updatedAt": {},
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "reference": {
+            "$ref": "#/components/schemas/TransactionResponseInput"
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account"
+        ]
+      },
+      "TransactionDeletionInput": {
+        "type": "object",
+        "properties": {
+          "deletedAt": {},
+          "purgeAt": {}
+        },
+        "required": [
+          "deletedAt",
+          "purgeAt"
+        ]
+      },
+      "TrashedTransactionResponseInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {},
+          "updatedAt": {},
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "deletion": {
+            "$ref": "#/components/schemas/TransactionDeletionInput"
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account",
+          "deletion"
+        ]
+      },
+      "TrashedTransactionDetailsResponseInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {},
+          "updatedAt": {},
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "deletion": {
+            "$ref": "#/components/schemas/TransactionDeletionInput"
+          },
+          "reference": {
+            "$ref": "#/components/schemas/TrashedTransactionResponseInput"
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account",
+          "deletion"
+        ]
+      },
+      "TransactionsResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TransactionResponseInput"
+        }
+      },
+      "TrashedTransactionsResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TrashedTransactionResponseInput"
+        }
+      },
+      "TestTransactionsCreateInput": {
+        "type": "object",
+        "properties": {
+          "totalTransactions": {
+            "type": "number",
+            "minimum": 200
+          }
+        },
+        "required": [
+          "totalTransactions"
+        ]
+      },
+      "TestTransactionsCreateResponseInput": {
+        "type": "object",
+        "properties": {
+          "insertedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "insertedCount"
+        ]
+      },
+      "WelcomeResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "NamedResource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "NamedResourceResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "type",
+          "nameNormalized",
+          "isFavorite"
+        ],
+        "additionalProperties": false
+      },
+      "NamedResourcesResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NamedResourceResponse"
+        }
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 3
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "ResendVerification": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      },
+      "VerifyEmail": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "additionalProperties": false
+      },
+      "AccessToken": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken"
+        ],
+        "additionalProperties": false
+      },
+      "UsersResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UserResponse"
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "id": {
+            "type": "string"
+          },
+          "emailVerifiedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "emailVerificationMethod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "legacy-backfill",
+                  "self-verified"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "id",
+          "emailVerifiedAt",
+          "emailVerificationMethod",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "UserCreate": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 3
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "TestUserCreate": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_]+$"
+          },
+          "totalTransactions": {
+            "type": "number",
+            "minimum": 200,
+            "maximum": 20000
+          }
+        },
+        "required": [
+          "username"
+        ],
+        "additionalProperties": false
+      },
+      "TestUserCreateResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "insertedTransactionsCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "userId",
+          "email",
+          "insertedTransactionsCount"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionStandard": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "categoryId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionExchange": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amountExpense": {
+            "type": "number",
+            "minimum": 0
+          },
+          "amountIncome": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currencyExpense": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "currencyIncome": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "accountExpenseId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountIncomeId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amountExpense",
+          "amountIncome",
+          "currencyExpense",
+          "currencyIncome"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionTransfer": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "accountExpenseId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountIncomeId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionCreateBulkItem": {},
+      "TransactionBulkCreate": {
+        "type": "object",
+        "properties": {
+          "transactions": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionCreateBulkItem"
+            }
+          }
+        },
+        "required": [
+          "transactions"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "reference": {
+            "$ref": "#/components/schemas/TransactionResponse"
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionDeletion": {
+        "type": "object",
+        "properties": {
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "purgeAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "deletedAt",
+          "purgeAt"
+        ],
+        "additionalProperties": false
+      },
+      "TrashedTransactionResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "deletion": {
+            "$ref": "#/components/schemas/TransactionDeletion"
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account",
+          "deletion"
+        ],
+        "additionalProperties": false
+      },
+      "TrashedTransactionDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourceIndex": {
+            "type": "number"
+          },
+          "sourceRefIndex": {
+            "type": "number"
+          },
+          "refId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "currencies": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "paymentMethod": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "system"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "deletion": {
+            "$ref": "#/components/schemas/TransactionDeletion"
+          },
+          "reference": {
+            "$ref": "#/components/schemas/TrashedTransactionResponse"
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "transactionType",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "sourceIndex",
+          "category",
+          "paymentMethod",
+          "account",
+          "deletion"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionsResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TransactionResponse"
+        }
+      },
+      "TrashedTransactionsResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TrashedTransactionResponse"
+        }
+      },
+      "TestTransactionsCreate": {
+        "type": "object",
+        "properties": {
+          "totalTransactions": {
+            "type": "number",
+            "minimum": 200
+          }
+        },
+        "required": [
+          "totalTransactions"
+        ],
+        "additionalProperties": false
+      },
+      "TestTransactionsCreateResponse": {
+        "type": "object",
+        "properties": {
+          "insertedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "insertedCount"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Welcome message",
+        "tags": [
+          "Main"
+        ],
+        "description": "Return a friendly welcome message.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WelcomeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Authenticate user and set refresh token cookie.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          }
+        },
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessToken"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/verify-email": {
+      "post": {
+        "summary": "Verify email",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Verify a newly registered user email with a one-time token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailInput"
+              }
+            }
+          }
+        },
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/auth/resend-verification": {
+      "post": {
+        "summary": "Resend verification email",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Send a fresh verification email when the account still needs email confirmation.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendVerificationInput"
+              }
+            }
+          }
+        },
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "get": {
+        "summary": "Refresh access token",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Rotate refresh token cookie and return a new access token.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessToken"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "Logout",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Clear refresh token cookie and invalidate session.",
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Return the authenticated user profile.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/": {
+      "get": {
+        "summary": "List users",
+        "tags": [
+          "Users"
+        ],
+        "description": "Return all users.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create user",
+        "tags": [
+          "Users"
+        ],
+        "description": "Create a new user account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "summary": "Get user by id",
+        "tags": [
+          "Users"
+        ],
+        "description": "Return a single user by id. Requires authentication.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "User id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "tags": [
+          "Users"
+        ],
+        "description": "Delete a user by id. Requires authentication.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "User id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/test": {
+      "post": {
+        "summary": "Create test user",
+        "tags": [
+          "Users"
+        ],
+        "description": "Create a test user and seed sample transactions. Requires authentication.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestUserCreateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestUserCreateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/": {
+      "get": {
+        "summary": "List accounts",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Return all accounts for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create account",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Create a new account for the authenticated user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/favorites": {
+      "get": {
+        "summary": "List favorite accounts",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Return all favorite accounts for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{id}": {
+      "get": {
+        "summary": "Get account by id",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Return a single account by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update account",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Update an account by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete account",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Delete an account by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{id}/favorite": {
+      "post": {
+        "summary": "Favorite account",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Mark account as favorite for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unfavorite account",
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Remove account from favorites for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories/": {
+      "get": {
+        "summary": "List categories",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Return all categories for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create category",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Create a new category for the authenticated user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories/favorites": {
+      "get": {
+        "summary": "List favorite categories",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Return all favorite categories for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories/{id}": {
+      "get": {
+        "summary": "Get category by id",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Return a single category by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update category",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Update a category by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete category",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Delete a category by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories/{id}/favorite": {
+      "post": {
+        "summary": "Favorite category",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Mark category as favorite for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unfavorite category",
+        "tags": [
+          "Categories"
+        ],
+        "description": "Remove category from favorites for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/paymentMethods/": {
+      "get": {
+        "summary": "List payment methods",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Return all payment methods for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create payment method",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Create a new payment method for the authenticated user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/paymentMethods/favorites": {
+      "get": {
+        "summary": "List favorite payment methods",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Return all favorite payment methods for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/paymentMethods/{id}": {
+      "get": {
+        "summary": "Get payment method by id",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Return a single payment method by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update payment method",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Update a payment method by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete payment method",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Delete a payment method by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/paymentMethods/{id}/favorite": {
+      "post": {
+        "summary": "Favorite payment method",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Mark payment method as favorite for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unfavorite payment method",
+        "tags": [
+          "Payment Methods"
+        ],
+        "description": "Remove payment method from favorites for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/currencies/": {
+      "get": {
+        "summary": "List currencies",
+        "tags": [
+          "Currencies"
+        ],
+        "description": "Return list of currencies with their codes and names.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "enum": [
+                          "USD",
+                          "EUR",
+                          "PLN",
+                          "GBP",
+                          "JPY",
+                          "CHF",
+                          "CAD",
+                          "AUD",
+                          "NZD",
+                          "SEK",
+                          "NOK",
+                          "DKK",
+                          "CZK",
+                          "HUF",
+                          "RON",
+                          "BGN",
+                          "TRY",
+                          "UAH",
+                          "INR",
+                          "CNY",
+                          "HKD",
+                          "SGD",
+                          "ZAR",
+                          "BRL",
+                          "MXN",
+                          "ARS",
+                          "CLP",
+                          "COP",
+                          "KRW",
+                          "IDR",
+                          "MYR",
+                          "THB",
+                          "AED",
+                          "SAR",
+                          "ILS",
+                          "EGP"
+                        ]
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "name"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/": {
+      "get": {
+        "summary": "List transactions",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Return paginated transactions for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "categoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "paymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "accountIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeCategoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludePaymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeAccountIds",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "minAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "maxAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "expense",
+                "income"
+              ]
+            },
+            "in": "query",
+            "name": "transactionType",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "currency",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": "date",
+              "type": "string",
+              "enum": [
+                "date",
+                "amount"
+              ]
+            },
+            "in": "query",
+            "name": "sortBy",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "in": "query",
+            "name": "sortOrder",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "totalPages": {
+                      "type": "number"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/TransactionsResponse"
+                    }
+                  },
+                  "required": [
+                    "page",
+                    "limit",
+                    "total",
+                    "totalPages",
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Move all transactions to trash",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Move all active transactions for the authenticated user to trash.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "matchedCount": {
+                      "type": "number"
+                    },
+                    "modifiedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "matchedCount",
+                    "modifiedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/trash": {
+      "get": {
+        "summary": "List trashed transactions",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Return paginated trashed transactions for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "categoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "paymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "accountIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeCategoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludePaymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeAccountIds",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "minAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "maxAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "expense",
+                "income"
+              ]
+            },
+            "in": "query",
+            "name": "transactionType",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "currency",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": "deletedAt",
+              "type": "string",
+              "enum": [
+                "deletedAt",
+                "purgeAt",
+                "date",
+                "amount"
+              ]
+            },
+            "in": "query",
+            "name": "sortBy",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "in": "query",
+            "name": "sortOrder",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "totalPages": {
+                      "type": "number"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/TrashedTransactionsResponse"
+                    }
+                  },
+                  "required": [
+                    "page",
+                    "limit",
+                    "total",
+                    "totalPages",
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Empty trash",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Permanently delete all trashed transactions for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/export": {
+      "get": {
+        "summary": "Export transactions",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Export filtered transactions to CSV. Pagination parameters are accepted but ignored.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "categoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "paymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "accountIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeCategoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludePaymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeAccountIds",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "minAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "maxAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "expense",
+                "income"
+              ]
+            },
+            "in": "query",
+            "name": "transactionType",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "currency",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": "date",
+              "type": "string",
+              "enum": [
+                "date",
+                "amount"
+              ]
+            },
+            "in": "query",
+            "name": "sortBy",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "in": "query",
+            "name": "sortOrder",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/totals": {
+      "get": {
+        "summary": "Get transaction totals",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Return totals grouped by currency and transaction type.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "categoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "paymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "accountIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeCategoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludePaymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeAccountIds",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "minAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "maxAmount",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "expense",
+                "income"
+              ]
+            },
+            "in": "query",
+            "name": "transactionType",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "currency",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "byCurrency": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "totalItems": {
+                            "type": "number"
+                          },
+                          "expense": {
+                            "type": "object",
+                            "properties": {
+                              "totalAmount": {
+                                "type": "number"
+                              },
+                              "totalItems": {
+                                "type": "number"
+                              },
+                              "averageAmount": {
+                                "type": "number"
+                              },
+                              "maxAmount": {
+                                "type": "number"
+                              },
+                              "minAmount": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "totalAmount",
+                              "totalItems",
+                              "averageAmount",
+                              "maxAmount",
+                              "minAmount"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "income": {
+                            "type": "object",
+                            "properties": {
+                              "totalAmount": {
+                                "type": "number"
+                              },
+                              "totalItems": {
+                                "type": "number"
+                              },
+                              "averageAmount": {
+                                "type": "number"
+                              },
+                              "maxAmount": {
+                                "type": "number"
+                              },
+                              "minAmount": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "totalAmount",
+                              "totalItems",
+                              "averageAmount",
+                              "maxAmount",
+                              "minAmount"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "totalItems",
+                          "expense",
+                          "income"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "overall": {
+                      "type": "object",
+                      "properties": {
+                        "totalItems": {
+                          "type": "number"
+                        },
+                        "expense": {
+                          "type": "object",
+                          "properties": {
+                            "totalItems": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "totalItems"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "income": {
+                          "type": "object",
+                          "properties": {
+                            "totalItems": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "totalItems"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "totalItems",
+                        "expense",
+                        "income"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "byCurrency",
+                    "overall"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/statistics/accounts": {
+      "get": {
+        "summary": "Get account balance statistics",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Return transaction balances grouped by account and currency.",
+        "parameters": [
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "expense",
+                "income"
+              ]
+            },
+            "in": "query",
+            "name": "transactionType",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "currency",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "baseCurrency",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "currencies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "currency": {
+                            "type": "string"
+                          },
+                          "totalAmount": {
+                            "type": "number"
+                          },
+                          "totalItems": {
+                            "type": "number"
+                          },
+                          "normalizedTotalAmount": {
+                            "type": "number"
+                          },
+                          "accounts": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "accountId": {
+                                  "type": "string"
+                                },
+                                "accountName": {
+                                  "type": "string"
+                                },
+                                "accountType": {
+                                  "type": "string",
+                                  "enum": [
+                                    "user",
+                                    "system"
+                                  ]
+                                },
+                                "totalAmount": {
+                                  "type": "number"
+                                },
+                                "totalItems": {
+                                  "type": "number"
+                                },
+                                "normalizedTotalAmount": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "accountId",
+                                "accountName",
+                                "accountType",
+                                "totalAmount",
+                                "totalItems"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "currency",
+                          "totalAmount",
+                          "totalItems",
+                          "accounts"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "normalizedBaseCurrency": {
+                      "type": "string"
+                    },
+                    "normalizedTotalAmount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "currencies"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/statistics": {
+      "get": {
+        "summary": "Get transaction statistics",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Return statistics grouped by time period.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "categoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "paymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "accountIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeCategoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludePaymentMethodIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeAccountIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "year",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "in": "query",
+            "name": "month",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "expense",
+                "income"
+              ]
+            },
+            "in": "query",
+            "name": "transactionType",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "currency",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "totalAmount": {
+                          "type": "number"
+                        },
+                        "totalItems": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "totalAmount",
+                        "totalItems"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "allTime": {
+                          "type": "object",
+                          "properties": {
+                            "totalAmount": {
+                              "type": "number"
+                            },
+                            "totalItems": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "totalAmount",
+                            "totalItems"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "monthly": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "totalAmount": {
+                                "type": "number"
+                              },
+                              "totalItems": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "totalAmount",
+                              "totalItems"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "allTime",
+                        "monthly"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "allTime": {
+                          "type": "object",
+                          "properties": {
+                            "totalAmount": {
+                              "type": "number"
+                            },
+                            "totalItems": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "totalAmount",
+                            "totalItems"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "yearly": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "totalAmount": {
+                                "type": "number"
+                              },
+                              "totalItems": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "totalAmount",
+                              "totalItems"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "allTime",
+                        "yearly"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/trash/{id}": {
+      "get": {
+        "summary": "Get trashed transaction by id",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Return a single trashed transaction by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrashedTransactionDetailsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete trashed transaction permanently",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Permanently delete a trashed transaction by id. Linked transaction is deleted as well.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/trash/{id}/restore": {
+      "post": {
+        "summary": "Restore trashed transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Restore a trashed transaction by id. Linked transaction is restored as well.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "matchedCount": {
+                      "type": "number"
+                    },
+                    "modifiedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "matchedCount",
+                    "modifiedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/trash/restore": {
+      "post": {
+        "summary": "Restore all trashed transactions",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Restore all trashed transactions for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "matchedCount": {
+                      "type": "number"
+                    },
+                    "modifiedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "matchedCount",
+                    "modifiedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/{id}": {
+      "get": {
+        "summary": "Get transaction by id",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Return a single transaction by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionDetailsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Move a transaction to trash by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "matchedCount": {
+                      "type": "number"
+                    },
+                    "modifiedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "matchedCount",
+                    "modifiedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/standard": {
+      "post": {
+        "summary": "Create standard transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Create a standard transaction.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionStandardInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/bulk": {
+      "post": {
+        "summary": "Create transactions in bulk",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Create multiple transactions at once. Standard transactions create one entry, exchange and transfer transactions create linked pairs.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionBulkCreateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/exchange": {
+      "post": {
+        "summary": "Create exchange transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Create an exchange transaction (two linked entries).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionExchangeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/transfer": {
+      "post": {
+        "summary": "Create transfer transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Create a transfer transaction (two linked entries).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionTransferInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/standard/{id}": {
+      "put": {
+        "summary": "Update standard transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Update a standard transaction by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionStandardInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/transfer/{id}": {
+      "put": {
+        "summary": "Update transfer transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Update a transfer transaction by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionTransferInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/exchange/{id}": {
+      "put": {
+        "summary": "Update exchange transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Update an exchange transaction by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionExchangeInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/test": {
+      "post": {
+        "summary": "Create test transactions",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Create test transactions for the authenticated user (only if none exist).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestTransactionsCreateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestTransactionsCreateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
