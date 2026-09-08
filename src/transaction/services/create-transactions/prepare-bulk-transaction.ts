@@ -27,6 +27,7 @@ export const prepareBulkStandardTransaction = async (
 
   return {
     ...dto,
+    kind: 'standard',
     categoryId,
     paymentMethodId,
     accountId,

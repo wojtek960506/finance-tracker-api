@@ -1,23 +1,21 @@
 import {
+  TransactionBulkItemExchangeDTO,
+  TransactionBulkItemStandardDTO,
+  TransactionBulkItemTransferDTO,
   TransactionCreateBulkItemDTO,
-  TransactionExchangeDTO,
-  TransactionStandardDTO,
-  TransactionTransferDTO,
 } from '@transaction/schema';
 
 export const isExchangeTransactionDTO = (
   dto: TransactionCreateBulkItemDTO,
-): dto is TransactionExchangeDTO => dto.kind === 'exchange' || 'currencyExpense' in dto;
+): dto is TransactionBulkItemExchangeDTO => dto.kind === 'exchange';
 
 export const isStandardTransactionDTO = (
   dto: TransactionCreateBulkItemDTO,
-): dto is TransactionStandardDTO => dto.kind === 'standard' || 'transactionType' in dto;
+): dto is TransactionBulkItemStandardDTO => dto.kind === 'standard';
 
 export const isTransferTransactionDTO = (
   dto: TransactionCreateBulkItemDTO,
-): dto is TransactionTransferDTO =>
-  dto.kind === 'transfer' ||
-  (!isExchangeTransactionDTO(dto) && !isStandardTransactionDTO(dto));
+): dto is TransactionBulkItemTransferDTO => dto.kind === 'transfer';
 
 export const countPreparedTransactions = (dto: TransactionCreateBulkItemDTO) =>
-  isStandardTransactionDTO(dto) ? 1 : 2;
+  dto.kind === 'transfer' || dto.kind === 'exchange' ? 2 : 1;

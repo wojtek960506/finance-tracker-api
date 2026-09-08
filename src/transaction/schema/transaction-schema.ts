@@ -22,7 +22,6 @@ const TransactionCommonSchema = z.object({
  * Used for POST /transactions/standard and PUT /transactions/standard
  */
 export const TransactionStandardSchema = TransactionCommonSchema.extend({
-  kind: z.literal('standard').optional().default('standard'),
   amount: z.number().min(0, 'Amount must be non-negative'),
   currency: CurrencyCodeSchema,
   categoryId: OptionalObjectIdSchema,
@@ -36,7 +35,6 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/exchange and PUT /transactions/exchange
  */
 export const TransactionExchangeSchema = TransactionCommonSchema.extend({
-  kind: z.literal('exchange').optional().default('exchange'),
   amountExpense: z.number().min(0, 'Amount of expense in exchange must be non-negative'),
   amountIncome: z.number().min(0, 'Amount of income in exchange must be non-negative'),
   currencyExpense: CurrencyCodeSchema,
@@ -51,7 +49,6 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/transfer and PUT /transactions/transfer
  */
 export const TransactionTransferSchema = TransactionCommonSchema.extend({
-  kind: z.literal('transfer').optional().default('transfer'),
   amount: z.number().min(0, 'Amount must be non-negative'),
   currency: CurrencyCodeSchema,
   accountExpenseId: OptionalObjectIdSchema,
@@ -59,40 +56,29 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
   paymentMethodId: OptionalObjectIdSchema,
 });
 
-export const TransactionCreateBulkItemSchema = z.unknown().transform((value, ctx) => {
-  const schema =
-    value && typeof value === 'object' && value !== null && 'kind' in value
-      ? value.kind === 'exchange'
-        ? TransactionExchangeSchema
-        : value.kind === 'transfer'
-          ? TransactionTransferSchema
-          : TransactionStandardSchema
-      : value && typeof value === 'object' && value !== null && 'currencyExpense' in value
-        ? TransactionExchangeSchema
-        : value &&
-            typeof value === 'object' &&
-            value !== null &&
-            'transactionType' in value
-          ? TransactionStandardSchema
-          : TransactionTransferSchema;
-
-  const parsed = schema.safeParse(value);
-  if (!parsed.success) {
-    for (const issue of parsed.error.issues) {
-      ctx.addIssue({ ...issue });
-    }
-    return z.NEVER;
-  }
-
-  return parsed.data;
+export const TransactionBulkItemStandardSchema = TransactionStandardSchema.extend({
+  kind: z.literal('standard'),
 });
+
+export const TransactionBulkItemExchangeSchema = TransactionExchangeSchema.extend({
+  kind: z.literal('exchange'),
+});
+
+export const TransactionBulkItemTransferSchema = TransactionTransferSchema.extend({
+  kind: z.literal('transfer'),
+});
+
+export const TransactionCreateBulkItemSchema = z.discriminatedUnion('kind', [
+  TransactionBulkItemStandardSchema,
+  TransactionBulkItemExchangeSchema,
+  TransactionBulkItemTransferSchema,
+]);
 
 export const TransactionBulkCreateSchema = z.object({
   transactions: z.array(TransactionCreateBulkItemSchema).min(1),
 });
 
 export const TransactionResponseSchema = TransactionStandardSchema.omit({
-  kind: true,
   categoryId: true,
   paymentMethodId: true,
   accountId: true,
@@ -158,6 +144,15 @@ export const TestTransactionsCreateResponseSchema = z.object({
 export type TransactionStandardDTO = z.infer<typeof TransactionStandardSchema>;
 export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
+export type TransactionBulkItemStandardDTO = z.infer<
+  typeof TransactionBulkItemStandardSchema
+>;
+export type TransactionBulkItemExchangeDTO = z.infer<
+  typeof TransactionBulkItemExchangeSchema
+>;
+export type TransactionBulkItemTransferDTO = z.infer<
+  typeof TransactionBulkItemTransferSchema
+>;
 export type TransactionCreateBulkItemDTO = z.infer<
   typeof TransactionCreateBulkItemSchema
 >;
