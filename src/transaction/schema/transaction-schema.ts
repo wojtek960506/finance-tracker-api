@@ -2,7 +2,9 @@ import { z } from 'zod/v4';
 
 import { CurrencyCodeSchema } from '@currency/schema';
 import { NamedResourceResponseSchema } from '@named-resource';
-import { OBJECT_ID_REGEX, TRANSACTION_TYPES } from '@utils/consts';
+import { OBJECT_ID_REGEX, TRANSACTION_KINDS, TRANSACTION_TYPES } from '@utils/consts';
+
+export const TransactionKindSchema = z.enum([...TRANSACTION_KINDS]);
 
 const OptionalObjectIdSchema = z
   .string()
@@ -20,6 +22,7 @@ const TransactionCommonSchema = z.object({
  * Used for POST /transactions/standard and PUT /transactions/standard
  */
 export const TransactionStandardSchema = TransactionCommonSchema.extend({
+  kind: z.literal('standard').optional().default('standard'),
   amount: z.number().min(0, 'Amount must be non-negative'),
   currency: CurrencyCodeSchema,
   categoryId: OptionalObjectIdSchema,
@@ -33,6 +36,7 @@ export const TransactionStandardSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/exchange and PUT /transactions/exchange
  */
 export const TransactionExchangeSchema = TransactionCommonSchema.extend({
+  kind: z.literal('exchange').optional().default('exchange'),
   amountExpense: z.number().min(0, 'Amount of expense in exchange must be non-negative'),
   amountIncome: z.number().min(0, 'Amount of income in exchange must be non-negative'),
   currencyExpense: CurrencyCodeSchema,
@@ -47,6 +51,7 @@ export const TransactionExchangeSchema = TransactionCommonSchema.extend({
  * Used for POST /transactions/transfer and PUT /transactions/transfer
  */
 export const TransactionTransferSchema = TransactionCommonSchema.extend({
+  kind: z.literal('transfer').optional().default('transfer'),
   amount: z.number().min(0, 'Amount must be non-negative'),
   currency: CurrencyCodeSchema,
   accountExpenseId: OptionalObjectIdSchema,
@@ -56,11 +61,20 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
 
 export const TransactionCreateBulkItemSchema = z.unknown().transform((value, ctx) => {
   const schema =
-    value && typeof value === 'object' && value !== null && 'currencyExpense' in value
-      ? TransactionExchangeSchema
-      : value && typeof value === 'object' && value !== null && 'transactionType' in value
-        ? TransactionStandardSchema
-        : TransactionTransferSchema;
+    value && typeof value === 'object' && value !== null && 'kind' in value
+      ? value.kind === 'exchange'
+        ? TransactionExchangeSchema
+        : value.kind === 'transfer'
+          ? TransactionTransferSchema
+          : TransactionStandardSchema
+      : value && typeof value === 'object' && value !== null && 'currencyExpense' in value
+        ? TransactionExchangeSchema
+        : value &&
+            typeof value === 'object' &&
+            value !== null &&
+            'transactionType' in value
+          ? TransactionStandardSchema
+          : TransactionTransferSchema;
 
   const parsed = schema.safeParse(value);
   if (!parsed.success) {
@@ -78,11 +92,13 @@ export const TransactionBulkCreateSchema = z.object({
 });
 
 export const TransactionResponseSchema = TransactionStandardSchema.omit({
+  kind: true,
   categoryId: true,
   paymentMethodId: true,
   accountId: true,
 }).extend({
   id: z.string(),
+  kind: TransactionKindSchema,
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

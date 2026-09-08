@@ -7,16 +7,17 @@ import {
 
 export const isExchangeTransactionDTO = (
   dto: TransactionCreateBulkItemDTO,
-): dto is TransactionExchangeDTO => 'currencyExpense' in dto;
+): dto is TransactionExchangeDTO => dto.kind === 'exchange' || 'currencyExpense' in dto;
 
 export const isStandardTransactionDTO = (
   dto: TransactionCreateBulkItemDTO,
-): dto is TransactionStandardDTO => 'transactionType' in dto;
+): dto is TransactionStandardDTO => dto.kind === 'standard' || 'transactionType' in dto;
 
 export const isTransferTransactionDTO = (
   dto: TransactionCreateBulkItemDTO,
 ): dto is TransactionTransferDTO =>
-  !isExchangeTransactionDTO(dto) && !isStandardTransactionDTO(dto);
+  dto.kind === 'transfer' ||
+  (!isExchangeTransactionDTO(dto) && !isStandardTransactionDTO(dto));
 
 export const countPreparedTransactions = (dto: TransactionCreateBulkItemDTO) =>
   isStandardTransactionDTO(dto) ? 1 : 2;

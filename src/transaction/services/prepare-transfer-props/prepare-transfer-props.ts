@@ -31,6 +31,7 @@ export function prepareTransferProps(
   const { categoryId } = objectIds;
 
   const commonTransactionProps = {
+    kind: 'transfer' as const,
     categoryId,
     date: body.date,
     amount: body.amount,

@@ -345,7 +345,7 @@ describe('transaction routes', async () => {
     vi.spyOn(serviceT, serviceName).mockResolvedValue(mockedResult as any);
     const response = await app.inject({ method: 'POST', url: `/${kind}`, body });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();
-    expect(serviceT[serviceName]).toHaveBeenCalledWith(body, USER_ID_STR);
+    expect(serviceT[serviceName]).toHaveBeenCalledWith({ ...body, kind }, USER_ID_STR);
     expect(response.statusCode).toBe(201);
     expect(response.json()).toEqual(mockedResult);
   });
@@ -359,7 +359,16 @@ describe('transaction routes', async () => {
     const response = await app.inject({ method: 'POST', url: '/bulk', body });
 
     expect(serviceT.createTransactions).toHaveBeenCalledOnce();
-    expect(serviceT.createTransactions).toHaveBeenCalledWith(body, USER_ID_STR);
+    expect(serviceT.createTransactions).toHaveBeenCalledWith(
+      {
+        transactions: [
+          { ...standardDTO, kind: 'standard' },
+          { ...exchangeDTO, kind: 'exchange' },
+          { ...transferDTO, kind: 'transfer' },
+        ],
+      },
+      USER_ID_STR,
+    );
     expect(response.statusCode).toBe(201);
     expect(response.json()).toEqual(mockedResult);
   });
@@ -389,7 +398,10 @@ describe('transaction routes', async () => {
     vi.spyOn(serviceT, serviceName).mockResolvedValue(mockedResult as any);
     const response = await app.inject({ method: 'PUT', url: `/${kind}/${T_ID}`, body });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();
-    expect(serviceT[serviceName]).toHaveBeenCalledWith(T_ID, USER_ID_STR, body);
+    expect(serviceT[serviceName]).toHaveBeenCalledWith(T_ID, USER_ID_STR, {
+      ...body,
+      kind,
+    });
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(mockedResult);
   });

@@ -23,6 +23,7 @@ export const prepareRandomStandardTransaction = (
     `- ${date.toISOString().slice(0, 10)}`;
 
   return {
+    kind: 'standard' as const,
     date,
     amount,
     accountId,

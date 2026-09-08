@@ -57,6 +57,7 @@ export function getTransferTransactionProps(isCreate: true): {
 };
 export function getTransferTransactionProps(isCreate?: true) {
   const commonProps = {
+    kind: 'transfer' as const,
     date: DATE_OBJ,
     amount: AMOUNT_EXPENSE,
     currency: CURRENCY_EXPENSE,

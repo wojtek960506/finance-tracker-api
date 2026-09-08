@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
 import dotenv from 'dotenv';
 
 import { buildApp } from '../src/app/app.js';
-import { getEnv } from '../src/app/config/index.js';
 import type { EnvType } from '../src/app/config/env.js';
+import { getEnv } from '../src/app/config/index.js';
 
 dotenv.config();
 

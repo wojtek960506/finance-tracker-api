@@ -40,6 +40,7 @@ describe('prepareRandomExchangeTransactionPair', () => {
     expect(randomNumber).toHaveBeenNthCalledWith(2, 10, 10000);
     expect(randomFromSet).toHaveBeenCalledTimes(2);
     expect(expense).toEqual({
+      kind: 'exchange',
       date: TEST_DATE,
       amount: 100,
       accountId: 'acc-1',
@@ -55,6 +56,7 @@ describe('prepareRandomExchangeTransactionPair', () => {
       description: 'PLN -> USD',
     });
     expect(income).toEqual({
+      kind: 'exchange',
       date: TEST_DATE,
       amount: 20,
       accountId: 'acc-1',

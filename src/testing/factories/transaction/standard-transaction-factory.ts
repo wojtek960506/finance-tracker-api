@@ -25,6 +25,7 @@ import {
 } from '@testing/factories/transaction';
 
 export const getStandardTransactionDTO = () => ({
+  kind: 'standard' as const,
   date: DATE_OBJ,
   amount: AMOUNT_EXPENSE,
   description: DESCRPTION,
@@ -37,6 +38,7 @@ export const getStandardTransactionDTO = () => ({
 
 export const getStandardTransactionProps = () => ({
   ...getStandardTransactionDTO(),
+  kind: 'standard' as const,
   ownerId: USER_ID_STR,
   sourceIndex: STANDARD_TXN_SRC_IDX,
 });

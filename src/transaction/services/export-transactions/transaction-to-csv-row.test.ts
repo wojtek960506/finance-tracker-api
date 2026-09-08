@@ -12,7 +12,7 @@ import { getStandardTransactionProps } from '@testing/factories/transaction';
 import { transactionToCsvRow } from './transaction-to-csv-row';
 
 describe('transactionToCsvRow', () => {
-  const { ownerId, categoryId, paymentMethodId, accountId, ...transaction } =
+  const { ownerId, categoryId, paymentMethodId, accountId, kind, ...transaction } =
     getStandardTransactionProps();
   const categoriesMap = { [FOOD_CATEGORY_ID_STR]: { name: FOOD_CATEGORY_NAME } };
   const paymentMethodsMap = {

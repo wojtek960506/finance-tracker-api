@@ -1,6 +1,7 @@
 import { TransactionStandardDTO } from '@transaction/schema';
 
-export type RandomStandardTransaction = TransactionStandardDTO & {
+export type RandomStandardTransaction = Omit<TransactionStandardDTO, 'kind'> & {
+  kind: 'standard';
   ownerId: string;
   sourceIndex: number;
   sourceRefIndex?: number;
@@ -8,8 +9,9 @@ export type RandomStandardTransaction = TransactionStandardDTO & {
 
 export type RandomTransferTransaction = Omit<
   RandomStandardTransaction,
-  'sourceRefIndex'
+  'sourceRefIndex' | 'kind'
 > & {
+  kind: 'transfer';
   sourceRefIndex: number;
 };
 
@@ -18,7 +20,8 @@ export type RandomTransferTransactionPair = [
   RandomTransferTransaction,
 ];
 
-export type RandomExchangeTransaction = RandomTransferTransaction & {
+export type RandomExchangeTransaction = Omit<RandomTransferTransaction, 'kind'> & {
+  kind: 'exchange';
   currencies: string;
   exchangeRate: number;
 };

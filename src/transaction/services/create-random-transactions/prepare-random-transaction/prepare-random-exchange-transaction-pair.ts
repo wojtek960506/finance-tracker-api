@@ -28,6 +28,7 @@ export const prepareRandomExchangeTransactionPair = (
   const description = `${currencyExpense} -> ${currencyIncome}`;
 
   const commonProps = {
+    kind: 'exchange' as const,
     date,
     accountId,
     ownerId,

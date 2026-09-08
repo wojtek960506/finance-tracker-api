@@ -33,6 +33,7 @@ export function prepareExchangeProps(
 
   // TODO - probably paymentMethodId has to be placed in 'objectIds`
   const commonTransactionProps = {
+    kind: 'exchange' as const,
     categoryId,
     date: dto.date,
     paymentMethodId: dto.paymentMethodId,

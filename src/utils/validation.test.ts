@@ -70,7 +70,14 @@ describe('validation', () => {
 
       await validateFunc(req as any, {} as any);
 
-      expect(req[reqKey]).toEqual(reqValue);
+      expect(req[reqKey]).toEqual(
+        reqKey === 'body'
+          ? {
+              kind: schema === TransactionTransferSchema ? 'transfer' : 'standard',
+              ...reqValue,
+            }
+          : reqValue,
+      );
     },
   );
 

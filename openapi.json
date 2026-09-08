@@ -273,6 +273,11 @@
             "type": "string",
             "minLength": 1
           },
+          "kind": {
+            "default": "standard",
+            "type": "string",
+            "const": "standard"
+          },
           "amount": {
             "type": "number",
             "minimum": 0
@@ -374,6 +379,11 @@
           "description": {
             "type": "string",
             "minLength": 1
+          },
+          "kind": {
+            "default": "exchange",
+            "type": "string",
+            "const": "exchange"
           },
           "amountExpense": {
             "type": "number",
@@ -515,6 +525,11 @@
           "description": {
             "type": "string",
             "minLength": 1
+          },
+          "kind": {
+            "default": "transfer",
+            "type": "string",
+            "const": "transfer"
           },
           "amount": {
             "type": "number",
@@ -681,6 +696,15 @@
           "id": {
             "type": "string"
           },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
+          },
           "ownerId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
@@ -791,6 +815,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
@@ -862,6 +887,15 @@
           },
           "id": {
             "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
           },
           "ownerId": {
             "type": "string",
@@ -976,6 +1010,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
@@ -1058,6 +1093,15 @@
           },
           "id": {
             "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
           },
           "ownerId": {
             "type": "string",
@@ -1172,6 +1216,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
@@ -1244,6 +1289,15 @@
           },
           "id": {
             "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
           },
           "ownerId": {
             "type": "string",
@@ -1361,6 +1415,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
@@ -1688,6 +1743,11 @@
             "type": "string",
             "minLength": 1
           },
+          "kind": {
+            "default": "standard",
+            "type": "string",
+            "const": "standard"
+          },
           "amount": {
             "type": "number",
             "minimum": 0
@@ -1777,6 +1837,7 @@
         "required": [
           "date",
           "description",
+          "kind",
           "amount",
           "currency",
           "transactionType"
@@ -1793,6 +1854,11 @@
           "description": {
             "type": "string",
             "minLength": 1
+          },
+          "kind": {
+            "default": "exchange",
+            "type": "string",
+            "const": "exchange"
           },
           "amountExpense": {
             "type": "number",
@@ -1921,6 +1987,7 @@
         "required": [
           "date",
           "description",
+          "kind",
           "amountExpense",
           "amountIncome",
           "currencyExpense",
@@ -1938,6 +2005,11 @@
           "description": {
             "type": "string",
             "minLength": 1
+          },
+          "kind": {
+            "default": "transfer",
+            "type": "string",
+            "const": "transfer"
           },
           "amount": {
             "type": "number",
@@ -2021,6 +2093,7 @@
         "required": [
           "date",
           "description",
+          "kind",
           "amount",
           "currency"
         ],
@@ -2108,6 +2181,15 @@
           },
           "id": {
             "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
           },
           "ownerId": {
             "type": "string",
@@ -2228,6 +2310,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
@@ -2303,6 +2386,15 @@
           },
           "id": {
             "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
           },
           "ownerId": {
             "type": "string",
@@ -2426,6 +2518,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
@@ -2519,6 +2612,15 @@
           },
           "id": {
             "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
           },
           "ownerId": {
             "type": "string",
@@ -2642,6 +2744,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
@@ -2718,6 +2821,15 @@
           },
           "id": {
             "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "exchange",
+              "transfer",
+              "investment"
+            ]
           },
           "ownerId": {
             "type": "string",
@@ -2844,6 +2956,7 @@
           "currency",
           "transactionType",
           "id",
+          "kind",
           "ownerId",
           "createdAt",
           "updatedAt",
