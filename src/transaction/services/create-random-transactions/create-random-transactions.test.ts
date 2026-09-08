@@ -107,14 +107,11 @@ describe('createRandomTransactions', () => {
       transactionDate: TEST_DATE,
     };
 
-    (categoryImpl as Mock)
-      .mockResolvedValueOnce(TEST_CATEGORIES[0])
-      .mockResolvedValueOnce(TEST_CATEGORIES[1])
-      .mockResolvedValueOnce(TEST_CATEGORIES[2])
-      .mockResolvedValueOnce(TEST_CATEGORIES[3])
-      .mockResolvedValueOnce(TEST_CATEGORIES[4])
-      .mockResolvedValueOnce(TEST_CATEGORIES[5])
-      .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (categoryImpl as Mock).mockImplementation((_ownerId, name) =>
+      Promise.resolve(
+        TEST_CATEGORIES.find((c) => c.name === name) || { id: `cat-${name}`, name },
+      ),
+    );
     (paymentMethodImpl as Mock)
       .mockResolvedValueOnce(paymentMethod)
       .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
@@ -157,7 +154,7 @@ describe('createRandomTransactions', () => {
 
     const result = await createRandomTransactions(TEST_OWNER_ID, 5, session);
 
-    expect(categoryImpl).toHaveBeenCalledTimes(8);
+    expect(categoryImpl).toHaveBeenCalledTimes(TEST_CATEGORIES.length);
     expect(randomFromSet).toHaveBeenCalledTimes(12);
     expect(prepareRandomStandardTransaction).toHaveBeenCalledOnce();
     expect(prepareRandomStandardTransaction).toHaveBeenCalledWith(
@@ -263,14 +260,11 @@ describe('createRandomTransactions', () => {
       transactionDate: TEST_DATE,
     };
 
-    (categoryImpl as Mock)
-      .mockResolvedValueOnce(TEST_CATEGORIES[0])
-      .mockResolvedValueOnce(TEST_CATEGORIES[1])
-      .mockResolvedValueOnce(TEST_CATEGORIES[2])
-      .mockResolvedValueOnce(TEST_CATEGORIES[3])
-      .mockResolvedValueOnce(TEST_CATEGORIES[4])
-      .mockResolvedValueOnce(TEST_CATEGORIES[5])
-      .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+    (categoryImpl as Mock).mockImplementation((_ownerId, name) =>
+      Promise.resolve(
+        TEST_CATEGORIES.find((c) => c.name === name) || { id: `cat-${name}`, name },
+      ),
+    );
     (paymentMethodImpl as Mock)
       .mockResolvedValueOnce(paymentMethod)
       .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })
@@ -336,14 +330,11 @@ describe('createRandomTransactions', () => {
         transactionDate: TEST_DATE,
       };
 
-      (categoryImpl as Mock)
-        .mockResolvedValueOnce(TEST_CATEGORIES[0])
-        .mockResolvedValueOnce(TEST_CATEGORIES[1])
-        .mockResolvedValueOnce(TEST_CATEGORIES[2])
-        .mockResolvedValueOnce(TEST_CATEGORIES[3])
-        .mockResolvedValueOnce(TEST_CATEGORIES[4])
-        .mockResolvedValueOnce(TEST_CATEGORIES[5])
-        .mockResolvedValueOnce(TEST_CATEGORIES[6]);
+      (categoryImpl as Mock).mockImplementation((_ownerId, name) =>
+        Promise.resolve(
+          TEST_CATEGORIES.find((c) => c.name === name) || { id: `cat-${name}`, name },
+        ),
+      );
       (paymentMethodImpl as Mock)
         .mockResolvedValueOnce(paymentMethod)
         .mockResolvedValueOnce({ id: 'pm-cash', name: 'cash' })

@@ -26,6 +26,8 @@ import {
   TransactionExchangeSchema,
   TransactionFiltersQuery,
   TransactionFiltersQuerySchema,
+  TransactionInvestmentDTO,
+  TransactionInvestmentSchema,
   TransactionQuery,
   TransactionQuerySchema,
   TransactionResponseDTO,
@@ -454,6 +456,23 @@ export async function transactionRoutes(
     createTransactionHandler,
   );
 
+  app.post<{ Body: TransactionInvestmentDTO; Reply: TransactionResponseDTO }>(
+    '/investment',
+    {
+      preHandler: [validateBody(TransactionInvestmentSchema), authorizeAccessToken()],
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Create investment transaction',
+        description: 'Create an investment transaction linked to an instrument.',
+        body: TransactionInvestmentSchema,
+        response: {
+          201: TransactionResponseSchema,
+        },
+      },
+    },
+    createTransactionHandler,
+  );
+
   app.put<{
     Params: ParamsJustId;
     Body: TransactionStandardDTO;
@@ -468,6 +487,28 @@ export async function transactionRoutes(
         description: 'Update a standard transaction by id.',
         params: ParamsJustIdSchema,
         body: TransactionStandardSchema,
+        response: {
+          200: TransactionResponseSchema,
+        },
+      },
+    },
+    updateTransactionHandler,
+  );
+
+  app.put<{
+    Params: ParamsJustId;
+    Body: TransactionInvestmentDTO;
+    Reply: TransactionResponseDTO;
+  }>(
+    '/investment/:id',
+    {
+      preHandler: [validateBody(TransactionInvestmentSchema), authorizeAccessToken()],
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Update investment transaction',
+        description: 'Update an investment transaction by id.',
+        params: ParamsJustIdSchema,
+        body: TransactionInvestmentSchema,
         response: {
           200: TransactionResponseSchema,
         },

@@ -1,3 +1,5 @@
+import { ClientSession } from 'mongoose';
+
 import { ITransaction } from '@transaction/model';
 import { TransactionStandardDTO } from '@transaction/schema';
 import { serializeTransaction } from '@transaction/serializers';
@@ -5,9 +7,10 @@ import { serializeTransaction } from '@transaction/serializers';
 export const saveTransactionChanges = async (
   transaction: ITransaction,
   newProps: TransactionStandardDTO,
+  session?: ClientSession,
 ) => {
   Object.assign(transaction, newProps);
-  await transaction.save();
+  await transaction.save({ session });
   await transaction.populate([
     { path: 'categoryId', select: '_id type name' },
     { path: 'paymentMethodId', select: '_id type name' },

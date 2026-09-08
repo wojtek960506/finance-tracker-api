@@ -14,6 +14,18 @@ export type TransactionTransferCreateProps = Omit<
   sourceRefIndex: number;
 };
 
+export type TransactionInvestmentCreateProps = Omit<
+  TransactionStandardCreateProps,
+  'kind'
+> & {
+  kind: 'investment';
+  investment?: {
+    instrumentId: string;
+    operationKind: 'buy' | 'sell' | 'interest' | 'fee';
+    note?: string;
+  };
+};
+
 export type TransactionExchangeCreateProps = Omit<
   TransactionTransferCreateProps,
   'kind'

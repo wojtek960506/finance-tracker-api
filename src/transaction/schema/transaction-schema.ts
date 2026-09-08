@@ -56,6 +56,23 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
   paymentMethodId: OptionalObjectIdSchema,
 });
 
+export const TransactionInvestmentDetailsSchema = z.object({
+  instrumentId: z
+    .string()
+    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `instrumentId`'),
+  operationKind: z.enum(['buy', 'sell', 'interest', 'fee']),
+  note: z.string().max(500).optional(),
+});
+
+/**
+ * Schema for investment transaction
+ * Used for POST /transactions/investment and PUT /transactions/investment
+ */
+export const TransactionInvestmentSchema = TransactionStandardSchema.extend({
+  transactionType: z.enum([...TRANSACTION_TYPES]).optional(),
+  investment: TransactionInvestmentDetailsSchema,
+});
+
 export const TransactionBulkItemStandardSchema = TransactionStandardSchema.extend({
   kind: z.literal('standard'),
 });
@@ -68,10 +85,15 @@ export const TransactionBulkItemTransferSchema = TransactionTransferSchema.exten
   kind: z.literal('transfer'),
 });
 
+export const TransactionBulkItemInvestmentSchema = TransactionInvestmentSchema.extend({
+  kind: z.literal('investment'),
+});
+
 export const TransactionCreateBulkItemSchema = z.discriminatedUnion('kind', [
   TransactionBulkItemStandardSchema,
   TransactionBulkItemExchangeSchema,
   TransactionBulkItemTransferSchema,
+  TransactionBulkItemInvestmentSchema,
 ]);
 
 export const TransactionBulkCreateSchema = z.object({
@@ -144,6 +166,7 @@ export const TestTransactionsCreateResponseSchema = z.object({
 export type TransactionStandardDTO = z.infer<typeof TransactionStandardSchema>;
 export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
+export type TransactionInvestmentDTO = z.infer<typeof TransactionInvestmentSchema>;
 export type TransactionBulkItemStandardDTO = z.infer<
   typeof TransactionBulkItemStandardSchema
 >;
@@ -152,6 +175,9 @@ export type TransactionBulkItemExchangeDTO = z.infer<
 >;
 export type TransactionBulkItemTransferDTO = z.infer<
   typeof TransactionBulkItemTransferSchema
+>;
+export type TransactionBulkItemInvestmentDTO = z.infer<
+  typeof TransactionBulkItemInvestmentSchema
 >;
 export type TransactionCreateBulkItemDTO = z.infer<
   typeof TransactionCreateBulkItemSchema
@@ -180,6 +206,7 @@ export type TestTransactionsCreateResponse = z.infer<
 z.globalRegistry.add(TransactionStandardSchema, { id: 'TransactionStandard' });
 z.globalRegistry.add(TransactionExchangeSchema, { id: 'TransactionExchange' });
 z.globalRegistry.add(TransactionTransferSchema, { id: 'TransactionTransfer' });
+z.globalRegistry.add(TransactionInvestmentSchema, { id: 'TransactionInvestment' });
 z.globalRegistry.add(TransactionCreateBulkItemSchema, {
   id: 'TransactionCreateBulkItem',
 });

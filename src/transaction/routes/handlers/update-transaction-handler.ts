@@ -3,11 +3,13 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
 import {
   TransactionExchangeDTO,
+  TransactionInvestmentDTO,
   TransactionStandardDTO,
   TransactionTransferDTO,
 } from '@transaction/schema';
 import {
   updateExchangeTransaction,
+  updateInvestmentTransaction,
   updateStandardTransaction,
   updateTransferTransaction,
 } from '@transaction/services';
@@ -15,7 +17,11 @@ import {
 export const updateTransactionHandler = async (
   req: FastifyRequest<{
     Params: ParamsJustId;
-    Body: TransactionStandardDTO | TransactionExchangeDTO | TransactionTransferDTO;
+    Body:
+      | TransactionStandardDTO
+      | TransactionExchangeDTO
+      | TransactionTransferDTO
+      | TransactionInvestmentDTO;
   }>,
   res: FastifyReply,
 ) => {
@@ -23,7 +29,13 @@ export const updateTransactionHandler = async (
   const userId = (req as AuthenticatedRequest).userId;
   const dto = req.body;
 
-  if ('currencyExpense' in dto) {
+  if ('investment' in dto) {
+    return res
+      .code(200)
+      .send(
+        await updateInvestmentTransaction(id, userId, dto as TransactionInvestmentDTO),
+      );
+  } else if ('currencyExpense' in dto) {
     return res
       .code(200)
       .send(await updateExchangeTransaction(id, userId, dto as TransactionExchangeDTO));

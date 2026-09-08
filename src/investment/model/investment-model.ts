@@ -1,20 +1,15 @@
-import { Document, model, Schema, Types } from 'mongoose';
-
 import {
   InvestmentInstrumentAttributes,
   InvestmentOperationAttributes,
-} from '../types';
+} from '@investment/types';
+import { Document, model, Schema, Types } from 'mongoose';
 
-export interface IInvestmentInstrument
-  extends InvestmentInstrumentAttributes,
-    Document {
+export interface IInvestmentInstrument extends InvestmentInstrumentAttributes, Document {
   __v: number;
   _id: Types.ObjectId;
 }
 
-export interface IInvestmentOperation
-  extends InvestmentOperationAttributes,
-    Document {
+export interface IInvestmentOperation extends InvestmentOperationAttributes, Document {
   __v: number;
   _id: Types.ObjectId;
 }
@@ -34,16 +29,19 @@ const investmentInstrumentSchema = new Schema<IInvestmentInstrument>(
       required: true,
       enum: ['share', 'fund', 'termDeposit', 'savings'],
     },
-    currency: { type: String, required: true, uppercase: true, minlength: 3, maxlength: 3 },
+    currency: {
+      type: String,
+      required: true,
+      uppercase: true,
+      minlength: 3,
+      maxlength: 3,
+    },
     notes: { type: String, required: false, maxlength: 500 },
   },
   { timestamps: true },
 );
 
-investmentInstrumentSchema.index(
-  { ownerId: 1, nameNormalized: 1 },
-  { unique: true },
-);
+investmentInstrumentSchema.index({ ownerId: 1, nameNormalized: 1 }, { unique: true });
 
 const investmentOperationSchema = new Schema<IInvestmentOperation>(
   {
@@ -74,7 +72,13 @@ const investmentOperationSchema = new Schema<IInvestmentOperation>(
       enum: ['buy', 'sell', 'interest', 'fee', 'snapshot'],
     },
     amount: { type: Number, required: true, min: 0 },
-    currency: { type: String, required: true, uppercase: true, minlength: 3, maxlength: 3 },
+    currency: {
+      type: String,
+      required: true,
+      uppercase: true,
+      minlength: 3,
+      maxlength: 3,
+    },
     date: { type: Date, required: true },
     note: { type: String, required: false, maxlength: 500 },
   },

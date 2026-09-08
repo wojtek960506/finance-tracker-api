@@ -3,25 +3,35 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthenticatedRequest } from '@shared/http';
 import {
   TransactionExchangeDTO,
+  TransactionInvestmentDTO,
   TransactionStandardDTO,
   TransactionTransferDTO,
 } from '@transaction/schema';
 import {
   createExchangeTransaction,
+  createInvestmentTransaction,
   createStandardTransaction,
   createTransferTransaction,
 } from '@transaction/services';
 
 export const createTransactionHandler = async (
   req: FastifyRequest<{
-    Body: TransactionStandardDTO | TransactionExchangeDTO | TransactionTransferDTO;
+    Body:
+      | TransactionStandardDTO
+      | TransactionExchangeDTO
+      | TransactionTransferDTO
+      | TransactionInvestmentDTO;
   }>,
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
   const dto = req.body;
 
-  if ('currencyExpense' in dto) {
+  if ('investment' in dto) {
+    return res
+      .code(201)
+      .send(await createInvestmentTransaction(dto as TransactionInvestmentDTO, userId));
+  } else if ('currencyExpense' in dto) {
     return res
       .code(201)
       .send(await createExchangeTransaction(dto as TransactionExchangeDTO, userId));

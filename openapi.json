@@ -14,6 +14,493 @@
       }
     },
     "schemas": {
+      "InvestmentInstrumentInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "currency"
+        ]
+      },
+      "InvestmentInstrumentUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "InvestmentInstrumentResponseInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "name",
+          "kind",
+          "currency",
+          "id",
+          "ownerId",
+          "nameNormalized",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "InvestmentInstrumentListResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/InvestmentInstrumentResponseInput"
+        }
+      },
+      "InvestmentSnapshotOperationInput": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {},
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "instrumentId",
+          "amount",
+          "currency",
+          "date"
+        ]
+      },
+      "InvestmentOperationInput": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee",
+              "snapshot"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {},
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "instrumentId",
+          "kind",
+          "amount",
+          "currency",
+          "date"
+        ]
+      },
+      "InvestmentOperationResponseInput": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee",
+              "snapshot"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {},
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "instrumentId",
+          "kind",
+          "amount",
+          "currency",
+          "date",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "InvestmentOperationListResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/InvestmentOperationResponseInput"
+        }
+      },
       "WelcomeResponseInput": {
         "type": "object",
         "properties": {
@@ -602,6 +1089,134 @@
           "currency"
         ]
       },
+      "TransactionInvestmentInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "categoryId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "investment": {
+            "type": "object",
+            "properties": {
+              "instrumentId": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "operationKind": {
+                "type": "string",
+                "enum": [
+                  "buy",
+                  "sell",
+                  "interest",
+                  "fee"
+                ]
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "instrumentId",
+              "operationKind"
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "investment"
+        ]
+      },
       "TransactionCreateBulkItemInput": {
         "oneOf": [
           {
@@ -953,6 +1568,139 @@
               "description",
               "amount",
               "currency",
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "date": {},
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "EUR",
+                  "PLN",
+                  "GBP",
+                  "JPY",
+                  "CHF",
+                  "CAD",
+                  "AUD",
+                  "NZD",
+                  "SEK",
+                  "NOK",
+                  "DKK",
+                  "CZK",
+                  "HUF",
+                  "RON",
+                  "BGN",
+                  "TRY",
+                  "UAH",
+                  "INR",
+                  "CNY",
+                  "HKD",
+                  "SGD",
+                  "ZAR",
+                  "BRL",
+                  "MXN",
+                  "ARS",
+                  "CLP",
+                  "COP",
+                  "KRW",
+                  "IDR",
+                  "MYR",
+                  "THB",
+                  "AED",
+                  "SAR",
+                  "ILS",
+                  "EGP"
+                ]
+              },
+              "categoryId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "paymentMethodId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "accountId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "transactionType": {
+                "type": "string",
+                "enum": [
+                  "expense",
+                  "income"
+                ]
+              },
+              "investment": {
+                "type": "object",
+                "properties": {
+                  "instrumentId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  "operationKind": {
+                    "type": "string",
+                    "enum": [
+                      "buy",
+                      "sell",
+                      "interest",
+                      "fee"
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "instrumentId",
+                  "operationKind"
+                ]
+              },
+              "kind": {
+                "type": "string",
+                "const": "investment"
+              }
+            },
+            "required": [
+              "date",
+              "description",
+              "amount",
+              "currency",
+              "investment",
               "kind"
             ]
           }
@@ -1801,6 +2549,520 @@
           "insertedCount"
         ]
       },
+      "InvestmentInstrument": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "currency"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentInstrumentUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvestmentInstrumentResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "currency",
+          "id",
+          "ownerId",
+          "nameNormalized",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentInstrumentListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/InvestmentInstrumentResponse"
+        }
+      },
+      "InvestmentSnapshotOperation": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "instrumentId",
+          "amount",
+          "currency",
+          "date"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentOperation": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee",
+              "snapshot"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "instrumentId",
+          "kind",
+          "amount",
+          "currency",
+          "date"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentOperationResponse": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee",
+              "snapshot"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "instrumentId",
+          "kind",
+          "amount",
+          "currency",
+          "date",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentOperationListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/InvestmentOperationResponse"
+        }
+      },
       "WelcomeResponse": {
         "type": "object",
         "properties": {
@@ -2421,6 +3683,139 @@
         ],
         "additionalProperties": false
       },
+      "TransactionInvestment": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "categoryId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "expense",
+              "income"
+            ]
+          },
+          "investment": {
+            "type": "object",
+            "properties": {
+              "instrumentId": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "operationKind": {
+                "type": "string",
+                "enum": [
+                  "buy",
+                  "sell",
+                  "interest",
+                  "fee"
+                ]
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "instrumentId",
+              "operationKind"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "currency",
+          "investment"
+        ],
+        "additionalProperties": false
+      },
       "TransactionCreateBulkItem": {
         "oneOf": [
           {
@@ -2783,6 +4178,144 @@
               "description",
               "amount",
               "currency",
+              "kind"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "EUR",
+                  "PLN",
+                  "GBP",
+                  "JPY",
+                  "CHF",
+                  "CAD",
+                  "AUD",
+                  "NZD",
+                  "SEK",
+                  "NOK",
+                  "DKK",
+                  "CZK",
+                  "HUF",
+                  "RON",
+                  "BGN",
+                  "TRY",
+                  "UAH",
+                  "INR",
+                  "CNY",
+                  "HKD",
+                  "SGD",
+                  "ZAR",
+                  "BRL",
+                  "MXN",
+                  "ARS",
+                  "CLP",
+                  "COP",
+                  "KRW",
+                  "IDR",
+                  "MYR",
+                  "THB",
+                  "AED",
+                  "SAR",
+                  "ILS",
+                  "EGP"
+                ]
+              },
+              "categoryId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "paymentMethodId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "accountId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "transactionType": {
+                "type": "string",
+                "enum": [
+                  "expense",
+                  "income"
+                ]
+              },
+              "investment": {
+                "type": "object",
+                "properties": {
+                  "instrumentId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  "operationKind": {
+                    "type": "string",
+                    "enum": [
+                      "buy",
+                      "sell",
+                      "interest",
+                      "fee"
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "instrumentId",
+                  "operationKind"
+                ],
+                "additionalProperties": false
+              },
+              "kind": {
+                "type": "string",
+                "const": "investment"
+              }
+            },
+            "required": [
+              "date",
+              "description",
+              "amount",
+              "currency",
+              "investment",
               "kind"
             ],
             "additionalProperties": false
@@ -6681,6 +8214,37 @@
         }
       }
     },
+    "/api/transactions/investment": {
+      "post": {
+        "summary": "Create investment transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Create an investment transaction linked to an instrument.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionInvestmentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/transactions/standard/{id}": {
       "put": {
         "summary": "Update standard transaction",
@@ -6694,6 +8258,48 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/TransactionStandardInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transactions/investment/{id}": {
+      "put": {
+        "summary": "Update investment transaction",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Update an investment transaction by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionInvestmentInput"
               }
             }
           }
@@ -6837,6 +8443,358 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TestTransactionsCreateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/investments/instruments/": {
+      "post": {
+        "summary": "Create investment instrument",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Create a new investment instrument (holding/asset).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvestmentInstrumentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentInstrumentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List investment instruments",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Return list of investment instruments for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "share",
+                "fund",
+                "termDeposit",
+                "savings"
+              ]
+            },
+            "in": "query",
+            "name": "kind",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "currency",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentInstrumentListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/investments/instruments/{id}": {
+      "get": {
+        "summary": "Get investment instrument by id",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Return a single investment instrument by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentInstrumentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update investment instrument",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Update an investment instrument by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvestmentInstrumentUpdateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentInstrumentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete investment instrument",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Delete an investment instrument and its associated snapshot operations.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/investments/operations/": {
+      "post": {
+        "summary": "Create snapshot investment operation",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Record a point-in-time balance snapshot for an instrument. Non-snapshot operations (buy, sell, interest, fee) must be created via transactions.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvestmentSnapshotOperationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentOperationResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List investment operations",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Return investment operations filtered by instrument, kind, or date.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "query",
+            "name": "instrumentId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "buy",
+                "sell",
+                "interest",
+                "fee",
+                "snapshot"
+              ]
+            },
+            "in": "query",
+            "name": "kind",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentOperationListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/investments/operations/{id}": {
+      "delete": {
+        "summary": "Delete snapshot investment operation",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Delete a snapshot investment operation. Cash-flow operations linked to transactions cannot be deleted here.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "additionalProperties": false
                 }
               }
             }

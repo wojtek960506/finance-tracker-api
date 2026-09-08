@@ -320,14 +320,23 @@ describe('transaction routes', async () => {
     expect(response.json()).toEqual(standardResponse);
   });
 
+  const investmentDTO = {
+    ...standardDTO,
+    investment: {
+      instrumentId: '507f1f77bcf86cd799439012',
+      operationKind: 'buy',
+    },
+  };
+
   it.each<
     [
-      'standard' | 'exchange' | 'transfer',
-      'standard' | 'exchange' | 'transfer',
+      'standard' | 'exchange' | 'transfer' | 'investment',
+      'standard' | 'exchange' | 'transfer' | 'investment',
       (
         | 'createStandardTransaction'
         | 'createExchangeTransaction'
         | 'createTransferTransaction'
+        | 'createInvestmentTransaction'
       ),
       any,
     ]
@@ -335,9 +344,10 @@ describe('transaction routes', async () => {
     ['standard', 'standard', 'createStandardTransaction', standardDTO],
     ['exchange', 'exchange', 'createExchangeTransaction', exchangeDTO],
     ['transfer', 'transfer', 'createTransferTransaction', transferDTO],
+    ['investment', 'investment', 'createInvestmentTransaction', investmentDTO],
   ])("should create %s transaction - 'POST /%s'", async (kind, _, serviceName, body) => {
     const mockedResult =
-      kind === 'standard'
+      kind === 'standard' || kind === 'investment'
         ? standardResponse
         : kind === 'exchange'
           ? exchangeResponse
@@ -356,9 +366,15 @@ describe('transaction routes', async () => {
         { ...standardDTO, kind: 'standard' },
         { ...exchangeDTO, kind: 'exchange' },
         { ...transferDTO, kind: 'transfer' },
+        { ...investmentDTO, kind: 'investment' },
       ],
     };
-    const mockedResult = [standardResponse, ...exchangeResponse, ...transferResponse];
+    const mockedResult = [
+      standardResponse,
+      ...exchangeResponse,
+      ...transferResponse,
+      standardResponse,
+    ];
 
     vi.spyOn(serviceT, 'createTransactions').mockResolvedValue(mockedResult as any);
 
@@ -372,12 +388,13 @@ describe('transaction routes', async () => {
 
   it.each<
     [
-      'standard' | 'exchange' | 'transfer',
-      'standard' | 'exchange' | 'transfer',
+      'standard' | 'exchange' | 'transfer' | 'investment',
+      'standard' | 'exchange' | 'transfer' | 'investment',
       (
         | 'updateStandardTransaction'
         | 'updateExchangeTransaction'
         | 'updateTransferTransaction'
+        | 'updateInvestmentTransaction'
       ),
       any,
     ]
@@ -385,9 +402,10 @@ describe('transaction routes', async () => {
     ['standard', 'standard', 'updateStandardTransaction', standardDTO],
     ['exchange', 'exchange', 'updateExchangeTransaction', exchangeDTO],
     ['transfer', 'transfer', 'updateTransferTransaction', transferDTO],
+    ['investment', 'investment', 'updateInvestmentTransaction', investmentDTO],
   ])("should update %s transaction - 'PUT /%s'", async (kind, _, serviceName, body) => {
     const mockedResult =
-      kind === 'standard'
+      kind === 'standard' || kind === 'investment'
         ? standardResponse
         : kind === 'exchange'
           ? exchangeResponse

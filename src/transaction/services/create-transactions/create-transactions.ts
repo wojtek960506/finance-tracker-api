@@ -5,11 +5,13 @@ import { getNextSourceIndices } from '@transaction/services/get-next-source-inde
 import {
   countPreparedTransactions,
   isExchangeTransactionDTO,
+  isInvestmentTransactionDTO,
   isStandardTransactionDTO,
   isTransferTransactionDTO,
 } from './get-transaction-bulk-kind';
 import {
   prepareBulkExchangeTransactions,
+  prepareBulkInvestmentTransaction,
   prepareBulkStandardTransaction,
   prepareBulkTransferTransactions,
 } from './prepare-bulk-transaction';
@@ -57,6 +59,19 @@ export const createTransactions = async (
           nextSourceIndices,
           categoryObjectIds,
         )),
+      );
+      continue;
+    }
+
+    if (isInvestmentTransactionDTO(dto)) {
+      const nextSourceIndex = sourceIndices.shift()!;
+      preparedTransactions.push(
+        await prepareBulkInvestmentTransaction(
+          dto,
+          ownerId,
+          nextSourceIndex,
+          categoryObjectIds,
+        ),
       );
       continue;
     }

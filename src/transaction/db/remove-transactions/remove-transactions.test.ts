@@ -1,12 +1,22 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { USER_ID_STR } from '@testing/factories/general';
 import { TransactionModel } from '@transaction/model';
 
 import { removeTransactions } from './remove-transactions';
 
+vi.mock('@investment/model', () => ({
+  InvestmentOperationModel: {
+    deleteMany: vi.fn().mockResolvedValue({ deletedCount: 0 }),
+  },
+}));
+
 describe('removeTransactions', () => {
   const deleteResult = { deletedCount: 100 };
+
+  beforeEach(() => {
+    vi.spyOn(TransactionModel, 'find').mockResolvedValue([] as any);
+  });
 
   afterEach(() => {
     vi.clearAllMocks();

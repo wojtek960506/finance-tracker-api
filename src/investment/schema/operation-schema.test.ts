@@ -1,25 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  InvestmentInstrumentSchema,
   InvestmentOperationSchema,
-} from './investment-schema';
+  InvestmentOperationsQuerySchema,
+  InvestmentSnapshotOperationSchema,
+} from './operation-schema';
 
-describe('investment schema', () => {
-  it('parses investment instrument', () => {
-    expect(
-      InvestmentInstrumentSchema.parse({
-        name: 'VWCE ETF',
-        kind: 'fund',
-        currency: 'PLN',
-      }),
-    ).toEqual({
-      name: 'VWCE ETF',
-      kind: 'fund',
-      currency: 'PLN',
-    });
-  });
-
+describe('investment operation schema', () => {
   it('requires transaction for non-snapshot investment operation', () => {
     expect(() =>
       InvestmentOperationSchema.parse({
@@ -62,5 +49,32 @@ describe('investment schema', () => {
       date: new Date('2026-06-06'),
     });
   });
-});
 
+  it('validates snapshot create DTO', () => {
+    expect(
+      InvestmentSnapshotOperationSchema.parse({
+        instrumentId: '123456789012345678901234',
+        amount: 500,
+        currency: 'USD',
+        date: '2026-07-01',
+      }),
+    ).toEqual({
+      instrumentId: '123456789012345678901234',
+      amount: 500,
+      currency: 'USD',
+      date: new Date('2026-07-01'),
+    });
+  });
+
+  it('validates operations query schema', () => {
+    expect(
+      InvestmentOperationsQuerySchema.parse({
+        instrumentId: '123456789012345678901234',
+        kind: 'buy',
+      }),
+    ).toEqual({
+      instrumentId: '123456789012345678901234',
+      kind: 'buy',
+    });
+  });
+});

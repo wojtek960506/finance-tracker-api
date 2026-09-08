@@ -7,6 +7,7 @@ export const OTHER_ACCOUNT_NAME = 'otherAccount';
 export const SYSTEM_CATEGORY_NAMES = new Set([
   'exchange',
   'myAccount',
+  'investment',
   OTHER_CATEGORY_NAME,
 ]);
 

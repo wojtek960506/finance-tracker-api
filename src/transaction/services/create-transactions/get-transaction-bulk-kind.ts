@@ -1,5 +1,6 @@
 import {
   TransactionBulkItemExchangeDTO,
+  TransactionBulkItemInvestmentDTO,
   TransactionBulkItemStandardDTO,
   TransactionBulkItemTransferDTO,
   TransactionCreateBulkItemDTO,
@@ -16,6 +17,10 @@ export const isStandardTransactionDTO = (
 export const isTransferTransactionDTO = (
   dto: TransactionCreateBulkItemDTO,
 ): dto is TransactionBulkItemTransferDTO => dto.kind === 'transfer';
+
+export const isInvestmentTransactionDTO = (
+  dto: TransactionCreateBulkItemDTO,
+): dto is TransactionBulkItemInvestmentDTO => dto.kind === 'investment';
 
 export const countPreparedTransactions = (dto: TransactionCreateBulkItemDTO) =>
   dto.kind === 'transfer' || dto.kind === 'exchange' ? 2 : 1;
