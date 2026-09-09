@@ -1089,6 +1089,102 @@
           "currency"
         ]
       },
+      "TransactionInvestmentNewInstrumentInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "default": "share",
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "TransactionInvestmentDetailsInput": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "newInstrument": {
+            "$ref": "#/components/schemas/TransactionInvestmentNewInstrumentInput"
+          },
+          "operationKind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "operationKind"
+        ]
+      },
       "TransactionInvestmentInput": {
         "type": "object",
         "properties": {
@@ -1183,30 +1279,7 @@
             ]
           },
           "investment": {
-            "type": "object",
-            "properties": {
-              "instrumentId": {
-                "type": "string",
-                "pattern": "^[0-9a-fA-F]{24}$"
-              },
-              "operationKind": {
-                "type": "string",
-                "enum": [
-                  "buy",
-                  "sell",
-                  "interest",
-                  "fee"
-                ]
-              },
-              "note": {
-                "type": "string",
-                "maxLength": 500
-              }
-            },
-            "required": [
-              "instrumentId",
-              "operationKind"
-            ]
+            "$ref": "#/components/schemas/TransactionInvestmentDetailsInput"
           }
         },
         "required": [
@@ -1665,30 +1738,7 @@
                 ]
               },
               "investment": {
-                "type": "object",
-                "properties": {
-                  "instrumentId": {
-                    "type": "string",
-                    "pattern": "^[0-9a-fA-F]{24}$"
-                  },
-                  "operationKind": {
-                    "type": "string",
-                    "enum": [
-                      "buy",
-                      "sell",
-                      "interest",
-                      "fee"
-                    ]
-                  },
-                  "note": {
-                    "type": "string",
-                    "maxLength": 500
-                  }
-                },
-                "required": [
-                  "instrumentId",
-                  "operationKind"
-                ]
+                "$ref": "#/components/schemas/TransactionInvestmentDetailsInput"
               },
               "kind": {
                 "type": "string",
@@ -3683,6 +3733,105 @@
         ],
         "additionalProperties": false
       },
+      "TransactionInvestmentNewInstrument": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "default": "share",
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "kind"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionInvestmentDetails": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "newInstrument": {
+            "$ref": "#/components/schemas/TransactionInvestmentNewInstrument"
+          },
+          "operationKind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "operationKind"
+        ],
+        "additionalProperties": false
+      },
       "TransactionInvestment": {
         "type": "object",
         "properties": {
@@ -3780,31 +3929,7 @@
             ]
           },
           "investment": {
-            "type": "object",
-            "properties": {
-              "instrumentId": {
-                "type": "string",
-                "pattern": "^[0-9a-fA-F]{24}$"
-              },
-              "operationKind": {
-                "type": "string",
-                "enum": [
-                  "buy",
-                  "sell",
-                  "interest",
-                  "fee"
-                ]
-              },
-              "note": {
-                "type": "string",
-                "maxLength": 500
-              }
-            },
-            "required": [
-              "instrumentId",
-              "operationKind"
-            ],
-            "additionalProperties": false
+            "$ref": "#/components/schemas/TransactionInvestmentDetails"
           }
         },
         "required": [
@@ -4279,31 +4404,7 @@
                 ]
               },
               "investment": {
-                "type": "object",
-                "properties": {
-                  "instrumentId": {
-                    "type": "string",
-                    "pattern": "^[0-9a-fA-F]{24}$"
-                  },
-                  "operationKind": {
-                    "type": "string",
-                    "enum": [
-                      "buy",
-                      "sell",
-                      "interest",
-                      "fee"
-                    ]
-                  },
-                  "note": {
-                    "type": "string",
-                    "maxLength": 500
-                  }
-                },
-                "required": [
-                  "instrumentId",
-                  "operationKind"
-                ],
-                "additionalProperties": false
+                "$ref": "#/components/schemas/TransactionInvestmentDetails"
               },
               "kind": {
                 "type": "string",

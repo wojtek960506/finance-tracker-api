@@ -21,6 +21,7 @@ export type TransactionKind = 'standard' | 'exchange' | 'transfer' | 'investment
 
 1. **Type Definitions / Discriminated Unions**:
    Update frontend TypeScript response definitions to include `kind`. You can now narrow returned transaction types safely via `transaction.kind`:
+
    ```typescript
    if (transaction.kind === 'exchange') {
      // narrowed to Exchange transaction
@@ -39,4 +40,3 @@ export type TransactionKind = 'standard' | 'exchange' | 'transfer' | 'investment
 ## 3. Database Status
 
 Existing database records have been fully backfilled with the appropriate `kind` values.
-
