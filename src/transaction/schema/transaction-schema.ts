@@ -135,13 +135,12 @@ export const TransactionInvestmentResponseDetailsSchema = z.object({
   note: z.string().optional(),
 });
 
-export const TransactionResponseSchema = TransactionStandardSchema.omit({
+const TransactionBaseResponseSchema = TransactionStandardSchema.omit({
   categoryId: true,
   paymentMethodId: true,
   accountId: true,
 }).extend({
   id: z.string(),
-  kind: TransactionKindSchema,
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
@@ -151,35 +150,105 @@ export const TransactionResponseSchema = TransactionStandardSchema.omit({
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `refId`')
     .optional(),
-  currencies: z
-    .string()
-    .min(7, "'currencies' must be in format 'XXX/XXX'")
-    .max(7, "'currencies' must be in format 'XXX/XXX'")
-    .optional(),
-  exchangeRate: z.number().optional(),
   category: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
   paymentMethod: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
   account: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
+});
+
+export const TransactionStandardResponseSchema = TransactionBaseResponseSchema.extend({
+  kind: z.literal('standard'),
+});
+
+export const TransactionTransferResponseSchema = TransactionBaseResponseSchema.extend({
+  kind: z.literal('transfer'),
+});
+
+export const TransactionExchangeResponseSchema = TransactionBaseResponseSchema.extend({
+  kind: z.literal('exchange'),
+  currencies: z
+    .string()
+    .min(7, "'currencies' must be in format 'XXX/XXX'")
+    .max(7, "'currencies' must be in format 'XXX/XXX'"),
+  exchangeRate: z.number(),
+});
+
+export const TransactionInvestmentResponseSchema = TransactionBaseResponseSchema.extend({
+  kind: z.literal('investment'),
   investment: TransactionInvestmentResponseDetailsSchema.optional(),
 });
+
+export const TransactionResponseSchema = z.discriminatedUnion('kind', [
+  TransactionStandardResponseSchema,
+  TransactionTransferResponseSchema,
+  TransactionExchangeResponseSchema,
+  TransactionInvestmentResponseSchema,
+]);
 
 export const TransactionDeletionSchema = z.object({
   deletedAt: z.coerce.date(),
   purgeAt: z.coerce.date(),
 });
 
-export const TransactionDetailsResponseSchema = TransactionResponseSchema.extend({
-  reference: TransactionResponseSchema.optional(),
-});
+export const TransactionTransferDetailsResponseSchema =
+  TransactionTransferResponseSchema.extend({
+    reference: TransactionResponseSchema.optional(),
+  });
 
-export const TrashedTransactionResponseSchema = TransactionResponseSchema.extend({
-  deletion: TransactionDeletionSchema,
-});
+export const TransactionExchangeDetailsResponseSchema =
+  TransactionExchangeResponseSchema.extend({
+    reference: TransactionResponseSchema.optional(),
+  });
 
-export const TrashedTransactionDetailsResponseSchema =
-  TrashedTransactionResponseSchema.extend({
+export const TransactionDetailsResponseSchema = z.discriminatedUnion('kind', [
+  TransactionStandardResponseSchema,
+  TransactionTransferDetailsResponseSchema,
+  TransactionExchangeDetailsResponseSchema,
+  TransactionInvestmentResponseSchema,
+]);
+
+export const TrashedTransactionStandardResponseSchema =
+  TransactionStandardResponseSchema.extend({
+    deletion: TransactionDeletionSchema,
+  });
+
+export const TrashedTransactionTransferResponseSchema =
+  TransactionTransferResponseSchema.extend({
+    deletion: TransactionDeletionSchema,
+  });
+
+export const TrashedTransactionExchangeResponseSchema =
+  TransactionExchangeResponseSchema.extend({
+    deletion: TransactionDeletionSchema,
+  });
+
+export const TrashedTransactionInvestmentResponseSchema =
+  TransactionInvestmentResponseSchema.extend({
+    deletion: TransactionDeletionSchema,
+  });
+
+export const TrashedTransactionResponseSchema = z.discriminatedUnion('kind', [
+  TrashedTransactionStandardResponseSchema,
+  TrashedTransactionTransferResponseSchema,
+  TrashedTransactionExchangeResponseSchema,
+  TrashedTransactionInvestmentResponseSchema,
+]);
+
+export const TrashedTransactionTransferDetailsResponseSchema =
+  TrashedTransactionTransferResponseSchema.extend({
     reference: TrashedTransactionResponseSchema.optional(),
   });
+
+export const TrashedTransactionExchangeDetailsResponseSchema =
+  TrashedTransactionExchangeResponseSchema.extend({
+    reference: TrashedTransactionResponseSchema.optional(),
+  });
+
+export const TrashedTransactionDetailsResponseSchema = z.discriminatedUnion('kind', [
+  TrashedTransactionStandardResponseSchema,
+  TrashedTransactionTransferDetailsResponseSchema,
+  TrashedTransactionExchangeDetailsResponseSchema,
+  TrashedTransactionInvestmentResponseSchema,
+]);
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
 export const TrashedTransactionsResponseSchema = z.array(
@@ -228,11 +297,47 @@ export type TransactionCreateBulkItemDTO = z.infer<
   typeof TransactionCreateBulkItemSchema
 >;
 export type TransactionBulkCreateDTO = z.infer<typeof TransactionBulkCreateSchema>;
+export type TransactionStandardResponseDTO = z.infer<
+  typeof TransactionStandardResponseSchema
+>;
+export type TransactionTransferResponseDTO = z.infer<
+  typeof TransactionTransferResponseSchema
+>;
+export type TransactionExchangeResponseDTO = z.infer<
+  typeof TransactionExchangeResponseSchema
+>;
+export type TransactionInvestmentResponseDTO = z.infer<
+  typeof TransactionInvestmentResponseSchema
+>;
+export type TransactionTransferDetailsResponseDTO = z.infer<
+  typeof TransactionTransferDetailsResponseSchema
+>;
+export type TransactionExchangeDetailsResponseDTO = z.infer<
+  typeof TransactionExchangeDetailsResponseSchema
+>;
 export type TransactionResponseDTO = z.infer<typeof TransactionResponseSchema>;
 export type TransactionDetailsResponseDTO = z.infer<
   typeof TransactionDetailsResponseSchema
 >;
 export type TransactionDeletionDTO = z.infer<typeof TransactionDeletionSchema>;
+export type TrashedTransactionStandardResponseDTO = z.infer<
+  typeof TrashedTransactionStandardResponseSchema
+>;
+export type TrashedTransactionTransferResponseDTO = z.infer<
+  typeof TrashedTransactionTransferResponseSchema
+>;
+export type TrashedTransactionExchangeResponseDTO = z.infer<
+  typeof TrashedTransactionExchangeResponseSchema
+>;
+export type TrashedTransactionInvestmentResponseDTO = z.infer<
+  typeof TrashedTransactionInvestmentResponseSchema
+>;
+export type TrashedTransactionTransferDetailsResponseDTO = z.infer<
+  typeof TrashedTransactionTransferDetailsResponseSchema
+>;
+export type TrashedTransactionExchangeDetailsResponseDTO = z.infer<
+  typeof TrashedTransactionExchangeDetailsResponseSchema
+>;
 export type TrashedTransactionResponseDTO = z.infer<
   typeof TrashedTransactionResponseSchema
 >;
@@ -265,11 +370,47 @@ z.globalRegistry.add(TransactionCreateBulkItemSchema, {
   id: 'TransactionCreateBulkItem',
 });
 z.globalRegistry.add(TransactionBulkCreateSchema, { id: 'TransactionBulkCreate' });
+z.globalRegistry.add(TransactionStandardResponseSchema, {
+  id: 'TransactionStandardResponse',
+});
+z.globalRegistry.add(TransactionTransferResponseSchema, {
+  id: 'TransactionTransferResponse',
+});
+z.globalRegistry.add(TransactionExchangeResponseSchema, {
+  id: 'TransactionExchangeResponse',
+});
+z.globalRegistry.add(TransactionInvestmentResponseSchema, {
+  id: 'TransactionInvestmentResponse',
+});
+z.globalRegistry.add(TransactionTransferDetailsResponseSchema, {
+  id: 'TransactionTransferDetailsResponse',
+});
+z.globalRegistry.add(TransactionExchangeDetailsResponseSchema, {
+  id: 'TransactionExchangeDetailsResponse',
+});
 z.globalRegistry.add(TransactionResponseSchema, { id: 'TransactionResponse' });
 z.globalRegistry.add(TransactionDetailsResponseSchema, {
   id: 'TransactionDetailsResponse',
 });
 z.globalRegistry.add(TransactionDeletionSchema, { id: 'TransactionDeletion' });
+z.globalRegistry.add(TrashedTransactionStandardResponseSchema, {
+  id: 'TrashedTransactionStandardResponse',
+});
+z.globalRegistry.add(TrashedTransactionTransferResponseSchema, {
+  id: 'TrashedTransactionTransferResponse',
+});
+z.globalRegistry.add(TrashedTransactionExchangeResponseSchema, {
+  id: 'TrashedTransactionExchangeResponse',
+});
+z.globalRegistry.add(TrashedTransactionInvestmentResponseSchema, {
+  id: 'TrashedTransactionInvestmentResponse',
+});
+z.globalRegistry.add(TrashedTransactionTransferDetailsResponseSchema, {
+  id: 'TrashedTransactionTransferDetailsResponse',
+});
+z.globalRegistry.add(TrashedTransactionExchangeDetailsResponseSchema, {
+  id: 'TrashedTransactionExchangeDetailsResponse',
+});
 z.globalRegistry.add(TrashedTransactionResponseSchema, {
   id: 'TrashedTransactionResponse',
 });

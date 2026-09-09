@@ -71,5 +71,5 @@ export const getTransaction = async (
   return {
     ...serialized,
     reference: serializeTransaction(reference, { investmentsMap }),
-  };
+  } as TransactionDetailsResponseDTO;
 };

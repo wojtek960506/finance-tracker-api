@@ -1,21 +1,18 @@
 import { NamedResourceResponseDTO } from '@named-resource';
-import { TransactionResponseDTO } from '@transaction/schema';
 
-type GetCSVPayload = Omit<
-  TransactionResponseDTO,
-  | 'ownerId'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'id'
-  | 'refId'
-  | 'date'
-  | 'category'
-  | 'paymentMethod'
-  | 'account'
-> & { date: string } & {
+type GetCSVPayload = {
+  sourceIndex: number;
+  sourceRefIndex?: number;
+  date: string;
+  description: string;
+  amount: number;
+  currency: string;
   category: Pick<NamedResourceResponseDTO, 'name'>;
   paymentMethod: Pick<NamedResourceResponseDTO, 'name'>;
   account: Pick<NamedResourceResponseDTO, 'name'>;
+  exchangeRate?: number;
+  currencies?: string;
+  transactionType: string;
 };
 
 export function getCsvForTransactions(payload: GetCSVPayload) {

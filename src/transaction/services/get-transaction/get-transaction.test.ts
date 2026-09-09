@@ -129,7 +129,10 @@ describe('getTransaction', () => {
     expect(serializeTransaction).toHaveBeenCalledWith(investmentTxJSON, {
       investmentsMap,
     });
-    expect(result.investment).toEqual(investmentDetails);
+    expect(result.kind).toBe('investment');
+    if (result.kind === 'investment') {
+      expect(result.investment).toEqual(investmentDetails);
+    }
   });
 
   // prettier-ignore
