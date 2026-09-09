@@ -11579,7 +11579,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionResponse"
+                  "$ref": "#/components/schemas/TransactionStandardResponse"
                 }
               }
             }
@@ -11643,8 +11643,17 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TransactionResponse"
-                  }
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/TransactionExchangeResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TransactionExchangeResponse"
+                      }
+                    ]
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
                 }
               }
             }
@@ -11677,8 +11686,17 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TransactionResponse"
-                  }
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/TransactionTransferResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TransactionTransferResponse"
+                      }
+                    ]
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
                 }
               }
             }
@@ -11709,7 +11727,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionResponse"
+                  "$ref": "#/components/schemas/TransactionInvestmentResponse"
                 }
               }
             }
@@ -11751,7 +11769,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionResponse"
+                  "$ref": "#/components/schemas/TransactionStandardResponse"
                 }
               }
             }
@@ -11793,7 +11811,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionResponse"
+                  "$ref": "#/components/schemas/TransactionInvestmentResponse"
                 }
               }
             }
@@ -11837,8 +11855,17 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TransactionResponse"
-                  }
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/TransactionTransferResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TransactionTransferResponse"
+                      }
+                    ]
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
                 }
               }
             }
@@ -11882,8 +11909,17 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TransactionResponse"
-                  }
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/TransactionExchangeResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TransactionExchangeResponse"
+                      }
+                    ]
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
                 }
               }
             }

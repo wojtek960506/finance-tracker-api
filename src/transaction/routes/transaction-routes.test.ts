@@ -327,6 +327,19 @@ describe('transaction routes', async () => {
       operationKind: 'buy',
     },
   };
+  const investmentResponse = {
+    ...standardResponse,
+    kind: 'investment' as const,
+    investment: {
+      instrument: {
+        id: '507f1f77bcf86cd799439012',
+        name: 'Apple Inc.',
+        kind: 'share' as const,
+        currency: 'PLN' as const,
+      },
+      operationKind: 'buy' as const,
+    },
+  };
 
   it.each<
     [
@@ -347,11 +360,13 @@ describe('transaction routes', async () => {
     ['investment', 'investment', 'createInvestmentTransaction', investmentDTO],
   ])("should create %s transaction - 'POST /%s'", async (kind, _, serviceName, body) => {
     const mockedResult =
-      kind === 'standard' || kind === 'investment'
+      kind === 'standard'
         ? standardResponse
-        : kind === 'exchange'
-          ? exchangeResponse
-          : transferResponse;
+        : kind === 'investment'
+          ? investmentResponse
+          : kind === 'exchange'
+            ? exchangeResponse
+            : transferResponse;
     vi.spyOn(serviceT, serviceName).mockResolvedValue(mockedResult as any);
     const response = await app.inject({ method: 'POST', url: `/${kind}`, body });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();
@@ -373,7 +388,7 @@ describe('transaction routes', async () => {
       standardResponse,
       ...exchangeResponse,
       ...transferResponse,
-      standardResponse,
+      investmentResponse,
     ];
 
     vi.spyOn(serviceT, 'createTransactions').mockResolvedValue(mockedResult as any);
@@ -405,11 +420,13 @@ describe('transaction routes', async () => {
     ['investment', 'investment', 'updateInvestmentTransaction', investmentDTO],
   ])("should update %s transaction - 'PUT /%s'", async (kind, _, serviceName, body) => {
     const mockedResult =
-      kind === 'standard' || kind === 'investment'
+      kind === 'standard'
         ? standardResponse
-        : kind === 'exchange'
-          ? exchangeResponse
-          : transferResponse;
+        : kind === 'investment'
+          ? investmentResponse
+          : kind === 'exchange'
+            ? exchangeResponse
+            : transferResponse;
     vi.spyOn(serviceT, serviceName).mockResolvedValue(mockedResult as any);
     const response = await app.inject({ method: 'PUT', url: `/${kind}/${T_ID}`, body });
     expect(serviceT[serviceName]).toHaveBeenCalledOnce();

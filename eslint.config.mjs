@@ -5,7 +5,7 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**', 'openapi.json'],
+    ignores: ['dist/**', 'coverage/**', 'node_modules/**', 'openapi.json', 'docs/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
