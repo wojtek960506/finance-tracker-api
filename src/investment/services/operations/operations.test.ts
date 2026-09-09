@@ -86,7 +86,7 @@ describe('Investment Operations Services', () => {
       });
       expect(result.id).toBe(operationId);
       expect(result.kind).toBe('snapshot');
-      expect(result.transactionId).toBeNull();
+      expect('transactionId' in result).toBe(false);
     });
 
     it('throws InvestmentInstrumentNotFoundError if instrument not found', async () => {

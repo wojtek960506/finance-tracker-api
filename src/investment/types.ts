@@ -1,9 +1,15 @@
 import { Types } from 'mongoose';
 
-import { INVESTMENT_INSTRUMENT_KINDS, INVESTMENT_OPERATION_KINDS } from './consts';
+import {
+  INVESTMENT_INSTRUMENT_KINDS,
+  INVESTMENT_OPERATION_CASH_FLOW_KINDS,
+  INVESTMENT_OPERATION_KINDS,
+} from './consts';
 
 export type InvestmentInstrumentKind = (typeof INVESTMENT_INSTRUMENT_KINDS)[number];
 export type InvestmentOperationKind = (typeof INVESTMENT_OPERATION_KINDS)[number];
+export type InvestmentOperationCashFlowKind =
+  (typeof INVESTMENT_OPERATION_CASH_FLOW_KINDS)[number];
 
 export interface InvestmentInstrumentAttributes {
   ownerId: Types.ObjectId;

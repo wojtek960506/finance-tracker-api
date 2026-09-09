@@ -22,16 +22,29 @@ export const serializeInstrument = (
 
 export const serializeOperation = (
   operation: IInvestmentOperation,
-): InvestmentOperationResponseDTO => ({
-  id: operation._id.toString(),
-  ownerId: operation.ownerId.toString(),
-  instrumentId: operation.instrumentId.toString(),
-  transactionId: operation.transactionId ? operation.transactionId.toString() : null,
-  kind: operation.kind,
-  amount: operation.amount,
-  currency: operation.currency as CurrencyCode,
-  date: operation.date,
-  note: operation.note,
-  createdAt: operation.createdAt,
-  updatedAt: operation.updatedAt,
-});
+): InvestmentOperationResponseDTO => {
+  const base = {
+    id: operation._id.toString(),
+    ownerId: operation.ownerId.toString(),
+    instrumentId: operation.instrumentId.toString(),
+    amount: operation.amount,
+    currency: operation.currency as CurrencyCode,
+    date: operation.date,
+    note: operation.note,
+    createdAt: operation.createdAt,
+    updatedAt: operation.updatedAt,
+  };
+
+  if (operation.kind === 'snapshot') {
+    return {
+      ...base,
+      kind: 'snapshot',
+    };
+  }
+
+  return {
+    ...base,
+    kind: operation.kind,
+    transactionId: operation.transactionId ? operation.transactionId.toString() : '',
+  };
+};

@@ -298,6 +298,10 @@
           "note": {
             "type": "string",
             "maxLength": 500
+          },
+          "kind": {
+            "type": "string",
+            "const": "snapshot"
           }
         },
         "required": [
@@ -307,33 +311,12 @@
           "date"
         ]
       },
-      "InvestmentOperationInput": {
+      "InvestmentSnapshotOperationItemInput": {
         "type": "object",
         "properties": {
           "instrumentId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "transactionId": {
-            "anyOf": [
-              {
-                "type": "string",
-                "pattern": "^[0-9a-fA-F]{24}$"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "kind": {
-            "type": "string",
-            "enum": [
-              "buy",
-              "sell",
-              "interest",
-              "fee",
-              "snapshot"
-            ]
           },
           "amount": {
             "type": "number",
@@ -384,33 +367,76 @@
           "note": {
             "type": "string",
             "maxLength": 500
+          },
+          "kind": {
+            "type": "string",
+            "const": "snapshot"
           }
         },
         "required": [
           "instrumentId",
-          "kind",
           "amount",
           "currency",
-          "date"
+          "date",
+          "kind"
         ]
       },
-      "InvestmentOperationResponseInput": {
+      "InvestmentCashFlowOperationInput": {
         "type": "object",
         "properties": {
           "instrumentId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
           },
-          "transactionId": {
-            "anyOf": [
-              {
-                "type": "string",
-                "pattern": "^[0-9a-fA-F]{24}$"
-              },
-              {
-                "type": "null"
-              }
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
             ]
+          },
+          "date": {},
+          "note": {
+            "type": "string",
+            "maxLength": 500
           },
           "kind": {
             "type": "string",
@@ -418,9 +444,39 @@
               "buy",
               "sell",
               "interest",
-              "fee",
-              "snapshot"
+              "fee"
             ]
+          },
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "instrumentId",
+          "amount",
+          "currency",
+          "date",
+          "kind",
+          "transactionId"
+        ]
+      },
+      "InvestmentOperationInput": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InvestmentCashFlowOperationInput"
+          },
+          {
+            "$ref": "#/components/schemas/InvestmentSnapshotOperationItemInput"
+          }
+        ]
+      },
+      "InvestmentSnapshotOperationResponseInput": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
           },
           "amount": {
             "type": "number",
@@ -481,18 +537,126 @@
             "pattern": "^[0-9a-fA-F]{24}$"
           },
           "createdAt": {},
-          "updatedAt": {}
+          "updatedAt": {},
+          "kind": {
+            "type": "string",
+            "const": "snapshot"
+          }
         },
         "required": [
           "instrumentId",
-          "kind",
           "amount",
           "currency",
           "date",
           "id",
           "ownerId",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "kind"
+        ]
+      },
+      "InvestmentCashFlowOperationResponseInput": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {},
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {},
+          "updatedAt": {},
+          "kind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee"
+            ]
+          },
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "instrumentId",
+          "amount",
+          "currency",
+          "date",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "kind",
+          "transactionId"
+        ]
+      },
+      "InvestmentOperationResponseInput": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InvestmentCashFlowOperationResponseInput"
+          },
+          {
+            "$ref": "#/components/schemas/InvestmentSnapshotOperationResponseInput"
+          }
         ]
       },
       "InvestmentOperationListResponseInput": {
@@ -4525,6 +4689,10 @@
           "note": {
             "type": "string",
             "maxLength": 500
+          },
+          "kind": {
+            "type": "string",
+            "const": "snapshot"
           }
         },
         "required": [
@@ -4535,33 +4703,12 @@
         ],
         "additionalProperties": false
       },
-      "InvestmentOperation": {
+      "InvestmentSnapshotOperationItem": {
         "type": "object",
         "properties": {
           "instrumentId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "transactionId": {
-            "anyOf": [
-              {
-                "type": "string",
-                "pattern": "^[0-9a-fA-F]{24}$"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "kind": {
-            "type": "string",
-            "enum": [
-              "buy",
-              "sell",
-              "interest",
-              "fee",
-              "snapshot"
-            ]
           },
           "amount": {
             "type": "number",
@@ -4615,34 +4762,80 @@
           "note": {
             "type": "string",
             "maxLength": 500
+          },
+          "kind": {
+            "type": "string",
+            "const": "snapshot"
           }
         },
         "required": [
           "instrumentId",
-          "kind",
           "amount",
           "currency",
-          "date"
+          "date",
+          "kind"
         ],
         "additionalProperties": false
       },
-      "InvestmentOperationResponse": {
+      "InvestmentCashFlowOperation": {
         "type": "object",
         "properties": {
           "instrumentId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
           },
-          "transactionId": {
-            "anyOf": [
-              {
-                "type": "string",
-                "pattern": "^[0-9a-fA-F]{24}$"
-              },
-              {
-                "type": "null"
-              }
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
             ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
           },
           "kind": {
             "type": "string",
@@ -4650,9 +4843,40 @@
               "buy",
               "sell",
               "interest",
-              "fee",
-              "snapshot"
+              "fee"
             ]
+          },
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "instrumentId",
+          "amount",
+          "currency",
+          "date",
+          "kind",
+          "transactionId"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentOperation": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InvestmentCashFlowOperation"
+          },
+          {
+            "$ref": "#/components/schemas/InvestmentSnapshotOperationItem"
+          }
+        ]
+      },
+      "InvestmentSnapshotOperationResponse": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
           },
           "amount": {
             "type": "number",
@@ -4722,20 +4946,138 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "kind": {
+            "type": "string",
+            "const": "snapshot"
           }
         },
         "required": [
           "instrumentId",
-          "kind",
           "amount",
           "currency",
           "date",
           "id",
           "ownerId",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "kind"
         ],
         "additionalProperties": false
+      },
+      "InvestmentCashFlowOperationResponse": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee"
+            ]
+          },
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "instrumentId",
+          "amount",
+          "currency",
+          "date",
+          "id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "kind",
+          "transactionId"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentOperationResponse": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InvestmentCashFlowOperationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/InvestmentSnapshotOperationResponse"
+          }
+        ]
       },
       "InvestmentOperationListResponse": {
         "type": "array",

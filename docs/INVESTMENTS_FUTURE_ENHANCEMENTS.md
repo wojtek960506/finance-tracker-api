@@ -44,24 +44,27 @@ Provided dedicated endpoints and typed schemas for each transaction kind to ensu
 
 ---
 
-## 📋 Planned Enhancements & Roadmap
-
-### 4. Operation Schema Discriminated Union (Snapshots vs. Cashflow)
+### 4. Operation Schema Discriminated Union (Snapshots vs. Cashflow) — *Completed*
 
 **Overview**:
+Split the `InvestmentOperation` schema into two distinct schemas with a discriminated union on `kind` at the validation and response layers:
 
-Split the `InvestmentOperation` schema into two distinct schemas at the validation layer:
-
-1. **`InvestmentSnapshotOperationSchema`**:
+1. **`InvestmentSnapshotOperationItemSchema` / `InvestmentSnapshotOperationResponseSchema`**:
    - `kind: z.literal('snapshot')`
-   - `transactionId: z.null()`
+   - Omits `transactionId` completely (since balance snapshots have no linked bank transaction).
    - Represents asset balance valuations at a point in time (no bank cash movement).
-2. **`InvestmentCashFlowOperationSchema`**:
-   - `kind: z.enum(['buy', 'sell', 'dividend', 'fee', 'interest'])`
-   - `transactionId: z.string()`
-   - Represents transactions linked to actual bank accounts / cash balances.
+2. **`InvestmentCashFlowOperationSchema` / `InvestmentCashFlowOperationResponseSchema`**:
+   - `kind: z.enum(['buy', 'sell', 'interest', 'fee'])`
+   - `transactionId: z.string().regex(OBJECT_ID_REGEX)`
+   - Represents operations linked to actual bank accounts / cash balances.
+
+**Implementation**:
+- `InvestmentOperationSchema` and `InvestmentOperationResponseSchema` are now defined as `z.discriminatedUnion('kind', [...])`.
+- Updated `serializeOperation` to branch return types based on `operation.kind`.
 
 ---
+
+## 📋 Planned Enhancements & Roadmap
 
 ### 5. Cascading Lifecycle & Trash Sync
 

@@ -51,7 +51,6 @@ describe('operations routes', async () => {
     id: operationId,
     ownerId: USER_ID_STR,
     instrumentId,
-    transactionId: null,
     kind: 'snapshot' as const,
     amount: 5000,
     currency: 'USD',

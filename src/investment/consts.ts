@@ -13,9 +13,13 @@ export const INVESTMENT_OPERATION_KINDS = [
   'snapshot',
 ] as const;
 
-export const INVESTMENT_OPERATION_CASH_FLOW_KINDS = new Set([
+export const INVESTMENT_OPERATION_CASH_FLOW_KINDS = [
   'buy',
   'sell',
   'interest',
   'fee',
-]);
+] as const;
+
+export const INVESTMENT_OPERATION_CASH_FLOW_KINDS_SET = new Set(
+  INVESTMENT_OPERATION_CASH_FLOW_KINDS,
+);
