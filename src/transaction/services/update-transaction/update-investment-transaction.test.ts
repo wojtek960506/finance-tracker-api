@@ -15,6 +15,7 @@ import { updateInvestmentTransaction } from './update-investment-transaction';
 vi.mock('@investment/model', () => ({
   InvestmentInstrumentModel: {
     findOne: vi.fn(),
+    create: vi.fn(),
   },
   InvestmentOperationModel: {
     findOneAndUpdate: vi.fn(),
@@ -101,6 +102,14 @@ describe('update investment transaction', () => {
       investmentDTO,
     );
 
+    expect(InvestmentInstrumentModel.findOne).toHaveBeenCalledWith(
+      {
+        _id: instrumentId,
+        ownerId: USER_ID_STR,
+      },
+      null,
+      { session: expect.anything() },
+    );
     expect(dbTransactions.saveTransactionChanges).toHaveBeenCalledWith(
       existingTransactionDoc,
       expect.objectContaining({
@@ -122,6 +131,95 @@ describe('update investment transaction', () => {
         currency: 'USD',
         date: investmentDTO.date,
         note: 'Updated note',
+      },
+      { session: expect.anything(), upsert: true },
+    );
+    expect(result).toEqual(serializedTransaction);
+  });
+
+  it('updates investment transaction with inline newInstrument', async () => {
+    const existingTransactionDoc = {
+      _id: transactionId,
+      ownerId: USER_ID_STR,
+      kind: 'investment',
+    };
+
+    const serializedTransaction = {
+      ...getStandardTransactionResultSerialized(),
+      kind: 'investment',
+      amount: 1500,
+    };
+
+    const newInstrumentDTO: TransactionInvestmentDTO = {
+      ...investmentDTO,
+      investment: {
+        newInstrument: {
+          name: 'Microsoft',
+          kind: 'share',
+          currency: 'USD',
+        },
+        operationKind: 'buy',
+        note: 'Updated note with new instrument',
+      },
+    };
+
+    vi.spyOn(namedResourceDb, 'findNamedResourceByName').mockResolvedValue(
+      investmentCategory as any,
+    );
+    vi.spyOn(namedResourceDb, 'findNamedResourceById')
+      .mockResolvedValueOnce(paymentMethod as any)
+      .mockResolvedValueOnce(accountExpense as any);
+
+    vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(null);
+    vi.mocked(InvestmentInstrumentModel.create).mockResolvedValue([
+      { _id: instrumentId },
+    ] as any);
+
+    vi.spyOn(dbTransactions, 'findTransaction').mockResolvedValue(
+      existingTransactionDoc as any,
+    );
+    vi.spyOn(dbTransactions, 'saveTransactionChanges').mockResolvedValue(
+      serializedTransaction as any,
+    );
+    vi.mocked(InvestmentOperationModel.findOneAndUpdate).mockResolvedValue({} as any);
+
+    const result = await updateInvestmentTransaction(
+      transactionId,
+      USER_ID_STR,
+      newInstrumentDTO,
+    );
+
+    expect(InvestmentInstrumentModel.findOne).toHaveBeenCalledWith(
+      {
+        ownerId: USER_ID_STR,
+        nameNormalized: 'microsoft',
+      },
+      null,
+      { session: expect.anything() },
+    );
+
+    expect(InvestmentInstrumentModel.create).toHaveBeenCalledWith(
+      [
+        {
+          ownerId: USER_ID_STR,
+          name: 'Microsoft',
+          nameNormalized: 'microsoft',
+          kind: 'share',
+          currency: 'USD',
+          notes: undefined,
+        },
+      ],
+      { session: expect.anything() },
+    );
+    expect(InvestmentOperationModel.findOneAndUpdate).toHaveBeenCalledWith(
+      { transactionId: existingTransactionDoc._id, ownerId: USER_ID_STR },
+      {
+        instrumentId,
+        kind: 'buy',
+        amount: 1500,
+        currency: 'USD',
+        date: newInstrumentDTO.date,
+        note: 'Updated note with new instrument',
       },
       { session: expect.anything(), upsert: true },
     );

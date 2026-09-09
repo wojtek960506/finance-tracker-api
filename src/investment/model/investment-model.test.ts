@@ -1,10 +1,7 @@
 import { Types } from 'mongoose';
 import { describe, expect, it } from 'vitest';
 
-import {
-  InvestmentInstrumentModel,
-  InvestmentOperationModel,
-} from './investment-model';
+import { InvestmentInstrumentModel, InvestmentOperationModel } from './investment-model';
 
 describe('investment model', () => {
   it('accepts snapshot operation without transaction', () => {

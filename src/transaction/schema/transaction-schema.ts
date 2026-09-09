@@ -1,3 +1,4 @@
+import { InvestmentInstrumentKindSchema } from '@investment/schema';
 import { z } from 'zod/v4';
 
 import { CurrencyCodeSchema } from '@currency/schema';
@@ -56,13 +57,36 @@ export const TransactionTransferSchema = TransactionCommonSchema.extend({
   paymentMethodId: OptionalObjectIdSchema,
 });
 
-export const TransactionInvestmentDetailsSchema = z.object({
-  instrumentId: z
-    .string()
-    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `instrumentId`'),
+export const TransactionInvestmentNewInstrumentSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(60),
+  kind: InvestmentInstrumentKindSchema.default('share'),
+  currency: CurrencyCodeSchema.optional(),
+  notes: z.string().max(500).optional(),
+});
+
+const TransactionInvestmentBaseDetailsSchema = z.object({
   operationKind: z.enum(['buy', 'sell', 'interest', 'fee']),
   note: z.string().max(500).optional(),
 });
+
+export const TransactionInvestmentExistingInstrumentDetailsSchema =
+  TransactionInvestmentBaseDetailsSchema.extend({
+    instrumentId: z
+      .string()
+      .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `instrumentId`'),
+    newInstrument: z.undefined().optional(),
+  });
+
+export const TransactionInvestmentNewInstrumentDetailsSchema =
+  TransactionInvestmentBaseDetailsSchema.extend({
+    instrumentId: z.undefined().optional(),
+    newInstrument: TransactionInvestmentNewInstrumentSchema,
+  });
+
+export const TransactionInvestmentDetailsSchema = z.union([
+  TransactionInvestmentExistingInstrumentDetailsSchema,
+  TransactionInvestmentNewInstrumentDetailsSchema,
+]);
 
 /**
  * Schema for investment transaction
@@ -166,6 +190,12 @@ export const TestTransactionsCreateResponseSchema = z.object({
 export type TransactionStandardDTO = z.infer<typeof TransactionStandardSchema>;
 export type TransactionExchangeDTO = z.infer<typeof TransactionExchangeSchema>;
 export type TransactionTransferDTO = z.infer<typeof TransactionTransferSchema>;
+export type TransactionInvestmentNewInstrumentDTO = z.infer<
+  typeof TransactionInvestmentNewInstrumentSchema
+>;
+export type TransactionInvestmentDetailsDTO = z.infer<
+  typeof TransactionInvestmentDetailsSchema
+>;
 export type TransactionInvestmentDTO = z.infer<typeof TransactionInvestmentSchema>;
 export type TransactionBulkItemStandardDTO = z.infer<
   typeof TransactionBulkItemStandardSchema
@@ -206,6 +236,12 @@ export type TestTransactionsCreateResponse = z.infer<
 z.globalRegistry.add(TransactionStandardSchema, { id: 'TransactionStandard' });
 z.globalRegistry.add(TransactionExchangeSchema, { id: 'TransactionExchange' });
 z.globalRegistry.add(TransactionTransferSchema, { id: 'TransactionTransfer' });
+z.globalRegistry.add(TransactionInvestmentNewInstrumentSchema, {
+  id: 'TransactionInvestmentNewInstrument',
+});
+z.globalRegistry.add(TransactionInvestmentDetailsSchema, {
+  id: 'TransactionInvestmentDetails',
+});
 z.globalRegistry.add(TransactionInvestmentSchema, { id: 'TransactionInvestment' });
 z.globalRegistry.add(TransactionCreateBulkItemSchema, {
   id: 'TransactionCreateBulkItem',

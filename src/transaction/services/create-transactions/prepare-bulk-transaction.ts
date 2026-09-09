@@ -1,4 +1,4 @@
-import { InvestmentInstrumentModel } from '@investment/model';
+import { resolveInstrumentId } from '@investment/services';
 
 import {
   TransactionInvestmentCreateProps,
@@ -17,7 +17,6 @@ import {
   resolveCategoryId,
   resolvePaymentMethodId,
 } from '@transaction/services/resolve-transaction-resource-id';
-import { InvestmentInstrumentNotFoundError } from '@utils/errors';
 
 import { resolveSystemCategoryId } from './resolve-system-category-id';
 import { TransactionKindObjectIds } from './types';
@@ -118,14 +117,7 @@ export const prepareBulkInvestmentTransaction = async (
     resolveAccountId(dto.accountId, ownerId),
   ]);
 
-  const instrument = await InvestmentInstrumentModel.findOne({
-    _id: dto.investment.instrumentId,
-    ownerId,
-  });
-
-  if (!instrument) {
-    throw new InvestmentInstrumentNotFoundError(dto.investment.instrumentId);
-  }
+  const instrumentId = await resolveInstrumentId(ownerId, dto.investment, dto.currency);
 
   const transactionType =
     dto.transactionType ??
@@ -142,5 +134,10 @@ export const prepareBulkInvestmentTransaction = async (
     accountId,
     ownerId,
     sourceIndex,
+    investment: {
+      instrumentId,
+      operationKind: dto.investment.operationKind,
+      note: dto.investment.note,
+    },
   } satisfies TransactionInvestmentCreateProps;
 };

@@ -1,5 +1,5 @@
 import { InvestmentOperationModel } from '@investment/model';
-import { findInstrumentById } from '@investment/services';
+import { resolveInstrumentId } from '@investment/services';
 
 import { checkOwner } from '@shared/services';
 import { findTransaction, saveTransactionChanges } from '@transaction/db';
@@ -20,7 +20,6 @@ export const updateInvestmentTransaction = async (
     resolveInvestmentCategoryId(dto.categoryId, ownerId),
     resolvePaymentMethodId(dto.paymentMethodId, ownerId),
     resolveAccountId(dto.accountId, ownerId),
-    findInstrumentById(ownerId, dto.investment.instrumentId),
   ]);
 
   const transaction = await findTransaction(transactionId);
@@ -33,6 +32,13 @@ export const updateInvestmentTransaction = async (
       : 'income');
 
   return withSession(async (session) => {
+    const instrumentId = await resolveInstrumentId(
+      ownerId,
+      dto.investment,
+      dto.currency,
+      session,
+    );
+
     const updatedTransaction = await saveTransactionChanges(
       transaction,
       {
@@ -51,7 +57,7 @@ export const updateInvestmentTransaction = async (
     await InvestmentOperationModel.findOneAndUpdate(
       { transactionId, ownerId },
       {
-        instrumentId: dto.investment.instrumentId,
+        instrumentId,
         kind: dto.investment.operationKind,
         amount: dto.amount,
         currency: dto.currency.toUpperCase(),

@@ -1,5 +1,5 @@
 import { InvestmentOperationModel } from '@investment/model';
-import { findInstrumentById } from '@investment/services';
+import { resolveInstrumentId } from '@investment/services';
 
 import { persistTransaction } from '@transaction/db';
 import { TransactionInvestmentDTO, TransactionResponseDTO } from '@transaction/schema';
@@ -19,7 +19,6 @@ export const createInvestmentTransaction = async (
     resolveInvestmentCategoryId(dto.categoryId, ownerId),
     resolvePaymentMethodId(dto.paymentMethodId, ownerId),
     resolveAccountId(dto.accountId, ownerId),
-    findInstrumentById(ownerId, dto.investment.instrumentId),
   ]);
 
   const transactionType =
@@ -29,6 +28,13 @@ export const createInvestmentTransaction = async (
       : 'income');
 
   return withSession(async (session) => {
+    const instrumentId = await resolveInstrumentId(
+      ownerId,
+      dto.investment,
+      dto.currency,
+      session,
+    );
+
     const sourceIndex = await getNextSourceIndex(ownerId, session);
 
     const transaction = await persistTransaction(
@@ -52,7 +58,7 @@ export const createInvestmentTransaction = async (
       [
         {
           ownerId,
-          instrumentId: dto.investment.instrumentId,
+          instrumentId,
           transactionId: transaction.id,
           kind: dto.investment.operationKind,
           amount: dto.amount,
