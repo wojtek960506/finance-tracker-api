@@ -1319,6 +1319,95 @@
           "investment"
         ]
       },
+      "TransactionInvestmentResponseDetailsInput": {
+        "type": "object",
+        "properties": {
+          "operationKind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee"
+            ]
+          },
+          "instrument": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "share",
+                  "fund",
+                  "termDeposit",
+                  "savings"
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "EUR",
+                  "PLN",
+                  "GBP",
+                  "JPY",
+                  "CHF",
+                  "CAD",
+                  "AUD",
+                  "NZD",
+                  "SEK",
+                  "NOK",
+                  "DKK",
+                  "CZK",
+                  "HUF",
+                  "RON",
+                  "BGN",
+                  "TRY",
+                  "UAH",
+                  "INR",
+                  "CNY",
+                  "HKD",
+                  "SGD",
+                  "ZAR",
+                  "BRL",
+                  "MXN",
+                  "ARS",
+                  "CLP",
+                  "COP",
+                  "KRW",
+                  "IDR",
+                  "MYR",
+                  "THB",
+                  "AED",
+                  "SAR",
+                  "ILS",
+                  "EGP"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "kind",
+              "currency"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "operationKind",
+          "instrument"
+        ]
+      },
       "TransactionCreateBulkItemInput": {
         "oneOf": [
           {
@@ -1973,6 +2062,9 @@
               "type",
               "name"
             ]
+          },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetailsInput"
           }
         },
         "required": [
@@ -2165,6 +2257,9 @@
               "type",
               "name"
             ]
+          },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetailsInput"
           },
           "reference": {
             "$ref": "#/components/schemas/TransactionResponseInput"
@@ -2372,6 +2467,9 @@
               "name"
             ]
           },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetailsInput"
+          },
           "deletion": {
             "$ref": "#/components/schemas/TransactionDeletionInput"
           }
@@ -2567,6 +2665,9 @@
               "type",
               "name"
             ]
+          },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetailsInput"
           },
           "deletion": {
             "$ref": "#/components/schemas/TransactionDeletionInput"
@@ -4004,6 +4105,97 @@
         ],
         "additionalProperties": false
       },
+      "TransactionInvestmentResponseDetails": {
+        "type": "object",
+        "properties": {
+          "operationKind": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell",
+              "interest",
+              "fee"
+            ]
+          },
+          "instrument": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "share",
+                  "fund",
+                  "termDeposit",
+                  "savings"
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "EUR",
+                  "PLN",
+                  "GBP",
+                  "JPY",
+                  "CHF",
+                  "CAD",
+                  "AUD",
+                  "NZD",
+                  "SEK",
+                  "NOK",
+                  "DKK",
+                  "CZK",
+                  "HUF",
+                  "RON",
+                  "BGN",
+                  "TRY",
+                  "UAH",
+                  "INR",
+                  "CNY",
+                  "HKD",
+                  "SGD",
+                  "ZAR",
+                  "BRL",
+                  "MXN",
+                  "ARS",
+                  "CLP",
+                  "COP",
+                  "KRW",
+                  "IDR",
+                  "MYR",
+                  "THB",
+                  "AED",
+                  "SAR",
+                  "ILS",
+                  "EGP"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "kind",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "operationKind",
+          "instrument"
+        ],
+        "additionalProperties": false
+      },
       "TransactionCreateBulkItem": {
         "oneOf": [
           {
@@ -4687,6 +4879,9 @@
               "name"
             ],
             "additionalProperties": false
+          },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetails"
           }
         },
         "required": [
@@ -4892,6 +5087,9 @@
               "name"
             ],
             "additionalProperties": false
+          },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetails"
           },
           "reference": {
             "$ref": "#/components/schemas/TransactionResponse"
@@ -5119,6 +5317,9 @@
             ],
             "additionalProperties": false
           },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetails"
+          },
           "deletion": {
             "$ref": "#/components/schemas/TransactionDeletion"
           }
@@ -5327,6 +5528,9 @@
               "name"
             ],
             "additionalProperties": false
+          },
+          "investment": {
+            "$ref": "#/components/schemas/TransactionInvestmentResponseDetails"
           },
           "deletion": {
             "$ref": "#/components/schemas/TransactionDeletion"
