@@ -14,11 +14,16 @@ import { getTransaction } from '@transaction/services';
 
 import { loadOwnedTransactionDetails } from './get-transaction';
 
+vi.mock('@investment/services', () => ({
+  prepareInvestmentOperationsMap: vi.fn().mockResolvedValue({}),
+}));
 vi.mock('@transaction/db', () => ({
   findTransaction: vi.fn(),
   findTransactionNullable: vi.fn(),
 }));
 vi.mock('@transaction/serializers', () => ({ serializeTransaction: vi.fn() }));
+
+import * as investmentServices from '@investment/services';
 
 describe('getTransaction', () => {
   afterEach(() => {
@@ -41,7 +46,9 @@ describe('getTransaction', () => {
     expect(findTransaction).toHaveBeenCalledOnce();
     expect(findTransaction).toHaveBeenCalledWith(STANDARD_TXN_ID_STR, {});
     expect(serializeTransaction).toHaveBeenCalledOnce();
-    expect(serializeTransaction).toHaveBeenCalledWith(transaction);
+    expect(serializeTransaction).toHaveBeenCalledWith(transaction, {
+      investmentsMap: {},
+    });
     expect(result).toEqual(transactionSerialized);
   });
 
@@ -71,10 +78,58 @@ describe('getTransaction', () => {
 
     expect(findTransactionNullable).toHaveBeenCalledWith(reference._id.toString(), {});
     expect(serializeTransaction).toHaveBeenCalledTimes(2);
+    expect(serializeTransaction).toHaveBeenNthCalledWith(1, transaction, {
+      investmentsMap: {},
+    });
+    expect(serializeTransaction).toHaveBeenNthCalledWith(2, reference, {
+      investmentsMap: {},
+    });
     expect(result).toEqual({
       ...expenseTransactionSerialized,
       reference: incomeTransactionSerialized,
     });
+  });
+
+  it('fetches and passes investment map for investment transactions', async () => {
+    const populateMock = vi.fn();
+    const investmentTxJSON = {
+      ...getStandardTransactionResultJSON(),
+      kind: 'investment',
+      populate: populateMock,
+    };
+    const investmentDetails = {
+      operationKind: 'buy' as const,
+      instrument: {
+        id: '651a00000000000000000001',
+        name: 'Apple Inc.',
+        kind: 'share' as const,
+        currency: 'USD',
+      },
+    };
+    const investmentsMap = {
+      [investmentTxJSON._id.toString()]: investmentDetails,
+    };
+
+    (findTransaction as Mock).mockResolvedValue(investmentTxJSON);
+    vi.mocked(investmentServices.prepareInvestmentOperationsMap).mockResolvedValue(
+      investmentsMap as any,
+    );
+    (serializeTransaction as Mock).mockReturnValue({
+      ...getStandardTransactionResultSerialized(),
+      kind: 'investment',
+      investment: investmentDetails,
+    });
+
+    const result = await getTransaction(investmentTxJSON._id.toString(), USER_ID_STR);
+
+    expect(investmentServices.prepareInvestmentOperationsMap).toHaveBeenCalledWith(
+      USER_ID_STR,
+      [investmentTxJSON._id.toString()],
+    );
+    expect(serializeTransaction).toHaveBeenCalledWith(investmentTxJSON, {
+      investmentsMap,
+    });
+    expect(result.investment).toEqual(investmentDetails);
   });
 
   // prettier-ignore

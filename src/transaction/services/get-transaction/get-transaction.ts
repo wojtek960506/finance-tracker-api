@@ -1,3 +1,5 @@
+import { prepareInvestmentOperationsMap } from '@investment/services';
+
 import { checkOwner } from '@shared/services';
 import {
   findTransaction,
@@ -52,12 +54,22 @@ export const getTransaction = async (
     userId,
   );
 
-  const serialized = serializeTransaction(transaction);
+  const investmentTxIds: string[] = [];
+  if (transaction.kind === 'investment') {
+    investmentTxIds.push(transaction._id.toString());
+  }
+  if (reference && reference.kind === 'investment') {
+    investmentTxIds.push(reference._id.toString());
+  }
+
+  const investmentsMap = await prepareInvestmentOperationsMap(userId, investmentTxIds);
+
+  const serialized = serializeTransaction(transaction, { investmentsMap });
 
   if (!reference) return serialized;
 
   return {
     ...serialized,
-    reference: serializeTransaction(reference),
+    reference: serializeTransaction(reference, { investmentsMap }),
   };
 };

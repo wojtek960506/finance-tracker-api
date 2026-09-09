@@ -124,6 +124,17 @@ export const TransactionBulkCreateSchema = z.object({
   transactions: z.array(TransactionCreateBulkItemSchema).min(1),
 });
 
+export const TransactionInvestmentResponseDetailsSchema = z.object({
+  operationKind: z.enum(['buy', 'sell', 'interest', 'fee']),
+  instrument: z.object({
+    id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
+    name: z.string(),
+    kind: InvestmentInstrumentKindSchema,
+    currency: CurrencyCodeSchema,
+  }),
+  note: z.string().optional(),
+});
+
 export const TransactionResponseSchema = TransactionStandardSchema.omit({
   categoryId: true,
   paymentMethodId: true,
@@ -149,6 +160,7 @@ export const TransactionResponseSchema = TransactionStandardSchema.omit({
   category: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
   paymentMethod: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
   account: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
+  investment: TransactionInvestmentResponseDetailsSchema.optional(),
 });
 
 export const TransactionDeletionSchema = z.object({
@@ -197,6 +209,9 @@ export type TransactionInvestmentDetailsDTO = z.infer<
   typeof TransactionInvestmentDetailsSchema
 >;
 export type TransactionInvestmentDTO = z.infer<typeof TransactionInvestmentSchema>;
+export type TransactionInvestmentResponseDetailsDTO = z.infer<
+  typeof TransactionInvestmentResponseDetailsSchema
+>;
 export type TransactionBulkItemStandardDTO = z.infer<
   typeof TransactionBulkItemStandardSchema
 >;
@@ -243,6 +258,9 @@ z.globalRegistry.add(TransactionInvestmentDetailsSchema, {
   id: 'TransactionInvestmentDetails',
 });
 z.globalRegistry.add(TransactionInvestmentSchema, { id: 'TransactionInvestment' });
+z.globalRegistry.add(TransactionInvestmentResponseDetailsSchema, {
+  id: 'TransactionInvestmentResponseDetails',
+});
 z.globalRegistry.add(TransactionCreateBulkItemSchema, {
   id: 'TransactionCreateBulkItem',
 });

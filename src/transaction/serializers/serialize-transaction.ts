@@ -1,3 +1,5 @@
+import { InvestmentOperationsMap } from '@investment/services';
+
 import { NamedResourcesMap } from '@named-resource/kind-config';
 import { ITransaction } from '@transaction/model';
 import {
@@ -7,11 +9,16 @@ import {
 
 type TransactionObject = any;
 
+export interface TransactionSerializationMaps {
+  categoriesMap?: NamedResourcesMap;
+  paymentMethodsMap?: NamedResourcesMap;
+  accountsMap?: NamedResourcesMap;
+  investmentsMap?: InvestmentOperationsMap;
+}
+
 const buildTransactionPayload = (
   transaction: TransactionObject,
-  categoriesMap?: NamedResourcesMap,
-  paymentMethodsMap?: NamedResourcesMap,
-  accountsMap?: NamedResourcesMap,
+  maps?: TransactionSerializationMaps,
 ) => {
   const {
     _id,
@@ -25,19 +32,23 @@ const buildTransactionPayload = (
     ...rest
   } = transaction;
 
-  const category = categoriesMap
-    ? categoriesMap[categoryId.toString()]
+  const category = maps?.categoriesMap
+    ? maps.categoriesMap[categoryId.toString()]
     : { id: categoryId._id.toString(), type: categoryId.type, name: categoryId.name };
-  const paymentMethod = paymentMethodsMap
-    ? paymentMethodsMap[paymentMethodId.toString()]
+  const paymentMethod = maps?.paymentMethodsMap
+    ? maps.paymentMethodsMap[paymentMethodId.toString()]
     : {
         id: paymentMethodId._id.toString(),
         type: paymentMethodId.type,
         name: paymentMethodId.name,
       };
-  const account = accountsMap
-    ? accountsMap[accountId.toString()]
+  const account = maps?.accountsMap
+    ? maps.accountsMap[accountId.toString()]
     : { id: accountId._id.toString(), type: accountId.type, name: accountId.name };
+
+  const investment = maps?.investmentsMap
+    ? maps.investmentsMap[_id.toString()]
+    : undefined;
 
   return {
     ...rest,
@@ -47,51 +58,22 @@ const buildTransactionPayload = (
     category,
     paymentMethod,
     account,
+    ...(investment ? { investment } : {}),
   };
 };
 
-export function serializeTransaction(transaction: ITransaction): TransactionResponseDTO;
 export function serializeTransaction(
   transaction: ITransaction,
-  categoriesMap: NamedResourcesMap,
-  paymentMethodsMap: NamedResourcesMap,
-  accountsMap: NamedResourcesMap,
-): TransactionResponseDTO;
-export function serializeTransaction(
-  transaction: ITransaction,
-  categoriesMap?: NamedResourcesMap,
-  paymentMethodsMap?: NamedResourcesMap,
-  accountsMap?: NamedResourcesMap,
+  maps?: TransactionSerializationMaps,
 ): TransactionResponseDTO {
-  return buildTransactionPayload(
-    transaction.toObject(),
-    categoriesMap,
-    paymentMethodsMap,
-    accountsMap,
-  );
+  return buildTransactionPayload(transaction.toObject(), maps);
 }
 
 export function serializeTrashedTransaction(
   transaction: ITransaction,
-): TrashedTransactionResponseDTO;
-export function serializeTrashedTransaction(
-  transaction: ITransaction,
-  categoriesMap: NamedResourcesMap,
-  paymentMethodsMap: NamedResourcesMap,
-  accountsMap: NamedResourcesMap,
-): TrashedTransactionResponseDTO;
-export function serializeTrashedTransaction(
-  transaction: ITransaction,
-  categoriesMap?: NamedResourcesMap,
-  paymentMethodsMap?: NamedResourcesMap,
-  accountsMap?: NamedResourcesMap,
+  maps?: TransactionSerializationMaps,
 ): TrashedTransactionResponseDTO {
-  const serialized = buildTransactionPayload(
-    transaction.toObject(),
-    categoriesMap,
-    paymentMethodsMap,
-    accountsMap,
-  );
+  const serialized = buildTransactionPayload(transaction.toObject(), maps);
   const deletion = transaction.toObject().deletion;
 
   return {
