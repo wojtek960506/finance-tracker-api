@@ -1,6 +1,7 @@
 import {
   InvestmentInstrumentAttributes,
   InvestmentOperationAttributes,
+  InvestmentOperationDeletion,
 } from '@investment/types';
 import { Document, model, Schema, Types } from 'mongoose';
 
@@ -43,6 +44,14 @@ const investmentInstrumentSchema = new Schema<IInvestmentInstrument>(
 
 investmentInstrumentSchema.index({ ownerId: 1, nameNormalized: 1 }, { unique: true });
 
+const investmentOperationDeletionSchema = new Schema<InvestmentOperationDeletion>(
+  {
+    deletedAt: { type: Date, required: true },
+    purgeAt: { type: Date, required: true },
+  },
+  { _id: false },
+);
+
 const investmentOperationSchema = new Schema<IInvestmentOperation>(
   {
     ownerId: {
@@ -81,11 +90,14 @@ const investmentOperationSchema = new Schema<IInvestmentOperation>(
     },
     date: { type: Date, required: true },
     note: { type: String, required: false, maxlength: 500 },
+    deletion: { type: investmentOperationDeletionSchema, default: null },
   },
   { timestamps: true },
 );
 
 investmentOperationSchema.index({ ownerId: 1, instrumentId: 1, date: -1 });
+investmentOperationSchema.index({ ownerId: 1, deletion: 1, date: -1 });
+investmentOperationSchema.index({ instrumentId: 1, deletion: 1, date: -1 });
 
 investmentOperationSchema.path('transactionId').validate({
   validator: function (this: IInvestmentOperation, value: Types.ObjectId | null) {

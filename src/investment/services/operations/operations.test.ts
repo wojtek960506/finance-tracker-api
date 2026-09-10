@@ -2,6 +2,7 @@ import { InvestmentInstrumentModel, InvestmentOperationModel } from '@investment
 import { Types } from 'mongoose';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { TransactionModel } from '@transaction/model';
 import {
   InvestmentInstrumentNotFoundError,
   InvestmentOperationNotFoundError,
@@ -9,6 +10,12 @@ import {
 } from '@utils/errors';
 
 import { createSnapshotOperation, deleteSnapshotOperation, getOperations } from './index';
+
+vi.mock('@transaction/model', () => ({
+  TransactionModel: {
+    find: vi.fn(),
+  },
+}));
 
 vi.mock('@investment/model', () => ({
   InvestmentInstrumentModel: {
@@ -49,8 +56,22 @@ describe('Investment Operations Services', () => {
     updatedAt: new Date('2026-09-01'),
   };
 
+  const mockCashFlowDoc = {
+    _id: new Types.ObjectId(operationId),
+    ownerId: new Types.ObjectId(ownerId),
+    instrumentId: new Types.ObjectId(instrumentId),
+    transactionId: new Types.ObjectId('507f1f77bcf86cd799439014'),
+    kind: 'buy' as const,
+    amount: 2000,
+    currency: 'USD',
+    date: new Date('2026-09-01'),
+    createdAt: new Date('2026-09-01'),
+    updatedAt: new Date('2026-09-01'),
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(TransactionModel.find).mockResolvedValue([] as any);
   });
 
   describe('createSnapshotOperation', () => {
@@ -104,7 +125,7 @@ describe('Investment Operations Services', () => {
   });
 
   describe('getOperations', () => {
-    it('returns filtered operations', async () => {
+    it('returns filtered active operations with deletion: null', async () => {
       const sortMock = vi.fn().mockResolvedValue([mockSnapshotDoc]);
       vi.mocked(InvestmentOperationModel.find).mockReturnValue({
         sort: sortMock,
@@ -122,6 +143,7 @@ describe('Investment Operations Services', () => {
 
       expect(InvestmentOperationModel.find).toHaveBeenCalledWith({
         ownerId,
+        deletion: null,
         instrumentId,
         kind: 'snapshot',
         date: {

@@ -10,7 +10,10 @@ export const getOperations = async (
   ownerId: string,
   filter: InvestmentOperationsQuery = {},
 ): Promise<InvestmentOperationListResponseDTO> => {
-  const query: FilterQuery<IInvestmentOperation> = { ownerId };
+  const query: FilterQuery<IInvestmentOperation> = {
+    ownerId,
+    deletion: null,
+  };
 
   if (filter.instrumentId) {
     query.instrumentId = filter.instrumentId;

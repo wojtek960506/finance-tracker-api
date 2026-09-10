@@ -22,6 +22,11 @@ export interface InvestmentInstrumentAttributes {
   updatedAt: Date;
 }
 
+export interface InvestmentOperationDeletion {
+  deletedAt: Date;
+  purgeAt: Date;
+}
+
 export interface InvestmentOperationAttributes {
   ownerId: Types.ObjectId;
   instrumentId: Types.ObjectId;
@@ -31,6 +36,7 @@ export interface InvestmentOperationAttributes {
   currency: string;
   date: Date;
   note?: string;
+  deletion?: InvestmentOperationDeletion | null;
   createdAt: Date;
   updatedAt: Date;
 }

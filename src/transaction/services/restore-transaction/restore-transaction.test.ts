@@ -35,22 +35,23 @@ describe('restoreTransaction', () => {
         deletionState: 'trash',
       },
     );
-    expect(updateTransactionsDeletion).toHaveBeenCalledWith([
-      { id: STANDARD_TXN_ID_STR, deletion: null },
-      { id: TRANSFER_TXN_INCOME_ID_STR, deletion: null },
-    ]);
+    expect(updateTransactionsDeletion).toHaveBeenCalledWith(
+      [
+        { id: STANDARD_TXN_ID_STR, deletion: null },
+        { id: TRANSFER_TXN_INCOME_ID_STR, deletion: null },
+      ],
+      2,
+    );
     expect(response).toEqual(result);
   });
 
-  it('throws when not all ids were restored', async () => {
+  it('re-throws when updateTransactionsDeletion fails', async () => {
     (loadOwnedTransactionCascade as Mock).mockResolvedValue({
       ids: [STANDARD_TXN_ID_STR, TRANSFER_TXN_INCOME_ID_STR],
     });
-    (updateTransactionsDeletion as Mock).mockResolvedValue({
-      acknowledged: true,
-      matchedCount: 1,
-      modifiedCount: 1,
-    });
+    (updateTransactionsDeletion as Mock).mockRejectedValue(
+      new NotFoundError('Transaction not found'),
+    );
 
     await expect(restoreTransaction(STANDARD_TXN_ID_STR, USER_ID_STR)).rejects.toThrow(
       NotFoundError,

@@ -64,31 +64,24 @@ Split the `InvestmentOperation` schema into two distinct schemas with a discrimi
 
 ---
 
-## 📋 Planned Enhancements & Roadmap
+### 5. Cascading Lifecycle & Trash Sync — *Completed*
 
-### 5. Cascading Lifecycle & Trash Sync
+**Overview**:
+Synchronized the lifecycle of `InvestmentOperation` records with their parent `Transaction` across soft-delete, restore, and permanent purge using a mirrored `deletion` state:
 
-### Overview
-
-Synchronize the lifecycle of an `InvestmentOperation` when its parent `Transaction` is moved to trash, restored, or permanently deleted:
-
-- **Soft Delete (Move to Trash)**:
-  - When `deleteTransaction` runs, exclude operations whose `transactionId` is in trash from portfolio summaries and valuation calculations.
-- **Restore**:
-  - When `restoreTransaction` runs, re-include the linked operation.
+- **Mirrored Deletion Field & Direct Indexing**:
+  - `InvestmentOperationModel` now includes an indexed `deletion: { deletedAt: Date, purgeAt: Date } | null` field (`{ ownerId: 1, deletion: 1, date: -1 }`).
+  - When moving transactions to trash (`deleteTransaction` / `deleteTransactions`), the linked `InvestmentOperation` records atomically receive the same deletion timestamp within the session.
+- **Direct Queries & High-Performance Analytics**:
+  - `getOperations` and future portfolio analytics aggregations query `{ ownerId, deletion: null }` directly with full index support and zero `$lookup` overhead.
+- **Restoration**:
+  - Restoring a trashed transaction (`restoreTransaction` / `restoreTransactions`) atomically sets `deletion: null` on both transactions and linked investment operations.
 - **Permanent Purge**:
-  - When emptying trash or purging expired items, run:
-    ```typescript
-    await InvestmentOperationModel.deleteMany(
-      {
-        ownerId,
-        transactionId: { $in: purgedTransactionIds },
-      },
-      { session },
-    );
-    ```
+  - When permanently deleting transactions (`removeTransaction` / `removeTransactions` / `emptyTrash`), linked `InvestmentOperation` records are purged atomically via `InvestmentOperationModel.deleteMany({ transactionId: { $in: idsToDelete } })`.
 
 ---
+
+## 📋 Planned Enhancements & Roadmap
 
 ## 6. Portfolio Analytics & Performance Metrics
 
