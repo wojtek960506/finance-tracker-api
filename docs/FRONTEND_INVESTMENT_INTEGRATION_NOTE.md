@@ -145,7 +145,10 @@ interface CreateInvestmentTransactionWithExistingInstrumentPayload {
   categoryId: string;
   date: string;
   notes?: string;
-  transactionType?: 'expense' | 'income'; // Defaults automatically: buy/fee -> expense, sell/interest -> income
+  // NOTE: transactionType is NOT passed by the frontend.
+  // The backend automatically computes it:
+  // - buy / fee -> 'expense'
+  // - sell / interest -> 'income'
   investment: {
     operationKind: 'buy' | 'sell' | 'interest' | 'fee';
     instrumentId: string;
@@ -162,7 +165,6 @@ interface CreateInvestmentTransactionWithNewInstrumentPayload {
   categoryId: string;
   date: string;
   notes?: string;
-  transactionType?: 'expense' | 'income';
   investment: {
     operationKind: 'buy' | 'sell' | 'interest' | 'fee';
     newInstrument: {

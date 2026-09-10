@@ -22,10 +22,9 @@ export const createInvestmentTransaction = async (
   ]);
 
   const transactionType =
-    dto.transactionType ??
-    (dto.investment.operationKind === 'buy' || dto.investment.operationKind === 'fee'
+    dto.investment.operationKind === 'buy' || dto.investment.operationKind === 'fee'
       ? 'expense'
-      : 'income');
+      : 'income';
 
   return withSession(async (session) => {
     const instrumentId = await resolveInstrumentId(

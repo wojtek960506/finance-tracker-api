@@ -320,8 +320,9 @@ describe('transaction routes', async () => {
     expect(response.json()).toEqual(standardResponse);
   });
 
+  const { transactionType: _, ...standardWithoutType } = standardDTO;
   const investmentDTO = {
-    ...standardDTO,
+    ...standardWithoutType,
     investment: {
       instrumentId: '507f1f77bcf86cd799439012',
       operationKind: 'buy',

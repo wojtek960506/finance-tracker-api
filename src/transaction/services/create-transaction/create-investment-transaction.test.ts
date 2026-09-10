@@ -59,7 +59,6 @@ describe('create investment transaction', () => {
     description: 'Buy AAPL stock',
     paymentMethodId: paymentMethod.id,
     accountId: accountExpense.id,
-    transactionType: 'expense',
     investment: {
       instrumentId,
       operationKind: 'buy',

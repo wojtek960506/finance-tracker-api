@@ -55,7 +55,6 @@ describe('update investment transaction', () => {
     description: 'Updated AAPL stock buy',
     paymentMethodId: paymentMethod.id,
     accountId: accountExpense.id,
-    transactionType: 'expense',
     investment: {
       instrumentId,
       operationKind: 'buy',

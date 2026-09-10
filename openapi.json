@@ -1464,13 +1464,6 @@
               }
             ]
           },
-          "transactionType": {
-            "type": "string",
-            "enum": [
-              "expense",
-              "income"
-            ]
-          },
           "investment": {
             "$ref": "#/components/schemas/TransactionInvestmentDetailsInput"
           }
@@ -2010,13 +2003,6 @@
                   {
                     "type": "null"
                   }
-                ]
-              },
-              "transactionType": {
-                "type": "string",
-                "enum": [
-                  "expense",
-                  "income"
                 ]
               },
               "investment": {
@@ -5927,13 +5913,6 @@
               }
             ]
           },
-          "transactionType": {
-            "type": "string",
-            "enum": [
-              "expense",
-              "income"
-            ]
-          },
           "investment": {
             "$ref": "#/components/schemas/TransactionInvestmentDetails"
           }
@@ -6491,13 +6470,6 @@
                   {
                     "type": "null"
                   }
-                ]
-              },
-              "transactionType": {
-                "type": "string",
-                "enum": [
-                  "expense",
-                  "income"
                 ]
               },
               "investment": {

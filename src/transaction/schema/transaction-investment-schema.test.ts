@@ -28,6 +28,7 @@ describe('TransactionInvestmentSchema & TransactionInvestmentDetailsSchema', () 
       operationKind: 'buy',
       note: 'Existing instrument purchase',
     });
+    expect((parsed as any).transactionType).toBeUndefined();
   });
 
   it('validates investment with inline newInstrument', () => {

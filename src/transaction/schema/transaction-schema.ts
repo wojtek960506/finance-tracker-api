@@ -92,8 +92,9 @@ export const TransactionInvestmentDetailsSchema = z.union([
  * Schema for investment transaction
  * Used for POST /transactions/investment and PUT /transactions/investment
  */
-export const TransactionInvestmentSchema = TransactionStandardSchema.extend({
-  transactionType: z.enum([...TRANSACTION_TYPES]).optional(),
+export const TransactionInvestmentSchema = TransactionStandardSchema.omit({
+  transactionType: true,
+}).extend({
   investment: TransactionInvestmentDetailsSchema,
 });
 
