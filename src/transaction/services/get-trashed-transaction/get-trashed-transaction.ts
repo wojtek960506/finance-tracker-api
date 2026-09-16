@@ -19,5 +19,5 @@ export const getTrashedTransaction = async (
   return {
     ...serialized,
     reference: serializeTrashedTransaction(reference),
-  };
+  } as TrashedTransactionDetailsResponseDTO;
 };

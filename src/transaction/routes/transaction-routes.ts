@@ -23,9 +23,15 @@ import {
   TransactionDetailsResponseDTO,
   TransactionDetailsResponseSchema,
   TransactionExchangeDTO,
+  TransactionExchangeResponseDTO,
+  TransactionExchangeResponseSchema,
   TransactionExchangeSchema,
   TransactionFiltersQuery,
   TransactionFiltersQuerySchema,
+  TransactionInvestmentDTO,
+  TransactionInvestmentResponseDTO,
+  TransactionInvestmentResponseSchema,
+  TransactionInvestmentSchema,
   TransactionQuery,
   TransactionQuerySchema,
   TransactionResponseDTO,
@@ -33,10 +39,14 @@ import {
   TransactionsResponseDTO,
   TransactionsResponseSchema,
   TransactionStandardDTO,
+  TransactionStandardResponseDTO,
+  TransactionStandardResponseSchema,
   TransactionStandardSchema,
   TransactionStatisticsQuery,
   TransactionStatisticsQuerySchema,
   TransactionTransferDTO,
+  TransactionTransferResponseDTO,
+  TransactionTransferResponseSchema,
   TransactionTransferSchema,
   TrashedTransactionDetailsResponseDTO,
   TrashedTransactionDetailsResponseSchema,
@@ -48,9 +58,12 @@ import {
 import { validateBody } from '@utils/validation';
 
 import {
+  createExchangeTransactionHandler,
+  createInvestmentTransactionHandler,
+  createStandardTransactionHandler,
   createTestTransactionsHandler,
-  createTransactionHandler,
   createTransactionsHandler,
+  createTransferTransactionHandler,
   deleteTransactionHandler,
   deleteTransactionsHandler,
   deleteTrashedTransactionHandler,
@@ -65,7 +78,10 @@ import {
   getTrashedTransactionsHandler,
   restoreTransactionHandler,
   restoreTransactionsHandler,
-  updateTransactionHandler,
+  updateExchangeTransactionHandler,
+  updateInvestmentTransactionHandler,
+  updateStandardTransactionHandler,
+  updateTransferTransactionHandler,
 } from './handlers';
 import {
   AccountStatisticsResponse,
@@ -84,7 +100,15 @@ export async function transactionRoutes(
     items: TransactionsResponseSchema,
   });
 
-  const ExchangeOrTransferResponseSchema = z.array(TransactionResponseSchema);
+  const TransferResponseSchema = z.tuple([
+    TransactionTransferResponseSchema,
+    TransactionTransferResponseSchema,
+  ]);
+
+  const ExchangeResponseSchema = z.tuple([
+    TransactionExchangeResponseSchema,
+    TransactionExchangeResponseSchema,
+  ]);
 
   const TransactionSubcategoryTotalsSchema = z.object({
     totalAmount: z.number(),
@@ -378,7 +402,7 @@ export async function transactionRoutes(
     getTransactionHandler,
   );
 
-  app.post<{ Body: TransactionStandardDTO; Reply: TransactionResponseDTO }>(
+  app.post<{ Body: TransactionStandardDTO; Reply: TransactionStandardResponseDTO }>(
     '/standard',
     {
       preHandler: [validateBody(TransactionStandardSchema), authorizeAccessToken()],
@@ -388,11 +412,11 @@ export async function transactionRoutes(
         description: 'Create a standard transaction.',
         body: TransactionStandardSchema,
         response: {
-          201: TransactionResponseSchema,
+          201: TransactionStandardResponseSchema,
         },
       },
     },
-    createTransactionHandler,
+    createStandardTransactionHandler,
   );
 
   app.post<{ Body: TransactionBulkCreateDTO; Reply: TransactionsResponseDTO }>(
@@ -416,7 +440,7 @@ export async function transactionRoutes(
 
   app.post<{
     Body: TransactionExchangeDTO;
-    Reply: [TransactionResponseDTO, TransactionResponseDTO];
+    Reply: [TransactionExchangeResponseDTO, TransactionExchangeResponseDTO];
   }>(
     '/exchange',
     {
@@ -427,16 +451,16 @@ export async function transactionRoutes(
         description: 'Create an exchange transaction (two linked entries).',
         body: TransactionExchangeSchema,
         response: {
-          201: ExchangeOrTransferResponseSchema,
+          201: ExchangeResponseSchema,
         },
       },
     },
-    createTransactionHandler,
+    createExchangeTransactionHandler,
   );
 
   app.post<{
     Body: TransactionTransferDTO;
-    Reply: [TransactionResponseDTO, TransactionResponseDTO];
+    Reply: [TransactionTransferResponseDTO, TransactionTransferResponseDTO];
   }>(
     '/transfer',
     {
@@ -447,17 +471,37 @@ export async function transactionRoutes(
         description: 'Create a transfer transaction (two linked entries).',
         body: TransactionTransferSchema,
         response: {
-          201: ExchangeOrTransferResponseSchema,
+          201: TransferResponseSchema,
         },
       },
     },
-    createTransactionHandler,
+    createTransferTransactionHandler,
+  );
+
+  app.post<{
+    Body: TransactionInvestmentDTO;
+    Reply: TransactionInvestmentResponseDTO;
+  }>(
+    '/investment',
+    {
+      preHandler: [validateBody(TransactionInvestmentSchema), authorizeAccessToken()],
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Create investment transaction',
+        description: 'Create an investment transaction linked to an instrument.',
+        body: TransactionInvestmentSchema,
+        response: {
+          201: TransactionInvestmentResponseSchema,
+        },
+      },
+    },
+    createInvestmentTransactionHandler,
   );
 
   app.put<{
     Params: ParamsJustId;
     Body: TransactionStandardDTO;
-    Reply: TransactionResponseDTO;
+    Reply: TransactionStandardResponseDTO;
   }>(
     '/standard/:id',
     {
@@ -469,17 +513,39 @@ export async function transactionRoutes(
         params: ParamsJustIdSchema,
         body: TransactionStandardSchema,
         response: {
-          200: TransactionResponseSchema,
+          200: TransactionStandardResponseSchema,
         },
       },
     },
-    updateTransactionHandler,
+    updateStandardTransactionHandler,
+  );
+
+  app.put<{
+    Params: ParamsJustId;
+    Body: TransactionInvestmentDTO;
+    Reply: TransactionInvestmentResponseDTO;
+  }>(
+    '/investment/:id',
+    {
+      preHandler: [validateBody(TransactionInvestmentSchema), authorizeAccessToken()],
+      schema: {
+        tags: ['Transactions'],
+        summary: 'Update investment transaction',
+        description: 'Update an investment transaction by id.',
+        params: ParamsJustIdSchema,
+        body: TransactionInvestmentSchema,
+        response: {
+          200: TransactionInvestmentResponseSchema,
+        },
+      },
+    },
+    updateInvestmentTransactionHandler,
   );
 
   app.put<{
     Params: ParamsJustId;
     Body: TransactionTransferDTO;
-    Reply: [TransactionResponseDTO, TransactionResponseDTO];
+    Reply: [TransactionTransferResponseDTO, TransactionTransferResponseDTO];
   }>(
     '/transfer/:id',
     {
@@ -491,17 +557,17 @@ export async function transactionRoutes(
         params: ParamsJustIdSchema,
         body: TransactionTransferSchema,
         response: {
-          200: ExchangeOrTransferResponseSchema,
+          200: TransferResponseSchema,
         },
       },
     },
-    updateTransactionHandler,
+    updateTransferTransactionHandler,
   );
 
   app.put<{
     Params: ParamsJustId;
     Body: TransactionExchangeDTO;
-    Reply: [TransactionResponseDTO, TransactionResponseDTO];
+    Reply: [TransactionExchangeResponseDTO, TransactionExchangeResponseDTO];
   }>(
     '/exchange/:id',
     {
@@ -513,11 +579,11 @@ export async function transactionRoutes(
         params: ParamsJustIdSchema,
         body: TransactionExchangeSchema,
         response: {
-          200: ExchangeOrTransferResponseSchema,
+          200: ExchangeResponseSchema,
         },
       },
     },
-    updateTransactionHandler,
+    updateExchangeTransactionHandler,
   );
 
   app.delete<{ Params: ParamsJustId; Reply: UpdateManyReply }>(

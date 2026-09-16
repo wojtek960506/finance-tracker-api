@@ -47,6 +47,7 @@ describe('prepareRandomStandardTransaction', () => {
       income: 1,
     });
     expect(result).toEqual({
+      kind: 'standard',
       date: TEST_DATE,
       amount: 123,
       accountId: 'acc-1',

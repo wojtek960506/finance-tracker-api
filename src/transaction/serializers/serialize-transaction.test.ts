@@ -66,12 +66,11 @@ describe('serializeTransaction', () => {
   });
 
   it('serialize transaction without populated category', () => {
-    const result = serializeTransaction(
-      iTransactionNotPopulated as any,
+    const result = serializeTransaction(iTransactionNotPopulated as any, {
       categoriesMap,
       paymentMethodsMap,
       accountsMap,
-    );
+    });
     expect(result).toEqual(transactionSerialized);
   });
 
@@ -93,6 +92,140 @@ describe('serializeTransaction', () => {
     expect(result).toEqual({
       ...transactionSerialized,
       deletion: trashedTransaction.deletion,
+    });
+  });
+
+  it('serializes investment transaction with investment details from investmentsMap', () => {
+    const investmentDetails = {
+      operationKind: 'buy' as const,
+      instrument: {
+        id: '651a00000000000000000001',
+        name: 'Apple Inc.',
+        kind: 'share' as const,
+        currency: 'USD',
+      },
+      note: 'Bought 10 shares',
+    };
+
+    const investmentsMap = {
+      [transactionNotPopulated._id.toString()]: investmentDetails,
+    };
+
+    const result = serializeTransaction(iTransactionNotPopulated as any, {
+      categoriesMap,
+      paymentMethodsMap,
+      accountsMap,
+      investmentsMap,
+    });
+
+    expect(result).toEqual({
+      ...transactionSerialized,
+      investment: investmentDetails,
+    });
+  });
+
+  it('serializes trashed investment transaction with investmentsMap', () => {
+    const investmentDetails = {
+      operationKind: 'buy' as const,
+      instrument: {
+        id: '651a00000000000000000001',
+        name: 'Apple Inc.',
+        kind: 'share' as const,
+        currency: 'USD',
+      },
+    };
+
+    const trashedTransaction = {
+      ...transactionNotPopulated,
+      deletion: {
+        deletedAt: new Date('2026-01-01'),
+        purgeAt: new Date('2026-02-01'),
+      },
+    };
+    const iTrashedTransaction = {
+      ...trashedTransaction,
+      toObject: () => ({ ...trashedTransaction, __v: 3 }),
+    };
+
+    const investmentsMap = {
+      [transactionNotPopulated._id.toString()]: investmentDetails,
+    };
+
+    const result = serializeTrashedTransaction(iTrashedTransaction as any, {
+      categoriesMap,
+      paymentMethodsMap,
+      accountsMap,
+      investmentsMap,
+    });
+
+    expect(result).toEqual({
+      ...transactionSerialized,
+      deletion: trashedTransaction.deletion,
+      investment: investmentDetails,
+    });
+  });
+
+  it('serializes populated investment transaction with investmentsMap only', () => {
+    const investmentDetails = {
+      operationKind: 'buy' as const,
+      instrument: {
+        id: '651a00000000000000000001',
+        name: 'Apple Inc.',
+        kind: 'share' as const,
+        currency: 'USD',
+      },
+      note: 'Bought 10 shares',
+    };
+
+    const investmentsMap = {
+      [transaction._id.toString()]: investmentDetails,
+    };
+
+    const result = serializeTransaction(iTransaction as any, {
+      investmentsMap,
+    });
+
+    expect(result).toEqual({
+      ...transactionSerialized,
+      investment: investmentDetails,
+    });
+  });
+
+  it('serializes populated trashed investment transaction with investmentsMap only', () => {
+    const investmentDetails = {
+      operationKind: 'buy' as const,
+      instrument: {
+        id: '651a00000000000000000001',
+        name: 'Apple Inc.',
+        kind: 'share' as const,
+        currency: 'USD',
+      },
+    };
+
+    const trashedTransaction = {
+      ...transaction,
+      deletion: {
+        deletedAt: new Date('2026-01-01'),
+        purgeAt: new Date('2026-02-01'),
+      },
+    };
+    const iTrashedTransaction = {
+      ...trashedTransaction,
+      toObject: () => ({ ...trashedTransaction, __v: 3 }),
+    };
+
+    const investmentsMap = {
+      [transaction._id.toString()]: investmentDetails,
+    };
+
+    const result = serializeTrashedTransaction(iTrashedTransaction as any, {
+      investmentsMap,
+    });
+
+    expect(result).toEqual({
+      ...transactionSerialized,
+      deletion: trashedTransaction.deletion,
+      investment: investmentDetails,
     });
   });
 });

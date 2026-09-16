@@ -31,6 +31,7 @@ export const createStandardTransaction = async (
   const sourceIndex = await getNextSourceIndex(ownerId);
   return persistTransaction({
     ...dto,
+    kind: 'standard',
     categoryId,
     paymentMethodId,
     accountId,

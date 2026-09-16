@@ -1,9 +1,12 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
 import { CURRENCY_CODES } from '@currency/schema';
-import { TRANSACTION_TYPES } from '@utils/consts';
+import { TRANSACTION_KINDS, TRANSACTION_TYPES } from '@utils/consts';
+
+export type TransactionKind = (typeof TRANSACTION_KINDS)[number];
 
 export interface TransactionAttributes {
+  kind: TransactionKind;
   date: Date;
   description: string;
   amount: number;
@@ -43,6 +46,13 @@ const transactionDeletionSchema = new Schema<TransactionDeletion>(
 const transactionSchema = new Schema<ITransaction>(
   {
     ownerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    kind: {
+      type: String,
+      required: true,
+      enum: [...TRANSACTION_KINDS],
+      default: 'standard',
+      index: true,
+    },
     date: { type: Date, required: true },
     description: { type: String, required: true },
     amount: { type: Number, required: true },

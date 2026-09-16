@@ -77,7 +77,13 @@ describe('create transactions in bulk', () => {
     (getNextSourceIndices as Mock).mockResolvedValue([1, 2, 3, 4, 5]);
 
     await createTransactions(
-      { transactions: [standardDTO, exchangeDTO, transferDTO] },
+      {
+        transactions: [
+          { ...standardDTO, kind: 'standard' },
+          { ...exchangeDTO, kind: 'exchange' },
+          { ...transferDTO, kind: 'transfer' },
+        ],
+      },
       USER_ID_STR,
     );
 

@@ -1,15 +1,36 @@
 import { TransactionStandardDTO } from '@transaction/schema';
 
-export type TransactionStandardCreateProps = TransactionStandardDTO & {
+export type TransactionStandardCreateProps = Omit<TransactionStandardDTO, 'kind'> & {
+  kind: 'standard';
   ownerId: string;
   sourceIndex: number;
 };
 
-export type TransactionTransferCreateProps = TransactionStandardCreateProps & {
+export type TransactionTransferCreateProps = Omit<
+  TransactionStandardCreateProps,
+  'kind'
+> & {
+  kind: 'transfer';
   sourceRefIndex: number;
 };
 
-export type TransactionExchangeCreateProps = TransactionTransferCreateProps & {
+export type TransactionInvestmentCreateProps = Omit<
+  TransactionStandardCreateProps,
+  'kind'
+> & {
+  kind: 'investment';
+  investment?: {
+    instrumentId: string;
+    operationKind: 'buy' | 'sell' | 'interest' | 'fee';
+    note?: string;
+  };
+};
+
+export type TransactionExchangeCreateProps = Omit<
+  TransactionTransferCreateProps,
+  'kind'
+> & {
+  kind: 'exchange';
   currencies: string;
   exchangeRate: number;
 };

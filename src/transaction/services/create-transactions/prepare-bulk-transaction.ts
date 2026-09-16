@@ -1,5 +1,11 @@
-import { TransactionStandardCreateProps } from '@transaction/db';
+import { resolveInstrumentId } from '@investment/services';
+
 import {
+  TransactionInvestmentCreateProps,
+  TransactionStandardCreateProps,
+} from '@transaction/db';
+import {
+  TransactionBulkItemInvestmentDTO,
   TransactionExchangeDTO,
   TransactionStandardDTO,
   TransactionTransferDTO,
@@ -12,6 +18,7 @@ import {
   resolvePaymentMethodId,
 } from '@transaction/services/resolve-transaction-resource-id';
 
+import { resolveSystemCategoryId } from './resolve-system-category-id';
 import { TransactionKindObjectIds } from './types';
 
 export const prepareBulkStandardTransaction = async (
@@ -27,6 +34,7 @@ export const prepareBulkStandardTransaction = async (
 
   return {
     ...dto,
+    kind: 'standard',
     categoryId,
     paymentMethodId,
     accountId,
@@ -93,4 +101,43 @@ export const prepareBulkExchangeTransactions = async (
   );
 
   return [expenseTransactionProps, incomeTransactionProps];
+};
+
+export const prepareBulkInvestmentTransaction = async (
+  dto: TransactionBulkItemInvestmentDTO,
+  ownerId: string,
+  sourceIndex: number,
+  objectIds: TransactionKindObjectIds,
+) => {
+  const [categoryId, paymentMethodId, accountId] = await Promise.all([
+    dto.categoryId
+      ? resolveCategoryId(dto.categoryId, ownerId)
+      : (objectIds.investmentCategoryId ??= await resolveSystemCategoryId('investment')),
+    resolvePaymentMethodId(dto.paymentMethodId, ownerId),
+    resolveAccountId(dto.accountId, ownerId),
+  ]);
+
+  const instrumentId = await resolveInstrumentId(ownerId, dto.investment, dto.currency);
+
+  const transactionType =
+    dto.transactionType ??
+    (dto.investment.operationKind === 'buy' || dto.investment.operationKind === 'fee'
+      ? 'expense'
+      : 'income');
+
+  return {
+    ...dto,
+    kind: 'investment',
+    transactionType,
+    categoryId,
+    paymentMethodId,
+    accountId,
+    ownerId,
+    sourceIndex,
+    investment: {
+      instrumentId,
+      operationKind: dto.investment.operationKind,
+      note: dto.investment.note,
+    },
+  } satisfies TransactionInvestmentCreateProps;
 };

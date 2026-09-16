@@ -40,6 +40,7 @@ describe('prepareRandomTransferTransactionPair', () => {
     expect(randomNumber).toHaveBeenCalledWith(10, 10000);
     expect(randomFromSet).toHaveBeenCalledTimes(1);
     expect(expense).toEqual({
+      kind: 'transfer',
       date: TEST_DATE,
       amount: 250,
       ownerId: TEST_OWNER_ID,
@@ -53,6 +54,7 @@ describe('prepareRandomTransferTransactionPair', () => {
       description: 'Money Transfer: acc-1 --> acc-2',
     });
     expect(income).toEqual({
+      kind: 'transfer',
       date: TEST_DATE,
       amount: 250,
       ownerId: TEST_OWNER_ID,

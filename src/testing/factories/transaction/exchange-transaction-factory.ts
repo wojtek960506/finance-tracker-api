@@ -61,6 +61,7 @@ export function getExchangeTransactionProps(isCreate: true): {
 };
 export function getExchangeTransactionProps(isCreate?: true) {
   const commonProps = {
+    kind: 'exchange' as const,
     categoryId: EXCHANGE_CATEGORY_ID_STR,
     date: DATE_OBJ,
     paymentMethodId: BANK_TRANSFER_PAYMENT_METHOD_ID_STR,

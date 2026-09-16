@@ -1,3 +1,4 @@
+import { InvestmentOperationModel } from '@investment/model';
 import { ClientSession } from 'mongoose';
 
 import { TransactionModel } from '@transaction/model';
@@ -7,6 +8,7 @@ import { withSession } from '@utils/with-session';
 
 import {
   TransactionExchangeCreateProps,
+  TransactionInvestmentCreateProps,
   TransactionStandardCreateProps,
   TransactionTransferCreateProps,
 } from './types';
@@ -14,7 +16,8 @@ import {
 type TransactionCreateProps =
   | TransactionStandardCreateProps
   | TransactionTransferCreateProps
-  | TransactionExchangeCreateProps;
+  | TransactionExchangeCreateProps
+  | TransactionInvestmentCreateProps;
 
 const hasSourceRefIndex = (
   transaction: TransactionCreateProps,
@@ -76,6 +79,34 @@ const persistTransactionsCore = async (
         undefined,
         'TRANSACTIONS_BULK_REFERENCE_UPDATE_INCOMPLETE',
       );
+  }
+
+  const investmentOperationsToCreate = transactions
+    .map((transaction, index) => {
+      if (
+        transaction.kind === 'investment' &&
+        'investment' in transaction &&
+        transaction.investment
+      ) {
+        return {
+          ownerId: transaction.ownerId,
+          instrumentId: transaction.investment.instrumentId,
+          transactionId: insertedIds[index],
+          kind: transaction.investment.operationKind,
+          amount: transaction.amount,
+          currency: transaction.currency.toUpperCase(),
+          date: transaction.date,
+          note: transaction.investment.note,
+        };
+      }
+      return null;
+    })
+    .filter((op) => op !== null);
+
+  if (investmentOperationsToCreate.length > 0) {
+    await InvestmentOperationModel.insertMany(investmentOperationsToCreate, {
+      session,
+    });
   }
 
   const insertedTransactions = await TransactionModel.find({

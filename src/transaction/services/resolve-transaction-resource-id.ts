@@ -35,6 +35,21 @@ export const resolveCategoryId = async (
   return category.id;
 };
 
+export const resolveInvestmentCategoryId = async (
+  categoryId: OptionalObjectId,
+  ownerId: string,
+) => {
+  const category = categoryId
+    ? await findNamedResourceById('category', categoryId)
+    : await findRequiredSystemResource('category', 'investment');
+
+  if (category.type === 'system' && category.name !== 'investment')
+    throw new SystemCategoryNotAllowed(category.id);
+  if (category.type !== 'system')
+    checkOwner(ownerId, category.id, category.ownerId!, 'category');
+  return category.id;
+};
+
 export const resolvePaymentMethodId = async (
   paymentMethodId: OptionalObjectId,
   ownerId: string,

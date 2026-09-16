@@ -18,6 +18,7 @@ export const prepareRandomTransferTransactionPair = (
   const description = `Money Transfer: ${accountExpenseId} --> ${accountIncomeId}`;
 
   const commonProps = {
+    kind: 'transfer' as const,
     date,
     amount,
     ownerId,

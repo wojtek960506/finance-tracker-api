@@ -7,6 +7,7 @@ export const OTHER_ACCOUNT_NAME = 'otherAccount';
 export const SYSTEM_CATEGORY_NAMES = new Set([
   'exchange',
   'myAccount',
+  'investment',
   OTHER_CATEGORY_NAME,
 ]);
 
@@ -21,3 +22,10 @@ export const SYSTEM_PAYMENT_METHOD_NAMES = new Set([
 export const SYSTEM_ACCOUNT_NAMES = new Set(['cash', OTHER_ACCOUNT_NAME]);
 
 export const TRANSACTION_TYPES = new Set(['expense', 'income']);
+
+export const TRANSACTION_KINDS = [
+  'standard',
+  'exchange',
+  'transfer',
+  'investment',
+] as const;

@@ -1,3 +1,4 @@
+import { InvestmentOperationModel } from '@investment/model';
 import { ClientSession } from 'mongoose';
 
 import { DeleteManyReply } from '@shared/http';
@@ -11,6 +12,11 @@ export const removeTransactionCore = async (
   refId?: string,
 ): Promise<DeleteManyReply> => {
   const idsToDelete = refId ? [id, refId] : [id];
+  await InvestmentOperationModel.deleteMany(
+    { transactionId: { $in: idsToDelete } },
+    { session },
+  );
+
   const result = await TransactionModel.deleteMany(
     { _id: { $in: idsToDelete } },
     { session },

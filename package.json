@@ -8,8 +8,10 @@
   "scripts": {
     "dev": "CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=200 tsx watch src/server.ts",
     "build": "tsup",
+    "openapi:export": "tsx scripts/export-openapi.ts",
     "start": "node dist/server.js",
     "migrate:legacy-email-verification": "tsx src/scripts/migrate-legacy-email-verification.ts",
+    "migrate:transaction-kind": "tsx src/scripts/migrate-transaction-kind.ts",
     "test": "vitest --run",
     "test:integration": "vitest --run --config vitest.integration.config.ts",
     "test:integration:db:up": "docker compose -f compose.integration.yml up -d --wait mongo-integration",
@@ -25,7 +27,14 @@
     "fix": "node scripts/fix.mjs",
     "coverage:missing": "node scripts/coverage-missing.mjs",
     "coverage:summary-only": "pnpm test:coverage --coverage.reporter=json-summary",
-    "coverage:check-missing": "vitest --run --reporter=dot --coverage --coverage.reporter=json-summary --coverage.reporter=lcov && node scripts/coverage-missing.mjs"
+    "coverage:check-missing": "vitest --run --reporter=dot --coverage --coverage.reporter=json-summary --coverage.reporter=lcov && node scripts/coverage-missing.mjs",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
@@ -55,6 +64,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.8.1",
     "supertest": "^7.1.4",
     "tsup": "^8.5.0",

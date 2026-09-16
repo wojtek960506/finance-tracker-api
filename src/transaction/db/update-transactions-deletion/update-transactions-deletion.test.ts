@@ -17,10 +17,18 @@ vi.mock('@utils/with-session', () => ({
     .mockImplementation(async (func, ...args) => func({} as any, ...args)),
 }));
 
+vi.mock('@investment/model', () => ({
+  InvestmentOperationModel: {
+    bulkWrite: vi.fn(),
+    updateMany: vi.fn(),
+  },
+}));
+
 vi.mock('@transaction/model', () => ({
   TransactionModel: {
     bulkWrite: vi.fn(),
     updateMany: vi.fn(),
+    find: vi.fn().mockResolvedValue([]),
   },
 }));
 
@@ -78,6 +86,21 @@ describe('updateTransactionsDeletion', () => {
       matchedCount: 1,
       modifiedCount: 1,
     });
+  });
+
+  it('throws NotFoundError if matched count does not match expected count', async () => {
+    (TransactionModel.bulkWrite as Mock).mockResolvedValue({
+      matchedCount: 1,
+      modifiedCount: 1,
+    });
+
+    await expect(
+      updateTransactionsDeletionCore(
+        {} as any,
+        [{ id: STANDARD_TXN_ID_STR, deletion: null }],
+        2,
+      ),
+    ).rejects.toThrow();
   });
 
   it('uses withSession wrapper for updateTransactionsDeletion', async () => {

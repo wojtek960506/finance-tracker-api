@@ -16,6 +16,12 @@ vi.mock('@utils/with-session', () => ({
   }),
 }));
 
+vi.mock('@investment/model', () => ({
+  InvestmentOperationModel: {
+    deleteMany: vi.fn().mockResolvedValue({ deletedCount: 0 }),
+  },
+}));
+
 vi.mock('@transaction/model', () => ({ TransactionModel: { deleteMany: vi.fn() } }));
 
 describe('removeTransaction', () => {

@@ -105,6 +105,7 @@ describe('create transaction', () => {
     );
     expect(dbTransactions.persistTransaction).toHaveBeenCalledWith({
       ...standardDTO,
+      kind: 'standard',
       ownerId: USER_ID_STR,
       sourceIndex: STANDARD_TXN_SRC_IDX,
     });
@@ -146,6 +147,7 @@ describe('create transaction', () => {
     );
     expect(dbTransactions.persistTransaction).toHaveBeenCalledWith({
       ...dto,
+      kind: 'standard',
       categoryId: otherCategory.id,
       paymentMethodId: otherPaymentMethod.id,
       accountId: otherAccount.id,
@@ -169,6 +171,7 @@ describe('create transaction', () => {
 
     expect(dbTransactions.persistTransaction).toHaveBeenCalledWith({
       ...dto,
+      kind: 'standard',
       ownerId: USER_ID_STR,
       sourceIndex: STANDARD_TXN_SRC_IDX,
     });

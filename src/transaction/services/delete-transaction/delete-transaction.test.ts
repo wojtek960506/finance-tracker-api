@@ -26,23 +26,24 @@ describe('deleteTransaction', () => {
     expect(findTransaction).toHaveBeenCalledOnce();
     expect(findTransaction).toHaveBeenCalledWith(STANDARD_TXN_ID_STR, {});
     expect(updateTransactionsDeletion).toHaveBeenCalledOnce();
-    expect(updateTransactionsDeletion).toHaveBeenCalledWith([
-      {
-        id: STANDARD_TXN_ID_STR,
-        deletion: expect.objectContaining({}),
-      },
-    ]);
+    expect(updateTransactionsDeletion).toHaveBeenCalledWith(
+      [
+        {
+          id: STANDARD_TXN_ID_STR,
+          deletion: expect.objectContaining({}),
+        },
+      ],
+      1,
+    );
     expect(result).toEqual(deleteResult);
   });
 
-  it('throws when not all transactions were moved to trash', async () => {
+  it('re-throws when updateTransactionsDeletion fails', async () => {
     const transaction = getStandardTransactionResultJSON();
     (findTransaction as Mock).mockResolvedValue(transaction);
-    (updateTransactionsDeletion as Mock).mockResolvedValue({
-      acknowledged: true,
-      matchedCount: 0,
-      modifiedCount: 0,
-    });
+    (updateTransactionsDeletion as Mock).mockRejectedValue(
+      new NotFoundError('Transaction not found'),
+    );
 
     await expect(deleteTransaction(STANDARD_TXN_ID_STR, USER_ID_STR)).rejects.toThrow(
       NotFoundError,

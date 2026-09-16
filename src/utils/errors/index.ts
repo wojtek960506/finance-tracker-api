@@ -2,5 +2,6 @@ export * from './account-errors';
 export * from './auth-errors';
 export * from './category-errors';
 export * from './general-errors';
+export * from './investment-errors';
 export * from './payment-method-errors';
 export * from './transaction-errors';

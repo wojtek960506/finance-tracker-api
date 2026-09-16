@@ -1,0 +1,42 @@
+import { Types } from 'mongoose';
+
+import {
+  INVESTMENT_INSTRUMENT_KINDS,
+  INVESTMENT_OPERATION_CASH_FLOW_KINDS,
+  INVESTMENT_OPERATION_KINDS,
+} from './consts';
+
+export type InvestmentInstrumentKind = (typeof INVESTMENT_INSTRUMENT_KINDS)[number];
+export type InvestmentOperationKind = (typeof INVESTMENT_OPERATION_KINDS)[number];
+export type InvestmentOperationCashFlowKind =
+  (typeof INVESTMENT_OPERATION_CASH_FLOW_KINDS)[number];
+
+export interface InvestmentInstrumentAttributes {
+  ownerId: Types.ObjectId;
+  name: string;
+  nameNormalized: string;
+  kind: InvestmentInstrumentKind;
+  currency: string;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface InvestmentOperationDeletion {
+  deletedAt: Date;
+  purgeAt: Date;
+}
+
+export interface InvestmentOperationAttributes {
+  ownerId: Types.ObjectId;
+  instrumentId: Types.ObjectId;
+  transactionId?: Types.ObjectId | null;
+  kind: InvestmentOperationKind;
+  amount: number;
+  currency: string;
+  date: Date;
+  note?: string;
+  deletion?: InvestmentOperationDeletion | null;
+  createdAt: Date;
+  updatedAt: Date;
+}

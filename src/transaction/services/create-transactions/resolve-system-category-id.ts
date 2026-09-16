@@ -8,7 +8,7 @@ import {
 } from '@utils/errors';
 
 export const resolveSystemCategoryId = async (
-  systemCategoryName: 'exchange' | 'myAccount',
+  systemCategoryName: 'exchange' | 'myAccount' | 'investment',
 ) => {
   const categoryDB = await findNamedResourceByName('category', systemCategoryName);
   if (!categoryDB) throw new CategoryNotFoundError(undefined, systemCategoryName);
