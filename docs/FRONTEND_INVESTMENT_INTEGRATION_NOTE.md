@@ -26,7 +26,7 @@ Soft deletion, trash management, restoration, and permanent deletion are automat
 | `PATCH` | `/investments/instruments/:id` | Update an existing instrument (name, kind, currency, notes). |
 | `DELETE` | `/investments/instruments/:id` | Delete an instrument and its associated snapshot operations. |
 
-**Instrument Kinds**: `'share' | 'fund' | 'bond' | 'crypto' | 'commodity' | 'custom'`
+**Instrument Kinds**: `'share' | 'fund' | 'termDeposit' | 'savings'`
 
 ---
 
@@ -62,10 +62,8 @@ Soft deletion, trash management, restoration, and permanent deletion are automat
 export type InvestmentInstrumentKind =
   | 'share'
   | 'fund'
-  | 'bond'
-  | 'crypto'
-  | 'commodity'
-  | 'custom';
+  | 'termDeposit'
+  | 'savings';
 
 export interface InvestmentInstrumentResponse {
   id: string;
@@ -169,7 +167,7 @@ interface CreateInvestmentTransactionWithNewInstrumentPayload {
     operationKind: 'buy' | 'sell' | 'interest' | 'fee';
     newInstrument: {
       name: string;
-      kind?: 'share' | 'fund' | 'bond' | 'crypto' | 'commodity' | 'custom';
+      kind?: 'share' | 'fund' | 'termDeposit' | 'savings';
       currency?: string;
       notes?: string;
     };
@@ -205,7 +203,7 @@ export interface InvestmentTransactionResponse {
     instrument: {
       id: string;
       name: string;
-      kind: 'share' | 'fund' | 'bond' | 'crypto' | 'commodity' | 'custom';
+      kind: 'share' | 'fund' | 'termDeposit' | 'savings';
       currency: string;
     };
     note?: string;

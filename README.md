@@ -13,7 +13,8 @@ methods, transaction workflows, currency metadata, and OpenAPI documentation.
 - Stores data in MongoDB via Mongoose.
 - Exposes typed REST endpoints validated with Zod.
 - Provides OpenAPI and Swagger UI documentation at `/docs`.
-- Supports standard, transfer, and exchange transactions.
+- Supports standard, transfer, exchange, and investment transactions with explicit `kind` discriminators.
+- Manages investment instruments and portfolio operations (snapshots and cash-flow operations) with synchronized lifecycle and trash flows.
 - Includes soft-delete trash flows, totals, statistics, and CSV export for transactions.
 - Seeds system resources such as default accounts, categories, and payment methods on startup.
 
@@ -40,6 +41,7 @@ The app registers these route groups:
 - `/api/paymentMethods` - CRUD and favorites for payment methods
 - `/api/currencies` - static list of supported currencies
 - `/api/transactions` - list, create, update, trash, restore, export, totals, statistics
+- `/api/investments` - investment instruments and portfolio operations (snapshots and cash-flow operations)
 
 ## Transaction capabilities
 
@@ -48,12 +50,24 @@ The transaction module supports several workflows:
 - Standard transaction creation and update
 - Transfer transactions represented as two linked entries
 - Exchange transactions represented as two linked entries
-- Paginated transaction listing
-- Trash and restore flows
+- Investment transactions linked directly to portfolio investment operations
+- Explicit `kind` discriminator (`standard` | `exchange` | `transfer` | `investment`) across endpoints and responses
+- Paginated transaction listing with populated investment details
+- Trash and restore flows with atomic cascading synchronization
 - Permanent deletion from trash
 - CSV export
 - Totals grouped by currency and type
 - Time-based statistics
+
+## Investment capabilities
+
+The investment module manages investment portfolios alongside the cash ledger:
+
+- Investment instruments CRUD (`share`, `fund`, `termDeposit`, `savings`)
+- Point-in-time balance snapshot operations
+- Cash-flow investment operations (`buy`, `sell`, `interest`, `fee`) linked directly to transactions
+- On-the-fly "quick add" instrument creation during transaction entry
+- Atomic trash, restoration, and permanent purge synchronization between transactions and investment operations
 
 ## Getting started
 
@@ -124,7 +138,9 @@ delivery.
 pnpm dev
 pnpm build
 pnpm start
+pnpm openapi:export
 pnpm migrate:legacy-email-verification
+pnpm migrate:transaction-kind
 pnpm test
 pnpm test:watch
 pnpm test:coverage
@@ -139,8 +155,10 @@ What they do:
 - `pnpm dev` - start the app in watch mode with `tsx` using polling so it works on systems with low file-watcher limits
 - `pnpm build` - bundle the app with `tsup`
 - `pnpm start` - run the built server from `dist`
+- `pnpm openapi:export` - export the current OpenAPI JSON specification to `openapi.json`
 - `pnpm migrate:legacy-email-verification` - backfill pre-existing users as
   `legacy-backfill` so they are not locked out by the email verification rollout
+- `pnpm migrate:transaction-kind` - backfill pre-existing transactions with their explicit `kind` attribute
 - `pnpm test` - run unit and route-level tests
 - `pnpm test:watch` - run Vitest in watch mode
 - `pnpm test:coverage` - generate coverage output
@@ -226,6 +244,7 @@ src/
   app/                 app bootstrap, config, startup setup, shared plugins
   auth/                auth routes, schemas, token logic
   currency/            currency routes and constants
+  investment/          investment instruments, operations, schemas, models, services
   named-resource/      shared logic for accounts/categories/payment methods
   named-resource-favorite/ favorite resource handling
   transaction/         transaction routes, schemas, services, db logic
