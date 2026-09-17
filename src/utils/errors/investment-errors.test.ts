@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  CannotEditLinkedTransactionOperationError,
   InvestmentInstrumentAlreadyExistsError,
   InvestmentInstrumentDependencyError,
   InvestmentInstrumentNotFoundError,
@@ -50,12 +51,21 @@ describe('investment errors', () => {
     );
     expect(errCreate.action).toBe('create');
 
-    const errDelete = new SnapshotOperationOnlyError('delete');
-    expect(errDelete.statusCode).toBe(400);
-    expect(errDelete.code).toBe('SNAPSHOT_OPERATION_ONLY_ERROR');
-    expect(errDelete.message).toBe(
-      'Only snapshot operations can be deleted via this endpoint',
+    const errUpdate = new SnapshotOperationOnlyError('update');
+    expect(errUpdate.statusCode).toBe(400);
+    expect(errUpdate.code).toBe('SNAPSHOT_OPERATION_ONLY_ERROR');
+    expect(errUpdate.message).toBe(
+      'Only snapshot operations can be updated via this endpoint',
     );
-    expect(errDelete.action).toBe('delete');
+    expect(errUpdate.action).toBe('update');
+  });
+
+  it('CannotEditLinkedTransactionOperationError sets defaults', () => {
+    const err = new CannotEditLinkedTransactionOperationError();
+    expect(err.statusCode).toBe(400);
+    expect(err.code).toBe('CANNOT_EDIT_LINKED_TRANSACTION_OPERATION');
+    expect(err.message).toBe(
+      'Cannot edit linked transaction operation directly. Please edit the root transaction.',
+    );
   });
 });

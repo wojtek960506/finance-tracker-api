@@ -34,8 +34,6 @@ import {
   TransactionInvestmentSchema,
   TransactionQuery,
   TransactionQuerySchema,
-  TransactionResponseDTO,
-  TransactionResponseSchema,
   TransactionsResponseDTO,
   TransactionsResponseSchema,
   TransactionStandardDTO,

@@ -2,12 +2,14 @@ import {
   InvestmentOperationListResponseDTO,
   InvestmentOperationResponseDTO,
   InvestmentOperationsQuery,
+  InvestmentOperationUpdateDTO,
   InvestmentSnapshotOperationDTO,
 } from '@investment/schema';
 import {
   createSnapshotOperation,
   deleteSnapshotOperation,
   getOperations,
+  updateSnapshotOperation,
 } from '@investment/services';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -33,6 +35,22 @@ export const getOperationsHandler = async (
   const result: InvestmentOperationListResponseDTO = await getOperations(
     userId,
     req.query,
+  );
+  return res.code(200).send(result);
+};
+
+export const updateSnapshotOperationHandler = async (
+  req: FastifyRequest<{
+    Params: ParamsJustId;
+    Body: InvestmentOperationUpdateDTO;
+  }>,
+  res: FastifyReply,
+) => {
+  const userId = (req as AuthenticatedRequest).userId;
+  const result: InvestmentOperationResponseDTO = await updateSnapshotOperation(
+    userId,
+    req.params.id,
+    req.body,
   );
   return res.code(200).send(result);
 };

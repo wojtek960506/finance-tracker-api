@@ -6,6 +6,7 @@ import {
   InvestmentOperationResponseSchema,
   InvestmentOperationSchema,
   InvestmentOperationsQuerySchema,
+  InvestmentOperationUpdateSchema,
   InvestmentSnapshotOperationResponseSchema,
   InvestmentSnapshotOperationSchema,
 } from './operation-schema';
@@ -152,5 +153,37 @@ describe('investment operation schema', () => {
       instrumentId,
       kind: 'buy',
     });
+  });
+
+  it('validates operation update schema', () => {
+    const validUpdate = InvestmentOperationUpdateSchema.parse({
+      instrumentId,
+      amount: 14500.5,
+      currency: 'USD',
+      date: '2026-09-17',
+      notes: 'End of Q3 portfolio revaluation',
+    });
+
+    expect(validUpdate).toEqual({
+      instrumentId,
+      amount: 14500.5,
+      currency: 'USD',
+      date: new Date('2026-09-17'),
+      notes: 'End of Q3 portfolio revaluation',
+    });
+
+    // Allows partial updates
+    expect(InvestmentOperationUpdateSchema.parse({ amount: 100 })).toEqual({
+      amount: 100,
+    });
+
+    // Rejects non-positive amounts
+    expect(() => InvestmentOperationUpdateSchema.parse({ amount: 0 })).toThrow();
+    expect(() => InvestmentOperationUpdateSchema.parse({ amount: -50 })).toThrow();
+
+    // Rejects invalid instrumentId format
+    expect(() =>
+      InvestmentOperationUpdateSchema.parse({ instrumentId: 'invalid-id' }),
+    ).toThrow();
   });
 });

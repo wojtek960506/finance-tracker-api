@@ -1,10 +1,6 @@
-import {
-  InvestmentOperationsMap,
-  prepareInvestmentOperationsMap,
-} from '@investment/services';
+import { prepareInvestmentOperationsMap } from '@investment/services';
 import { FilterQuery } from 'mongoose';
 
-import { NamedResourcesMap } from '@named-resource/kind-config';
 import { prepareNamedResourcesMap } from '@named-resource/services';
 import { FilteredResponse } from '@shared/http';
 import { findTransactions, findTransactionsCount } from '@transaction/db';

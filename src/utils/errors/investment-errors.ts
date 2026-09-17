@@ -35,7 +35,18 @@ export class InvestmentOperationNotFoundError extends AppError {
 export class SnapshotOperationOnlyError extends AppError {
   readonly code = 'SNAPSHOT_OPERATION_ONLY_ERROR';
 
-  constructor(readonly action: 'create' | 'delete') {
+  constructor(readonly action: 'create' | 'delete' | 'update') {
     super(400, `Only snapshot operations can be ${action}d via this endpoint`);
+  }
+}
+
+export class CannotEditLinkedTransactionOperationError extends AppError {
+  readonly code = 'CANNOT_EDIT_LINKED_TRANSACTION_OPERATION';
+
+  constructor() {
+    super(
+      400,
+      'Cannot edit linked transaction operation directly. Please edit the root transaction.',
+    );
   }
 }

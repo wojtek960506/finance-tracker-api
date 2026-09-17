@@ -5,6 +5,8 @@ import {
   InvestmentOperationResponseSchema,
   InvestmentOperationsQuery,
   InvestmentOperationsQuerySchema,
+  InvestmentOperationUpdateDTO,
+  InvestmentOperationUpdateSchema,
   InvestmentSnapshotOperationDTO,
   InvestmentSnapshotOperationSchema,
 } from '@investment/schema';
@@ -19,6 +21,7 @@ import {
   createSnapshotOperationHandler,
   deleteSnapshotOperationHandler,
   getOperationsHandler,
+  updateSnapshotOperationHandler,
 } from './handlers';
 
 const DeleteResponseSchema = z.object({
@@ -71,6 +74,28 @@ export async function operationsRoutes(app: FastifyInstance) {
     },
     getOperationsHandler,
   );
+
+  const updateRouteConfig = {
+    preHandler: [validateBody(InvestmentOperationUpdateSchema), authorizeAccessToken()],
+    schema: {
+      tags: ['Investments'],
+      summary: 'Update snapshot investment operation',
+      description:
+        'Update a snapshot investment operation. ' +
+        'Non-snapshot operations linked to transactions cannot be edited here.',
+      params: ParamsJustIdSchema,
+      body: InvestmentOperationUpdateSchema,
+      response: {
+        200: InvestmentOperationResponseSchema,
+      },
+    },
+  };
+
+  app.patch<{
+    Params: ParamsJustId;
+    Body: InvestmentOperationUpdateDTO;
+    Reply: InvestmentOperationResponseDTO;
+  }>('/:id', updateRouteConfig, updateSnapshotOperationHandler);
 
   app.delete<{
     Params: ParamsJustId;
