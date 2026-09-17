@@ -12,12 +12,17 @@ import { USER_ID_STR } from '@testing/factories/general';
 
 import { operationsRoutes } from './operations-routes';
 
-const { createSnapshotOperationMock, getOperationsMock, deleteSnapshotOperationMock } =
-  vi.hoisted(() => ({
-    createSnapshotOperationMock: vi.fn(),
-    getOperationsMock: vi.fn(),
-    deleteSnapshotOperationMock: vi.fn(),
-  }));
+const {
+  createSnapshotOperationMock,
+  getOperationsMock,
+  updateSnapshotOperationMock,
+  deleteSnapshotOperationMock,
+} = vi.hoisted(() => ({
+  createSnapshotOperationMock: vi.fn(),
+  getOperationsMock: vi.fn(),
+  updateSnapshotOperationMock: vi.fn(),
+  deleteSnapshotOperationMock: vi.fn(),
+}));
 
 const mockPreHandler = vi.fn(async (req, _res) => {
   (req as any).userId = USER_ID_STR;
@@ -33,6 +38,7 @@ vi.mock('@investment/services', async (importOriginal) => {
     ...actual,
     createSnapshotOperation: createSnapshotOperationMock,
     getOperations: getOperationsMock,
+    updateSnapshotOperation: updateSnapshotOperationMock,
     deleteSnapshotOperation: deleteSnapshotOperationMock,
   };
 });
@@ -108,6 +114,66 @@ describe('operations routes', async () => {
     );
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual([mockOperation]);
+  });
+
+  it('PATCH /:id - updates snapshot operation with all fields', async () => {
+    const updatedOperation = {
+      ...mockOperation,
+      amount: 14500.5,
+      note: 'Updated notes',
+    };
+    updateSnapshotOperationMock.mockResolvedValue(updatedOperation);
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/${operationId}`,
+      body: {
+        instrumentId,
+        amount: 14500.5,
+        currency: 'USD',
+        date: '2026-09-17',
+        notes: 'Updated notes',
+      },
+    });
+
+    expect(investmentServices.updateSnapshotOperation).toHaveBeenCalledWith(
+      USER_ID_STR,
+      operationId,
+      expect.objectContaining({
+        instrumentId,
+        amount: 14500.5,
+        currency: 'USD',
+        notes: 'Updated notes',
+      }),
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(updatedOperation);
+  });
+
+  it('PATCH /:id - updates snapshot operation partially', async () => {
+    const updatedOperation = {
+      ...mockOperation,
+      amount: 6000,
+    };
+    updateSnapshotOperationMock.mockResolvedValue(updatedOperation);
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/${operationId}`,
+      body: {
+        amount: 6000,
+      },
+    });
+
+    expect(investmentServices.updateSnapshotOperation).toHaveBeenCalledWith(
+      USER_ID_STR,
+      operationId,
+      expect.objectContaining({
+        amount: 6000,
+      }),
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(updatedOperation);
   });
 
   it('DELETE /:id - deletes snapshot operation', async () => {

@@ -24,9 +24,14 @@ Soft deletion, trash management, restoration, and permanent deletion are automat
 | `POST` | `/investments/instruments` | Create a new investment instrument. |
 | `GET` | `/investments/instruments/:id` | Get details of a single instrument. |
 | `PATCH` | `/investments/instruments/:id` | Update an existing instrument (name, kind, currency, notes). |
-| `DELETE` | `/investments/instruments/:id` | Delete an instrument and its associated snapshot operations. |
+| `DELETE` | `/investments/instruments/:id` | Delete an investment instrument (only allowed if it has NO associated operations). |
 
 **Instrument Kinds**: `'share' | 'fund' | 'termDeposit' | 'savings'`
+
+> [!WARNING]
+> **Instrument Deletion Rule**:
+> - If an instrument has any associated operations (snapshots or cash-flow operations), deleting it will fail with **`403 Forbidden`** (`code: 'INVESTMENT_INSTRUMENT_DEPENDENCY_ERROR'`).
+> - The user must first remove or reassign all associated operations/transactions before deleting the instrument.
 
 ---
 
@@ -227,6 +232,7 @@ export interface InvestmentTransactionResponse {
    - List instruments with badges for kind (`share`, `crypto`, `fund`, etc.) and currency.
    - "New Instrument" creation modal.
    - Instrument edit / delete actions.
+   - **Delete Dialog / Error Handling**: Confirmation dialog should warn that deletion is only possible if no operations exist. Catch `INVESTMENT_INSTRUMENT_DEPENDENCY_ERROR` (HTTP 403) and display an appropriate message to the user.
 
 3. **Operations View (`/investments/operations`)**:
    - Filter operations by instrument, operation kind, and date range.

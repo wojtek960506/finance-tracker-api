@@ -126,7 +126,7 @@ export async function instrumentsRoutes(app: FastifyInstance) {
         tags: ['Investments'],
         summary: 'Delete investment instrument',
         description:
-          'Delete an investment instrument and its associated snapshot operations.',
+          'Delete an investment instrument (only allowed if it has no associated operations).',
         params: ParamsJustIdSchema,
         response: {
           200: DeleteResponseSchema,

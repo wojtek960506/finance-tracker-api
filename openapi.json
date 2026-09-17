@@ -471,6 +471,69 @@
           }
         ]
       },
+      "InvestmentOperationUpdateInput": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "amount": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {},
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
       "InvestmentSnapshotOperationResponseInput": {
         "type": "object",
         "properties": {
@@ -4856,6 +4919,73 @@
             "$ref": "#/components/schemas/InvestmentSnapshotOperationItem"
           }
         ]
+      },
+      "InvestmentOperationUpdate": {
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "amount": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "additionalProperties": false
       },
       "InvestmentSnapshotOperationResponse": {
         "type": "object",
@@ -12460,7 +12590,7 @@
         "tags": [
           "Investments"
         ],
-        "description": "Delete an investment instrument and its associated snapshot operations.",
+        "description": "Delete an investment instrument (only allowed if it has no associated operations).",
         "parameters": [
           {
             "schema": {
@@ -12584,6 +12714,46 @@
       }
     },
     "/api/investments/operations/{id}": {
+      "patch": {
+        "summary": "Update snapshot investment operation",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Update a snapshot investment operation. Non-snapshot operations linked to transactions cannot be edited here.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvestmentOperationUpdateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentOperationResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "summary": "Delete snapshot investment operation",
         "tags": [

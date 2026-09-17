@@ -69,6 +69,18 @@ export const InvestmentOperationResponseSchema = z.discriminatedUnion('kind', [
   InvestmentSnapshotOperationResponseSchema,
 ]);
 
+export const InvestmentOperationUpdateSchema = z.object({
+  instrumentId: z
+    .string()
+    .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `instrumentId`')
+    .optional(),
+  amount: z.number().positive('Amount must be positive').optional(),
+  currency: CurrencyCodeSchema.optional(),
+  date: z.coerce.date().optional(),
+  note: z.string().max(500).optional(),
+  notes: z.string().max(500).optional(),
+});
+
 export const InvestmentOperationsQuerySchema = z.object({
   instrumentId: z
     .string()
@@ -93,6 +105,9 @@ export type InvestmentCashFlowOperationDTO = z.infer<
   typeof InvestmentCashFlowOperationSchema
 >;
 export type InvestmentOperationDTO = z.infer<typeof InvestmentOperationSchema>;
+export type InvestmentOperationUpdateDTO = z.infer<
+  typeof InvestmentOperationUpdateSchema
+>;
 
 export type InvestmentSnapshotOperationResponseDTO = z.infer<
   typeof InvestmentSnapshotOperationResponseSchema
@@ -118,6 +133,9 @@ z.globalRegistry.add(InvestmentCashFlowOperationSchema, {
   id: 'InvestmentCashFlowOperation',
 });
 z.globalRegistry.add(InvestmentOperationSchema, { id: 'InvestmentOperation' });
+z.globalRegistry.add(InvestmentOperationUpdateSchema, {
+  id: 'InvestmentOperationUpdate',
+});
 z.globalRegistry.add(InvestmentSnapshotOperationResponseSchema, {
   id: 'InvestmentSnapshotOperationResponse',
 });
