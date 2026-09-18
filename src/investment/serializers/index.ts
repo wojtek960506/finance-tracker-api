@@ -45,6 +45,6 @@ export const serializeOperation = (
   return {
     ...base,
     kind: operation.kind,
-    transactionId: operation.transactionId ? operation.transactionId.toString() : '',
+    transactionId: operation.transactionId ? operation.transactionId.toString() : null,
   };
 };
