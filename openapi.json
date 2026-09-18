@@ -2410,11 +2410,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -2589,11 +2603,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -2768,11 +2796,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -2957,11 +2999,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -3139,11 +3195,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -3321,11 +3391,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -3556,11 +3640,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -3739,11 +3837,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -3922,11 +4034,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -4115,11 +4241,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -4301,11 +4441,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -4487,11 +4641,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -7202,11 +7370,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -7394,11 +7576,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -7586,11 +7782,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -7788,11 +7998,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -7983,11 +8207,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -8178,11 +8416,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -8433,11 +8685,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -8629,11 +8895,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -8825,11 +9105,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -9031,11 +9325,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -9230,11 +9538,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",
@@ -9429,11 +9751,25 @@
             "type": "number"
           },
           "sourceRefIndex": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "refId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "category": {
             "type": "object",

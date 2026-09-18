@@ -158,50 +158,65 @@ describe('Investment Summary Services', () => {
       expect(result.operationsCount).toBe(3);
     });
 
-    it('calculates summary for fully closed/liquidated position with realized profit', () => {
-      const operations = [
-        {
-          _id: new Types.ObjectId(),
-          instrumentId: mockInstrumentDoc2._id,
-          kind: 'buy' as const,
-          amount: 10000,
-          currency: 'PLN',
-          date: new Date('2026-01-01'),
-          createdAt: new Date('2026-01-01'),
-        },
-        {
-          _id: new Types.ObjectId(),
-          instrumentId: mockInstrumentDoc2._id,
-          kind: 'interest' as const,
-          amount: 500,
-          currency: 'PLN',
-          date: new Date('2026-02-01'),
-          createdAt: new Date('2026-02-01'),
-        },
-        {
-          _id: new Types.ObjectId(),
-          instrumentId: mockInstrumentDoc2._id,
-          kind: 'sell' as const,
-          amount: 10500,
-          currency: 'PLN',
-          date: new Date('2026-03-01'),
-          createdAt: new Date('2026-03-01'),
-        },
-      ];
+    // prettier-ignore
+    it(
+      'calculates summary for fully closed/liquidated position with realized profit and fees',
+      () => {
+        const operations = [
+          {
+            _id: new Types.ObjectId(),
+            instrumentId: mockInstrumentDoc2._id,
+            kind: 'buy' as const,
+            amount: 10000,
+            currency: 'PLN',
+            date: new Date('2026-01-01'),
+            createdAt: new Date('2026-01-01'),
+          },
+          {
+            _id: new Types.ObjectId(),
+            instrumentId: mockInstrumentDoc2._id,
+            kind: 'interest' as const,
+            amount: 500,
+            currency: 'PLN',
+            date: new Date('2026-02-01'),
+            createdAt: new Date('2026-02-01'),
+          },
+          {
+            _id: new Types.ObjectId(),
+            instrumentId: mockInstrumentDoc2._id,
+            kind: 'fee' as const,
+            amount: 50,
+            currency: 'PLN',
+            date: new Date('2026-02-15'),
+            createdAt: new Date('2026-02-15'),
+          },
+          {
+            _id: new Types.ObjectId(),
+            instrumentId: mockInstrumentDoc2._id,
+            kind: 'sell' as const,
+            amount: 10450,
+            currency: 'PLN',
+            date: new Date('2026-03-01'),
+            createdAt: new Date('2026-03-01'),
+          },
+        ];
 
-      const result = calculateInstrumentSummary(
-        mockInstrumentDoc2 as any,
-        operations as any,
-      );
+        const result = calculateInstrumentSummary(
+          mockInstrumentDoc2 as any,
+          operations as any,
+        );
 
-      // currentValue = 0 (closed)
-      expect(result.currentValue).toBe(0);
-      // netInvested = 0 (no active capital remaining)
-      expect(result.netInvested).toBe(0);
-      // pnl = 0 + 10500 - 10000 = +500 realized profit
-      expect(result.pnl).toBe(500);
-      expect(result.roiPercentage).toBe(5);
-    });
+        // currentValue = 10000 - 10450 + 500 - 50 = 0 (closed)
+        expect(result.currentValue).toBe(0);
+        // netInvested = 0 (no active capital remaining)
+        expect(result.netInvested).toBe(0);
+        expect(result.totalFees).toBe(50);
+        expect(result.totalInterest).toBe(500);
+        // pnl = 0 + 10450 - 10000 = +450 realized profit (Interest - Fee)
+        expect(result.pnl).toBe(450);
+        expect(result.roiPercentage).toBe(4.5);
+      }
+    );
   });
 
   describe('getInvestmentSummary', () => {

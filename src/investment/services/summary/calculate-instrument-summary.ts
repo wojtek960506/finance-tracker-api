@@ -58,12 +58,11 @@ export const calculateInstrumentSummary = (
   }
 
   const netInvested =
-    currentValue > 0 ? roundMoney(Math.max(0, totalBought + totalFees - totalSold)) : 0;
+    currentValue > 0 ? roundMoney(Math.max(0, totalBought - totalSold)) : 0;
 
-  const pnl = roundMoney(currentValue + totalSold - (totalBought + totalFees));
+  const pnl = roundMoney(currentValue + totalSold - totalBought);
 
-  const totalCostBasis = totalBought + totalFees;
-  const roiPercentage = totalCostBasis > 0 ? roundMoney((pnl / totalCostBasis) * 100) : 0;
+  const roiPercentage = totalBought > 0 ? roundMoney((pnl / totalBought) * 100) : 0;
 
   return {
     id: instrument._id.toString(),

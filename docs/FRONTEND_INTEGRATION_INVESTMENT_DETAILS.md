@@ -85,7 +85,7 @@ Previously, `use-instrument-details.ts` executed custom calculation logic on raw
 
 | Metric | Formula | Behavior |
 | :--- | :--- | :--- |
-| **Current Value** | `Latest Snapshot ?? (Buy - Sell + Interest - Fees)` | Fallback automatically accounts for accrued savings interest without requiring a manual snapshot. |
-| **Net Invested** | `Buy + Fees - Sell` (or `0` if position is closed) | Tracks actual net cash deposited out-of-pocket (does not subtract interest). Drops to `0` when `currentValue === 0`. |
-| **Total Return (PnL)**| `Current Value + Sell - (Buy + Fees)` | Accurate lifetime return (both realized profit from sells and unrealized value). |
-| **ROI %** | `(PnL / (Buy + Fees)) * 100` | Return on total invested capital. |
+| **Current Value** | `Latest Snapshot ?? (Buy - Sell + Interest - Fees)` | Fallback automatically accounts for accrued savings interest and internal fees without requiring a manual snapshot. |
+| **Net Invested** | `Buy - Sell` (or `0` if position is closed) | Tracks actual net cash deposited out-of-pocket (does not subtract interest). Drops to `0` when `currentValue === 0`. |
+| **Total Return (PnL)**| `Current Value + Sell - Buy` | Accurate lifetime return (both realized profit from sells and unrealized value) equal to `Interest - Fees`. |
+| **ROI %** | `(PnL / Buy) * 100` | Return on total invested capital. |
