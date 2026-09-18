@@ -146,10 +146,11 @@ const TransactionBaseResponseSchema = TransactionStandardSchema.omit({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   sourceIndex: z.number(),
-  sourceRefIndex: z.number().optional(),
+  sourceRefIndex: z.number().nullable().optional(),
   refId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `refId`')
+    .nullable()
     .optional(),
   category: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
   paymentMethod: NamedResourceResponseSchema.pick({ id: true, type: true, name: true }),
