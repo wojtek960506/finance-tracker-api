@@ -7,7 +7,7 @@ import { InvestmentInstrumentKindSchema } from './instrument-schema';
 
 export const InvestmentInstrumentSummarySchema = z.object({
   id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
-  name: z.string().min(1).max(60),
+  name: z.string().min(1).max(100),
   kind: InvestmentInstrumentKindSchema,
   currency: CurrencyCodeSchema,
   currentValue: z.number(),

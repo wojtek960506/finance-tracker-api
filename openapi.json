@@ -20,7 +20,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
@@ -89,7 +89,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
@@ -153,7 +153,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
@@ -220,7 +220,7 @@
           "nameNormalized": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "createdAt": {},
           "updatedAt": {}
@@ -744,7 +744,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
@@ -4683,7 +4683,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
@@ -4753,7 +4753,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
@@ -4818,7 +4818,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
@@ -4885,7 +4885,7 @@
           "nameNormalized": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "createdAt": {
             "type": "string",
@@ -5452,7 +5452,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 60
+            "maxLength": 100
           },
           "kind": {
             "type": "string",
