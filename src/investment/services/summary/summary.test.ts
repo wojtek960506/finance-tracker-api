@@ -107,7 +107,58 @@ describe('Investment Summary Services', () => {
       expect(result.operationsCount).toBe(2);
     });
 
-    it('calculates complex cash flows with buy, sell, interest, fee, and snapshot', () => {
+    it('calculates summary for savings account with interest (no snapshot)', () => {
+      const operations = [
+        {
+          _id: new Types.ObjectId(),
+          instrumentId: mockInstrumentDoc2._id,
+          kind: 'buy' as const,
+          amount: 64164.11,
+          currency: 'PLN',
+          date: new Date('2026-01-01'),
+          createdAt: new Date('2026-01-01'),
+        },
+        {
+          _id: new Types.ObjectId(),
+          instrumentId: mockInstrumentDoc2._id,
+          kind: 'sell' as const,
+          amount: 2664.11,
+          currency: 'PLN',
+          date: new Date('2026-02-01'),
+          createdAt: new Date('2026-02-01'),
+        },
+        {
+          _id: new Types.ObjectId(),
+          instrumentId: mockInstrumentDoc2._id,
+          kind: 'interest' as const,
+          amount: 173.42,
+          currency: 'PLN',
+          date: new Date('2026-03-01'),
+          createdAt: new Date('2026-03-01'),
+        },
+      ];
+
+      const result = calculateInstrumentSummary(
+        mockInstrumentDoc2 as any,
+        operations as any,
+      );
+
+      // currentValue = 64164.11 - 2664.11 + 173.42 = 61673.42
+      expect(result.currentValue).toBe(61673.42);
+      // netInvested = 64164.11 - 2664.11 = 61500.00
+      expect(result.netInvested).toBe(61500);
+      expect(result.totalBought).toBe(64164.11);
+      expect(result.totalSold).toBe(2664.11);
+      expect(result.totalInterest).toBe(173.42);
+      expect(result.totalFees).toBe(0);
+      // pnl = 61673.42 + 2664.11 - 64164.11 = 173.42
+      expect(result.pnl).toBe(173.42);
+      expect(result.roiPercentage).toBe(0.27);
+      expect(result.lastSnapshotDate).toBeNull();
+      expect(result.operationsCount).toBe(3);
+    });
+
+    it('calculates summary for fully closed/liquidated position with realized profit', () => {
       const operations = [
         {
           _id: new Types.ObjectId(),
@@ -122,19 +173,19 @@ describe('Investment Summary Services', () => {
           _id: new Types.ObjectId(),
           instrumentId: mockInstrumentDoc2._id,
           kind: 'interest' as const,
-          amount: 250,
+          amount: 500,
           currency: 'PLN',
-          date: new Date('2026-04-01'),
-          createdAt: new Date('2026-04-01'),
+          date: new Date('2026-02-01'),
+          createdAt: new Date('2026-02-01'),
         },
         {
           _id: new Types.ObjectId(),
           instrumentId: mockInstrumentDoc2._id,
-          kind: 'fee' as const,
-          amount: 10,
+          kind: 'sell' as const,
+          amount: 10500,
           currency: 'PLN',
-          date: new Date('2026-04-01'),
-          createdAt: new Date('2026-04-01'),
+          date: new Date('2026-03-01'),
+          createdAt: new Date('2026-03-01'),
         },
       ];
 
@@ -143,17 +194,13 @@ describe('Investment Summary Services', () => {
         operations as any,
       );
 
-      // netInvested = 10000 + 10 - 0 - 250 = 9760
-      expect(result.netInvested).toBe(9760);
-      // currentValue without snapshot = 10000 - 0 = 10000
-      expect(result.currentValue).toBe(10000);
-      expect(result.totalBought).toBe(10000);
-      expect(result.totalInterest).toBe(250);
-      expect(result.totalFees).toBe(10);
-      // pnl = 10000 + 0 + 250 - (10000 + 10) = 240
-      expect(result.pnl).toBe(240);
-      // roiPercentage = 240 / (10000 + 10) * 100 = 2.4%
-      expect(result.roiPercentage).toBe(2.4);
+      // currentValue = 0 (closed)
+      expect(result.currentValue).toBe(0);
+      // netInvested = 0 (no active capital remaining)
+      expect(result.netInvested).toBe(0);
+      // pnl = 0 + 10500 - 10000 = +500 realized profit
+      expect(result.pnl).toBe(500);
+      expect(result.roiPercentage).toBe(5);
     });
   });
 
@@ -243,8 +290,8 @@ describe('Investment Summary Services', () => {
 
       // PLN totals
       expect(result.totalsByCurrency.PLN).toBeDefined();
-      expect(result.totalsByCurrency.PLN.totalCurrentValue).toBe(10000);
-      expect(result.totalsByCurrency.PLN.totalNetInvested).toBe(9700);
+      expect(result.totalsByCurrency.PLN.totalCurrentValue).toBe(10300);
+      expect(result.totalsByCurrency.PLN.totalNetInvested).toBe(10000);
       expect(result.totalsByCurrency.PLN.totalPnL).toBe(300);
       expect(result.totalsByCurrency.PLN.roiPercentage).toBe(3);
       expect(result.totalsByCurrency.PLN.instrumentsCount).toBe(1);

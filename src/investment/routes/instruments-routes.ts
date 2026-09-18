@@ -7,6 +7,8 @@ import {
   InvestmentInstrumentResponseDTO,
   InvestmentInstrumentResponseSchema,
   InvestmentInstrumentSchema,
+  InvestmentInstrumentSummaryDTO,
+  InvestmentInstrumentSummarySchema,
   InvestmentInstrumentUpdateDTO,
   InvestmentInstrumentUpdateSchema,
 } from '@investment/schema';
@@ -72,7 +74,7 @@ export async function instrumentsRoutes(app: FastifyInstance) {
 
   app.get<{
     Params: ParamsJustId;
-    Reply: InvestmentInstrumentResponseDTO;
+    Reply: InvestmentInstrumentSummaryDTO;
   }>(
     '/:id',
     {
@@ -80,10 +82,11 @@ export async function instrumentsRoutes(app: FastifyInstance) {
       schema: {
         tags: ['Investments'],
         summary: 'Get investment instrument by id',
-        description: 'Return a single investment instrument by id.',
+        description:
+          'Return a single investment instrument by id with performance metrics.',
         params: ParamsJustIdSchema,
         response: {
-          200: InvestmentInstrumentResponseSchema,
+          200: InvestmentInstrumentSummarySchema,
         },
       },
     },

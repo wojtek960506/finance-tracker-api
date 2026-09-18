@@ -13002,7 +13002,7 @@
         "tags": [
           "Investments"
         ],
-        "description": "Return a single investment instrument by id.",
+        "description": "Return a single investment instrument by id with performance metrics.",
         "parameters": [
           {
             "schema": {
@@ -13020,7 +13020,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InvestmentInstrumentResponse"
+                  "$ref": "#/components/schemas/InvestmentInstrumentSummary"
                 }
               }
             }

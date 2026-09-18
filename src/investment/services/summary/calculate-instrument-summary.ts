@@ -45,8 +45,6 @@ export const calculateInstrumentSummary = (
     }
   }
 
-  const netInvested = roundMoney(totalBought + totalFees - totalSold - totalInterest);
-
   let currentValue: number;
   let lastSnapshotDate: Date | null = null;
 
@@ -54,12 +52,15 @@ export const calculateInstrumentSummary = (
     currentValue = roundMoney(latestSnapshot.amount);
     lastSnapshotDate = latestSnapshot.date;
   } else {
-    currentValue = roundMoney(Math.max(0, totalBought - totalSold));
+    currentValue = roundMoney(
+      Math.max(0, totalBought - totalSold + totalInterest - totalFees),
+    );
   }
 
-  const pnl = roundMoney(
-    currentValue + totalSold + totalInterest - (totalBought + totalFees),
-  );
+  const netInvested =
+    currentValue > 0 ? roundMoney(Math.max(0, totalBought + totalFees - totalSold)) : 0;
+
+  const pnl = roundMoney(currentValue + totalSold - (totalBought + totalFees));
 
   const totalCostBasis = totalBought + totalFees;
   const roiPercentage = totalCostBasis > 0 ? roundMoney((pnl / totalCostBasis) * 100) : 0;
