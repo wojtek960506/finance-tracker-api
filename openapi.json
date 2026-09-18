@@ -695,8 +695,15 @@
             ]
           },
           "transactionId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -708,8 +715,7 @@
           "ownerId",
           "createdAt",
           "updatedAt",
-          "kind",
-          "transactionId"
+          "kind"
         ]
       },
       "InvestmentOperationResponseInput": {
@@ -727,6 +733,235 @@
         "items": {
           "$ref": "#/components/schemas/InvestmentOperationResponseInput"
         }
+      },
+      "InvestmentInstrumentSummaryInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "currentValue": {
+            "type": "number"
+          },
+          "netInvested": {
+            "type": "number"
+          },
+          "totalBought": {
+            "type": "number"
+          },
+          "totalSold": {
+            "type": "number"
+          },
+          "totalInterest": {
+            "type": "number"
+          },
+          "totalFees": {
+            "type": "number"
+          },
+          "pnl": {
+            "type": "number"
+          },
+          "roiPercentage": {
+            "type": "number"
+          },
+          "lastSnapshotDate": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "operationsCount": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "currency",
+          "currentValue",
+          "netInvested",
+          "totalBought",
+          "totalSold",
+          "totalInterest",
+          "totalFees",
+          "pnl",
+          "roiPercentage",
+          "lastSnapshotDate",
+          "operationsCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "InvestmentCurrencySummaryInput": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "totalCurrentValue": {
+            "type": "number"
+          },
+          "totalNetInvested": {
+            "type": "number"
+          },
+          "totalBought": {
+            "type": "number"
+          },
+          "totalSold": {
+            "type": "number"
+          },
+          "totalInterest": {
+            "type": "number"
+          },
+          "totalFees": {
+            "type": "number"
+          },
+          "totalPnL": {
+            "type": "number"
+          },
+          "roiPercentage": {
+            "type": "number"
+          },
+          "instrumentsCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "currency",
+          "totalCurrentValue",
+          "totalNetInvested",
+          "totalBought",
+          "totalSold",
+          "totalInterest",
+          "totalFees",
+          "totalPnL",
+          "roiPercentage",
+          "instrumentsCount"
+        ]
+      },
+      "InvestmentSummaryResponseInput": {
+        "type": "object",
+        "properties": {
+          "totalsByCurrency": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/InvestmentCurrencySummaryInput"
+            }
+          },
+          "instruments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvestmentInstrumentSummaryInput"
+            }
+          }
+        },
+        "required": [
+          "totalsByCurrency",
+          "instruments"
+        ]
       },
       "WelcomeResponseInput": {
         "type": "object",
@@ -5167,8 +5402,15 @@
             ]
           },
           "transactionId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -5180,8 +5422,7 @@
           "ownerId",
           "createdAt",
           "updatedAt",
-          "kind",
-          "transactionId"
+          "kind"
         ],
         "additionalProperties": false
       },
@@ -5200,6 +5441,247 @@
         "items": {
           "$ref": "#/components/schemas/InvestmentOperationResponse"
         }
+      },
+      "InvestmentInstrumentSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "currentValue": {
+            "type": "number"
+          },
+          "netInvested": {
+            "type": "number"
+          },
+          "totalBought": {
+            "type": "number"
+          },
+          "totalSold": {
+            "type": "number"
+          },
+          "totalInterest": {
+            "type": "number"
+          },
+          "totalFees": {
+            "type": "number"
+          },
+          "pnl": {
+            "type": "number"
+          },
+          "roiPercentage": {
+            "type": "number"
+          },
+          "lastSnapshotDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "operationsCount": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "currency",
+          "currentValue",
+          "netInvested",
+          "totalBought",
+          "totalSold",
+          "totalInterest",
+          "totalFees",
+          "pnl",
+          "roiPercentage",
+          "lastSnapshotDate",
+          "operationsCount",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentCurrencySummary": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "totalCurrentValue": {
+            "type": "number"
+          },
+          "totalNetInvested": {
+            "type": "number"
+          },
+          "totalBought": {
+            "type": "number"
+          },
+          "totalSold": {
+            "type": "number"
+          },
+          "totalInterest": {
+            "type": "number"
+          },
+          "totalFees": {
+            "type": "number"
+          },
+          "totalPnL": {
+            "type": "number"
+          },
+          "roiPercentage": {
+            "type": "number"
+          },
+          "instrumentsCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "currency",
+          "totalCurrentValue",
+          "totalNetInvested",
+          "totalBought",
+          "totalSold",
+          "totalInterest",
+          "totalFees",
+          "totalPnL",
+          "roiPercentage",
+          "instrumentsCount"
+        ],
+        "additionalProperties": false
+      },
+      "InvestmentSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "totalsByCurrency": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/InvestmentCurrencySummary"
+            }
+          },
+          "instruments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvestmentInstrumentSummary"
+            }
+          }
+        },
+        "required": [
+          "totalsByCurrency",
+          "instruments"
+        ],
+        "additionalProperties": false
       },
       "WelcomeResponse": {
         "type": "object",
@@ -12787,6 +13269,27 @@
                     "id"
                   ],
                   "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/investments/summary/": {
+      "get": {
+        "summary": "Get investment portfolio summary",
+        "tags": [
+          "Investments"
+        ],
+        "description": "Return aggregated portfolio valuation, performance totals by currency,and per-instrument summary metrics.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestmentSummaryResponse"
                 }
               }
             }
