@@ -25,6 +25,7 @@ vi.mock('@investment/model', () => ({
     deleteOne: vi.fn(),
   },
   InvestmentOperationModel: {
+    find: vi.fn(),
     countDocuments: vi.fn(),
     deleteMany: vi.fn(),
   },
@@ -147,10 +148,23 @@ describe('Investment Instruments Services', () => {
   });
 
   describe('getInstrumentById', () => {
-    it('returns instrument when found', async () => {
+    it('returns instrument with calculated summary when found', async () => {
       vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(
         mockInstrumentDoc as any,
       );
+      vi.mocked(InvestmentOperationModel.find).mockReturnValue({
+        sort: vi.fn().mockResolvedValue([
+          {
+            _id: new Types.ObjectId(),
+            instrumentId: mockInstrumentDoc._id,
+            kind: 'buy',
+            amount: 5000,
+            currency: 'USD',
+            date: new Date(),
+            createdAt: new Date(),
+          },
+        ]),
+      } as any);
 
       const result = await getInstrumentById(ownerId, instrumentId);
 
@@ -159,6 +173,8 @@ describe('Investment Instruments Services', () => {
         ownerId,
       });
       expect(result.id).toBe(instrumentId);
+      expect(result.currentValue).toBe(5000);
+      expect(result.netInvested).toBe(5000);
     });
 
     it('throws NotFoundError when not found', async () => {

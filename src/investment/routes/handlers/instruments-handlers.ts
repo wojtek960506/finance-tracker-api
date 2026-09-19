@@ -3,6 +3,7 @@ import {
   InvestmentInstrumentFilterQuery,
   InvestmentInstrumentListResponseDTO,
   InvestmentInstrumentResponseDTO,
+  InvestmentInstrumentSummaryDTO,
   InvestmentInstrumentUpdateDTO,
 } from '@investment/schema';
 import {
@@ -45,7 +46,7 @@ export const getInstrumentByIdHandler = async (
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result: InvestmentInstrumentResponseDTO = await getInstrumentById(
+  const result: InvestmentInstrumentSummaryDTO = await getInstrumentById(
     userId,
     req.params.id,
   );

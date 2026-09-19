@@ -7,7 +7,7 @@ import { OBJECT_ID_REGEX } from '@utils/consts';
 export const InvestmentInstrumentKindSchema = z.enum([...INVESTMENT_INSTRUMENT_KINDS]);
 
 export const InvestmentInstrumentSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(60),
+  name: z.string().min(1, 'Name is required').max(100),
   kind: InvestmentInstrumentKindSchema,
   currency: CurrencyCodeSchema,
   notes: z.string().max(500).optional(),
@@ -16,7 +16,7 @@ export const InvestmentInstrumentSchema = z.object({
 export const InvestmentInstrumentResponseSchema = InvestmentInstrumentSchema.extend({
   id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
-  nameNormalized: z.string().min(1).max(60),
+  nameNormalized: z.string().min(1).max(100),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

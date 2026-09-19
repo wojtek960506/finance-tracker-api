@@ -67,6 +67,26 @@ describe('instruments routes', async () => {
     updatedAt: new Date('2026-01-01').toISOString(),
   };
 
+  const mockInstrumentSummary = {
+    id: instrumentId,
+    name: 'VWCE ETF',
+    kind: 'fund' as const,
+    currency: 'USD',
+    currentValue: 5000,
+    netInvested: 5000,
+    totalBought: 5000,
+    totalSold: 0,
+    totalInterest: 0,
+    totalFees: 0,
+    pnl: 0,
+    roiPercentage: 0,
+    lastSnapshotDate: null,
+    operationsCount: 1,
+    notes: 'Vanguard All-World',
+    createdAt: new Date('2026-01-01').toISOString(),
+    updatedAt: new Date('2026-01-01').toISOString(),
+  };
+
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -111,7 +131,7 @@ describe('instruments routes', async () => {
   });
 
   it('GET /:id - gets instrument by id', async () => {
-    getInstrumentByIdMock.mockResolvedValue(mockInstrument);
+    getInstrumentByIdMock.mockResolvedValue(mockInstrumentSummary);
 
     const response = await app.inject({
       method: 'GET',
@@ -123,7 +143,7 @@ describe('instruments routes', async () => {
       instrumentId,
     );
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(mockInstrument);
+    expect(response.json()).toEqual(mockInstrumentSummary);
   });
 
   it('PATCH /:id - updates instrument', async () => {

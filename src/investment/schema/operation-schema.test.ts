@@ -1,13 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  InvestmentCashFlowOperationResponseSchema,
   InvestmentCashFlowOperationSchema,
   InvestmentOperationResponseSchema,
   InvestmentOperationSchema,
   InvestmentOperationsQuerySchema,
   InvestmentOperationUpdateSchema,
-  InvestmentSnapshotOperationResponseSchema,
   InvestmentSnapshotOperationSchema,
 } from './operation-schema';
 
@@ -126,6 +124,23 @@ describe('investment operation schema', () => {
     expect(cashFlowResponse.kind).toBe('interest');
     if (cashFlowResponse.kind !== 'snapshot') {
       expect(cashFlowResponse.transactionId).toBe(transactionId);
+    }
+
+    const cashFlowResponseNullTx = InvestmentOperationResponseSchema.parse({
+      id: operationId,
+      ownerId,
+      instrumentId,
+      transactionId: null,
+      kind: 'buy',
+      amount: 500,
+      currency: 'USD',
+      date: '2026-09-01',
+      createdAt: '2026-09-01T10:00:00.000Z',
+      updatedAt: '2026-09-01T10:00:00.000Z',
+    });
+    expect(cashFlowResponseNullTx.kind).toBe('buy');
+    if (cashFlowResponseNullTx.kind !== 'snapshot') {
+      expect(cashFlowResponseNullTx.transactionId).toBeNull();
     }
 
     const snapshotResponse = InvestmentOperationResponseSchema.parse({

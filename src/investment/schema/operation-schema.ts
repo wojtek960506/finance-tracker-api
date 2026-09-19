@@ -61,7 +61,9 @@ export const InvestmentCashFlowOperationResponseSchema =
     kind: InvestmentOperationCashFlowKindSchema,
     transactionId: z
       .string()
-      .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`'),
+      .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
+      .nullable()
+      .optional(),
   });
 
 export const InvestmentOperationResponseSchema = z.discriminatedUnion('kind', [
