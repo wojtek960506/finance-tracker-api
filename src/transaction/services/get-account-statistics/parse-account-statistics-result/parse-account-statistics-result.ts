@@ -1,4 +1,4 @@
-import { roundMoney } from '../utils';
+import { roundMoney } from '@currency/services';
 
 import { accumulateCurrencyResult } from './accumulate-currency-result';
 import { ParseAccountStatisticsResultParams } from './types';

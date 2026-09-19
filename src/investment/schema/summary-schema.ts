@@ -25,6 +25,17 @@ export const InvestmentInstrumentSummarySchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
+export const InvestmentGrandTotalNormalizedSchema = z.object({
+  currentValue: z.number(),
+  netInvested: z.number(),
+  pnl: z.number(),
+  roiPercentage: z.number(),
+});
+
+export const InvestmentSummaryQuerySchema = z.object({
+  baseCurrency: CurrencyCodeSchema.optional(),
+});
+
 export const InvestmentCurrencySummarySchema = z.object({
   currency: CurrencyCodeSchema,
   totalCurrentValue: z.number(),
@@ -36,9 +47,14 @@ export const InvestmentCurrencySummarySchema = z.object({
   totalPnL: z.number(),
   roiPercentage: z.number(),
   instrumentsCount: z.number(),
+  normalizedTotalCurrentValue: z.number().optional(),
+  normalizedTotalNetInvested: z.number().optional(),
+  normalizedTotalPnL: z.number().optional(),
 });
 
 export const InvestmentSummaryResponseSchema = z.object({
+  baseCurrency: CurrencyCodeSchema.optional(),
+  grandTotalNormalized: InvestmentGrandTotalNormalizedSchema.optional(),
   totalsByCurrency: z.record(z.string(), InvestmentCurrencySummarySchema),
   instruments: z.array(InvestmentInstrumentSummarySchema),
 });
@@ -49,12 +65,19 @@ export type InvestmentInstrumentSummaryDTO = z.infer<
 export type InvestmentCurrencySummaryDTO = z.infer<
   typeof InvestmentCurrencySummarySchema
 >;
+export type InvestmentGrandTotalNormalizedDTO = z.infer<
+  typeof InvestmentGrandTotalNormalizedSchema
+>;
+export type InvestmentSummaryQuery = z.infer<typeof InvestmentSummaryQuerySchema>;
 export type InvestmentSummaryResponseDTO = z.infer<
   typeof InvestmentSummaryResponseSchema
 >;
 
 z.globalRegistry.add(InvestmentInstrumentSummarySchema, {
   id: 'InvestmentInstrumentSummary',
+});
+z.globalRegistry.add(InvestmentGrandTotalNormalizedSchema, {
+  id: 'InvestmentGrandTotalNormalized',
 });
 z.globalRegistry.add(InvestmentCurrencySummarySchema, {
   id: 'InvestmentCurrencySummary',

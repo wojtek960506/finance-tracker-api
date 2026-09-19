@@ -1,5 +1,6 @@
+import { roundMoney } from '@currency/services';
+
 import { AccountBalanceStatisticsRow } from '../types';
-import { roundMoney } from '../utils';
 
 import { getNormalizedRate } from './get-normalized-rate';
 import { AccumulateCurrencyResultParams, CurrencyResultsMap } from './types';

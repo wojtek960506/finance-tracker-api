@@ -1,4 +1,6 @@
 import {
+  InvestmentSummaryQuery,
+  InvestmentSummaryQuerySchema,
   InvestmentSummaryResponseDTO,
   InvestmentSummaryResponseSchema,
 } from '@investment/schema';
@@ -14,6 +16,7 @@ const description =
 
 export async function summaryRoutes(app: FastifyInstance) {
   app.get<{
+    Querystring: InvestmentSummaryQuery;
     Reply: InvestmentSummaryResponseDTO;
   }>(
     '/',
@@ -23,6 +26,7 @@ export async function summaryRoutes(app: FastifyInstance) {
         tags: ['Investments'],
         summary: 'Get investment portfolio summary',
         description,
+        querystring: InvestmentSummaryQuerySchema,
         response: {
           200: InvestmentSummaryResponseSchema,
         },

@@ -1,13 +1,15 @@
+import {
+  fetchLatestRates,
+  isValidCurrencyCode,
+  USD_CURRENCY_CODE,
+} from '@currency/services';
 import { prepareNamedResourcesMap } from '@named-resource/services';
 import { TransactionModel } from '@transaction/model';
 import { TransactionAccountStatisticsQuery } from '@transaction/schema';
 import { buildTransactionFilterQuery } from '@transaction/services';
 
-import { USD_CURRENCY_CODE } from './constants';
-import { fetchLatestRates } from './fetch-latest-rates';
 import { parseAccountStatisticsResult } from './parse-account-statistics-result';
 import { AccountBalanceStatisticsRow } from './types';
-import { isValidCurrencyCode } from './utils';
 
 export async function getAccountStatistics(
   q: TransactionAccountStatisticsQuery,

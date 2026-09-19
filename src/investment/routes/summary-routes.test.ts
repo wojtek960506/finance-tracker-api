@@ -89,8 +89,33 @@ describe('summary routes', async () => {
       url: '/',
     });
 
-    expect(investmentServices.getInvestmentSummary).toHaveBeenCalledWith(USER_ID_STR);
+    expect(investmentServices.getInvestmentSummary).toHaveBeenCalledWith(USER_ID_STR, {});
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(mockSummaryResponse);
+  });
+
+  it('GET /?baseCurrency=PLN - passes baseCurrency query param', async () => {
+    const mockNormalizedResponse = {
+      ...mockSummaryResponse,
+      baseCurrency: 'PLN',
+      grandTotalNormalized: {
+        currentValue: 50000,
+        netInvested: 40000,
+        pnl: 10000,
+        roiPercentage: 25,
+      },
+    };
+    getInvestmentSummaryMock.mockResolvedValue(mockNormalizedResponse);
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/?baseCurrency=PLN',
+    });
+
+    expect(investmentServices.getInvestmentSummary).toHaveBeenCalledWith(USER_ID_STR, {
+      baseCurrency: 'PLN',
+    });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(mockNormalizedResponse);
   });
 });

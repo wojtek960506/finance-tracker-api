@@ -1,6 +1,6 @@
 import { CURRENCY_CODES } from '@currency/schema';
 
-import { USD_CURRENCY_CODE } from './constants';
+export const USD_CURRENCY_CODE = 'USD';
 
 const VALID_CURRENCY_CODES = new Set<string>(CURRENCY_CODES);
 
@@ -19,9 +19,10 @@ export const roundMoney = (value: number) => {
 export const getCrossRate = (
   fromCurrency: string,
   toCurrency: string,
-  usdBasedRates: Record<string, string>,
-) => {
+  usdBasedRates: Record<string, string> | null | undefined,
+): number | null => {
   if (fromCurrency === toCurrency) return 1;
+  if (!usdBasedRates) return null;
 
   const fromRate =
     fromCurrency === USD_CURRENCY_CODE ? 1 : Number(usdBasedRates[fromCurrency]);

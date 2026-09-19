@@ -24,6 +24,7 @@ const {
   categoryRoutesMock,
   transactionRoutesMock,
   investmentRoutesMock,
+  netWorthRoutesMock,
   currencyRoutesMock,
   paymentMethodRoutesMock,
   registerErrorHandlerMock,
@@ -58,6 +59,7 @@ const {
     currencyRoutesMock: vi.fn(),
     transactionRoutesMock: vi.fn(),
     investmentRoutesMock: vi.fn(),
+    netWorthRoutesMock: vi.fn(),
     cookiePluginMock: vi.fn(),
     jwtPluginMock: vi.fn(),
     corsPluginMock: vi.fn(),
@@ -91,6 +93,7 @@ vi.mock('@named-resource/routes', () => ({
 vi.mock('@currency/routes', () => ({ currencyRoutes: currencyRoutesMock }));
 vi.mock('@transaction/routes', () => ({ transactionRoutes: transactionRoutesMock }));
 vi.mock('@investment/routes', () => ({ investmentRoutes: investmentRoutesMock }));
+vi.mock('@net-worth/routes', () => ({ netWorthRoutes: netWorthRoutesMock }));
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
@@ -142,6 +145,9 @@ describe('app bootstrap', () => {
     });
     expect(appMock.register).toHaveBeenCalledWith(investmentRoutesMock, {
       prefix: '/api/investments',
+    });
+    expect(appMock.register).toHaveBeenCalledWith(netWorthRoutesMock, {
+      prefix: '/api/net-worth',
     });
     expect(registerErrorHandlerMock).toHaveBeenCalledOnce();
     expect(registerErrorHandlerMock).toHaveBeenCalledWith(appMock);

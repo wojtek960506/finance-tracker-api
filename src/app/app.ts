@@ -4,6 +4,7 @@ import fastifyJwt from '@fastify/jwt';
 import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 import { investmentRoutes } from '@investment/routes';
+import { netWorthRoutes } from '@net-worth/routes';
 import Fastify from 'fastify';
 import {
   jsonSchemaTransform,
@@ -133,6 +134,7 @@ export const buildApp = async (
   await app.register(currencyRoutes, { prefix: '/api/currencies' });
   await app.register(transactionRoutes, { prefix: '/api/transactions' });
   await app.register(investmentRoutes, { prefix: '/api/investments' });
+  await app.register(netWorthRoutes, { prefix: '/api/net-worth' });
 
   // register error handler
   await registerErrorHandler(app);

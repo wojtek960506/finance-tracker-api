@@ -5,16 +5,26 @@ import {
 } from '@investment/model';
 import {
   InvestmentCurrencySummaryDTO,
+  InvestmentGrandTotalNormalizedDTO,
   InvestmentInstrumentSummaryDTO,
+  InvestmentSummaryQuery,
   InvestmentSummaryResponseDTO,
 } from '@investment/schema';
 
 import { CurrencyCode } from '@currency/schema';
+import {
+  fetchLatestRates,
+  getCrossRate,
+  isValidCurrencyCode,
+  roundMoney,
+  USD_CURRENCY_CODE,
+} from '@currency/services';
 
-import { calculateInstrumentSummary, roundMoney } from './calculate-instrument-summary';
+import { calculateInstrumentSummary } from './calculate-instrument-summary';
 
 export const getInvestmentSummary = async (
   ownerId: string,
+  query?: InvestmentSummaryQuery,
 ): Promise<InvestmentSummaryResponseDTO> => {
   const [instruments, operations] = await Promise.all([
     InvestmentInstrumentModel.find({ ownerId }).sort({ name: 1 }),
@@ -80,7 +90,65 @@ export const getInvestmentSummary = async (
       totalCostBasis > 0 ? roundMoney((group.totalPnL / totalCostBasis) * 100) : 0;
   }
 
+  const baseCurrency = isValidCurrencyCode(query?.baseCurrency)
+    ? (query.baseCurrency as CurrencyCode)
+    : undefined;
+
+  let grandTotalNormalized: InvestmentGrandTotalNormalizedDTO | undefined;
+
+  if (baseCurrency) {
+    const currencyCodesInPortfolio = Object.keys(totalsByCurrency);
+    const symbolsToFetch = [
+      ...new Set([...currencyCodesInPortfolio, baseCurrency]),
+    ].filter((currency) => currency !== USD_CURRENCY_CODE);
+
+    const latestRatesResponse = await fetchLatestRates(symbolsToFetch);
+    const rates = latestRatesResponse?.rates ?? null;
+
+    let totalNormCurrentValue = 0;
+    let totalNormNetInvested = 0;
+    let totalNormPnL = 0;
+    let hasValidRates = true;
+
+    for (const curr of currencyCodesInPortfolio) {
+      const group = totalsByCurrency[curr];
+      const rate = getCrossRate(curr, baseCurrency, rates);
+
+      if (rate !== null) {
+        group.normalizedTotalCurrentValue = roundMoney(group.totalCurrentValue * rate);
+        group.normalizedTotalNetInvested = roundMoney(group.totalNetInvested * rate);
+        group.normalizedTotalPnL = roundMoney(group.totalPnL * rate);
+
+        totalNormCurrentValue = roundMoney(
+          totalNormCurrentValue + group.normalizedTotalCurrentValue,
+        );
+        totalNormNetInvested = roundMoney(
+          totalNormNetInvested + group.normalizedTotalNetInvested,
+        );
+        totalNormPnL = roundMoney(totalNormPnL + group.normalizedTotalPnL);
+      } else {
+        hasValidRates = false;
+      }
+    }
+
+    if (hasValidRates) {
+      const grandRoi =
+        totalNormNetInvested > 0
+          ? roundMoney((totalNormPnL / totalNormNetInvested) * 100)
+          : 0;
+
+      grandTotalNormalized = {
+        currentValue: totalNormCurrentValue,
+        netInvested: totalNormNetInvested,
+        pnl: totalNormPnL,
+        roiPercentage: grandRoi,
+      };
+    }
+  }
+
   return {
+    baseCurrency,
+    grandTotalNormalized,
     totalsByCurrency,
     instruments: instrumentSummaries,
   };
