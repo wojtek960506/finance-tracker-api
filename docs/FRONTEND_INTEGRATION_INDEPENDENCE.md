@@ -21,11 +21,13 @@ This guide describes how to integrate the **Financial Independence and Liquid Sa
 | `periodMonths` | `number` | No | `12` | Number of past months to sample for monthly averages (1–120). |
 | `startDate` | `string` (ISO) | No | `now - periodMonths` | Custom start date for historical transaction analysis. |
 | `endDate` | `string` (ISO) | No | `now` | Custom end date for historical transaction analysis. |
-| `excludeCategoryIds` | `string` (comma-sep) | No | Auto-detected | Specific category ObjectIds to exclude from non-work income. |
-| `excludeCategoryNames` | `string` (comma-sep) | No | Auto-detected | Specific category names to exclude (e.g. `Praca, B2B, Salary`). |
+| `excludeCategoryIds` | `string` (comma-sep) | No | Auto-detected | Specific category ObjectIds to exclude from both living expenses and non-work income. |
+| `excludeCategoryNames` | `string` (comma-sep) | No | Auto-detected | Specific category names to exclude from both expenses and non-work income (e.g. `Praca, B2B, Salary`). |
 
 > [!TIP]
-> **Automatic Work Category Detection**: If neither `excludeCategoryIds` nor `excludeCategoryNames` is provided, the API automatically detects and excludes all categories matching work/salary patterns (`praca`, `work`, `salary`, `wynagrodzenie`, `zarobki`, `etat`, `b2b`) case-insensitively.
+> **Automatic Work Category Detection**: If neither `excludeCategoryIds` nor `excludeCategoryNames` is provided, the API automatically detects and excludes all categories matching work/salary patterns (`praca`, `work`, `salary`, `wynagrodzenie`, `zarobki`, `etat`, `b2b`) case-insensitively from both living expenses and passive incomes.
+>
+> **Excluded Kinds**: Internal transfers (`kind: 'transfer'`), currency exchanges (`kind: 'exchange'`), and asset investments/deposits (`kind: 'investment'`) are automatically excluded from all monthly aggregations (`grossExpenses`, `nonWorkIncome`, `workIncome`).
 
 ---
 

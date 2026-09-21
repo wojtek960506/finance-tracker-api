@@ -20,6 +20,7 @@ import { getNetWorth } from './get-net-worth';
 const DEFAULT_WORK_CATEGORY_REGEX =
   /(?:^|\b|\s)(?:praca|work|salary|wynagrodzenie|zarobki|etat|b2b)(?:\b|\s|$)/i;
 
+// TODO split this file and analyze it further
 export async function getFinancialIndependence(
   userId: string,
   query?: NetWorthIndependenceQuery,
@@ -49,18 +50,29 @@ export async function getFinancialIndependence(
   // 2. Fetch categories to detect/filter work categories
   const allCategories = await findNamedResources('category', userId);
 
+  const hasExplicitExcludeIds = Boolean(
+    query?.excludeCategoryIds && query.excludeCategoryIds.length > 0,
+  );
+  const hasExplicitExcludeNames = Boolean(
+    query?.excludeCategoryNames && query.excludeCategoryNames.length > 0,
+  );
+
   const excludedCategoryRecords = allCategories.filter((cat) => {
-    if (query?.excludeCategoryIds && query.excludeCategoryIds.length > 0) {
-      return query.excludeCategoryIds.includes(cat._id.toString());
-    }
-    if (query?.excludeCategoryNames && query.excludeCategoryNames.length > 0) {
-      const normalizedQueryNames = query.excludeCategoryNames.map((n) =>
-        n.trim().toLowerCase(),
-      );
-      return (
-        normalizedQueryNames.includes(cat.nameNormalized.toLowerCase()) ||
-        normalizedQueryNames.includes(cat.name.toLowerCase())
-      );
+    if (hasExplicitExcludeIds || hasExplicitExcludeNames) {
+      const matchesId =
+        hasExplicitExcludeIds && query!.excludeCategoryIds!.includes(cat._id.toString());
+      const matchesName =
+        hasExplicitExcludeNames &&
+        (() => {
+          const normalizedQueryNames = query!.excludeCategoryNames!.map((n) =>
+            n.trim().toLowerCase(),
+          );
+          return (
+            normalizedQueryNames.includes(cat.nameNormalized.toLowerCase()) ||
+            normalizedQueryNames.includes(cat.name.toLowerCase())
+          );
+        })();
+      return Boolean(matchesId || matchesName);
     }
     return (
       DEFAULT_WORK_CATEGORY_REGEX.test(cat.nameNormalized) ||
@@ -73,6 +85,7 @@ export async function getFinancialIndependence(
   );
 
   // 3. Query current net worth and historical transactions in parallel
+  // TODO we should think whether we always want to exclude those kinds
   const [netWorthResult, transactionRows] = await Promise.all([
     getNetWorth(userId, { baseCurrency }),
     TransactionModel.aggregate<{
@@ -84,13 +97,16 @@ export async function getFinancialIndependence(
       totalAmount: number;
     }>([
       {
-        $match: buildTransactionFilterQuery(
-          {
-            startDate,
-            endDate,
-          },
-          userId,
-        ),
+        $match: {
+          ...buildTransactionFilterQuery(
+            {
+              startDate,
+              endDate,
+            },
+            userId,
+          ),
+          kind: { $nin: ['transfer', 'exchange', 'investment'] },
+        },
       },
       {
         $group: {
@@ -143,7 +159,9 @@ export async function getFinancialIndependence(
     }
 
     if (row._id.transactionType === 'expense') {
-      totalExpenses = roundMoney(totalExpenses + normalizedAmount);
+      if (!row._id.isExcludedCategory) {
+        totalExpenses = roundMoney(totalExpenses + normalizedAmount);
+      }
     } else if (row._id.transactionType === 'income') {
       if (row._id.isExcludedCategory) {
         totalWorkIncome = roundMoney(totalWorkIncome + normalizedAmount);
@@ -158,7 +176,8 @@ export async function getFinancialIndependence(
   const nonWorkIncome = roundMoney(totalNonWorkIncome / monthsCount);
   const workIncome = roundMoney(totalWorkIncome / monthsCount);
   const averageTotalIncome = roundMoney(totalIncome / monthsCount);
-  const netBurnRate = roundMoney(grossExpenses - nonWorkIncome);
+  const rawNetBurnRate = roundMoney(grossExpenses - nonWorkIncome);
+  const netBurnRate = Math.max(0, rawNetBurnRate);
 
   // 5. Calculate Realistic Independence Horizons
   let isPerpetual = false;
@@ -166,7 +185,7 @@ export async function getFinancialIndependence(
   let liquidCapitalMonths: number | null = null;
   let liquidCashMonths: number | null = null;
 
-  if (netBurnRate <= 0) {
+  if (rawNetBurnRate <= 0) {
     isPerpetual = true;
   } else {
     netWorthMonths = totalNetWorth > 0 ? roundMoney(totalNetWorth / netBurnRate, 2) : 0;

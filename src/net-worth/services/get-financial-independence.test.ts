@@ -114,6 +114,15 @@ describe('getFinancialIndependence service', () => {
       periodMonths: 12,
     });
 
+    expect(TransactionModel.aggregate).toHaveBeenCalledWith([
+      {
+        $match: expect.objectContaining({
+          kind: { $nin: ['transfer', 'exchange', 'investment'] },
+        }),
+      },
+      expect.any(Object),
+    ]);
+
     expect(result.baseCurrency).toBe('PLN');
     expect(result.period.monthsCount).toBe(12);
 
@@ -161,7 +170,7 @@ describe('getFinancialIndependence service', () => {
 
   // prettier-ignore
   it(
-    'marks perpetual independence when non-work income covers or exceeds living expenses',
+    'marks perpetual independence when non-work income exceeds expenses',
     async () => {
     vi.mocked(namedResourceDb.findNamedResources).mockResolvedValue([
       {
@@ -183,7 +192,7 @@ describe('getFinancialIndependence service', () => {
 
     // Expenses: 36,000 PLN (3,000 / month)
     // Non-work income (rental): 48,000 PLN (4,000 / month) -> exceeds expenses
-    // Net burn rate = 3,000 - 4,000 = -1,000 <= 0 (perpetual!)
+    // Net burn rate = Math.max(0, 3,000 - 4,000) = 0 (perpetual!)
     vi.mocked(TransactionModel.aggregate).mockResolvedValue([
       {
         _id: { currency: 'PLN', transactionType: 'expense', isExcludedCategory: false },
@@ -197,7 +206,7 @@ describe('getFinancialIndependence service', () => {
 
     const result = await getFinancialIndependence(userId, { periodMonths: 12 });
 
-    expect(result.monthlyAverages.netBurnRate).toBe(-1000);
+    expect(result.monthlyAverages.netBurnRate).toBe(0);
     expect(result.independence).toEqual({
       isPerpetual: true,
       netWorthMonths: null,
@@ -207,6 +216,69 @@ describe('getFinancialIndependence service', () => {
 
     // Zero-income baseline still calculates worst case at 3,000 / mo
     expect(result.zeroIncomeBaseline.netWorthMonths).toBe(33.33);
+  });
+
+  it('excludes categories from both expenses and non-work incomes', async () => {
+    const businessCatId = '507f1f77bcf86cd799439090';
+    const livingFoodCatId = '507f1f77bcf86cd799439091';
+
+    vi.mocked(namedResourceDb.findNamedResources).mockResolvedValue([
+      {
+        _id: businessCatId as any,
+        name: 'Business B2B Costs',
+        nameNormalized: 'business b2b costs',
+        type: 'user',
+      } as any,
+      {
+        _id: livingFoodCatId as any,
+        name: 'Groceries',
+        nameNormalized: 'groceries',
+        type: 'user',
+      } as any,
+    ]);
+
+    vi.mocked(netWorthServices.getNetWorth).mockResolvedValue({
+      baseCurrency: 'PLN',
+      netWorth: { total: 100000, liquidCash: 50000, investments: 50000 },
+      byCurrency: {},
+      allocation: {},
+    });
+
+    // Living expenses: 24,000 PLN (2,000 / month)
+    // Business expenses (excluded): 60,000 PLN (5,000 / month) -> not in grossExpenses
+    // Non-work income: 6,000 PLN (500 / month)
+    // Work income (business excluded category): 120,000 PLN
+    vi.mocked(TransactionModel.aggregate).mockResolvedValue([
+      {
+        _id: { currency: 'PLN', transactionType: 'expense', isExcludedCategory: false },
+        totalAmount: 24000,
+      },
+      {
+        _id: { currency: 'PLN', transactionType: 'expense', isExcludedCategory: true },
+        totalAmount: 60000,
+      },
+      {
+        _id: { currency: 'PLN', transactionType: 'income', isExcludedCategory: false },
+        totalAmount: 6000,
+      },
+      {
+        _id: { currency: 'PLN', transactionType: 'income', isExcludedCategory: true },
+        totalAmount: 120000,
+      },
+    ]);
+
+    const result = await getFinancialIndependence(userId, {
+      baseCurrency: 'PLN',
+      periodMonths: 12,
+      excludeCategoryIds: [businessCatId],
+    });
+
+    // grossExpenses must only be 24,000 / 12 = 2,000 (NOT 7,000)
+    expect(result.monthlyAverages.grossExpenses).toBe(2000);
+    expect(result.monthlyAverages.nonWorkIncome).toBe(500);
+    expect(result.monthlyAverages.workIncome).toBe(10000);
+    expect(result.monthlyAverages.netBurnRate).toBe(1500); // 2000 - 500
+    expect(result.independence.netWorthMonths).toBe(66.67); // 100,000 / 1,500
   });
 
   it('supports explicit excludeCategoryNames and multi-currency normalization', async () => {
@@ -229,7 +301,7 @@ describe('getFinancialIndependence service', () => {
       },
     });
 
-    // EUR Expenses: 12,000 EUR (at 4.5 rate = 54,000 PLN total in 6 months -> 9,000 PLN/mo)
+    // EUR Expenses: 12,000 EUR (at 5.0 rate = 60,000 PLN total in 6 months -> 10,000 PLN/mo)
     // USD Non-work income: 3,000 USD (at 4.0 rate = 12,000 PLN total in 6 months -> 2,000 PLN/mo)
     // Work income: 20,000 USD
     vi.mocked(TransactionModel.aggregate).mockResolvedValue([
@@ -256,9 +328,6 @@ describe('getFinancialIndependence service', () => {
       },
     });
 
-    // EUR Expenses: 12,000 EUR (at 5.0 rate = 60,000 PLN total in 6 months -> 10,000 PLN/mo)
-    // USD Non-work income: 3,000 USD (at 4.0 rate = 12,000 PLN total in 6 months -> 2,000 PLN/mo)
-    // Net burn rate = 10,000 - 2,000 = 8,000 PLN/mo
     const result = await getFinancialIndependence(userId, {
       baseCurrency: 'PLN',
       periodMonths: 6,
@@ -273,5 +342,53 @@ describe('getFinancialIndependence service', () => {
     expect(result.monthlyAverages.netBurnRate).toBe(8000);
     expect(result.independence.netWorthMonths).toBe(15); // 120000 / 8000
     expect(result.independence.liquidCashMonths).toBe(5); // 40000 / 8000
+  });
+
+  it('supports combining excludeCategoryIds and excludeCategoryNames simultaneously', async () => {
+    const catId1 = '507f1f77bcf86cd799439081';
+    const catId2 = '507f1f77bcf86cd799439082';
+    const catId3 = '507f1f77bcf86cd799439083';
+
+    vi.mocked(namedResourceDb.findNamedResources).mockResolvedValue([
+      {
+        _id: catId1 as any,
+        name: 'Excluded By ID',
+        nameNormalized: 'excluded by id',
+        type: 'user',
+      } as any,
+      {
+        _id: catId2 as any,
+        name: 'Excluded By Name',
+        nameNormalized: 'excluded by name',
+        type: 'user',
+      } as any,
+      {
+        _id: catId3 as any,
+        name: 'Regular Living Expense',
+        nameNormalized: 'regular living expense',
+        type: 'user',
+      } as any,
+    ]);
+
+    vi.mocked(netWorthServices.getNetWorth).mockResolvedValue({
+      baseCurrency: 'PLN',
+      netWorth: { total: 50000, liquidCash: 50000, investments: 0 },
+      byCurrency: {},
+      allocation: {},
+    });
+
+    vi.mocked(TransactionModel.aggregate).mockResolvedValue([]);
+
+    const result = await getFinancialIndependence(userId, {
+      baseCurrency: 'PLN',
+      periodMonths: 12,
+      excludeCategoryIds: [catId1],
+      excludeCategoryNames: ['Excluded By Name'],
+    });
+
+    expect(result.excludedCategories).toEqual([
+      { id: catId1, name: 'Excluded By ID' },
+      { id: catId2, name: 'Excluded By Name' },
+    ]);
   });
 });

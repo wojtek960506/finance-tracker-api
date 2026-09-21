@@ -23,11 +23,19 @@ describe('currency rates service', () => {
   });
 
   describe('roundMoney', () => {
-    it('rounds numbers to 2 decimal places', () => {
+    it('rounds numbers to 2 decimal places by default', () => {
       expect(roundMoney(10.556)).toBe(10.56);
       expect(roundMoney(10.554)).toBe(10.55);
       expect(roundMoney(0)).toBe(0);
       expect(roundMoney(-0.0001)).toBe(0);
+    });
+
+    it('rounds numbers to specified decimal places when decimals argument is provided', () => {
+      expect(roundMoney(10.556, 1)).toBe(10.6);
+      expect(roundMoney(10.556, 0)).toBe(11);
+      expect(roundMoney(10.55556, 4)).toBe(10.5556);
+      expect(roundMoney(10.55554, 4)).toBe(10.5555);
+      expect(roundMoney(12.3456, 2)).toBe(12.35);
     });
   });
 
