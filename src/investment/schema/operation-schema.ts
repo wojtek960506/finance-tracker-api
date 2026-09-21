@@ -22,8 +22,8 @@ const InvestmentOperationBaseSchema = z.object({
   note: z.string().max(500).optional(),
 });
 
-export const InvestmentSnapshotOperationSchema = InvestmentOperationBaseSchema.extend({
-  kind: z.literal('snapshot').optional(),
+export const InvestmentOperationCreateSchema = InvestmentOperationBaseSchema.extend({
+  kind: z.enum(['snapshot', 'interest', 'fee']).default('snapshot'),
 });
 
 export const InvestmentSnapshotOperationItemSchema = InvestmentOperationBaseSchema.extend(
@@ -32,8 +32,18 @@ export const InvestmentSnapshotOperationItemSchema = InvestmentOperationBaseSche
   },
 );
 
+export const InvestmentStandaloneCashFlowOperationItemSchema =
+  InvestmentOperationBaseSchema.extend({
+    kind: z.enum(['interest', 'fee']),
+    transactionId: z
+      .string()
+      .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
+      .nullable()
+      .optional(),
+  });
+
 export const InvestmentCashFlowOperationSchema = InvestmentOperationBaseSchema.extend({
-  kind: InvestmentOperationCashFlowKindSchema,
+  kind: z.enum(['buy', 'sell']),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`'),
@@ -42,6 +52,7 @@ export const InvestmentCashFlowOperationSchema = InvestmentOperationBaseSchema.e
 export const InvestmentOperationSchema = z.discriminatedUnion('kind', [
   InvestmentCashFlowOperationSchema,
   InvestmentSnapshotOperationItemSchema,
+  InvestmentStandaloneCashFlowOperationItemSchema,
 ]);
 
 const InvestmentOperationBaseResponseSchema = InvestmentOperationBaseSchema.extend({
@@ -97,8 +108,8 @@ export const InvestmentOperationListResponseSchema = z.array(
   InvestmentOperationResponseSchema,
 );
 
-export type InvestmentSnapshotOperationDTO = z.infer<
-  typeof InvestmentSnapshotOperationSchema
+export type InvestmentOperationCreateDTO = z.infer<
+  typeof InvestmentOperationCreateSchema
 >;
 export type InvestmentSnapshotOperationItemDTO = z.infer<
   typeof InvestmentSnapshotOperationItemSchema
@@ -125,8 +136,8 @@ export type InvestmentOperationListResponseDTO = z.infer<
 >;
 export type InvestmentOperationsQuery = z.infer<typeof InvestmentOperationsQuerySchema>;
 
-z.globalRegistry.add(InvestmentSnapshotOperationSchema, {
-  id: 'InvestmentSnapshotOperation',
+z.globalRegistry.add(InvestmentOperationCreateSchema, {
+  id: 'InvestmentOperationCreate',
 });
 z.globalRegistry.add(InvestmentSnapshotOperationItemSchema, {
   id: 'InvestmentSnapshotOperationItem',

@@ -1,4 +1,6 @@
 import {
+  InvestmentOperationCreateDTO,
+  InvestmentOperationCreateSchema,
   InvestmentOperationListResponseDTO,
   InvestmentOperationListResponseSchema,
   InvestmentOperationResponseDTO,
@@ -7,8 +9,6 @@ import {
   InvestmentOperationsQuerySchema,
   InvestmentOperationUpdateDTO,
   InvestmentOperationUpdateSchema,
-  InvestmentSnapshotOperationDTO,
-  InvestmentSnapshotOperationSchema,
 } from '@investment/schema';
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod/v4';
@@ -18,10 +18,10 @@ import { ParamsJustId, ParamsJustIdSchema } from '@shared/http';
 import { validateBody } from '@utils/validation';
 
 import {
-  createSnapshotOperationHandler,
-  deleteSnapshotOperationHandler,
+  createOperationHandler,
+  deleteOperationHandler,
   getOperationsHandler,
-  updateSnapshotOperationHandler,
+  updateOperationHandler,
 } from './handlers';
 
 const DeleteResponseSchema = z.object({
@@ -30,28 +30,26 @@ const DeleteResponseSchema = z.object({
 
 export async function operationsRoutes(app: FastifyInstance) {
   app.post<{
-    Body: InvestmentSnapshotOperationDTO;
+    Body: InvestmentOperationCreateDTO;
     Reply: InvestmentOperationResponseDTO;
   }>(
     '/',
     {
-      preHandler: [
-        validateBody(InvestmentSnapshotOperationSchema),
-        authorizeAccessToken(),
-      ],
+      preHandler: [validateBody(InvestmentOperationCreateSchema), authorizeAccessToken()],
       schema: {
         tags: ['Investments'],
-        summary: 'Create snapshot investment operation',
+        summary: 'Create investment operation',
         description:
-          'Record a point-in-time balance snapshot for an instrument. ' +
-          'Non-snapshot operations (buy, sell, interest, fee) must be created via transactions.',
-        body: InvestmentSnapshotOperationSchema,
+          'Record a standalone investment operation (snapshot for shares/funds, ' +
+          'interest/fee for termDeposit/savings). Non-standalone operations (buy, sell) ' +
+          'must be created via transactions.',
+        body: InvestmentOperationCreateSchema,
         response: {
           201: InvestmentOperationResponseSchema,
         },
       },
     },
-    createSnapshotOperationHandler,
+    createOperationHandler,
   );
 
   app.get<{
@@ -79,10 +77,10 @@ export async function operationsRoutes(app: FastifyInstance) {
     preHandler: [validateBody(InvestmentOperationUpdateSchema), authorizeAccessToken()],
     schema: {
       tags: ['Investments'],
-      summary: 'Update snapshot investment operation',
+      summary: 'Update investment operation',
       description:
-        'Update a snapshot investment operation. ' +
-        'Non-snapshot operations linked to transactions cannot be edited here.',
+        'Update a standalone investment operation. ' +
+        'Operations linked to transactions cannot be edited here.',
       params: ParamsJustIdSchema,
       body: InvestmentOperationUpdateSchema,
       response: {
@@ -95,7 +93,7 @@ export async function operationsRoutes(app: FastifyInstance) {
     Params: ParamsJustId;
     Body: InvestmentOperationUpdateDTO;
     Reply: InvestmentOperationResponseDTO;
-  }>('/:id', updateRouteConfig, updateSnapshotOperationHandler);
+  }>('/:id', updateRouteConfig, updateOperationHandler);
 
   app.delete<{
     Params: ParamsJustId;
@@ -106,9 +104,9 @@ export async function operationsRoutes(app: FastifyInstance) {
       preHandler: [authorizeAccessToken()],
       schema: {
         tags: ['Investments'],
-        summary: 'Delete snapshot investment operation',
+        summary: 'Delete investment operation',
         description:
-          'Delete a snapshot investment operation. ' +
+          'Delete a standalone investment operation. ' +
           'Cash-flow operations linked to transactions cannot be deleted here.',
         params: ParamsJustIdSchema,
         response: {
@@ -116,6 +114,6 @@ export async function operationsRoutes(app: FastifyInstance) {
         },
       },
     },
-    deleteSnapshotOperationHandler,
+    deleteOperationHandler,
   );
 }

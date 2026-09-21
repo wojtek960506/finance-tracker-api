@@ -65,7 +65,7 @@ export const TransactionInvestmentNewInstrumentSchema = z.object({
 });
 
 const TransactionInvestmentBaseDetailsSchema = z.object({
-  operationKind: z.enum(['buy', 'sell', 'interest', 'fee']),
+  operationKind: z.enum(['buy', 'sell']),
   note: z.string().max(500).optional(),
 });
 
@@ -126,7 +126,7 @@ export const TransactionBulkCreateSchema = z.object({
 });
 
 export const TransactionInvestmentResponseDetailsSchema = z.object({
-  operationKind: z.enum(['buy', 'sell', 'interest', 'fee']),
+  operationKind: z.enum(['buy', 'sell']),
   instrument: z.object({
     id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
     name: z.string(),

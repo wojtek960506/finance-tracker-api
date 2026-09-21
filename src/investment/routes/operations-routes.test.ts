@@ -13,15 +13,15 @@ import { USER_ID_STR } from '@testing/factories/general';
 import { operationsRoutes } from './operations-routes';
 
 const {
-  createSnapshotOperationMock,
+  createOperationMock,
   getOperationsMock,
-  updateSnapshotOperationMock,
-  deleteSnapshotOperationMock,
+  updateOperationMock,
+  deleteOperationMock,
 } = vi.hoisted(() => ({
-  createSnapshotOperationMock: vi.fn(),
+  createOperationMock: vi.fn(),
   getOperationsMock: vi.fn(),
-  updateSnapshotOperationMock: vi.fn(),
-  deleteSnapshotOperationMock: vi.fn(),
+  updateOperationMock: vi.fn(),
+  deleteOperationMock: vi.fn(),
 }));
 
 const mockPreHandler = vi.fn(async (req, _res) => {
@@ -36,10 +36,10 @@ vi.mock('@investment/services', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@investment/services')>();
   return {
     ...actual,
-    createSnapshotOperation: createSnapshotOperationMock,
+    createOperation: createOperationMock,
     getOperations: getOperationsMock,
-    updateSnapshotOperation: updateSnapshotOperationMock,
-    deleteSnapshotOperation: deleteSnapshotOperationMock,
+    updateOperation: updateOperationMock,
+    deleteOperation: deleteOperationMock,
   };
 });
 
@@ -70,8 +70,8 @@ describe('operations routes', async () => {
     vi.clearAllMocks();
   });
 
-  it('POST / - creates snapshot operation', async () => {
-    createSnapshotOperationMock.mockResolvedValue(mockOperation);
+  it('POST / - creates operation', async () => {
+    createOperationMock.mockResolvedValue(mockOperation);
 
     const response = await app.inject({
       method: 'POST',
@@ -85,7 +85,7 @@ describe('operations routes', async () => {
       },
     });
 
-    expect(investmentServices.createSnapshotOperation).toHaveBeenCalledWith(
+    expect(investmentServices.createOperation).toHaveBeenCalledWith(
       USER_ID_STR,
       expect.objectContaining({
         instrumentId,
@@ -116,13 +116,13 @@ describe('operations routes', async () => {
     expect(response.json()).toEqual([mockOperation]);
   });
 
-  it('PATCH /:id - updates snapshot operation with all fields', async () => {
+  it('PATCH /:id - updates operation with all fields', async () => {
     const updatedOperation = {
       ...mockOperation,
       amount: 14500.5,
       note: 'Updated notes',
     };
-    updateSnapshotOperationMock.mockResolvedValue(updatedOperation);
+    updateOperationMock.mockResolvedValue(updatedOperation);
 
     const response = await app.inject({
       method: 'PATCH',
@@ -136,7 +136,7 @@ describe('operations routes', async () => {
       },
     });
 
-    expect(investmentServices.updateSnapshotOperation).toHaveBeenCalledWith(
+    expect(investmentServices.updateOperation).toHaveBeenCalledWith(
       USER_ID_STR,
       operationId,
       expect.objectContaining({
@@ -150,12 +150,12 @@ describe('operations routes', async () => {
     expect(response.json()).toEqual(updatedOperation);
   });
 
-  it('PATCH /:id - updates snapshot operation partially', async () => {
+  it('PATCH /:id - updates operation partially', async () => {
     const updatedOperation = {
       ...mockOperation,
       amount: 6000,
     };
-    updateSnapshotOperationMock.mockResolvedValue(updatedOperation);
+    updateOperationMock.mockResolvedValue(updatedOperation);
 
     const response = await app.inject({
       method: 'PATCH',
@@ -165,7 +165,7 @@ describe('operations routes', async () => {
       },
     });
 
-    expect(investmentServices.updateSnapshotOperation).toHaveBeenCalledWith(
+    expect(investmentServices.updateOperation).toHaveBeenCalledWith(
       USER_ID_STR,
       operationId,
       expect.objectContaining({
@@ -176,15 +176,15 @@ describe('operations routes', async () => {
     expect(response.json()).toEqual(updatedOperation);
   });
 
-  it('DELETE /:id - deletes snapshot operation', async () => {
-    deleteSnapshotOperationMock.mockResolvedValue({ id: operationId });
+  it('DELETE /:id - deletes operation', async () => {
+    deleteOperationMock.mockResolvedValue({ id: operationId });
 
     const response = await app.inject({
       method: 'DELETE',
       url: `/${operationId}`,
     });
 
-    expect(investmentServices.deleteSnapshotOperation).toHaveBeenCalledWith(
+    expect(investmentServices.deleteOperation).toHaveBeenCalledWith(
       USER_ID_STR,
       operationId,
     );

@@ -21,10 +21,7 @@ export const createInvestmentTransaction = async (
     resolveAccountId(dto.accountId, ownerId),
   ]);
 
-  const transactionType =
-    dto.investment.operationKind === 'buy' || dto.investment.operationKind === 'fee'
-      ? 'expense'
-      : 'income';
+  const transactionType = dto.investment.operationKind === 'buy' ? 'expense' : 'income';
 
   return withSession(async (session) => {
     const instrumentId = await resolveInstrumentId(

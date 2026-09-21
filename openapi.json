@@ -242,7 +242,7 @@
           "$ref": "#/components/schemas/InvestmentInstrumentResponseInput"
         }
       },
-      "InvestmentSnapshotOperationInput": {
+      "InvestmentOperationCreateInput": {
         "type": "object",
         "properties": {
           "instrumentId": {
@@ -300,8 +300,13 @@
             "maxLength": 500
           },
           "kind": {
+            "default": "snapshot",
             "type": "string",
-            "const": "snapshot"
+            "enum": [
+              "snapshot",
+              "interest",
+              "fee"
+            ]
           }
         },
         "required": [
@@ -442,9 +447,7 @@
             "type": "string",
             "enum": [
               "buy",
-              "sell",
-              "interest",
-              "fee"
+              "sell"
             ]
           },
           "transactionId": {
@@ -468,6 +471,90 @@
           },
           {
             "$ref": "#/components/schemas/InvestmentSnapshotOperationItemInput"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "instrumentId": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "EUR",
+                  "PLN",
+                  "GBP",
+                  "JPY",
+                  "CHF",
+                  "CAD",
+                  "AUD",
+                  "NZD",
+                  "SEK",
+                  "NOK",
+                  "DKK",
+                  "CZK",
+                  "HUF",
+                  "RON",
+                  "BGN",
+                  "TRY",
+                  "UAH",
+                  "INR",
+                  "CNY",
+                  "HKD",
+                  "SGD",
+                  "ZAR",
+                  "BRL",
+                  "MXN",
+                  "ARS",
+                  "CLP",
+                  "COP",
+                  "KRW",
+                  "IDR",
+                  "MYR",
+                  "THB",
+                  "AED",
+                  "SAR",
+                  "ILS",
+                  "EGP"
+                ]
+              },
+              "date": {},
+              "note": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "interest",
+                  "fee"
+                ]
+              },
+              "transactionId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "instrumentId",
+              "amount",
+              "currency",
+              "date",
+              "kind"
+            ]
           }
         ]
       },
@@ -1628,9 +1715,7 @@
                 "type": "string",
                 "enum": [
                   "buy",
-                  "sell",
-                  "interest",
-                  "fee"
+                  "sell"
                 ]
               },
               "note": {
@@ -1655,9 +1740,7 @@
                 "type": "string",
                 "enum": [
                   "buy",
-                  "sell",
-                  "interest",
-                  "fee"
+                  "sell"
                 ]
               },
               "note": {
@@ -1781,9 +1864,7 @@
             "type": "string",
             "enum": [
               "buy",
-              "sell",
-              "interest",
-              "fee"
+              "sell"
             ]
           },
           "instrument": {
@@ -5082,7 +5163,7 @@
           "$ref": "#/components/schemas/InvestmentInstrumentResponse"
         }
       },
-      "InvestmentSnapshotOperation": {
+      "InvestmentOperationCreate": {
         "type": "object",
         "properties": {
           "instrumentId": {
@@ -5143,15 +5224,21 @@
             "maxLength": 500
           },
           "kind": {
+            "default": "snapshot",
             "type": "string",
-            "const": "snapshot"
+            "enum": [
+              "snapshot",
+              "interest",
+              "fee"
+            ]
           }
         },
         "required": [
           "instrumentId",
           "amount",
           "currency",
-          "date"
+          "date",
+          "kind"
         ],
         "additionalProperties": false
       },
@@ -5293,9 +5380,7 @@
             "type": "string",
             "enum": [
               "buy",
-              "sell",
-              "interest",
-              "fee"
+              "sell"
             ]
           },
           "transactionId": {
@@ -5320,6 +5405,94 @@
           },
           {
             "$ref": "#/components/schemas/InvestmentSnapshotOperationItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "instrumentId": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "EUR",
+                  "PLN",
+                  "GBP",
+                  "JPY",
+                  "CHF",
+                  "CAD",
+                  "AUD",
+                  "NZD",
+                  "SEK",
+                  "NOK",
+                  "DKK",
+                  "CZK",
+                  "HUF",
+                  "RON",
+                  "BGN",
+                  "TRY",
+                  "UAH",
+                  "INR",
+                  "CNY",
+                  "HKD",
+                  "SGD",
+                  "ZAR",
+                  "BRL",
+                  "MXN",
+                  "ARS",
+                  "CLP",
+                  "COP",
+                  "KRW",
+                  "IDR",
+                  "MYR",
+                  "THB",
+                  "AED",
+                  "SAR",
+                  "ILS",
+                  "EGP"
+                ]
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "interest",
+                  "fee"
+                ]
+              },
+              "transactionId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{24}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "instrumentId",
+              "amount",
+              "currency",
+              "date",
+              "kind"
+            ],
+            "additionalProperties": false
           }
         ]
       },
@@ -6550,9 +6723,7 @@
                 "type": "string",
                 "enum": [
                   "buy",
-                  "sell",
-                  "interest",
-                  "fee"
+                  "sell"
                 ]
               },
               "note": {
@@ -6580,9 +6751,7 @@
                 "type": "string",
                 "enum": [
                   "buy",
-                  "sell",
-                  "interest",
-                  "fee"
+                  "sell"
                 ]
               },
               "note": {
@@ -6713,9 +6882,7 @@
             "type": "string",
             "enum": [
               "buy",
-              "sell",
-              "interest",
-              "fee"
+              "sell"
             ]
           },
           "instrument": {
@@ -13445,17 +13612,17 @@
     },
     "/api/investments/operations/": {
       "post": {
-        "summary": "Create snapshot investment operation",
+        "summary": "Create investment operation",
         "tags": [
           "Investments"
         ],
-        "description": "Record a point-in-time balance snapshot for an instrument. Non-snapshot operations (buy, sell, interest, fee) must be created via transactions.",
+        "description": "Record a standalone investment operation (snapshot for shares/funds, interest/fee for termDeposit/savings). Non-standalone operations (buy, sell) must be created via transactions.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InvestmentSnapshotOperationInput"
+                "$ref": "#/components/schemas/InvestmentOperationCreateInput"
               }
             }
           }
@@ -13533,11 +13700,11 @@
     },
     "/api/investments/operations/{id}": {
       "patch": {
-        "summary": "Update snapshot investment operation",
+        "summary": "Update investment operation",
         "tags": [
           "Investments"
         ],
-        "description": "Update a snapshot investment operation. Non-snapshot operations linked to transactions cannot be edited here.",
+        "description": "Update a standalone investment operation. Operations linked to transactions cannot be edited here.",
         "requestBody": {
           "required": true,
           "content": {
@@ -13573,11 +13740,11 @@
         }
       },
       "delete": {
-        "summary": "Delete snapshot investment operation",
+        "summary": "Delete investment operation",
         "tags": [
           "Investments"
         ],
-        "description": "Delete a snapshot investment operation. Cash-flow operations linked to transactions cannot be deleted here.",
+        "description": "Delete a standalone investment operation. Cash-flow operations linked to transactions cannot be deleted here.",
         "parameters": [
           {
             "schema": {

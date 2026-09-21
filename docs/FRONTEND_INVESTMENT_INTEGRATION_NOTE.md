@@ -40,8 +40,8 @@ Soft deletion, trash management, restoration, and permanent deletion are automat
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/investments/operations` | List investment operations (supports `?instrumentId=`, `?kind=`, `?startDate=`, `?endDate=`). |
-| `POST` | `/investments/operations` | Create a point-in-time balance **snapshot** (`kind: 'snapshot'`). Non-snapshot cash flows (`buy`, `sell`, `interest`, `fee`) are created via transaction endpoints. |
-| `DELETE` | `/investments/operations/:id` | Delete a snapshot operation (cashflow operations linked to transactions cannot be deleted directly here). |
+| `POST` | `/investments/operations` | Create standalone operation (`snapshot` for shares/funds, `interest` or `fee` for term deposits/savings). Cash flows (`buy`, `sell`) are created via transaction endpoints. |
+| `DELETE` | `/investments/operations/:id` | Delete a standalone operation (operations linked to transactions cannot be deleted directly here). |
 
 ---
 
@@ -150,10 +150,10 @@ interface CreateInvestmentTransactionWithExistingInstrumentPayload {
   notes?: string;
   // NOTE: transactionType is NOT passed by the frontend.
   // The backend automatically computes it:
-  // - buy / fee -> 'expense'
-  // - sell / interest -> 'income'
+  // - buy -> 'expense'
+  // - sell -> 'income'
   investment: {
-    operationKind: 'buy' | 'sell' | 'interest' | 'fee';
+    operationKind: 'buy' | 'sell';
     instrumentId: string;
     note?: string;
   };
@@ -169,7 +169,7 @@ interface CreateInvestmentTransactionWithNewInstrumentPayload {
   date: string;
   notes?: string;
   investment: {
-    operationKind: 'buy' | 'sell' | 'interest' | 'fee';
+    operationKind: 'buy' | 'sell';
     newInstrument: {
       name: string;
       kind?: 'share' | 'fund' | 'termDeposit' | 'savings';
@@ -204,7 +204,7 @@ export interface InvestmentTransactionResponse {
   date: string;
   notes?: string;
   investment: {
-    operationKind: 'buy' | 'sell' | 'interest' | 'fee';
+    operationKind: 'buy' | 'sell';
     instrument: {
       id: string;
       name: string;
@@ -224,19 +224,19 @@ export interface InvestmentTransactionResponse {
 
 1. **Transaction Form / Modal**:
    - Add an **"Investment"** tab/radio option alongside Standard, Transfer, and Exchange.
-   - Select operation kind (`buy`, `sell`, `interest`, `fee`).
+   - Select operation kind (`buy`, `sell`).
    - Select existing instrument via search dropdown or type a new instrument name with "Create new instrument" quick-add support.
    - Bank Account, Payment Method, Category, Amount, Currency, Date, and Notes inputs.
 
 2. **Instruments View (`/investments/instruments`)**:
-   - List instruments with badges for kind (`share`, `crypto`, `fund`, etc.) and currency.
+   - List instruments with badges for kind (`share`, `fund`, `termDeposit`, `savings`) and currency.
    - "New Instrument" creation modal.
    - Instrument edit / delete actions.
    - **Delete Dialog / Error Handling**: Confirmation dialog should warn that deletion is only possible if no operations exist. Catch `INVESTMENT_INSTRUMENT_DEPENDENCY_ERROR` (HTTP 403) and display an appropriate message to the user.
 
 3. **Operations View (`/investments/operations`)**:
    - Filter operations by instrument, operation kind, and date range.
-   - "Add Snapshot" button to record point-in-time balance valuations.
+   - "Add Operation" button to record point-in-time balance valuations (`snapshot` for shares/funds, `interest`/`fee` for savings/term deposits).
 
 4. **Trash & Restoration**:
    - Trashed transactions automatically soft-delete linked investment operations.
