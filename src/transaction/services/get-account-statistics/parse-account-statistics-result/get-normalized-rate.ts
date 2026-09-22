@@ -1,4 +1,4 @@
-import { getCrossRate } from '../utils';
+import { getCrossRate } from '@currency/services';
 
 type GetNormalizedRateParams = {
   baseCurrency?: string;

@@ -2,6 +2,8 @@ import { InvestmentInstrumentModel, InvestmentOperationModel } from '@investment
 import { Types } from 'mongoose';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as currencyServices from '@currency/services';
+
 import { calculateInstrumentSummary } from './calculate-instrument-summary';
 import { getInvestmentSummary } from './get-investment-summary';
 
@@ -13,6 +15,14 @@ vi.mock('@investment/model', () => ({
     find: vi.fn(),
   },
 }));
+
+vi.mock('@currency/services', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@currency/services')>();
+  return {
+    ...actual,
+    fetchLatestRates: vi.fn(),
+  };
+});
 
 describe('Investment Summary Services', () => {
   const ownerId = '507f1f77bcf86cd799439011';
@@ -239,9 +249,10 @@ describe('Investment Summary Services', () => {
 
       expect(result.instruments).toHaveLength(0);
       expect(result.totalsByCurrency).toEqual({});
+      expect(result.grandTotalNormalized).toBeUndefined();
     });
 
-    it('aggregates portfolio totals across multiple currencies', async () => {
+    it('aggregates portfolio totals across multiple currencies without baseCurrency', async () => {
       const instSortMock = vi
         .fn()
         .mockResolvedValue([mockInstrumentDoc1, mockInstrumentDoc2]);
@@ -310,6 +321,93 @@ describe('Investment Summary Services', () => {
       expect(result.totalsByCurrency.PLN.totalPnL).toBe(300);
       expect(result.totalsByCurrency.PLN.roiPercentage).toBe(3);
       expect(result.totalsByCurrency.PLN.instrumentsCount).toBe(1);
+
+      expect(result.grandTotalNormalized).toBeUndefined();
+    });
+
+    // prettier-ignore
+    it(
+      'normalizes totals and calculates grandTotalNormalized when baseCurrency is provided',
+      async () => {
+      const instSortMock = vi
+        .fn()
+        .mockResolvedValue([mockInstrumentDoc1, mockInstrumentDoc2]);
+      vi.mocked(InvestmentInstrumentModel.find).mockReturnValue({
+        sort: instSortMock,
+      } as any);
+
+      const opSortMock = vi.fn().mockResolvedValue([
+        {
+          _id: new Types.ObjectId(),
+          instrumentId: mockInstrumentDoc1._id,
+          kind: 'buy',
+          amount: 5000,
+          currency: 'USD',
+          date: new Date('2026-01-15'),
+          createdAt: new Date('2026-01-15'),
+        },
+        {
+          _id: new Types.ObjectId(),
+          instrumentId: mockInstrumentDoc1._id,
+          kind: 'snapshot',
+          amount: 6000,
+          currency: 'USD',
+          date: new Date('2026-06-01'),
+          createdAt: new Date('2026-06-01'),
+        },
+        {
+          _id: new Types.ObjectId(),
+          instrumentId: mockInstrumentDoc2._id,
+          kind: 'buy',
+          amount: 10000,
+          currency: 'PLN',
+          date: new Date('2026-02-01'),
+          createdAt: new Date('2026-02-01'),
+        },
+        {
+          _id: new Types.ObjectId(),
+          instrumentId: mockInstrumentDoc2._id,
+          kind: 'interest',
+          amount: 300,
+          currency: 'PLN',
+          date: new Date('2026-05-01'),
+          createdAt: new Date('2026-05-01'),
+        },
+      ]);
+      vi.mocked(InvestmentOperationModel.find).mockReturnValue({
+        sort: opSortMock,
+      } as any);
+
+      vi.mocked(currencyServices.fetchLatestRates).mockResolvedValue({
+        base: 'USD',
+        date: '2026-09-19',
+        rates: {
+          PLN: '4.0',
+        },
+      });
+
+      const result = await getInvestmentSummary(ownerId, { baseCurrency: 'PLN' });
+
+      expect(result.baseCurrency).toBe('PLN');
+
+      // USD totals normalized to PLN (rate = 4.0)
+      expect(result.totalsByCurrency.USD.normalizedTotalCurrentValue).toBe(24000);
+      expect(result.totalsByCurrency.USD.normalizedTotalNetInvested).toBe(20000);
+      expect(result.totalsByCurrency.USD.normalizedTotalPnL).toBe(4000);
+
+      // PLN totals normalized to PLN (rate = 1.0)
+      expect(result.totalsByCurrency.PLN.normalizedTotalCurrentValue).toBe(10300);
+      expect(result.totalsByCurrency.PLN.normalizedTotalNetInvested).toBe(10000);
+      expect(result.totalsByCurrency.PLN.normalizedTotalPnL).toBe(300);
+
+      // Grand total normalized: 24000 + 10300 = 34300, net: 20000 + 10000 = 30000, pnl: 4300
+      // ROI = (4300 / 30000) * 100 = 14.33
+      expect(result.grandTotalNormalized).toEqual({
+        currentValue: 34300,
+        netInvested: 30000,
+        pnl: 4300,
+        roiPercentage: 14.33,
+      });
     });
   });
 });

@@ -944,6 +944,29 @@
           "updatedAt"
         ]
       },
+      "InvestmentGrandTotalNormalizedInput": {
+        "type": "object",
+        "properties": {
+          "currentValue": {
+            "type": "number"
+          },
+          "netInvested": {
+            "type": "number"
+          },
+          "pnl": {
+            "type": "number"
+          },
+          "roiPercentage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "currentValue",
+          "netInvested",
+          "pnl",
+          "roiPercentage"
+        ]
+      },
       "InvestmentCurrencySummaryInput": {
         "type": "object",
         "properties": {
@@ -1014,6 +1037,15 @@
           },
           "instrumentsCount": {
             "type": "number"
+          },
+          "normalizedTotalCurrentValue": {
+            "type": "number"
+          },
+          "normalizedTotalNetInvested": {
+            "type": "number"
+          },
+          "normalizedTotalPnL": {
+            "type": "number"
           }
         },
         "required": [
@@ -1032,6 +1064,50 @@
       "InvestmentSummaryResponseInput": {
         "type": "object",
         "properties": {
+          "baseCurrency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "grandTotalNormalized": {
+            "$ref": "#/components/schemas/InvestmentGrandTotalNormalizedInput"
+          },
           "totalsByCurrency": {
             "type": "object",
             "additionalProperties": {
@@ -1048,6 +1124,181 @@
         "required": [
           "totalsByCurrency",
           "instruments"
+        ]
+      },
+      "NetWorthTotalsInput": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "liquidCash": {
+            "type": "number"
+          },
+          "investments": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "liquidCash",
+          "investments"
+        ]
+      },
+      "NetWorthCurrencyBreakdownInput": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "cash": {
+            "type": "number"
+          },
+          "investments": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "normalizedTotal": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "currency",
+          "cash",
+          "investments",
+          "total"
+        ]
+      },
+      "NetWorthAllocationItemInput": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "cash",
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "amount": {
+            "type": "number"
+          },
+          "percentage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "category",
+          "amount",
+          "percentage"
+        ]
+      },
+      "NetWorthResponseInput": {
+        "type": "object",
+        "properties": {
+          "baseCurrency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "netWorth": {
+            "$ref": "#/components/schemas/NetWorthTotalsInput"
+          },
+          "byCurrency": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NetWorthCurrencyBreakdownInput"
+            }
+          },
+          "allocation": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NetWorthAllocationItemInput"
+            }
+          }
+        },
+        "required": [
+          "netWorth",
+          "byCurrency",
+          "allocation"
         ]
       },
       "WelcomeResponseInput": {
@@ -5916,6 +6167,30 @@
         ],
         "additionalProperties": false
       },
+      "InvestmentGrandTotalNormalized": {
+        "type": "object",
+        "properties": {
+          "currentValue": {
+            "type": "number"
+          },
+          "netInvested": {
+            "type": "number"
+          },
+          "pnl": {
+            "type": "number"
+          },
+          "roiPercentage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "currentValue",
+          "netInvested",
+          "pnl",
+          "roiPercentage"
+        ],
+        "additionalProperties": false
+      },
       "InvestmentCurrencySummary": {
         "type": "object",
         "properties": {
@@ -5986,6 +6261,15 @@
           },
           "instrumentsCount": {
             "type": "number"
+          },
+          "normalizedTotalCurrentValue": {
+            "type": "number"
+          },
+          "normalizedTotalNetInvested": {
+            "type": "number"
+          },
+          "normalizedTotalPnL": {
+            "type": "number"
           }
         },
         "required": [
@@ -6005,6 +6289,50 @@
       "InvestmentSummaryResponse": {
         "type": "object",
         "properties": {
+          "baseCurrency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "grandTotalNormalized": {
+            "$ref": "#/components/schemas/InvestmentGrandTotalNormalized"
+          },
           "totalsByCurrency": {
             "type": "object",
             "additionalProperties": {
@@ -6021,6 +6349,185 @@
         "required": [
           "totalsByCurrency",
           "instruments"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthTotals": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "liquidCash": {
+            "type": "number"
+          },
+          "investments": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "liquidCash",
+          "investments"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthCurrencyBreakdown": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "cash": {
+            "type": "number"
+          },
+          "investments": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "normalizedTotal": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "currency",
+          "cash",
+          "investments",
+          "total"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthAllocationItem": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "cash",
+              "share",
+              "fund",
+              "termDeposit",
+              "savings"
+            ]
+          },
+          "amount": {
+            "type": "number"
+          },
+          "percentage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "category",
+          "amount",
+          "percentage"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthResponse": {
+        "type": "object",
+        "properties": {
+          "baseCurrency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "netWorth": {
+            "$ref": "#/components/schemas/NetWorthTotals"
+          },
+          "byCurrency": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NetWorthCurrencyBreakdown"
+            }
+          },
+          "allocation": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NetWorthAllocationItem"
+            }
+          }
+        },
+        "required": [
+          "netWorth",
+          "byCurrency",
+          "allocation"
         ],
         "additionalProperties": false
       },
@@ -13786,6 +14293,54 @@
           "Investments"
         ],
         "description": "Return aggregated portfolio valuation, performance totals by currency,and per-instrument summary metrics.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "baseCurrency",
+            "required": false
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -13793,6 +14348,75 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/InvestmentSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/net-worth/": {
+      "get": {
+        "summary": "Get unified net worth and asset allocation",
+        "tags": [
+          "Net Worth"
+        ],
+        "description": "Return unified net worth combining liquid cash from bank accounts and investments valuation,with optional base currency normalization and asset allocation breakdown.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "baseCurrency",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetWorthResponse"
                 }
               }
             }

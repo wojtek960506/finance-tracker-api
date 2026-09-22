@@ -1,6 +1,6 @@
 import { getEnv } from '@app/config/env';
 
-import { USD_CURRENCY_CODE } from './constants';
+import { USD_CURRENCY_CODE } from './rates';
 import { CurrencyFreaksRatesResponse } from './types';
 
 export const fetchLatestRates = async (symbols: string[]) => {
