@@ -10,9 +10,11 @@ import { Types } from 'mongoose';
 import {
   CannotEditLinkedTransactionOperationError,
   InvestmentOperationNotFoundError,
+  OperationKindNotAllowedForInstrumentError,
+  SnapshotNotAllowedForInstrumentError,
 } from '@utils/errors';
 
-export const updateSnapshotOperation = async (
+export const updateOperation = async (
   ownerId: string,
   id: string,
   dto: InvestmentOperationUpdateDTO,
@@ -27,12 +29,30 @@ export const updateSnapshotOperation = async (
     throw new InvestmentOperationNotFoundError(id);
   }
 
-  if (operation.kind !== 'snapshot' || operation.transactionId != null) {
+  if (operation.transactionId != null) {
     throw new CannotEditLinkedTransactionOperationError();
   }
 
   if (dto.instrumentId !== undefined) {
-    await findInstrumentById(ownerId, dto.instrumentId);
+    const targetInstrument = await findInstrumentById(ownerId, dto.instrumentId);
+
+    if (
+      operation.kind === 'snapshot' &&
+      (targetInstrument.kind === 'termDeposit' || targetInstrument.kind === 'savings')
+    ) {
+      throw new SnapshotNotAllowedForInstrumentError(targetInstrument.kind);
+    }
+
+    if (
+      (operation.kind === 'interest' || operation.kind === 'fee') &&
+      (targetInstrument.kind === 'share' || targetInstrument.kind === 'fund')
+    ) {
+      throw new OperationKindNotAllowedForInstrumentError(
+        operation.kind,
+        targetInstrument.kind,
+      );
+    }
+
     operation.instrumentId = new Types.ObjectId(dto.instrumentId) as any;
   }
 

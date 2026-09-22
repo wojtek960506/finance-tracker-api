@@ -116,4 +116,26 @@ describe('TransactionInvestmentSchema & TransactionInvestmentDetailsSchema', () 
 
     expect(() => TransactionInvestmentSchema.parse(data)).toThrow();
   });
+
+  it('fails when operationKind is interest or fee', () => {
+    expect(() =>
+      TransactionInvestmentSchema.parse({
+        ...baseTransaction,
+        investment: {
+          instrumentId: validInstrumentId,
+          operationKind: 'interest',
+        },
+      }),
+    ).toThrow();
+
+    expect(() =>
+      TransactionInvestmentSchema.parse({
+        ...baseTransaction,
+        investment: {
+          instrumentId: validInstrumentId,
+          operationKind: 'fee',
+        },
+      }),
+    ).toThrow();
+  });
 });

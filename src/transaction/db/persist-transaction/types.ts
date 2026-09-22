@@ -21,7 +21,7 @@ export type TransactionInvestmentCreateProps = Omit<
   kind: 'investment';
   investment?: {
     instrumentId: string;
-    operationKind: 'buy' | 'sell' | 'interest' | 'fee';
+    operationKind: 'buy' | 'sell';
     note?: string;
   };
 };

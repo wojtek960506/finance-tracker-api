@@ -50,3 +50,25 @@ export class CannotEditLinkedTransactionOperationError extends AppError {
     );
   }
 }
+
+export class SnapshotNotAllowedForInstrumentError extends AppError {
+  readonly code = 'SNAPSHOT_NOT_ALLOWED_FOR_INSTRUMENT';
+
+  constructor(readonly instrumentKind: string) {
+    super(400, `Snapshots are not allowed for '${instrumentKind}' instruments`);
+  }
+}
+
+export class OperationKindNotAllowedForInstrumentError extends AppError {
+  readonly code = 'OPERATION_KIND_NOT_ALLOWED_FOR_INSTRUMENT';
+
+  constructor(
+    readonly operationKind: string,
+    readonly instrumentKind: string,
+  ) {
+    super(
+      400,
+      `Operation of kind '${operationKind}' is not allowed for '${instrumentKind}' instruments`,
+    );
+  }
+}
