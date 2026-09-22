@@ -1,11 +1,11 @@
 import { InvestmentOperationModel } from '@investment/model';
 
 import {
+  CannotEditLinkedTransactionOperationError,
   InvestmentOperationNotFoundError,
-  SnapshotOperationOnlyError,
 } from '@utils/errors';
 
-export const deleteSnapshotOperation = async (
+export const deleteOperation = async (
   ownerId: string,
   id: string,
 ): Promise<{ id: string }> => {
@@ -18,8 +18,8 @@ export const deleteSnapshotOperation = async (
     throw new InvestmentOperationNotFoundError(id);
   }
 
-  if (operation.kind !== 'snapshot') {
-    throw new SnapshotOperationOnlyError('delete');
+  if (operation.transactionId != null) {
+    throw new CannotEditLinkedTransactionOperationError();
   }
 
   await InvestmentOperationModel.deleteOne({ _id: id, ownerId });

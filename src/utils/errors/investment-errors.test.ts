@@ -6,6 +6,8 @@ import {
   InvestmentInstrumentDependencyError,
   InvestmentInstrumentNotFoundError,
   InvestmentOperationNotFoundError,
+  OperationKindNotAllowedForInstrumentError,
+  SnapshotNotAllowedForInstrumentError,
   SnapshotOperationOnlyError,
 } from './investment-errors';
 
@@ -67,5 +69,24 @@ describe('investment errors', () => {
     expect(err.message).toBe(
       'Cannot edit linked transaction operation directly. Please edit the root transaction.',
     );
+  });
+
+  it('SnapshotNotAllowedForInstrumentError sets defaults', () => {
+    const err = new SnapshotNotAllowedForInstrumentError('termDeposit');
+    expect(err.statusCode).toBe(400);
+    expect(err.code).toBe('SNAPSHOT_NOT_ALLOWED_FOR_INSTRUMENT');
+    expect(err.message).toBe("Snapshots are not allowed for 'termDeposit' instruments");
+    expect(err.instrumentKind).toBe('termDeposit');
+  });
+
+  it('OperationKindNotAllowedForInstrumentError sets defaults', () => {
+    const err = new OperationKindNotAllowedForInstrumentError('interest', 'share');
+    expect(err.statusCode).toBe(400);
+    expect(err.code).toBe('OPERATION_KIND_NOT_ALLOWED_FOR_INSTRUMENT');
+    expect(err.message).toBe(
+      "Operation of kind 'interest' is not allowed for 'share' instruments",
+    );
+    expect(err.operationKind).toBe('interest');
+    expect(err.instrumentKind).toBe('share');
   });
 });

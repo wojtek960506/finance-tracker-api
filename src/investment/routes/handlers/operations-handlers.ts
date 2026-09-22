@@ -1,29 +1,26 @@
 import {
+  InvestmentOperationCreateDTO,
   InvestmentOperationListResponseDTO,
   InvestmentOperationResponseDTO,
   InvestmentOperationsQuery,
   InvestmentOperationUpdateDTO,
-  InvestmentSnapshotOperationDTO,
 } from '@investment/schema';
 import {
-  createSnapshotOperation,
-  deleteSnapshotOperation,
+  createOperation,
+  deleteOperation,
   getOperations,
-  updateSnapshotOperation,
+  updateOperation,
 } from '@investment/services';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { AuthenticatedRequest, ParamsJustId } from '@shared/http';
 
-export const createSnapshotOperationHandler = async (
-  req: FastifyRequest<{ Body: InvestmentSnapshotOperationDTO }>,
+export const createOperationHandler = async (
+  req: FastifyRequest<{ Body: InvestmentOperationCreateDTO }>,
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result: InvestmentOperationResponseDTO = await createSnapshotOperation(
-    userId,
-    req.body,
-  );
+  const result: InvestmentOperationResponseDTO = await createOperation(userId, req.body);
   return res.code(201).send(result);
 };
 
@@ -39,7 +36,7 @@ export const getOperationsHandler = async (
   return res.code(200).send(result);
 };
 
-export const updateSnapshotOperationHandler = async (
+export const updateOperationHandler = async (
   req: FastifyRequest<{
     Params: ParamsJustId;
     Body: InvestmentOperationUpdateDTO;
@@ -47,7 +44,7 @@ export const updateSnapshotOperationHandler = async (
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result: InvestmentOperationResponseDTO = await updateSnapshotOperation(
+  const result: InvestmentOperationResponseDTO = await updateOperation(
     userId,
     req.params.id,
     req.body,
@@ -55,11 +52,11 @@ export const updateSnapshotOperationHandler = async (
   return res.code(200).send(result);
 };
 
-export const deleteSnapshotOperationHandler = async (
+export const deleteOperationHandler = async (
   req: FastifyRequest<{ Params: ParamsJustId }>,
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result = await deleteSnapshotOperation(userId, req.params.id);
+  const result = await deleteOperation(userId, req.params.id);
   return res.code(200).send(result);
 };

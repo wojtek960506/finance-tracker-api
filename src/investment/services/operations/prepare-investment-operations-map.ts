@@ -2,7 +2,7 @@ import { IInvestmentInstrument, InvestmentOperationModel } from '@investment/mod
 import { InvestmentInstrumentKind } from '@investment/types';
 
 export interface TransactionInvestmentDetailsResponse {
-  operationKind: 'buy' | 'sell' | 'interest' | 'fee';
+  operationKind: 'buy' | 'sell';
   instrument: {
     id: string;
     name: string;
@@ -35,7 +35,7 @@ export const prepareInvestmentOperationsMap = async (
     if (op.transactionId && op.instrumentId) {
       const instrument = op.instrumentId as unknown as IInvestmentInstrument;
       map[op.transactionId.toString()] = {
-        operationKind: op.kind as 'buy' | 'sell' | 'interest' | 'fee',
+        operationKind: op.kind as 'buy' | 'sell',
         instrument: {
           id: instrument._id.toString(),
           name: instrument.name,
