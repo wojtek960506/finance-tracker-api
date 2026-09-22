@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import {
   InvestmentCashFlowOperationSchema,
+  InvestmentOperationCreateSchema,
   InvestmentOperationResponseSchema,
   InvestmentOperationSchema,
   InvestmentOperationsQuerySchema,
   InvestmentOperationUpdateSchema,
-  InvestmentSnapshotOperationSchema,
 } from './operation-schema';
 
 describe('investment operation schema', () => {
@@ -64,9 +64,43 @@ describe('investment operation schema', () => {
     });
   });
 
-  it('validates snapshot create DTO', () => {
+  it('allows standalone interest and fee operations without transactionId', () => {
     expect(
-      InvestmentSnapshotOperationSchema.parse({
+      InvestmentOperationSchema.parse({
+        instrumentId,
+        kind: 'interest',
+        amount: 50,
+        currency: 'PLN',
+        date: '2026-06-06',
+      }),
+    ).toEqual({
+      instrumentId,
+      kind: 'interest',
+      amount: 50,
+      currency: 'PLN',
+      date: new Date('2026-06-06'),
+    });
+
+    expect(
+      InvestmentOperationSchema.parse({
+        instrumentId,
+        kind: 'fee',
+        amount: 10,
+        currency: 'PLN',
+        date: '2026-06-06',
+      }),
+    ).toEqual({
+      instrumentId,
+      kind: 'fee',
+      amount: 10,
+      currency: 'PLN',
+      date: new Date('2026-06-06'),
+    });
+  });
+
+  it('validates operation create DTO and defaults kind to snapshot', () => {
+    expect(
+      InvestmentOperationCreateSchema.parse({
         instrumentId,
         amount: 500,
         currency: 'USD',
@@ -74,7 +108,40 @@ describe('investment operation schema', () => {
       }),
     ).toEqual({
       instrumentId,
+      kind: 'snapshot',
       amount: 500,
+      currency: 'USD',
+      date: new Date('2026-07-01'),
+    });
+
+    expect(
+      InvestmentOperationCreateSchema.parse({
+        instrumentId,
+        kind: 'interest',
+        amount: 25,
+        currency: 'USD',
+        date: '2026-07-01',
+      }),
+    ).toEqual({
+      instrumentId,
+      kind: 'interest',
+      amount: 25,
+      currency: 'USD',
+      date: new Date('2026-07-01'),
+    });
+
+    expect(
+      InvestmentOperationCreateSchema.parse({
+        instrumentId,
+        kind: 'fee',
+        amount: 5,
+        currency: 'USD',
+        date: '2026-07-01',
+      }),
+    ).toEqual({
+      instrumentId,
+      kind: 'fee',
+      amount: 5,
       currency: 'USD',
       date: new Date('2026-07-01'),
     });
@@ -93,7 +160,7 @@ describe('investment operation schema', () => {
       InvestmentCashFlowOperationSchema.parse({
         instrumentId,
         transactionId,
-        kind: 'fee',
+        kind: 'buy',
         amount: 25,
         currency: 'EUR',
         date: '2026-08-01',
@@ -101,7 +168,7 @@ describe('investment operation schema', () => {
     ).toEqual({
       instrumentId,
       transactionId,
-      kind: 'fee',
+      kind: 'buy',
       amount: 25,
       currency: 'EUR',
       date: new Date('2026-08-01'),

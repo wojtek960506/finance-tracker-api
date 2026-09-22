@@ -7,14 +7,15 @@ import {
   CannotEditLinkedTransactionOperationError,
   InvestmentInstrumentNotFoundError,
   InvestmentOperationNotFoundError,
-  SnapshotOperationOnlyError,
+  OperationKindNotAllowedForInstrumentError,
+  SnapshotNotAllowedForInstrumentError,
 } from '@utils/errors';
 
 import {
-  createSnapshotOperation,
-  deleteSnapshotOperation,
+  createOperation,
+  deleteOperation,
   getOperations,
-  updateSnapshotOperation,
+  updateOperation,
 } from './index';
 
 vi.mock('@transaction/model', () => ({
@@ -49,6 +50,14 @@ describe('Investment Operations Services', () => {
     currency: 'USD',
   };
 
+  const mockSavingsInstrumentDoc = {
+    _id: new Types.ObjectId(instrumentId),
+    ownerId: new Types.ObjectId(ownerId),
+    name: 'High Yield Savings',
+    kind: 'savings',
+    currency: 'USD',
+  };
+
   const mockSnapshotDoc = {
     _id: new Types.ObjectId(operationId),
     ownerId: new Types.ObjectId(ownerId),
@@ -59,6 +68,20 @@ describe('Investment Operations Services', () => {
     currency: 'USD',
     date: new Date('2026-09-01'),
     note: 'September valuation',
+    createdAt: new Date('2026-09-01'),
+    updatedAt: new Date('2026-09-01'),
+  };
+
+  const mockInterestDoc = {
+    _id: new Types.ObjectId(operationId),
+    ownerId: new Types.ObjectId(ownerId),
+    instrumentId: new Types.ObjectId(instrumentId),
+    transactionId: null,
+    kind: 'interest' as const,
+    amount: 50,
+    currency: 'USD',
+    date: new Date('2026-09-01'),
+    note: 'Monthly interest',
     createdAt: new Date('2026-09-01'),
     updatedAt: new Date('2026-09-01'),
   };
@@ -81,8 +104,8 @@ describe('Investment Operations Services', () => {
     vi.mocked(TransactionModel.find).mockResolvedValue([] as any);
   });
 
-  describe('createSnapshotOperation', () => {
-    it('creates a snapshot operation when instrument exists', async () => {
+  describe('createOperation', () => {
+    it('creates a snapshot operation when instrument exists and is share or fund', async () => {
       vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(
         mockInstrumentDoc as any,
       );
@@ -90,8 +113,9 @@ describe('Investment Operations Services', () => {
         mockSnapshotDoc as any,
       );
 
-      const result = await createSnapshotOperation(ownerId, {
+      const result = await createOperation(ownerId, {
         instrumentId,
+        kind: 'snapshot',
         amount: 1500,
         currency: 'USD',
         date: new Date('2026-09-01'),
@@ -117,12 +141,84 @@ describe('Investment Operations Services', () => {
       expect('transactionId' in result).toBe(false);
     });
 
+    it('creates an interest operation for savings/termDeposit instrument', async () => {
+      vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(
+        mockSavingsInstrumentDoc as any,
+      );
+      vi.mocked(InvestmentOperationModel.create).mockResolvedValue(
+        mockInterestDoc as any,
+      );
+
+      const result = await createOperation(ownerId, {
+        instrumentId,
+        kind: 'interest',
+        amount: 50,
+        currency: 'USD',
+        date: new Date('2026-09-01'),
+        note: 'Monthly interest',
+      });
+
+      expect(InvestmentOperationModel.create).toHaveBeenCalledWith({
+        ownerId,
+        instrumentId,
+        transactionId: null,
+        kind: 'interest',
+        amount: 50,
+        currency: 'USD',
+        date: new Date('2026-09-01'),
+        note: 'Monthly interest',
+      });
+      expect(result.id).toBe(operationId);
+      expect(result.kind).toBe('interest');
+    });
+
+    it(
+      'throws SnapshotNotAllowedForInstrumentError ' +
+        'when creating snapshot for termDeposit or savings',
+      async () => {
+        vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(
+          mockSavingsInstrumentDoc as any,
+        );
+
+        await expect(
+          createOperation(ownerId, {
+            instrumentId,
+            kind: 'snapshot',
+            amount: 1500,
+            currency: 'USD',
+            date: new Date('2026-09-01'),
+          }),
+        ).rejects.toThrow(SnapshotNotAllowedForInstrumentError);
+      },
+    );
+
+    it(
+      'throws OperationKindNotAllowedForInstrumentError ' +
+        'when creating interest/fee for share or fund',
+      async () => {
+        vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(
+          mockInstrumentDoc as any,
+        );
+
+        await expect(
+          createOperation(ownerId, {
+            instrumentId,
+            kind: 'interest',
+            amount: 50,
+            currency: 'USD',
+            date: new Date('2026-09-01'),
+          }),
+        ).rejects.toThrow(OperationKindNotAllowedForInstrumentError);
+      },
+    );
+
     it('throws InvestmentInstrumentNotFoundError if instrument not found', async () => {
       vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(null);
 
       await expect(
-        createSnapshotOperation(ownerId, {
+        createOperation(ownerId, {
           instrumentId,
+          kind: 'snapshot',
           amount: 1500,
           currency: 'USD',
           date: new Date('2026-09-01'),
@@ -163,8 +259,8 @@ describe('Investment Operations Services', () => {
     });
   });
 
-  describe('updateSnapshotOperation', () => {
-    it('updates snapshot operation when valid dto provided', async () => {
+  describe('updateOperation', () => {
+    it('updates operation when valid dto provided', async () => {
       const opDoc = {
         ...mockSnapshotDoc,
         save: vi.fn().mockResolvedValue(undefined),
@@ -176,7 +272,7 @@ describe('Investment Operations Services', () => {
       } as any);
 
       const newDate = new Date('2026-09-17');
-      const result = await updateSnapshotOperation(ownerId, operationId, {
+      const result = await updateOperation(ownerId, operationId, {
         instrumentId: newInstrumentId,
         amount: 14500.5,
         currency: 'USD',
@@ -210,7 +306,7 @@ describe('Investment Operations Services', () => {
       };
       vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue(opDoc as any);
 
-      await updateSnapshotOperation(ownerId, operationId, {
+      await updateOperation(ownerId, operationId, {
         note: 'Note field value',
       });
 
@@ -222,13 +318,13 @@ describe('Investment Operations Services', () => {
       vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue(null);
 
       await expect(
-        updateSnapshotOperation(ownerId, operationId, { amount: 100 }),
+        updateOperation(ownerId, operationId, { amount: 100 }),
       ).rejects.toThrow(InvestmentOperationNotFoundError);
     });
 
-    // prettier-ignore
     it(
-      'throws CannotEditLinkedTransactionOperationError when updating non-snapshot operation',
+      'throws CannotEditLinkedTransactionOperationError ' +
+        'when updating linked transaction operation',
       async () => {
         vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue({
           ...mockCashFlowDoc,
@@ -236,14 +332,14 @@ describe('Investment Operations Services', () => {
         } as any);
 
         await expect(
-          updateSnapshotOperation(ownerId, operationId, { amount: 100 }),
+          updateOperation(ownerId, operationId, { amount: 100 }),
         ).rejects.toThrow(CannotEditLinkedTransactionOperationError);
-      }
+      },
     );
 
-    // prettier-ignore
     it(
-      'throws InvestmentInstrumentNotFoundError when target instrumentId is not found',
+      'throws InvestmentInstrumentNotFoundError ' +
+        'when target instrumentId is not found',
       async () => {
         const opDoc = {
           ...mockSnapshotDoc,
@@ -253,16 +349,38 @@ describe('Investment Operations Services', () => {
         vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(null);
 
         await expect(
-          updateSnapshotOperation(ownerId, operationId, {
+          updateOperation(ownerId, operationId, {
             instrumentId: '507f1f77bcf86cd799439099',
           }),
         ).rejects.toThrow(InvestmentInstrumentNotFoundError);
-      }
+      },
+    );
+
+    it(
+      'throws SnapshotNotAllowedForInstrumentError ' +
+        'when updating snapshot target to savings/termDeposit',
+      async () => {
+        const opDoc = {
+          ...mockSnapshotDoc,
+          kind: 'snapshot',
+          save: vi.fn().mockResolvedValue(undefined),
+        };
+        vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue(opDoc as any);
+        vi.mocked(InvestmentInstrumentModel.findOne).mockResolvedValue(
+          mockSavingsInstrumentDoc as any,
+        );
+
+        await expect(
+          updateOperation(ownerId, operationId, {
+            instrumentId: '507f1f77bcf86cd799439099',
+          }),
+        ).rejects.toThrow(SnapshotNotAllowedForInstrumentError);
+      },
     );
   });
 
-  describe('deleteSnapshotOperation', () => {
-    it('deletes snapshot operation when it exists and is snapshot kind', async () => {
+  describe('deleteOperation', () => {
+    it('deletes operation when it exists and is standalone operation', async () => {
       vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue(
         mockSnapshotDoc as any,
       );
@@ -270,7 +388,7 @@ describe('Investment Operations Services', () => {
         deletedCount: 1,
       } as any);
 
-      const result = await deleteSnapshotOperation(ownerId, operationId);
+      const result = await deleteOperation(ownerId, operationId);
 
       expect(InvestmentOperationModel.findOne).toHaveBeenCalledWith({
         _id: operationId,
@@ -286,20 +404,24 @@ describe('Investment Operations Services', () => {
     it('throws InvestmentOperationNotFoundError when not found', async () => {
       vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue(null);
 
-      await expect(deleteSnapshotOperation(ownerId, operationId)).rejects.toThrow(
+      await expect(deleteOperation(ownerId, operationId)).rejects.toThrow(
         InvestmentOperationNotFoundError,
       );
     });
 
-    it('throws SnapshotOperationOnlyError when deleting non-snapshot operation', async () => {
-      vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue({
-        ...mockSnapshotDoc,
-        kind: 'buy',
-      } as any);
+    it(
+      'throws CannotEditLinkedTransactionOperationError ' +
+        'when deleting linked transaction operation',
+      async () => {
+        vi.mocked(InvestmentOperationModel.findOne).mockResolvedValue({
+          ...mockCashFlowDoc,
+          transactionId: new Types.ObjectId('507f1f77bcf86cd799439014'),
+        } as any);
 
-      await expect(deleteSnapshotOperation(ownerId, operationId)).rejects.toThrow(
-        SnapshotOperationOnlyError,
-      );
-    });
+        await expect(deleteOperation(ownerId, operationId)).rejects.toThrow(
+          CannotEditLinkedTransactionOperationError,
+        );
+      },
+    );
   });
 });

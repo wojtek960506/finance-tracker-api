@@ -70,7 +70,7 @@ const investmentOperationSchema = new Schema<IInvestmentOperation>(
       type: Schema.Types.ObjectId,
       ref: 'Transaction',
       required: function (this: IInvestmentOperation) {
-        return this.kind !== 'snapshot';
+        return this.kind === 'buy' || this.kind === 'sell';
       },
       default: null,
       index: true,
@@ -101,10 +101,14 @@ investmentOperationSchema.index({ instrumentId: 1, deletion: 1, date: -1 });
 
 investmentOperationSchema.path('transactionId').validate({
   validator: function (this: IInvestmentOperation, value: Types.ObjectId | null) {
-    if (this.kind === 'snapshot') return value == null;
+    if (this.kind === 'snapshot' || this.kind === 'interest' || this.kind === 'fee') {
+      return value == null;
+    }
     return value != null;
   },
-  message: 'Transaction is required for non-snapshot investment operations',
+  message:
+    'Transaction is required for buy and sell operations, ' +
+    'and must be null for standalone operations',
 });
 
 export const InvestmentInstrumentModel = model<IInvestmentInstrument>(
