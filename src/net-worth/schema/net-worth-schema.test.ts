@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   NetWorthAllocationItemSchema,
   NetWorthCurrencyBreakdownSchema,
+  NetWorthIndependenceQuerySchema,
+  NetWorthIndependenceResponseSchema,
   NetWorthQuerySchema,
   NetWorthResponseSchema,
   NetWorthTotalsSchema,
@@ -84,5 +86,65 @@ describe('net worth schemas', () => {
     };
 
     expect(NetWorthResponseSchema.parse(response)).toEqual(response);
+  });
+
+  it('validates independence query schema with comma separated values', () => {
+    const parsed = NetWorthIndependenceQuerySchema.parse({
+      baseCurrency: 'PLN',
+      periodMonths: '12',
+      excludeCategoryIds: '60d0fe4f5311236168a109ca,60d0fe4f5311236168a109cb',
+      excludeCategoryNames: 'praca, work , salary',
+    });
+
+    expect(parsed).toEqual({
+      baseCurrency: 'PLN',
+      periodMonths: 12,
+      excludeCategoryIds: ['60d0fe4f5311236168a109ca', '60d0fe4f5311236168a109cb'],
+      excludeCategoryNames: ['praca', 'work', 'salary'],
+    });
+  });
+
+  it('validates full independence response schema', () => {
+    const response = {
+      baseCurrency: 'PLN' as const,
+      period: {
+        startDate: '2025-09-19T00:00:00.000Z',
+        endDate: '2026-09-19T00:00:00.000Z',
+        monthsCount: 12,
+      },
+      netWorth: {
+        total: 231200,
+        liquidCash: 61200,
+        savings: 30000,
+        liquidCapital: 91200,
+        lockedInvestments: 140000,
+      },
+      monthlyAverages: {
+        grossExpenses: 6000,
+        nonWorkIncome: 500,
+        workIncome: 12000,
+        totalIncome: 12500,
+        netBurnRate: 5500,
+      },
+      independence: {
+        netWorthMonths: 42.0,
+        liquidCapitalMonths: 16.58,
+        liquidCashMonths: 11.13,
+        isPerpetual: false,
+      },
+      zeroIncomeBaseline: {
+        netWorthMonths: 38.53,
+        liquidCapitalMonths: 15.2,
+        liquidCashMonths: 10.2,
+      },
+      excludedCategories: [
+        {
+          id: '60d0fe4f5311236168a109ca',
+          name: 'Praca',
+        },
+      ],
+    };
+
+    expect(NetWorthIndependenceResponseSchema.parse(response)).toEqual(response);
   });
 });

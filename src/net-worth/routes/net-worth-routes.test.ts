@@ -12,8 +12,9 @@ import { USER_ID_STR } from '@testing/factories/general';
 
 import { netWorthRoutes } from './net-worth-routes';
 
-const { getNetWorthMock } = vi.hoisted(() => ({
+const { getNetWorthMock, getFinancialIndependenceMock } = vi.hoisted(() => ({
   getNetWorthMock: vi.fn(),
+  getFinancialIndependenceMock: vi.fn(),
 }));
 
 const mockPreHandler = vi.fn(async (req, _res) => {
@@ -29,6 +30,7 @@ vi.mock('@net-worth/services', async (importOriginal) => {
   return {
     ...actual,
     getNetWorth: getNetWorthMock,
+    getFinancialIndependence: getFinancialIndependenceMock,
   };
 });
 
@@ -106,5 +108,61 @@ describe('net worth routes', async () => {
     });
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual(mockNetWorthResponse);
+  });
+
+  it('GET /independence - returns financial independence data for authenticated user', async () => {
+    const mockIndependenceResponse = {
+      baseCurrency: 'PLN',
+      period: {
+        startDate: '2025-09-19T00:00:00.000Z',
+        endDate: '2026-09-19T00:00:00.000Z',
+        monthsCount: 12,
+      },
+      netWorth: {
+        total: 240000,
+        liquidCash: 60000,
+        savings: 40000,
+        liquidCapital: 100000,
+        lockedInvestments: 140000,
+      },
+      monthlyAverages: {
+        grossExpenses: 6000,
+        nonWorkIncome: 1000,
+        workIncome: 12000,
+        totalIncome: 13000,
+        netBurnRate: 5000,
+      },
+      independence: {
+        netWorthMonths: 48,
+        liquidCapitalMonths: 20,
+        liquidCashMonths: 12,
+        isPerpetual: false,
+      },
+      zeroIncomeBaseline: {
+        netWorthMonths: 40,
+        liquidCapitalMonths: 16.67,
+        liquidCashMonths: 10,
+      },
+      excludedCategories: [
+        {
+          id: '507f1f77bcf86cd799439021',
+          name: 'Praca',
+        },
+      ],
+    };
+
+    getFinancialIndependenceMock.mockResolvedValue(mockIndependenceResponse);
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/independence?baseCurrency=PLN&periodMonths=12',
+    });
+
+    expect(netWorthServices.getFinancialIndependence).toHaveBeenCalledWith(USER_ID_STR, {
+      baseCurrency: 'PLN',
+      periodMonths: 12,
+    });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(mockIndependenceResponse);
   });
 });

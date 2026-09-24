@@ -1301,6 +1301,253 @@
           "allocation"
         ]
       },
+      "NetWorthIndependencePeriodInput": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "monthsCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "startDate",
+          "endDate",
+          "monthsCount"
+        ]
+      },
+      "NetWorthIndependenceCapitalInput": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "liquidCash": {
+            "type": "number"
+          },
+          "savings": {
+            "type": "number"
+          },
+          "liquidCapital": {
+            "type": "number"
+          },
+          "lockedInvestments": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "liquidCash",
+          "savings",
+          "liquidCapital",
+          "lockedInvestments"
+        ]
+      },
+      "NetWorthIndependenceMonthlyAveragesInput": {
+        "type": "object",
+        "properties": {
+          "grossExpenses": {
+            "type": "number"
+          },
+          "nonWorkIncome": {
+            "type": "number"
+          },
+          "workIncome": {
+            "type": "number"
+          },
+          "totalIncome": {
+            "type": "number"
+          },
+          "netBurnRate": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "grossExpenses",
+          "nonWorkIncome",
+          "workIncome",
+          "totalIncome",
+          "netBurnRate"
+        ]
+      },
+      "NetWorthIndependenceHorizonInput": {
+        "type": "object",
+        "properties": {
+          "netWorthMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCapitalMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCashMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isPerpetual": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "netWorthMonths",
+          "liquidCapitalMonths",
+          "liquidCashMonths",
+          "isPerpetual"
+        ]
+      },
+      "NetWorthZeroIncomeBaselineInput": {
+        "type": "object",
+        "properties": {
+          "netWorthMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCapitalMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCashMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "netWorthMonths",
+          "liquidCapitalMonths",
+          "liquidCashMonths"
+        ]
+      },
+      "ExcludedCategoryItemInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "NetWorthIndependenceResponseInput": {
+        "type": "object",
+        "properties": {
+          "baseCurrency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "period": {
+            "$ref": "#/components/schemas/NetWorthIndependencePeriodInput"
+          },
+          "netWorth": {
+            "$ref": "#/components/schemas/NetWorthIndependenceCapitalInput"
+          },
+          "monthlyAverages": {
+            "$ref": "#/components/schemas/NetWorthIndependenceMonthlyAveragesInput"
+          },
+          "independence": {
+            "$ref": "#/components/schemas/NetWorthIndependenceHorizonInput"
+          },
+          "zeroIncomeBaseline": {
+            "$ref": "#/components/schemas/NetWorthZeroIncomeBaselineInput"
+          },
+          "excludedCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExcludedCategoryItemInput"
+            }
+          }
+        },
+        "required": [
+          "period",
+          "netWorth",
+          "monthlyAverages",
+          "independence",
+          "zeroIncomeBaseline",
+          "excludedCategories"
+        ]
+      },
       "WelcomeResponseInput": {
         "type": "object",
         "properties": {
@@ -6528,6 +6775,260 @@
           "netWorth",
           "byCurrency",
           "allocation"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthIndependencePeriod": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "monthsCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "startDate",
+          "endDate",
+          "monthsCount"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthIndependenceCapital": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "liquidCash": {
+            "type": "number"
+          },
+          "savings": {
+            "type": "number"
+          },
+          "liquidCapital": {
+            "type": "number"
+          },
+          "lockedInvestments": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "liquidCash",
+          "savings",
+          "liquidCapital",
+          "lockedInvestments"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthIndependenceMonthlyAverages": {
+        "type": "object",
+        "properties": {
+          "grossExpenses": {
+            "type": "number"
+          },
+          "nonWorkIncome": {
+            "type": "number"
+          },
+          "workIncome": {
+            "type": "number"
+          },
+          "totalIncome": {
+            "type": "number"
+          },
+          "netBurnRate": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "grossExpenses",
+          "nonWorkIncome",
+          "workIncome",
+          "totalIncome",
+          "netBurnRate"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthIndependenceHorizon": {
+        "type": "object",
+        "properties": {
+          "netWorthMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCapitalMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCashMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isPerpetual": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "netWorthMonths",
+          "liquidCapitalMonths",
+          "liquidCashMonths",
+          "isPerpetual"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthZeroIncomeBaseline": {
+        "type": "object",
+        "properties": {
+          "netWorthMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCapitalMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "liquidCashMonths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "netWorthMonths",
+          "liquidCapitalMonths",
+          "liquidCashMonths"
+        ],
+        "additionalProperties": false
+      },
+      "ExcludedCategoryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "NetWorthIndependenceResponse": {
+        "type": "object",
+        "properties": {
+          "baseCurrency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "PLN",
+              "GBP",
+              "JPY",
+              "CHF",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "CZK",
+              "HUF",
+              "RON",
+              "BGN",
+              "TRY",
+              "UAH",
+              "INR",
+              "CNY",
+              "HKD",
+              "SGD",
+              "ZAR",
+              "BRL",
+              "MXN",
+              "ARS",
+              "CLP",
+              "COP",
+              "KRW",
+              "IDR",
+              "MYR",
+              "THB",
+              "AED",
+              "SAR",
+              "ILS",
+              "EGP"
+            ]
+          },
+          "period": {
+            "$ref": "#/components/schemas/NetWorthIndependencePeriod"
+          },
+          "netWorth": {
+            "$ref": "#/components/schemas/NetWorthIndependenceCapital"
+          },
+          "monthlyAverages": {
+            "$ref": "#/components/schemas/NetWorthIndependenceMonthlyAverages"
+          },
+          "independence": {
+            "$ref": "#/components/schemas/NetWorthIndependenceHorizon"
+          },
+          "zeroIncomeBaseline": {
+            "$ref": "#/components/schemas/NetWorthZeroIncomeBaseline"
+          },
+          "excludedCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExcludedCategoryItem"
+            }
+          }
+        },
+        "required": [
+          "period",
+          "netWorth",
+          "monthlyAverages",
+          "independence",
+          "zeroIncomeBaseline",
+          "excludedCategories"
         ],
         "additionalProperties": false
       },
@@ -14417,6 +14918,113 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NetWorthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/net-worth/independence": {
+      "get": {
+        "summary": "Calculate financial independence and liquid safety buffer",
+        "tags": [
+          "Net Worth"
+        ],
+        "description": "Calculate financial independence horizons and liquid safety buffer in months based on net worth and historical average living expenses / passive non-work incomes.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USD",
+                "EUR",
+                "PLN",
+                "GBP",
+                "JPY",
+                "CHF",
+                "CAD",
+                "AUD",
+                "NZD",
+                "SEK",
+                "NOK",
+                "DKK",
+                "CZK",
+                "HUF",
+                "RON",
+                "BGN",
+                "TRY",
+                "UAH",
+                "INR",
+                "CNY",
+                "HKD",
+                "SGD",
+                "ZAR",
+                "BRL",
+                "MXN",
+                "ARS",
+                "CLP",
+                "COP",
+                "KRW",
+                "IDR",
+                "MYR",
+                "THB",
+                "AED",
+                "SAR",
+                "ILS",
+                "EGP"
+              ]
+            },
+            "in": "query",
+            "name": "baseCurrency",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "in": "query",
+            "name": "periodMonths",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeCategoryIds",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "excludeCategoryNames",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetWorthIndependenceResponse"
                 }
               }
             }

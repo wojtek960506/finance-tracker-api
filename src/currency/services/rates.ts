@@ -10,8 +10,9 @@ export const isValidCurrencyCode = (value?: string): value is string => {
   return VALID_CURRENCY_CODES.has(value);
 };
 
-export const roundMoney = (value: number) => {
-  const rounded = Math.round((value + Number.EPSILON) * 100) / 100;
+export const roundMoney = (value: number, decimals = 2): number => {
+  const factor = 10 ** decimals;
+  const rounded = Math.round((value + Number.EPSILON) * factor) / factor;
 
   return Object.is(rounded, -0) ? 0 : rounded;
 };
