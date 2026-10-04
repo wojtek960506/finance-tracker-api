@@ -11,10 +11,12 @@ Repository Root:
 ### Core Goals & Scope
 1. **Vehicle Resources** – Store vehicle metadata (`name`, `brand`, `model`, `type`, `productionYear`, `notes`) scoped to the authenticated user (`ownerId`).
 2. **Domain Collections** – Persist raw granular records across 3 core spending/usage domains:
-   - **Fuel Entries** (`fuel_entries.csv`) – individual fill-ups, distance, fuel efficiency, costs, station info.
+   - **Fuel Entries** (`fuel_entries.csv`) – individual fill-ups with raw input data (date, fuel liters, tank status, unit price, cost, odometer, station).
    - **Equipment** (`vehicle_equipment.csv`) – accessories, parts, and equipment purchases.
    - **Maintenance** (`own_maintenance.csv`, `previous_owner_services.csv`, `driving_licence_costs.csv`) – section-based service & administrative costs.
-   > **Note on Statistics**: Aggregated CSVs (`fuel_stats.csv`, `fuel_yearly_distance_summary.csv`) are kept in legacy storage for reference, but are **not** stored as separate database collections. Because stats and yearly summaries are derived purely from fuel entries, a dedicated on-the-fly statistics / summary module will be introduced later as dynamic query endpoints.
+   > **Note on Derived Fuel Metrics & Statistics**:
+   > In the legacy spreadsheets, many fuel columns (e.g. `distance_since_previous_km`, `consumption_l_per_100km`, `fuel_liters_to_full`, `cost_per_km_pln`) and aggregated tables (`fuel_stats.csv`, `fuel_yearly_distance_summary.csv`) were calculated from consecutive raw records.
+   > To keep the database normalized, maintainable, and resilient to edits/inserts in past dates without requiring cascade database updates, **the database stores only raw user inputs**. All delta distances, consumption rates, and statistics are calculated **dynamically on-the-fly** by domain calculation helpers when requested.
 3. **Transaction Linking (1:N)** – Vehicle spendings (Fuel Entries, Equipment, Maintenance) optionally reference a `transactionId` (foreign key to `Transaction`). One financial transaction can be linked to multiple vehicle spending records (e.g. single receipt covering multiple services/items).
 4. **Idempotent Imports** – Data rows track `sourceRow` (1-based index from CSV), ensuring imports can be safely re-run without creating duplicates.
 5. **Full Multi-Tenancy** – Every record is strictly scoped by `ownerId` (JWT Bearer authentication).
@@ -65,7 +67,7 @@ src/vehicles/
 │   └── index.ts
 ├── services/                         # Business logic & DB queries
 │   ├── vehicles/                     # Vehicle CRUD
-│   ├── fuel/                         # Fuel entries queries
+│   ├── fuel/                         # Fuel entries queries & dynamic metric calculation
 │   ├── equipment/                    # Equipment queries
 │   ├── maintenance/                  # Maintenance queries
 │   ├── spendings/                    # Linking / unlinking transactions
@@ -121,8 +123,31 @@ export interface IVehicle extends Document {
 
 ---
 
-### 2. `VehicleFuelEntry`
-Individual refuel records.
+### 2. `VehicleFuelEntry` (Raw Granular Model)
+Stores the raw user-specified refueling events.
+
+#### Field Classification
+
+| Field Type | Field Name | Description |
+|---|---|---|
+| **Raw Inputs (Stored in DB)** | `date` | Refueling timestamp |
+| | `fuelLiters` | Liters of fuel pumped |
+| | `isFullTank` | Boolean indicating whether filled to full tank |
+| | `unitPricePln` | Price per liter in PLN |
+| | `costPln` | Total cost in PLN for the fill-up |
+| | `odometerKm` | Current vehicle odometer reading in km |
+| | `stationBrand` | Gas station brand (e.g. Orlen, BP, Shell) |
+| | `stationAddress` | Station location / address |
+| | `description` | Optional notes |
+| | `transactionId` | Optional FK linking to financial `Transaction` |
+| | `sourceRow` | 1-based CSV row number (for idempotent import) |
+| **Derived Metrics (Computed Dynamically)** | `fuelLitersToFull` | Total liters accumulated between previous and current full tank |
+| | `costToFullPln` | Total cost accumulated between previous and current full tank |
+| | `distanceSincePreviousKm` | `odometerKm - previous.odometerKm` |
+| | `distanceSincePreviousFullKm` | `odometerKm - previousFullTank.odometerKm` |
+| | `consumptionLPer100Km` | `(fuelLitersToFull / distanceSincePreviousFullKm) * 100` |
+| | `costPerKmPln` | `costToFullPln / distanceSincePreviousFullKm` |
+| | `kmPerLiter` | `distanceSincePreviousFullKm / fuelLitersToFull` |
 
 ```typescript
 // src/vehicles/model/vehicle-fuel-entry-model.ts
@@ -130,20 +155,13 @@ export interface IVehicleFuelEntry extends Document {
   _id: Types.ObjectId;
   ownerId: Types.ObjectId;                        // ref: 'User'
   vehicleId: Types.ObjectId;                      // ref: 'Vehicle'
-  sourceRow: number;                              // 1-based data row index from CSV
+  sourceRow?: number;                             // 1-based data row index from CSV
   date: Date;
   fuelLiters: number;
-  fuelLitersToFull?: number;
-  unitPricePln?: number;
   isFullTank: boolean;
+  unitPricePln: number;
   costPln: number;
-  costToFullPln?: number;
-  odometerKm?: number;
-  distanceSincePreviousKm?: number;
-  distanceSincePreviousFullKm?: number;
-  consumptionLPer100Km?: number;
-  costPerKmPln?: number;
-  kmPerLiter?: number;
+  odometerKm: number;
   stationBrand?: string;
   stationAddress?: string;
   description?: string;
@@ -153,8 +171,8 @@ export interface IVehicleFuelEntry extends Document {
 }
 ```
 **Indexes**:
-- `{ ownerId: 1, vehicleId: 1, sourceRow: 1 }` (unique)
-- `{ ownerId: 1, vehicleId: 1, date: -1 }`
+- `{ ownerId: 1, vehicleId: 1, sourceRow: 1 }` (unique, sparse when sourceRow present)
+- `{ ownerId: 1, vehicleId: 1, date: -1, odometerKm: -1 }`
 - `{ ownerId: 1, transactionId: 1 }` (sparse index for transaction lookups)
 
 ---
@@ -168,7 +186,7 @@ export interface IVehicleEquipment extends Document {
   _id: Types.ObjectId;
   ownerId: Types.ObjectId;                        // ref: 'User'
   vehicleId: Types.ObjectId;                      // ref: 'Vehicle'
-  sourceRow: number;
+  sourceRow?: number;
   date: Date;
   itemName: string;
   costPln: number;
@@ -179,7 +197,7 @@ export interface IVehicleEquipment extends Document {
 }
 ```
 **Indexes**:
-- `{ ownerId: 1, vehicleId: 1, sourceRow: 1 }` (unique)
+- `{ ownerId: 1, vehicleId: 1, sourceRow: 1 }` (unique, sparse)
 - `{ ownerId: 1, vehicleId: 1, date: -1 }`
 - `{ ownerId: 1, transactionId: 1 }` (sparse)
 
@@ -199,7 +217,7 @@ export interface IVehicleMaintenance extends Document {
   _id: Types.ObjectId;
   ownerId: Types.ObjectId;                        // ref: 'User'
   vehicleId: Types.ObjectId;                      // ref: 'Vehicle'
-  sourceRow: number;
+  sourceRow?: number;
   section: MaintenanceSection;
   date: Date;
   costPln: number;
@@ -212,7 +230,7 @@ export interface IVehicleMaintenance extends Document {
 }
 ```
 **Indexes**:
-- `{ ownerId: 1, vehicleId: 1, section: 1, sourceRow: 1 }` (unique)
+- `{ ownerId: 1, vehicleId: 1, section: 1, sourceRow: 1 }` (unique, sparse)
 - `{ ownerId: 1, vehicleId: 1, section: 1, date: -1 }`
 - `{ ownerId: 1, transactionId: 1 }` (sparse)
 
@@ -229,10 +247,29 @@ All schemas reside under `src/vehicles/schema/` and follow the `zod/v4` patterns
 - `VehicleResponseSchema`: Extends `VehicleCreateSchema` with `id`, `ownerId`, `createdAt`, `updatedAt`.
 - `VehicleListResponseSchema`: `z.array(VehicleResponseSchema)`
 
-### Spending & Fuel Query Schemas
+### Fuel Entry Schemas
+- `VehicleFuelEntryCreateSchema`:
+```typescript
+export const VehicleFuelEntryCreateSchema = z.object({
+  date: z.coerce.date(),
+  fuelLiters: z.number().positive(),
+  isFullTank: z.boolean(),
+  unitPricePln: z.number().positive(),
+  costPln: z.number().positive(),
+  odometerKm: z.number().int().nonnegative(),
+  stationBrand: z.string().max(100).optional(),
+  stationAddress: z.string().max(200).optional(),
+  description: z.string().max(500).optional(),
+  transactionId: z.string().regex(OBJECT_ID_REGEX).nullable().optional(),
+});
+```
+- `VehicleFuelEntryResponseSchema`: Basic raw document response.
+- `VehicleFuelEntryEnrichedResponseSchema`: Enriched response extending raw response with derived metrics (`fuelLitersToFull`, `costToFullPln`, `distanceSincePreviousKm`, `distanceSincePreviousFullKm`, `consumptionLPer100Km`, `costPerKmPln`, `kmPerLiter`).
+
+### Spending & Filter Query Schemas
 - `VehiclePaginationQuerySchema`: Standard pagination (`page` min 1 default 1, `limit` min 1 max 100 default 50).
 - `VehicleDateFilterQuerySchema`: `VehiclePaginationQuerySchema.extend({ startDate: z.coerce.date().optional(), endDate: z.coerce.date().optional() })`
-- `VehicleFuelFilterQuerySchema`: `VehicleDateFilterQuerySchema.extend({ isFullTank: z.coerce.boolean().optional() })`
+- `VehicleFuelFilterQuerySchema`: `VehicleDateFilterQuerySchema.extend({ isFullTank: z.coerce.boolean().optional(), enriched: z.coerce.boolean().optional().default(true) })`
 - `VehicleMaintenanceFilterQuerySchema`: `VehicleDateFilterQuerySchema.extend({ section: MaintenanceSectionSchema.optional() })`
 
 ### Transaction Linking Schemas
@@ -260,6 +297,7 @@ All schemas registered in OpenAPI registry:
 ```typescript
 z.globalRegistry.add(VehicleResponseSchema, { id: 'VehicleResponse' });
 z.globalRegistry.add(VehicleFuelEntryResponseSchema, { id: 'VehicleFuelEntryResponse' });
+z.globalRegistry.add(VehicleFuelEntryEnrichedResponseSchema, { id: 'VehicleFuelEntryEnrichedResponse' });
 z.globalRegistry.add(VehicleEquipmentResponseSchema, { id: 'VehicleEquipmentResponse' });
 z.globalRegistry.add(VehicleMaintenanceResponseSchema, { id: 'VehicleMaintenanceResponse' });
 ```
@@ -277,16 +315,23 @@ z.globalRegistry.add(VehicleMaintenanceResponseSchema, { id: 'VehicleMaintenance
 - `deleteVehicle(ownerId, vehicleId)` – Deletes vehicle and safely cascades or blocks if child records exist.
 
 ### 2. `VehicleFuelService` (`src/vehicles/services/fuel/`)
-- `getFuelEntries(ownerId, vehicleId, query)` – Paginated, date-filtered fuel entries list.
+- `getFuelEntries(ownerId, vehicleId, query)` – Retrieves fuel entries with optional dynamic enrichment (`enrichFuelEntries`).
 - `getFuelEntryById(ownerId, vehicleId, entryId)` – Single entry lookup.
+- `createFuelEntry(ownerId, vehicleId, dto)` – Creates a raw fuel entry record.
+- `enrichFuelEntries(entries)` – Pure function that iterates sorted entries (by date/odometer) and computes:
+  - `distanceSincePreviousKm`: delta between consecutive readings.
+  - Full-tank buckets: aggregates `fuelLiters` and `costPln` across partial fill-ups up to each full tank.
+  - Fuel consumption (`L/100km`) and cost efficiency (`PLN/km`, `km/L`).
 
 ### 3. `VehicleEquipmentService` (`src/vehicles/services/equipment/`)
 - `getEquipment(ownerId, vehicleId, query)` – Paginated equipment list.
 - `getEquipmentById(ownerId, vehicleId, equipmentId)` – Single item.
+- `createEquipment(ownerId, vehicleId, dto)` – Create equipment record.
 
 ### 4. `VehicleMaintenanceService` (`src/vehicles/services/maintenance/`)
 - `getMaintenance(ownerId, vehicleId, query)` – Section-filtered maintenance list.
 - `getMaintenanceById(ownerId, vehicleId, maintenanceId)` – Single record.
+- `createMaintenance(ownerId, vehicleId, dto)` – Create maintenance record.
 
 ### 5. `VehicleSpendingLinkService` (`src/vehicles/services/spendings/`)
 - `linkSpendingsToTransaction(ownerId, vehicleId, dto)`:
@@ -299,7 +344,7 @@ z.globalRegistry.add(VehicleMaintenanceResponseSchema, { id: 'VehicleMaintenance
 ### 6. `VehicleBatchImporterService` (`src/vehicles/services/importer/`)
 - `importVehicleData(ownerId, vehicleSlug, payload)`:
   - Finds or creates the `Vehicle` entity.
-  - Performs bulk `bulkWrite` upserts for `fuelEntries`, `equipment`, and `maintenance` matched on `(ownerId, vehicleId, sourceRow)`.
+  - Performs bulk `bulkWrite` upserts for raw `fuelEntries`, `equipment`, and `maintenance` matched on `(ownerId, vehicleId, sourceRow)`.
   - Guarantees complete idempotency for re-running imports.
 
 ---
@@ -319,14 +364,20 @@ All routes are registered under the `/api/vehicles` prefix in `src/app/app.ts`.
 | `PATCH` | `/api/vehicles/:vehicleId` | Update vehicle details |
 | `DELETE` | `/api/vehicles/:vehicleId` | Delete vehicle |
 | **Fuel Domain** | | |
-| `GET` | `/api/vehicles/:vehicleId/fuel/entries` | List paginated fuel entries (filters: `startDate`, `endDate`, `isFullTank`, `page`, `limit`) |
+| `POST` | `/api/vehicles/:vehicleId/fuel/entries` | Create a fuel entry record |
+| `GET` | `/api/vehicles/:vehicleId/fuel/entries` | List fuel entries (query: `startDate`, `endDate`, `isFullTank`, `enriched`, `page`, `limit`) |
 | `GET` | `/api/vehicles/:vehicleId/fuel/entries/:id` | Get specific fuel entry by ID |
+| `DELETE` | `/api/vehicles/:vehicleId/fuel/entries/:id` | Delete a fuel entry |
 | **Equipment Domain** | | |
+| `POST` | `/api/vehicles/:vehicleId/equipment` | Create equipment purchase record |
 | `GET` | `/api/vehicles/:vehicleId/equipment` | List paginated equipment items |
 | `GET` | `/api/vehicles/:vehicleId/equipment/:id` | Get specific equipment item |
+| `DELETE` | `/api/vehicles/:vehicleId/equipment/:id` | Delete an equipment item |
 | **Maintenance Domain** | | |
+| `POST` | `/api/vehicles/:vehicleId/maintenance` | Create maintenance entry |
 | `GET` | `/api/vehicles/:vehicleId/maintenance` | List paginated maintenance entries (query: `section`, `startDate`, `endDate`) |
 | `GET` | `/api/vehicles/:vehicleId/maintenance/:id` | Get specific maintenance entry |
+| `DELETE` | `/api/vehicles/:vehicleId/maintenance/:id` | Delete maintenance entry |
 | **Spending Links** | | |
 | `POST` | `/api/vehicles/:vehicleId/spendings/link` | Link one or many vehicle spendings to an existing `transactionId` |
 | `POST` | `/api/vehicles/:vehicleId/spendings/unlink` | Unlink a spending item from its transaction |
@@ -376,7 +427,7 @@ All tests execute with `vitest` under `src/vehicles/`:
    - `src/vehicles/schema/*.test.ts`: Validate Zod rules (types, pagination limits, ObjectId formats, required fields).
    - `src/vehicles/serializers/*.test.ts`: Validate Document-to-DTO transformations.
 2. **Service Unit Tests**:
-   - `src/vehicles/services/**/*.test.ts`: Verify CRUD, idempotent upserts, transaction linking constraints, error handling.
+   - `src/vehicles/services/**/*.test.ts`: Verify CRUD, idempotent upserts, transaction linking constraints, dynamic fuel calculations, error handling.
 3. **Route Integration Tests**:
    - `src/vehicles/routes/*.test.ts`: Use `buildApp({ skipDbSetup: true })` + `supertest` with MongoDB in-memory or integration DB to test full HTTP request-response lifecycle with JWT authorization.
 
@@ -396,6 +447,7 @@ All tests execute with `vitest` under `src/vehicles/`:
 
 ### Phase 3: Services & Business Logic
 - [ ] Implement Vehicle CRUD service.
+- [ ] Implement pure calculation helper for dynamic fuel metrics (`enrichFuelEntries`).
 - [ ] Implement query services for Fuel, Equipment, and Maintenance.
 - [ ] Implement Spending Link & Unlink service (with Transaction validation).
 - [ ] Implement Idempotent Batch Importer service.
@@ -406,10 +458,10 @@ All tests execute with `vitest` under `src/vehicles/`:
 - [ ] Run `pnpm openapi:export` to update `openapi.json`.
 
 ### Phase 5: Verification & Testing
-- [ ] Write unit tests for schemas and services.
+- [ ] Write unit tests for schemas, dynamic calculations, and services.
 - [ ] Write integration route tests with `supertest`.
 - [ ] Run `pnpm test:coverage`, `pnpm lint`, and `pnpm format`.
 
 ### Future Enhancements (Post-MVP)
-- [ ] Build dynamic Fuel Statistics calculation module (computing overall and yearly metrics on-the-fly from fuel entries).
-- [ ] Build Yearly Distance Summary calculation module.
+- [ ] Dynamic Fuel Statistics calculation module (computing overall and yearly metrics on-the-fly from fuel entries).
+- [ ] Yearly Distance Summary calculation module.
