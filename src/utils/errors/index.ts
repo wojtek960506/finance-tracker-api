@@ -5,3 +5,5 @@ export * from './general-errors';
 export * from './investment-errors';
 export * from './payment-method-errors';
 export * from './transaction-errors';
+export * from './user-errors';
+export * from './vehicle-errors';
