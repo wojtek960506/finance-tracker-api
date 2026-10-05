@@ -141,7 +141,7 @@ describe('Maintenance CRUD Services', () => {
       expect(VehicleMaintenanceModel.find).toHaveBeenCalledWith({
         ownerId,
         vehicleId: new Types.ObjectId(vehicleId),
-        section: 'periodic_inspection',
+        section: 'own_maintenance',
         date: { $gte: startDate, $lte: endDate },
       });
     });
