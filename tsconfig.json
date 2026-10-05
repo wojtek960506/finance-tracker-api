@@ -31,7 +31,9 @@
       "@testing/*": ["testing/*"],
       "@transaction/*": ["transaction/*"],
       "@user/*": ["user/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@vehicles": ["vehicles/index.ts"],
+      "@vehicles/*": ["vehicles/*"]
     },
     "types": ["node", "vitest"]
   },

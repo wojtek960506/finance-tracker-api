@@ -109,7 +109,7 @@ export interface IVehicle extends Document {
   slug: string;                   // unique slug per owner (e.g., 'suzuki-sv-650')
   name: string;                   // full display name (e.g., 'Suzuki SV650')
   brand?: string;                 // e.g., 'Suzuki' (optional / future split)
-  model?: string;                 // e.g., 'SV650' (optional / future split)
+  vehicleModel?: string;          // e.g., 'SV650' (optional / future split)
   type: 'motorcycle' | 'car' | 'public_transport';
   productionYear?: number;
   notes?: string;
@@ -241,10 +241,19 @@ export interface IVehicleMaintenance extends Document {
 All schemas reside under `src/vehicles/schema/` and follow the `zod/v4` patterns used throughout the project:
 
 ### Vehicle Schemas
+- `VEHICLE_SLUG_REGEX`: `/^[a-z0-9]+(?:-[a-z0-9]+)*$/`
 - `VehicleTypeSchema`: `z.enum(['motorcycle', 'car', 'public_transport'])`
-- `VehicleCreateSchema`: Body schema for creating a vehicle (`slug`, `name`, `brand`, `model`, `type`, `productionYear`, `notes`).
-- `VehicleUpdateSchema`: `VehicleCreateSchema.partial()`
-- `VehicleResponseSchema`: Extends `VehicleCreateSchema` with `id`, `ownerId`, `createdAt`, `updatedAt`.
+- `VehicleSlugSchema`: `z.string().min(1).max(100).regex(VEHICLE_SLUG_REGEX, 'Slug must be lowercase alphanumeric with hyphens (e.g. "suzuki-sv-650")')`
+- `VehicleCreateSchema`: Body schema for creating a vehicle:
+  - `name`: `z.string().min(1).max(100)` (required)
+  - `slug`: `VehicleSlugSchema.optional()` (if omitted, auto-generated via `slugify(name)`)
+  - `brand`: `z.string().max(50).optional()`
+  - `vehicleModel`: `z.string().max(50).optional()`
+  - `type`: `VehicleTypeSchema` (required)
+  - `productionYear`: `z.number().int().min(1900).max(2100).optional()`
+  - `notes`: `z.string().max(1000).optional()`
+- `VehicleUpdateSchema`: `VehicleCreateSchema.partial()` (updating `name` preserves existing `slug` unless `slug` is explicitly provided)
+- `VehicleResponseSchema`: Extends `VehicleCreateSchema` with `id`, `slug` (guaranteed string), `ownerId`, `createdAt`, `updatedAt`.
 - `VehicleListResponseSchema`: `z.array(VehicleResponseSchema)`
 
 ### Fuel Entry Schemas
@@ -307,12 +316,11 @@ z.globalRegistry.add(VehicleMaintenanceResponseSchema, { id: 'VehicleMaintenance
 ## 5️⃣ Service Layer & Business Logic
 
 ### 1. `VehicleService` (`src/vehicles/services/vehicles/`)
-- `createVehicle(ownerId, dto)` – Validates slug uniqueness for user; creates `Vehicle`.
+- `createVehicle(ownerId, dto)` – Generates `slug` via `slugify(name)` if omitted, or validates custom `slug`; enforces uniqueness per owner; creates `Vehicle`.
 - `getVehicles(ownerId, query)` – Retrieves user's vehicles.
-- `getVehicleById(ownerId, vehicleId)` – Returns vehicle or throws `VehicleNotFoundError`.
-- `getVehicleBySlug(ownerId, slug)` – Slug lookup.
-- `updateVehicle(ownerId, vehicleId, dto)` – Updates metadata.
-- `deleteVehicle(ownerId, vehicleId)` – Deletes vehicle and safely cascades or blocks if child records exist.
+- `getVehicleByIdOrSlug(ownerId, identifier)` – Resolves vehicle by MongoDB `_id` or `slug`; returns vehicle or throws `VehicleNotFoundError`.
+- `updateVehicle(ownerId, identifier, dto)` – Updates metadata. If `name` is changed without providing a `slug`, existing `slug` remains unchanged.
+- `deleteVehicle(ownerId, identifier)` – Deletes vehicle and safely blocks or cascades if child records exist.
 
 ### 2. `VehicleFuelService` (`src/vehicles/services/fuel/`)
 - `getFuelEntries(ownerId, vehicleId, query)` – Retrieves fuel entries with optional dynamic enrichment (`enrichFuelEntries`).
