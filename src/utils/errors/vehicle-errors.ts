@@ -66,3 +66,23 @@ export class VehicleDependencyError extends AppError {
     super(403, 'Vehicle cannot be deleted because it has associated records');
   }
 }
+
+export class VehicleOdometerSequenceError extends AppError {
+  readonly code = 'VEHICLE_ODOMETER_SEQUENCE_ERROR';
+
+  constructor(
+    readonly boundaryType: 'too_low' | 'too_high',
+    readonly odometerKm: number,
+    readonly boundaryOdometerKm: number,
+    readonly boundaryDate: Date,
+  ) {
+    const dateStr = boundaryDate.toISOString().split('T')[0];
+    const comparison =
+      boundaryType === 'too_low' ? 'lower than the previous' : 'higher than the next';
+    super(
+      400,
+      `Odometer reading (${odometerKm} km) cannot be ` +
+        `${comparison} refuel on ${dateStr} (${boundaryOdometerKm} km)`,
+    );
+  }
+}

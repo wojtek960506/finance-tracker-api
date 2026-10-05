@@ -7,6 +7,7 @@ import {
   VehicleMaintenanceNotFoundError,
   VehicleNameAlreadyExistsError,
   VehicleNotFoundError,
+  VehicleOdometerSequenceError,
   VehicleSlugAlreadyExistsError,
   VehicleSpendingNotFoundError,
 } from './vehicle-errors';
@@ -66,5 +67,35 @@ describe('vehicle errors', () => {
     const error = new VehicleDependencyError('veh-123');
     expect(error.statusCode).toBe(403);
     expect(error.code).toBe('VEHICLE_DEPENDENCY_ERROR');
+  });
+
+  it('instantiates VehicleOdometerSequenceError for too low odometer', () => {
+    const error = new VehicleOdometerSequenceError(
+      'too_low',
+      39000,
+      40000,
+      new Date('2026-05-01'),
+    );
+    expect(error.statusCode).toBe(400);
+    expect(error.code).toBe('VEHICLE_ODOMETER_SEQUENCE_ERROR');
+    expect(error.message).toBe(
+      'Odometer reading (39000 km) cannot be lower than the previous refuel on ' +
+        '2026-05-01 (40000 km)',
+    );
+  });
+
+  it('instantiates VehicleOdometerSequenceError for too high odometer', () => {
+    const error = new VehicleOdometerSequenceError(
+      'too_high',
+      42000,
+      41000,
+      new Date('2026-05-15'),
+    );
+    expect(error.statusCode).toBe(400);
+    expect(error.code).toBe('VEHICLE_ODOMETER_SEQUENCE_ERROR');
+    expect(error.message).toBe(
+      'Odometer reading (42000 km) cannot be higher than the next refuel on ' +
+        '2026-05-15 (41000 km)',
+    );
   });
 });

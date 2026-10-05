@@ -5,6 +5,8 @@ import { findVehicleByIdOrSlug } from '@vehicles/services/vehicles/find-vehicle-
 
 import { VehicleFuelEntryNotFoundError } from '@utils/errors';
 
+import { validateOdometerSequence } from './validate-odometer-sequence';
+
 export const updateFuelEntry = async (
   ownerId: string,
   vehicleIdentifier: string,
@@ -21,6 +23,20 @@ export const updateFuelEntry = async (
 
   if (!entry) {
     throw new VehicleFuelEntryNotFoundError(entryId);
+  }
+
+  if (dto.date !== undefined || dto.odometerKm !== undefined) {
+    const targetDate = dto.date ? new Date(dto.date) : entry.date;
+    const targetOdometer =
+      dto.odometerKm !== undefined ? dto.odometerKm : entry.odometerKm;
+
+    await validateOdometerSequence({
+      ownerId,
+      vehicleId: vehicle._id,
+      targetDate,
+      odometerKm: targetOdometer,
+      excludeEntryId: entry._id,
+    });
   }
 
   Object.assign(entry, dto);

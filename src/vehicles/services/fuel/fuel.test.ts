@@ -8,7 +8,11 @@ import { VehicleFuelEntryCreateDTO, VehicleFuelEntryUpdateDTO } from '@vehicles/
 import { Types } from 'mongoose';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { VehicleFuelEntryNotFoundError, VehicleNotFoundError } from '@utils/errors';
+import {
+  VehicleFuelEntryNotFoundError,
+  VehicleNotFoundError,
+  VehicleOdometerSequenceError,
+} from '@utils/errors';
 
 import { createFuelEntry } from './create-fuel-entry';
 import { deleteFuelEntry } from './delete-fuel-entry';
@@ -66,6 +70,9 @@ describe('Fuel CRUD Services', () => {
 
     it('creates fuel entry associated with resolved vehicle', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
+      vi.spyOn(VehicleFuelEntryModel, 'findOne').mockReturnValue({
+        sort: vi.fn().mockResolvedValue(null),
+      } as any);
       const createdFuelDoc = mockFuelDoc();
       vi.spyOn(VehicleFuelEntryModel, 'create').mockResolvedValue(createdFuelDoc as any);
 
@@ -86,6 +93,54 @@ describe('Fuel CRUD Services', () => {
       await expect(createFuelEntry(ownerId, 'non-existent', createDto)).rejects.toThrow(
         VehicleNotFoundError,
       );
+    });
+
+    it('throws VehicleOdometerSequenceError when odometer is too low', async () => {
+      vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
+      vi.spyOn(VehicleFuelEntryModel, 'findOne')
+        .mockReturnValueOnce({
+          sort: vi.fn().mockResolvedValue(
+            mockFuelDoc({
+              date: new Date('2026-04-15'),
+              odometerKm: 41000,
+            }),
+          ),
+        } as any)
+        .mockReturnValueOnce({
+          sort: vi.fn().mockResolvedValue(null),
+        } as any);
+
+      await expect(
+        createFuelEntry(ownerId, 'suzuki-sv-650', {
+          ...createDto,
+          date: new Date('2026-05-01'),
+          odometerKm: 40000,
+        }),
+      ).rejects.toThrow(VehicleOdometerSequenceError);
+    });
+
+    it('throws VehicleOdometerSequenceError when odometer is higher than next refuel', async () => {
+      vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
+      vi.spyOn(VehicleFuelEntryModel, 'findOne')
+        .mockReturnValueOnce({
+          sort: vi.fn().mockResolvedValue(null),
+        } as any)
+        .mockReturnValueOnce({
+          sort: vi.fn().mockResolvedValue(
+            mockFuelDoc({
+              date: new Date('2026-05-15'),
+              odometerKm: 39500,
+            }),
+          ),
+        } as any);
+
+      await expect(
+        createFuelEntry(ownerId, 'suzuki-sv-650', {
+          ...createDto,
+          date: new Date('2026-05-01'),
+          odometerKm: 40000,
+        }),
+      ).rejects.toThrow(VehicleOdometerSequenceError);
     });
   });
 
@@ -252,6 +307,31 @@ describe('Fuel CRUD Services', () => {
       await expect(updateFuelEntry(ownerId, vehicleId, fuelEntryId, {})).rejects.toThrow(
         VehicleFuelEntryNotFoundError,
       );
+    });
+
+    it('validates odometer sequence when updating odometerKm', async () => {
+      vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
+      const doc = mockFuelDoc({
+        date: new Date('2026-05-10'),
+        odometerKm: 40500,
+      });
+      vi.spyOn(VehicleFuelEntryModel, 'findOne')
+        .mockResolvedValueOnce(doc) // find entry
+        .mockReturnValueOnce({
+          sort: vi.fn().mockResolvedValue(
+            mockFuelDoc({
+              date: new Date('2026-05-01'),
+              odometerKm: 40000,
+            }),
+          ),
+        } as any) // previous entry
+        .mockReturnValueOnce({
+          sort: vi.fn().mockResolvedValue(null),
+        } as any); // next entry
+
+      await expect(
+        updateFuelEntry(ownerId, vehicleId, fuelEntryId, { odometerKm: 39000 }),
+      ).rejects.toThrow(VehicleOdometerSequenceError);
     });
   });
 
