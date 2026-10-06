@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod';
 import { ZodError } from 'zod';
 
 import { AppError } from '@utils/errors';
@@ -11,6 +12,18 @@ export async function registerErrorHandler(app: FastifyInstance) {
         code: error.code,
         message: error.message,
         details: error.details,
+      });
+    }
+
+    // Fastify Zod schema validation errors
+    if (hasZodFastifySchemaValidationErrors(error)) {
+      return res.status(400).send({
+        code: 'VALIDATION_ERROR',
+        message: 'Validation error',
+        details: error.validation.map((issue) => ({
+          path: issue.instancePath.replace(/^\//, '').replace(/\//g, '.'),
+          message: issue.message,
+        })),
       });
     }
 
