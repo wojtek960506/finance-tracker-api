@@ -82,11 +82,15 @@ export interface FuelEntryDocInput {
   updatedAt?: Date;
 }
 
+let fuelSourceRowSeq = 1;
+let maintenanceSourceRowSeq = 1;
+let equipmentSourceRowSeq = 1;
+
 export const buildFuelEntryDoc = ({
   _id = new Types.ObjectId(),
   ownerId,
   vehicleId,
-  sourceRow,
+  sourceRow = fuelSourceRowSeq++,
   date = new Date('2026-01-15T00:00:00.000Z'),
   fuelLiters = 14.5,
   isFullTank = true,
@@ -142,7 +146,7 @@ export const buildMaintenanceDoc = ({
   _id = new Types.ObjectId(),
   ownerId,
   vehicleId,
-  sourceRow,
+  sourceRow = maintenanceSourceRowSeq++,
   section = 'own_maintenance',
   date = new Date('2026-02-01T00:00:00.000Z'),
   costPln = 350,
@@ -190,7 +194,7 @@ export const buildEquipmentDoc = ({
   _id = new Types.ObjectId(),
   ownerId,
   vehicleId,
-  sourceRow,
+  sourceRow = equipmentSourceRowSeq++,
   date = new Date('2026-02-05T00:00:00.000Z'),
   itemName = 'Crash bars',
   costPln = 450,
