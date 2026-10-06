@@ -17648,6 +17648,68 @@
           }
         }
       }
+    },
+    "/api/vehicles/spendings/link": {
+      "post": {
+        "summary": "Link vehicle spendings to transaction",
+        "tags": [
+          "Vehicles Spendings"
+        ],
+        "description": "Associate fuel, equipment, or maintenance spendings with a financial transaction.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkSpendingsToTransactionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendingLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicles/spendings/unlink": {
+      "post": {
+        "summary": "Unlink vehicle spending from transaction",
+        "tags": [
+          "Vehicles Spendings"
+        ],
+        "description": "Remove transaction association from a fuel, equipment, or maintenance spending record.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnlinkSpendingFromTransactionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendingLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "security": [

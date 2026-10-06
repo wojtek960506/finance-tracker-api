@@ -34,6 +34,11 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
   - Handlers (`createMaintenance`, `getMaintenanceList`, `getMaintenanceItem`, `updateMaintenance`, `deleteMaintenance`)
   - Fastify routes registered under `/api/vehicles/:vehicleId/maintenance`
   - Unit tests (`18/18` maintenance tests passing)
+- [x] **Phase 4E: Spending Linking Routes & Handlers**
+  - Handlers (`linkSpendings`, `unlinkSpending`)
+  - Fastify routes registered under `/api/vehicles/spendings`
+  - Unit tests (`9/9` spending link tests passing)
+
 
 
 ---
@@ -106,23 +111,42 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
 
 ---
 
-### Phase 4E: Spending Linking & Batch Importer
-**Scope**: Spending-to-Transaction linking routes, Batch Importer service, and import endpoint.
-- **Service & Schemas**:
-  - Define batch import Zod schema in `src/vehicles/schema/vehicle-import-schema.ts`
-  - Implement `importVehicleBatch(ownerId, vehicleIdentifier, payload)` in `src/vehicles/services/importer/import-vehicle-batch.ts` using `bulkWrite` with `upsert: true` on `sourceRow`
+### Phase 4E: Spending Linking Routes & Handlers (Completed)
+**Scope**: Spending-to-Transaction linking routes under `/api/vehicles/spendings`.
 - **Endpoints**:
   - `POST /api/vehicles/spendings/link` — Link spendings across vehicles to a financial `Transaction`
   - `POST /api/vehicles/spendings/unlink` — Unlink spending from its `Transaction`
-  - `POST /api/vehicles/:vehicleId/import` — Batch idempotent historical data import
 - **Tasks**:
-  - Handlers in `src/vehicles/routes/handlers/spendings/` and `src/vehicles/routes/handlers/importer/`
-  - Register routes in `vehicle-routes.ts`
-  - Unit tests for `import-vehicle-batch` & Integration tests for linking and import endpoints
+  - Handlers in `src/vehicles/routes/handlers/spendings/`:
+    - `link-spendings-handler.ts`
+    - `unlink-spending-handler.ts`
+  - Fastify route plugin in `src/vehicles/routes/vehicle-spending-routes.ts`
+  - Register route plugin in `src/vehicles/routes/vehicle-routes.ts`
+  - Unit tests for route endpoints in `src/vehicles/routes/vehicle-spending-routes.test.ts`
 
 ---
 
-### Phase 5: OpenAPI Spec Export & Final QA
+### Phase 5: Domain Integration Tests (E2E with Mongo Container)
+**Scope**: End-to-end database integration tests with a real MongoDB test container across the entire Vehicles domain.
+- **Test Suites**:
+  - Vehicle lifecycle & slug generation (`vehicle.integration.test.ts`)
+  - Fuel log chronological odometer sequence validation & dynamic calculations (`vehicle-fuel.integration.test.ts`)
+  - Equipment & Maintenance tracking (`vehicle-equipment.integration.test.ts`, `vehicle-maintenance.integration.test.ts`)
+  - Spending linking & cascade effects on deletion/update (`vehicle-spending-link.integration.test.ts`)
+
+---
+
+### Phase 6: Batch Data Importer (Separate / Standalone Module)
+**Scope**: Generic or dedicated batch historical data importer (to be implemented as a unified import module or vehicle-specific batch import tool).
+- **Potential Tasks**:
+  - Batch import schema definitions (`vehicle-import-schema.ts` / generic `import-schema.ts`)
+  - Bulk upsert service with idempotency tracking (`sourceRow`)
+  - Import endpoint / CLI tool integration
+
+---
+
+### Phase 7: OpenAPI Spec Export & Final QA
 - Export updated OpenAPI schema: `pnpm openapi:export`
 - Run full test suite: `pnpm test`
 - Run linter and type-checking: `pnpm lint` && `pnpm build`
+

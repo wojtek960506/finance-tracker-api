@@ -26,6 +26,7 @@ import {
 import { vehicleEquipmentRoutes } from './vehicle-equipment-routes';
 import { vehicleFuelRoutes } from './vehicle-fuel-routes';
 import { vehicleMaintenanceRoutes } from './vehicle-maintenance-routes';
+import { vehicleSpendingRoutes } from './vehicle-spending-routes';
 
 export async function vehicleRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
@@ -126,4 +127,5 @@ export async function vehicleRoutes(
   app.register(vehicleFuelRoutes);
   app.register(vehicleEquipmentRoutes);
   app.register(vehicleMaintenanceRoutes);
+  app.register(vehicleSpendingRoutes);
 }
