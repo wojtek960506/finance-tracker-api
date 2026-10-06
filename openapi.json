@@ -1548,6 +1548,846 @@
           "excludedCategories"
         ]
       },
+      "VehicleEquipmentCreateInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "itemName",
+          "costPln"
+        ]
+      },
+      "VehicleEquipmentUpdateInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "VehicleEquipmentResponseInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "date": {},
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "date",
+          "itemName",
+          "costPln",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "VehicleEquipmentListResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleEquipmentResponseInput"
+        }
+      },
+      "VehicleFuelEntryCreateInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "fuelLiters": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "isFullTank": {
+            "default": true,
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "costPln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "stationBrand": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "stationAddress": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "fuelLiters",
+          "unitPricePln",
+          "costPln",
+          "odometerKm"
+        ]
+      },
+      "VehicleFuelEntryUpdateInput": {
+        "type": "object",
+        "properties": {
+          "date": {},
+          "fuelLiters": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "isFullTank": {
+            "default": true,
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "costPln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "stationBrand": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "stationAddress": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "VehicleFuelEntryResponseInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "date": {},
+          "fuelLiters": {
+            "type": "number"
+          },
+          "isFullTank": {
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number"
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "odometerKm": {
+            "type": "number"
+          },
+          "stationBrand": {
+            "type": "string"
+          },
+          "stationAddress": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "date",
+          "fuelLiters",
+          "isFullTank",
+          "unitPricePln",
+          "costPln",
+          "odometerKm",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "VehicleFuelEntryEnrichedResponseInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "date": {},
+          "fuelLiters": {
+            "type": "number"
+          },
+          "isFullTank": {
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number"
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "odometerKm": {
+            "type": "number"
+          },
+          "stationBrand": {
+            "type": "string"
+          },
+          "stationAddress": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {},
+          "updatedAt": {},
+          "distanceSincePreviousKm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "distanceSincePreviousFullKm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelLitersToFull": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "costToFullPln": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "consumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "costPerKmPln": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kmPerLiter": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "date",
+          "fuelLiters",
+          "isFullTank",
+          "unitPricePln",
+          "costPln",
+          "odometerKm",
+          "createdAt",
+          "updatedAt",
+          "distanceSincePreviousKm",
+          "distanceSincePreviousFullKm",
+          "fuelLitersToFull",
+          "costToFullPln",
+          "consumptionLPer100Km",
+          "costPerKmPln",
+          "kmPerLiter"
+        ]
+      },
+      "VehicleFuelEntryListResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleFuelEntryEnrichedResponseInput"
+        }
+      },
+      "VehicleMaintenanceCreateInput": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "own_maintenance",
+              "previous_owner_services",
+              "driving_licence_costs"
+            ]
+          },
+          "date": {},
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "serviceProvider": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "section",
+          "date",
+          "costPln"
+        ]
+      },
+      "VehicleMaintenanceUpdateInput": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "own_maintenance",
+              "previous_owner_services",
+              "driving_licence_costs"
+            ]
+          },
+          "date": {},
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "serviceProvider": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "VehicleMaintenanceResponseInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "own_maintenance",
+              "previous_owner_services",
+              "driving_licence_costs"
+            ]
+          },
+          "date": {},
+          "costPln": {
+            "type": "number"
+          },
+          "odometerKm": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "serviceProvider": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "section",
+          "date",
+          "costPln",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "VehicleMaintenanceListResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleMaintenanceResponseInput"
+        }
+      },
+      "VehicleCreateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "brand": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "vehicleModel": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "VehicleUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "brand": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "vehicleModel": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "VehicleResponseInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "brand": {
+            "type": "string"
+          },
+          "vehicleModel": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "slug",
+          "name",
+          "type",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "VehicleListResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleResponseInput"
+        }
+      },
+      "SpendingLinkItemInput": {
+        "type": "object",
+        "properties": {
+          "spendingType": {
+            "type": "string",
+            "enum": [
+              "fuel",
+              "equipment",
+              "maintenance"
+            ]
+          },
+          "spendingId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "spendingType",
+          "spendingId"
+        ]
+      },
+      "LinkSpendingsToTransactionInput": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "spendings": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpendingLinkItemInput"
+            }
+          }
+        },
+        "required": [
+          "transactionId",
+          "spendings"
+        ]
+      },
+      "UnlinkSpendingFromTransactionInput": {
+        "type": "object",
+        "properties": {
+          "spendingType": {
+            "type": "string",
+            "enum": [
+              "fuel",
+              "equipment",
+              "maintenance"
+            ]
+          },
+          "spendingId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "spendingType",
+          "spendingId"
+        ]
+      },
+      "SpendingLinkResponseInput": {
+        "type": "object",
+        "properties": {
+          "acknowledged": {
+            "type": "boolean"
+          },
+          "modifiedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "acknowledged",
+          "modifiedCount"
+        ]
+      },
       "WelcomeResponseInput": {
         "type": "object",
         "properties": {
@@ -7029,6 +7869,924 @@
           "independence",
           "zeroIncomeBaseline",
           "excludedCategories"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleEquipmentCreate": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "itemName",
+          "costPln"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleEquipmentUpdate": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehicleEquipmentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "date",
+          "itemName",
+          "costPln",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleEquipmentListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleEquipmentResponse"
+        }
+      },
+      "VehicleFuelEntryCreate": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fuelLiters": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "isFullTank": {
+            "default": true,
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "costPln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "stationBrand": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "stationAddress": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "fuelLiters",
+          "isFullTank",
+          "unitPricePln",
+          "costPln",
+          "odometerKm"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleFuelEntryUpdate": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fuelLiters": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "isFullTank": {
+            "default": true,
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "costPln": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "stationBrand": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "stationAddress": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehicleFuelEntryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fuelLiters": {
+            "type": "number"
+          },
+          "isFullTank": {
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number"
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "odometerKm": {
+            "type": "number"
+          },
+          "stationBrand": {
+            "type": "string"
+          },
+          "stationAddress": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "date",
+          "fuelLiters",
+          "isFullTank",
+          "unitPricePln",
+          "costPln",
+          "odometerKm",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleFuelEntryEnrichedResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fuelLiters": {
+            "type": "number"
+          },
+          "isFullTank": {
+            "type": "boolean"
+          },
+          "unitPricePln": {
+            "type": "number"
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "odometerKm": {
+            "type": "number"
+          },
+          "stationBrand": {
+            "type": "string"
+          },
+          "stationAddress": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "distanceSincePreviousKm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "distanceSincePreviousFullKm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelLitersToFull": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "costToFullPln": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "consumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "costPerKmPln": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kmPerLiter": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "date",
+          "fuelLiters",
+          "isFullTank",
+          "unitPricePln",
+          "costPln",
+          "odometerKm",
+          "createdAt",
+          "updatedAt",
+          "distanceSincePreviousKm",
+          "distanceSincePreviousFullKm",
+          "fuelLitersToFull",
+          "costToFullPln",
+          "consumptionLPer100Km",
+          "costPerKmPln",
+          "kmPerLiter"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleFuelEntryListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleFuelEntryEnrichedResponse"
+        }
+      },
+      "VehicleMaintenanceCreate": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "own_maintenance",
+              "previous_owner_services",
+              "driving_licence_costs"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "serviceProvider": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "section",
+          "date",
+          "costPln"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleMaintenanceUpdate": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "own_maintenance",
+              "previous_owner_services",
+              "driving_licence_costs"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "odometerKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "serviceProvider": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehicleMaintenanceResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "sourceRow": {
+            "type": "number"
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "own_maintenance",
+              "previous_owner_services",
+              "driving_licence_costs"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "odometerKm": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "serviceProvider": {
+            "type": "string"
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "vehicleId",
+          "section",
+          "date",
+          "costPln",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleMaintenanceListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleMaintenanceResponse"
+        }
+      },
+      "VehicleCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "brand": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "vehicleModel": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "brand": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "vehicleModel": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehicleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "brand": {
+            "type": "string"
+          },
+          "vehicleModel": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "slug",
+          "name",
+          "type",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VehicleResponse"
+        }
+      },
+      "SpendingLinkItem": {
+        "type": "object",
+        "properties": {
+          "spendingType": {
+            "type": "string",
+            "enum": [
+              "fuel",
+              "equipment",
+              "maintenance"
+            ]
+          },
+          "spendingId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "spendingType",
+          "spendingId"
+        ],
+        "additionalProperties": false
+      },
+      "LinkSpendingsToTransaction": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "spendings": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpendingLinkItem"
+            }
+          }
+        },
+        "required": [
+          "transactionId",
+          "spendings"
+        ],
+        "additionalProperties": false
+      },
+      "UnlinkSpendingFromTransaction": {
+        "type": "object",
+        "properties": {
+          "spendingType": {
+            "type": "string",
+            "enum": [
+              "fuel",
+              "equipment",
+              "maintenance"
+            ]
+          },
+          "spendingId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "spendingType",
+          "spendingId"
+        ],
+        "additionalProperties": false
+      },
+      "SpendingLinkResponse": {
+        "type": "object",
+        "properties": {
+          "acknowledged": {
+            "type": "boolean"
+          },
+          "modifiedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "acknowledged",
+          "modifiedCount"
         ],
         "additionalProperties": false
       },
@@ -15028,6 +16786,151 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/vehicles/": {
+      "get": {
+        "summary": "List vehicles",
+        "tags": [
+          "Vehicles"
+        ],
+        "description": "Return all vehicles for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create vehicle",
+        "tags": [
+          "Vehicles"
+        ],
+        "description": "Create a new vehicle for the authenticated user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleCreateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicles/{vehicleId}": {
+      "get": {
+        "summary": "Get vehicle by id or slug",
+        "tags": [
+          "Vehicles"
+        ],
+        "description": "Return a single vehicle by MongoDB ObjectId or slug.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update vehicle",
+        "tags": [
+          "Vehicles"
+        ],
+        "description": "Update a vehicle by id or slug.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleUpdateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete vehicle",
+        "tags": [
+          "Vehicles"
+        ],
+        "description": "Delete a vehicle by id or slug (only allowed if it has no associated records).",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
           }
         }
       }

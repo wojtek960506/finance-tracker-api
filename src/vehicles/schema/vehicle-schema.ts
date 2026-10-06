@@ -43,12 +43,17 @@ export const VehicleResponseSchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
+export const VehicleParamsSchema = z.object({
+  vehicleId: z.string().min(1, 'vehicleId is required'),
+});
+
 export const VehicleListResponseSchema = z.array(VehicleResponseSchema);
 
 export type VehicleCreateDTO = z.infer<typeof VehicleCreateSchema>;
 export type VehicleUpdateDTO = z.infer<typeof VehicleUpdateSchema>;
 export type VehicleResponseDTO = z.infer<typeof VehicleResponseSchema>;
 export type VehicleListResponseDTO = z.infer<typeof VehicleListResponseSchema>;
+export type VehicleParamsDTO = z.infer<typeof VehicleParamsSchema>;
 
 z.globalRegistry.add(VehicleCreateSchema, { id: 'VehicleCreate' });
 z.globalRegistry.add(VehicleUpdateSchema, { id: 'VehicleUpdate' });
