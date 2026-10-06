@@ -83,6 +83,7 @@ describe('transaction app integration', () => {
           {
             id: activeTransactionId.toString(),
             ownerId: ownerId.toString(),
+            kind: 'standard',
             date: '2026-02-10T00:00:00.000Z',
             description: 'Lunch',
             amount: 42.5,
@@ -184,6 +185,7 @@ describe('transaction app integration', () => {
           {
             id: secondTransactionId.toString(),
             ownerId: ownerId.toString(),
+            kind: 'standard',
             date: '2026-02-11T00:00:00.000Z',
             description: 'Later transaction',
             amount: 20,
