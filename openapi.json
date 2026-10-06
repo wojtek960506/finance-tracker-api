@@ -17407,6 +17407,247 @@
           }
         }
       }
+    },
+    "/api/vehicles/{vehicleId}/maintenance": {
+      "get": {
+        "summary": "List maintenance records",
+        "tags": [
+          "Vehicles Maintenance"
+        ],
+        "description": "Return maintenance and service records for a vehicle with optional section, date filtering, and pagination.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "own_maintenance",
+                "previous_owner_services",
+                "driving_licence_costs"
+              ]
+            },
+            "in": "query",
+            "name": "section",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleMaintenanceListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create maintenance record",
+        "tags": [
+          "Vehicles Maintenance"
+        ],
+        "description": "Create a new maintenance, service, or licensing expense record for a vehicle.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleMaintenanceCreateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleMaintenanceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicles/{vehicleId}/maintenance/{recordId}": {
+      "get": {
+        "summary": "Get single maintenance record",
+        "tags": [
+          "Vehicles Maintenance"
+        ],
+        "description": "Return details of a single maintenance record.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "recordId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleMaintenanceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update maintenance record",
+        "tags": [
+          "Vehicles Maintenance"
+        ],
+        "description": "Update an existing maintenance record.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleMaintenanceUpdateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "recordId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleMaintenanceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete maintenance record",
+        "tags": [
+          "Vehicles Maintenance"
+        ],
+        "description": "Delete a single maintenance record.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "recordId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          }
+        }
+      }
     }
   },
   "security": [

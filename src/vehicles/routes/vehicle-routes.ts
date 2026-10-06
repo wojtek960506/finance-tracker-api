@@ -25,6 +25,7 @@ import {
 } from './handlers';
 import { vehicleEquipmentRoutes } from './vehicle-equipment-routes';
 import { vehicleFuelRoutes } from './vehicle-fuel-routes';
+import { vehicleMaintenanceRoutes } from './vehicle-maintenance-routes';
 
 export async function vehicleRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
@@ -124,4 +125,5 @@ export async function vehicleRoutes(
   // --- Sub-domain Route Plugins ---
   app.register(vehicleFuelRoutes);
   app.register(vehicleEquipmentRoutes);
+  app.register(vehicleMaintenanceRoutes);
 }

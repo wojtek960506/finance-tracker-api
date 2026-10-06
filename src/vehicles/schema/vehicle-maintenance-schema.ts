@@ -67,6 +67,11 @@ export const VehicleMaintenanceListResponseSchema = z.array(
   VehicleMaintenanceResponseSchema,
 );
 
+export const VehicleMaintenanceParamsSchema = z.object({
+  vehicleId: z.string().min(1, 'vehicleId is required'),
+  recordId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `recordId`'),
+});
+
 export type VehicleMaintenanceCreateDTO = z.infer<typeof VehicleMaintenanceCreateSchema>;
 export type VehicleMaintenanceUpdateDTO = z.infer<typeof VehicleMaintenanceUpdateSchema>;
 export type VehicleMaintenanceResponseDTO = z.infer<
@@ -78,6 +83,7 @@ export type VehicleMaintenanceFilterQuery = z.infer<
 export type VehicleMaintenanceListResponseDTO = z.infer<
   typeof VehicleMaintenanceListResponseSchema
 >;
+export type VehicleMaintenanceParamsDTO = z.infer<typeof VehicleMaintenanceParamsSchema>;
 
 z.globalRegistry.add(VehicleMaintenanceCreateSchema, {
   id: 'VehicleMaintenanceCreate',

@@ -30,6 +30,11 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
   - Handlers (`createEquipment`, `getEquipmentList`, `getEquipmentItem`, `updateEquipment`, `deleteEquipment`)
   - Fastify routes registered under `/api/vehicles/:vehicleId/equipment`
   - Unit tests (`18/18` equipment tests passing)
+- [x] **Phase 4D: Maintenance Routes & Handlers**
+  - Handlers (`createMaintenance`, `getMaintenanceList`, `getMaintenanceItem`, `updateMaintenance`, `deleteMaintenance`)
+  - Fastify routes registered under `/api/vehicles/:vehicleId/maintenance`
+  - Unit tests (`18/18` maintenance tests passing)
+
 
 ---
 
@@ -86,7 +91,7 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
 
 ---
 
-### Phase 4D: Maintenance Routes & Handlers
+### Phase 4D: Maintenance Routes & Handlers (Completed)
 **Scope**: Maintenance, service records, and licensing costs under `/api/vehicles/:vehicleId/maintenance`.
 - **Endpoints**:
   - `GET /api/vehicles/:vehicleId/maintenance` — List maintenance records (Query: `section`, `startDate`, `endDate`, `page`, `limit`)
