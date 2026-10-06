@@ -23,10 +23,13 @@ import {
   getVehiclesHandler,
   updateVehicleHandler,
 } from './handlers';
+import { vehicleFuelRoutes } from './vehicle-fuel-routes';
 
 export async function vehicleRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
 ) {
+  // --- Core Vehicles Endpoints ---
+
   app.get<{ Reply: VehicleListResponseDTO }>(
     '/',
     {
@@ -116,4 +119,7 @@ export async function vehicleRoutes(
     },
     deleteVehicleHandler,
   );
+
+  // --- Sub-domain Route Plugins ---
+  app.register(vehicleFuelRoutes);
 }

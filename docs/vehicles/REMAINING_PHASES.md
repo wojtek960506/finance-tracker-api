@@ -21,6 +21,11 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
   - Handlers (`create`, `getVehicles`, `getVehicle`, `update`, `delete`)
   - Fastify route plugin registered at `/api/vehicles` in `app.ts`
   - Integration tests (`14/14` passing)
+- [x] **Phase 4B: Fuel Routes & Handlers**
+  - Handlers (`createFuelEntry`, `getFuelEntries`, `getFuelEntry`, `updateFuelEntry`, `deleteFuelEntry`)
+  - Enforces chronological odometer validation & dynamic calculation queries
+  - Fastify routes registered under `/api/vehicles/:vehicleId/fuel`
+  - Integration tests (`15/15` fuel tests, `29/29` total vehicle route tests passing)
 
 ---
 
@@ -47,7 +52,7 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
 
 ---
 
-### Phase 4B: Fuel Routes & Handlers
+### Phase 4B: Fuel Routes & Handlers (Completed)
 **Scope**: Fuel logs and dynamic calculation querying under `/api/vehicles/:vehicleId/fuel`.
 - **Endpoints**:
   - `GET /api/vehicles/:vehicleId/fuel` — List fuel entries (Query: `startDate`, `endDate`, `isFullTank`, `enriched`, `page`, `limit`)

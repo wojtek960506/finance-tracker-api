@@ -86,6 +86,11 @@ export const VehicleFuelEntryListResponseSchema = z.array(
   VehicleFuelEntryEnrichedResponseSchema,
 );
 
+export const VehicleFuelEntryParamsSchema = z.object({
+  vehicleId: z.string().min(1, 'vehicleId is required'),
+  entryId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `entryId`'),
+});
+
 export type VehicleFuelEntryCreateDTO = z.infer<typeof VehicleFuelEntryCreateSchema>;
 export type VehicleFuelEntryUpdateDTO = z.infer<typeof VehicleFuelEntryUpdateSchema>;
 export type VehicleFuelEntryResponseDTO = z.infer<typeof VehicleFuelEntryResponseSchema>;
@@ -96,6 +101,7 @@ export type VehicleFuelFilterQuery = z.infer<typeof VehicleFuelFilterQuerySchema
 export type VehicleFuelEntryListResponseDTO = z.infer<
   typeof VehicleFuelEntryListResponseSchema
 >;
+export type VehicleFuelEntryParamsDTO = z.infer<typeof VehicleFuelEntryParamsSchema>;
 
 z.globalRegistry.add(VehicleFuelEntryCreateSchema, { id: 'VehicleFuelEntryCreate' });
 z.globalRegistry.add(VehicleFuelEntryUpdateSchema, { id: 'VehicleFuelEntryUpdate' });
