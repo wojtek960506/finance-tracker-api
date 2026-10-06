@@ -50,6 +50,11 @@ export const VehicleEquipmentFilterQuerySchema = z.object({
 
 export const VehicleEquipmentListResponseSchema = z.array(VehicleEquipmentResponseSchema);
 
+export const VehicleEquipmentParamsSchema = z.object({
+  vehicleId: z.string().min(1, 'vehicleId is required'),
+  itemId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `itemId`'),
+});
+
 export type VehicleEquipmentCreateDTO = z.infer<typeof VehicleEquipmentCreateSchema>;
 export type VehicleEquipmentUpdateDTO = z.infer<typeof VehicleEquipmentUpdateSchema>;
 export type VehicleEquipmentResponseDTO = z.infer<typeof VehicleEquipmentResponseSchema>;
@@ -59,6 +64,7 @@ export type VehicleEquipmentFilterQuery = z.infer<
 export type VehicleEquipmentListResponseDTO = z.infer<
   typeof VehicleEquipmentListResponseSchema
 >;
+export type VehicleEquipmentParamsDTO = z.infer<typeof VehicleEquipmentParamsSchema>;
 
 z.globalRegistry.add(VehicleEquipmentCreateSchema, { id: 'VehicleEquipmentCreate' });
 z.globalRegistry.add(VehicleEquipmentUpdateSchema, { id: 'VehicleEquipmentUpdate' });

@@ -25,7 +25,11 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
   - Handlers (`createFuelEntry`, `getFuelEntries`, `getFuelEntry`, `updateFuelEntry`, `deleteFuelEntry`)
   - Enforces chronological odometer validation & dynamic calculation queries
   - Fastify routes registered under `/api/vehicles/:vehicleId/fuel`
-  - Integration tests (`15/15` fuel tests, `29/29` total vehicle route tests passing)
+  - Integration tests (`15/15` fuel tests passing)
+- [x] **Phase 4C: Equipment Routes & Handlers**
+  - Handlers (`createEquipment`, `getEquipmentList`, `getEquipmentItem`, `updateEquipment`, `deleteEquipment`)
+  - Fastify routes registered under `/api/vehicles/:vehicleId/equipment`
+  - Unit tests (`18/18` equipment tests passing)
 
 ---
 
@@ -67,7 +71,7 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
 
 ---
 
-### Phase 4C: Equipment Routes & Handlers
+### Phase 4C: Equipment Routes & Handlers (Completed)
 **Scope**: Equipment purchases and modifications under `/api/vehicles/:vehicleId/equipment`.
 - **Endpoints**:
   - `GET /api/vehicles/:vehicleId/equipment` — List equipment items (Query: `startDate`, `endDate`, `page`, `limit`)

@@ -17179,6 +17179,234 @@
           }
         }
       }
+    },
+    "/api/vehicles/{vehicleId}/equipment": {
+      "get": {
+        "summary": "List equipment items",
+        "tags": [
+          "Vehicles Equipment"
+        ],
+        "description": "Return equipment items for a vehicle with optional date filtering and pagination.",
+        "parameters": [
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleEquipmentListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create equipment item",
+        "tags": [
+          "Vehicles Equipment"
+        ],
+        "description": "Create a new equipment/accessory purchase record for a vehicle.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleEquipmentCreateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleEquipmentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicles/{vehicleId}/equipment/{itemId}": {
+      "get": {
+        "summary": "Get single equipment item",
+        "tags": [
+          "Vehicles Equipment"
+        ],
+        "description": "Return details of a single equipment item.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "itemId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleEquipmentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update equipment item",
+        "tags": [
+          "Vehicles Equipment"
+        ],
+        "description": "Update an existing equipment item.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleEquipmentUpdateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "itemId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleEquipmentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete equipment item",
+        "tags": [
+          "Vehicles Equipment"
+        ],
+        "description": "Delete a single equipment item.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "path",
+            "name": "vehicleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "itemId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          }
+        }
+      }
     }
   },
   "security": [

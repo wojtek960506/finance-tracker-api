@@ -23,6 +23,7 @@ import {
   getVehiclesHandler,
   updateVehicleHandler,
 } from './handlers';
+import { vehicleEquipmentRoutes } from './vehicle-equipment-routes';
 import { vehicleFuelRoutes } from './vehicle-fuel-routes';
 
 export async function vehicleRoutes(
@@ -122,4 +123,5 @@ export async function vehicleRoutes(
 
   // --- Sub-domain Route Plugins ---
   app.register(vehicleFuelRoutes);
+  app.register(vehicleEquipmentRoutes);
 }
