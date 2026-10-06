@@ -143,7 +143,7 @@ export const buildMaintenanceDoc = ({
   ownerId,
   vehicleId,
   sourceRow,
-  section = 'service',
+  section = 'own_maintenance',
   date = new Date('2026-02-01T00:00:00.000Z'),
   costPln = 350,
   odometerKm = 16000,
