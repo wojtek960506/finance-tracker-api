@@ -8,6 +8,7 @@ export const VehicleSpendingSummarySchema = z.object({
   equipmentTotalPln: z.number().nonnegative('Equipment total must be non-negative'),
   totalSpentPln: z.number().nonnegative('Total spent must be non-negative'),
   lastOdometerKm: z.number().int().nonnegative().nullable(),
+  totalDistanceKm: z.number().int().nonnegative().nullable(),
   fuelEntriesCount: z.number().int().nonnegative(),
   maintenanceCount: z.number().int().nonnegative(),
   equipmentCount: z.number().int().nonnegative(),
@@ -23,6 +24,7 @@ export const GlobalVehiclesSummarySchema = z.object({
   totalFuelSpentPln: z.number().nonnegative(),
   totalMaintenanceSpentPln: z.number().nonnegative(),
   totalEquipmentSpentPln: z.number().nonnegative(),
+  totalDistanceKm: z.number().int().nonnegative(),
 });
 
 export const VehiclesSummaryResponseSchema = z.object({

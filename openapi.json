@@ -2872,6 +2872,18 @@
               }
             ]
           },
+          "totalDistanceKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "fuelEntriesCount": {
             "type": "integer",
             "minimum": 0,
@@ -2894,6 +2906,7 @@
           "equipmentTotalPln",
           "totalSpentPln",
           "lastOdometerKm",
+          "totalDistanceKm",
           "fuelEntriesCount",
           "maintenanceCount",
           "equipmentCount"
@@ -2980,6 +2993,11 @@
           "totalEquipmentSpentPln": {
             "type": "number",
             "minimum": 0
+          },
+          "totalDistanceKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           }
         },
         "required": [
@@ -2987,7 +3005,8 @@
           "totalSpentPln",
           "totalFuelSpentPln",
           "totalMaintenanceSpentPln",
-          "totalEquipmentSpentPln"
+          "totalEquipmentSpentPln",
+          "totalDistanceKm"
         ]
       },
       "VehiclesSummaryResponseInput": {
@@ -9916,6 +9935,18 @@
               }
             ]
           },
+          "totalDistanceKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "fuelEntriesCount": {
             "type": "integer",
             "minimum": 0,
@@ -9938,6 +9969,7 @@
           "equipmentTotalPln",
           "totalSpentPln",
           "lastOdometerKm",
+          "totalDistanceKm",
           "fuelEntriesCount",
           "maintenanceCount",
           "equipmentCount"
@@ -10032,6 +10064,11 @@
           "totalEquipmentSpentPln": {
             "type": "number",
             "minimum": 0
+          },
+          "totalDistanceKm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           }
         },
         "required": [
@@ -10039,7 +10076,8 @@
           "totalSpentPln",
           "totalFuelSpentPln",
           "totalMaintenanceSpentPln",
-          "totalEquipmentSpentPln"
+          "totalEquipmentSpentPln",
+          "totalDistanceKm"
         ],
         "additionalProperties": false
       },
@@ -18055,6 +18093,27 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NetWorthIndependenceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicles/summary": {
+      "get": {
+        "summary": "Get fleet summary and vehicles spending aggregations",
+        "tags": [
+          "Vehicles"
+        ],
+        "description": "Return aggregated fleet totals and each vehicle with calculated spending totals, counts, and last odometer.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehiclesSummaryResponse"
                 }
               }
             }

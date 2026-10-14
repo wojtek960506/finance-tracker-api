@@ -22,12 +22,14 @@ import { vehicleRoutes } from './vehicle-routes';
 const {
   createVehicleMock,
   getVehiclesMock,
+  getVehiclesSummaryMock,
   getVehicleMock,
   updateVehicleMock,
   deleteVehicleMock,
 } = vi.hoisted(() => ({
   createVehicleMock: vi.fn(),
   getVehiclesMock: vi.fn(),
+  getVehiclesSummaryMock: vi.fn(),
   getVehicleMock: vi.fn(),
   updateVehicleMock: vi.fn(),
   deleteVehicleMock: vi.fn(),
@@ -47,6 +49,7 @@ vi.mock('@vehicles/services', async (importOriginal) => {
     ...actual,
     createVehicle: createVehicleMock,
     getVehicles: getVehiclesMock,
+    getVehiclesSummary: getVehiclesSummaryMock,
     getVehicle: getVehicleMock,
     updateVehicle: updateVehicleMock,
     deleteVehicle: deleteVehicleMock,
@@ -169,6 +172,56 @@ describe('vehicle routes', async () => {
       expect(response.statusCode).toBe(409);
       expect(response.json()).toMatchObject({
         code: 'VEHICLE_SLUG_ALREADY_EXISTS_ERROR',
+      });
+    });
+  });
+
+  describe('GET /summary', () => {
+    it('returns fleet summary and vehicles spending with 200 status', async () => {
+      const mockSummaryResponse = {
+        summary: {
+          totalVehicles: 1,
+          totalSpentPln: 4150,
+          totalFuelSpentPln: 2200,
+          totalMaintenanceSpentPln: 1500,
+          totalEquipmentSpentPln: 450,
+          totalDistanceKm: 7500,
+        },
+        vehicles: [
+          {
+            ...mockVehicle,
+            spending: {
+              fuelTotalPln: 2200,
+              maintenanceTotalPln: 1500,
+              equipmentTotalPln: 450,
+              totalSpentPln: 4150,
+              lastOdometerKm: 142500,
+              totalDistanceKm: 7500,
+              fuelEntriesCount: 14,
+              maintenanceCount: 3,
+              equipmentCount: 2,
+            },
+          },
+        ],
+      };
+
+      getVehiclesSummaryMock.mockResolvedValue(mockSummaryResponse);
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/summary',
+      });
+
+      expect(vehicleServices.getVehiclesSummary).toHaveBeenCalledWith(USER_ID_STR);
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({
+        summary: mockSummaryResponse.summary,
+        vehicles: [
+          {
+            ...serializedMockVehicle,
+            spending: mockSummaryResponse.vehicles[0].spending,
+          },
+        ],
       });
     });
   });

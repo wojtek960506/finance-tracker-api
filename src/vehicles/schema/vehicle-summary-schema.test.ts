@@ -9,13 +9,14 @@ import {
 
 describe('vehicle summary schema', () => {
   describe('VehicleSpendingSummarySchema', () => {
-    it('accepts valid spending summary with odometer', () => {
+    it('accepts valid spending summary with odometer and distance', () => {
       const result = VehicleSpendingSummarySchema.safeParse({
         fuelTotalPln: 2200.5,
         maintenanceTotalPln: 1500,
         equipmentTotalPln: 450,
         totalSpentPln: 4150.5,
         lastOdometerKm: 142500,
+        totalDistanceKm: 7500,
         fuelEntriesCount: 14,
         maintenanceCount: 3,
         equipmentCount: 2,
@@ -24,13 +25,14 @@ describe('vehicle summary schema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('accepts null lastOdometerKm when vehicle has no odometer records', () => {
+    it('accepts null odometer values when vehicle has no records', () => {
       const result = VehicleSpendingSummarySchema.safeParse({
         fuelTotalPln: 0,
         maintenanceTotalPln: 0,
         equipmentTotalPln: 0,
         totalSpentPln: 0,
         lastOdometerKm: null,
+        totalDistanceKm: null,
         fuelEntriesCount: 0,
         maintenanceCount: 0,
         equipmentCount: 0,
@@ -46,6 +48,7 @@ describe('vehicle summary schema', () => {
         equipmentTotalPln: 0,
         totalSpentPln: 0,
         lastOdometerKm: null,
+        totalDistanceKm: null,
         fuelEntriesCount: 0,
         maintenanceCount: 0,
         equipmentCount: 0,
@@ -63,6 +66,7 @@ describe('vehicle summary schema', () => {
         totalFuelSpentPln: 4200,
         totalMaintenanceSpentPln: 3100,
         totalEquipmentSpentPln: 1150,
+        totalDistanceKm: 15000,
       });
 
       expect(result.success).toBe(true);
@@ -76,6 +80,7 @@ describe('vehicle summary schema', () => {
           totalFuelSpentPln: 100,
           totalMaintenanceSpentPln: 0,
           totalEquipmentSpentPln: 0,
+          totalDistanceKm: 0,
         }).success,
       ).toBe(false);
     });
@@ -93,6 +98,7 @@ describe('vehicle summary schema', () => {
           totalFuelSpentPln: 2200,
           totalMaintenanceSpentPln: 1500,
           totalEquipmentSpentPln: 450,
+          totalDistanceKm: 7500,
         },
         vehicles: [
           {
@@ -112,6 +118,7 @@ describe('vehicle summary schema', () => {
               equipmentTotalPln: 450,
               totalSpentPln: 4150,
               lastOdometerKm: 142500,
+              totalDistanceKm: 7500,
               fuelEntriesCount: 14,
               maintenanceCount: 3,
               equipmentCount: 2,

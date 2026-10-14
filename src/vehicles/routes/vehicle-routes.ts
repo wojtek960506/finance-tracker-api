@@ -7,6 +7,8 @@ import {
   VehicleParamsSchema,
   VehicleResponseDTO,
   VehicleResponseSchema,
+  VehiclesSummaryResponseDTO,
+  VehiclesSummaryResponseSchema,
   VehicleUpdateDTO,
   VehicleUpdateSchema,
 } from '@vehicles/schema';
@@ -21,6 +23,7 @@ import {
   deleteVehicleHandler,
   getVehicleHandler,
   getVehiclesHandler,
+  getVehiclesSummaryHandler,
   updateVehicleHandler,
 } from './handlers';
 import { vehicleEquipmentRoutes } from './vehicle-equipment-routes';
@@ -32,6 +35,24 @@ export async function vehicleRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
 ) {
   // --- Core Vehicles Endpoints ---
+
+  app.get<{ Reply: VehiclesSummaryResponseDTO }>(
+    '/summary',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Vehicles'],
+        summary: 'Get fleet summary and vehicles spending aggregations',
+        description:
+          'Return aggregated fleet totals and each vehicle with calculated spending ' +
+          'totals, counts, and last odometer.',
+        response: {
+          200: VehiclesSummaryResponseSchema,
+        },
+      },
+    },
+    getVehiclesSummaryHandler,
+  );
 
   app.get<{ Reply: VehicleListResponseDTO }>(
     '/',
