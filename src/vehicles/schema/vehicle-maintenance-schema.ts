@@ -62,9 +62,20 @@ export const VehicleMaintenanceFilterQuerySchema = z.object({
     .default(DEFAULT_VEHICLES_LIMIT),
 });
 
+export const VehicleMaintenanceSummarySchema = z.object({
+  ownMaintenanceCostPln: z.number().nonnegative(),
+  previousOwnerCostPln: z.number().nonnegative(),
+  totalRecords: z.number().int().nonnegative(),
+});
+
 export const VehicleMaintenanceListResponseSchema = z.array(
   VehicleMaintenanceResponseSchema,
 );
+
+export const VehicleMaintenanceWithSummaryResponseSchema = z.object({
+  items: z.array(VehicleMaintenanceResponseSchema),
+  summary: VehicleMaintenanceSummarySchema,
+});
 
 export const VehicleMaintenanceParamsSchema = z.object({
   vehicleId: z.string().min(1, 'vehicleId is required'),
@@ -79,8 +90,14 @@ export type VehicleMaintenanceResponseDTO = z.infer<
 export type VehicleMaintenanceFilterQuery = z.infer<
   typeof VehicleMaintenanceFilterQuerySchema
 >;
+export type VehicleMaintenanceSummaryDTO = z.infer<
+  typeof VehicleMaintenanceSummarySchema
+>;
 export type VehicleMaintenanceListResponseDTO = z.infer<
   typeof VehicleMaintenanceListResponseSchema
+>;
+export type VehicleMaintenanceWithSummaryResponseDTO = z.infer<
+  typeof VehicleMaintenanceWithSummaryResponseSchema
 >;
 export type VehicleMaintenanceParamsDTO = z.infer<typeof VehicleMaintenanceParamsSchema>;
 
@@ -93,6 +110,12 @@ z.globalRegistry.add(VehicleMaintenanceUpdateSchema, {
 z.globalRegistry.add(VehicleMaintenanceResponseSchema, {
   id: 'VehicleMaintenanceResponse',
 });
+z.globalRegistry.add(VehicleMaintenanceSummarySchema, {
+  id: 'VehicleMaintenanceSummary',
+});
 z.globalRegistry.add(VehicleMaintenanceListResponseSchema, {
   id: 'VehicleMaintenanceListResponse',
+});
+z.globalRegistry.add(VehicleMaintenanceWithSummaryResponseSchema, {
+  id: 'VehicleMaintenanceWithSummaryResponse',
 });

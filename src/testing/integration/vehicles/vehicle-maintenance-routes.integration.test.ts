@@ -25,7 +25,7 @@ describe('vehicle maintenance routes integration', () => {
       });
 
       const payload = {
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: '2026-05-01T10:00:00.000Z',
         costPln: 650,
         odometerKm: 55000,
@@ -48,7 +48,7 @@ describe('vehicle maintenance routes integration', () => {
         id: expect.any(String),
         ownerId: ownerId.toString(),
         vehicleId: vehicle._id.toString(),
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: '2026-05-01T10:00:00.000Z',
         costPln: 650,
         odometerKm: 55000,
@@ -71,7 +71,7 @@ describe('vehicle maintenance routes integration', () => {
       });
 
       const payload = {
-        section: 'previous_owner_services',
+        section: 'previousOwnerServices',
         date: '2026-01-10T12:00:00.000Z',
         costPln: 1200,
         description: 'Timing belt replacement by previous owner',
@@ -90,7 +90,7 @@ describe('vehicle maintenance routes integration', () => {
       expect(response.json()).toEqual(
         expect.objectContaining({
           vehicleId: vehicle._id.toString(),
-          section: 'previous_owner_services',
+          section: 'previousOwnerServices',
           costPln: 1200,
           description: 'Timing belt replacement by previous owner',
         }),
@@ -109,7 +109,7 @@ describe('vehicle maintenance routes integration', () => {
       const txId = new Types.ObjectId().toString();
 
       const payload = {
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: '2026-04-10T09:00:00.000Z',
         costPln: 250,
         description: 'Brake pad replacement',
@@ -129,7 +129,7 @@ describe('vehicle maintenance routes integration', () => {
       expect(response.json()).toEqual(
         expect.objectContaining({
           transactionId: txId,
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           costPln: 250,
         }),
       );
@@ -151,7 +151,7 @@ describe('vehicle maintenance routes integration', () => {
           authorization: `Bearer ${createIntegrationAccessToken(userB.toString())}`,
         },
         payload: {
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           date: '2026-05-01T10:00:00.000Z',
           costPln: 300,
         },
@@ -196,7 +196,7 @@ describe('vehicle maintenance routes integration', () => {
         method: 'POST',
         url: '/api/vehicles/any-id/maintenance',
         payload: {
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           date: '2026-05-01T10:00:00.000Z',
           costPln: 300,
         },
@@ -271,21 +271,21 @@ describe('vehicle maintenance routes integration', () => {
         buildMaintenanceDoc({
           ownerId,
           vehicleId: vehicle._id,
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           costPln: 100,
           description: 'Own maint',
         }),
         buildMaintenanceDoc({
           ownerId,
           vehicleId: vehicle._id,
-          section: 'previous_owner_services',
+          section: 'previousOwnerServices',
           costPln: 200,
           description: 'Prev owner service',
         }),
         buildMaintenanceDoc({
           ownerId,
           vehicleId: vehicle._id,
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           costPln: 300,
           description: 'Oil change 2',
         }),
@@ -293,7 +293,7 @@ describe('vehicle maintenance routes integration', () => {
 
       const response = await getApp().inject({
         method: 'GET',
-        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?section=previous_owner_services`,
+        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?section=previousOwnerServices`,
         headers: {
           authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
         },
@@ -303,7 +303,7 @@ describe('vehicle maintenance routes integration', () => {
       const json = response.json();
       expect(json).toHaveLength(1);
       expect(json[0].description).toBe('Prev owner service');
-      expect(json[0].section).toBe('previous_owner_services');
+      expect(json[0].section).toBe('previousOwnerServices');
     });
 
     it('filters maintenance records by date range', async () => {
@@ -477,7 +477,7 @@ describe('vehicle maintenance routes integration', () => {
       const recordDoc = buildMaintenanceDoc({
         ownerId,
         vehicleId: vehicle._id,
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         costPln: 450,
         odometerKm: 42000,
         description: 'Brake pads replacement',
@@ -614,7 +614,7 @@ describe('vehicle maintenance routes integration', () => {
       const recordDoc = buildMaintenanceDoc({
         ownerId,
         vehicleId: vehicle._id,
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         costPln: 300,
         description: 'Original description',
         serviceProvider: 'Original Service',

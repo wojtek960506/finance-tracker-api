@@ -1665,11 +1665,47 @@
           "updatedAt"
         ]
       },
+      "VehicleEquipmentSummaryInput": {
+        "type": "object",
+        "properties": {
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalItems": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalCostPln",
+          "totalItems"
+        ]
+      },
       "VehicleEquipmentListResponseInput": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/VehicleEquipmentResponseInput"
         }
+      },
+      "VehicleEquipmentWithSummaryResponseInput": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleEquipmentResponseInput"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/VehicleEquipmentSummaryInput"
+          }
+        },
+        "required": [
+          "items",
+          "summary"
+        ]
       },
       "VehicleFuelEntryCreateInput": {
         "type": "object",
@@ -1991,11 +2027,76 @@
           "kmPerLiter"
         ]
       },
+      "VehicleFuelSummaryInput": {
+        "type": "object",
+        "properties": {
+          "totalVolume": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "avgConsumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "avgUnitPricePln": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "totalCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalVolume",
+          "totalCostPln",
+          "avgConsumptionLPer100Km",
+          "avgUnitPricePln",
+          "totalCount"
+        ]
+      },
       "VehicleFuelEntryListResponseInput": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/VehicleFuelEntryEnrichedResponseInput"
         }
+      },
+      "VehicleFuelWithSummaryResponseInput": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleFuelEntryEnrichedResponseInput"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/VehicleFuelSummaryInput"
+          }
+        },
+        "required": [
+          "items",
+          "summary"
+        ]
       },
       "VehicleMaintenanceCreateInput": {
         "type": "object",
@@ -2003,8 +2104,8 @@
           "section": {
             "type": "string",
             "enum": [
-              "own_maintenance",
-              "previous_owner_services"
+              "ownMaintenance",
+              "previousOwnerServices"
             ]
           },
           "date": {},
@@ -2049,8 +2150,8 @@
           "section": {
             "type": "string",
             "enum": [
-              "own_maintenance",
-              "previous_owner_services"
+              "ownMaintenance",
+              "previousOwnerServices"
             ]
           },
           "date": {},
@@ -2102,8 +2203,8 @@
           "section": {
             "type": "string",
             "enum": [
-              "own_maintenance",
-              "previous_owner_services"
+              "ownMaintenance",
+              "previousOwnerServices"
             ]
           },
           "date": {},
@@ -2144,11 +2245,378 @@
           "updatedAt"
         ]
       },
+      "VehicleMaintenanceSummaryInput": {
+        "type": "object",
+        "properties": {
+          "ownMaintenanceCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "previousOwnerCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalRecords": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "ownMaintenanceCostPln",
+          "previousOwnerCostPln",
+          "totalRecords"
+        ]
+      },
       "VehicleMaintenanceListResponseInput": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/VehicleMaintenanceResponseInput"
         }
+      },
+      "VehicleMaintenanceWithSummaryResponseInput": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleMaintenanceResponseInput"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/VehicleMaintenanceSummaryInput"
+          }
+        },
+        "required": [
+          "items",
+          "summary"
+        ]
+      },
+      "VehicleOverviewQueryInput": {
+        "type": "object",
+        "properties": {
+          "activityLimit": {
+            "default": 10,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      },
+      "VehicleOverviewFuelStatsInput": {
+        "type": "object",
+        "properties": {
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalLiters": {
+            "type": "number",
+            "minimum": 0
+          },
+          "avgConsumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "costPerKmPln": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "entriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalSpentPln",
+          "totalLiters",
+          "avgConsumptionLPer100Km",
+          "costPerKmPln",
+          "entriesCount"
+        ]
+      },
+      "VehicleOverviewMaintenanceStatsInput": {
+        "type": "object",
+        "properties": {
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "bySection": {
+            "type": "object",
+            "properties": {
+              "ownMaintenance": {
+                "type": "object",
+                "properties": {
+                  "costPln": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "costPln",
+                  "count"
+                ]
+              },
+              "previousOwnerServices": {
+                "type": "object",
+                "properties": {
+                  "costPln": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "costPln",
+                  "count"
+                ]
+              }
+            },
+            "required": [
+              "ownMaintenance",
+              "previousOwnerServices"
+            ]
+          }
+        },
+        "required": [
+          "totalSpentPln",
+          "entriesCount",
+          "bySection"
+        ]
+      },
+      "VehicleOverviewEquipmentStatsInput": {
+        "type": "object",
+        "properties": {
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalSpentPln",
+          "entriesCount"
+        ]
+      },
+      "VehicleOverviewStatsInput": {
+        "type": "object",
+        "properties": {
+          "currentOdometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minOdometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "totalDistanceKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "refuelingCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "maintenanceCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "equipmentCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "currentOdometerKm",
+          "minOdometerKm",
+          "totalDistanceKm",
+          "refuelingCount",
+          "maintenanceCount",
+          "equipmentCount"
+        ]
+      },
+      "VehicleOverviewActivityItemInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fuel",
+              "maintenance",
+              "equipment"
+            ]
+          },
+          "date": {},
+          "costPln": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "odometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelLiters": {
+            "type": "number"
+          },
+          "isFullTank": {
+            "type": "boolean"
+          },
+          "consumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maintenanceSection": {
+            "type": "string",
+            "enum": [
+              "ownMaintenance",
+              "previousOwnerServices"
+            ]
+          },
+          "serviceProvider": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "date",
+          "costPln",
+          "title"
+        ]
+      },
+      "VehicleOverviewResponseInput": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fuel": {
+            "$ref": "#/components/schemas/VehicleOverviewFuelStatsInput"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/VehicleOverviewMaintenanceStatsInput"
+          },
+          "equipment": {
+            "$ref": "#/components/schemas/VehicleOverviewEquipmentStatsInput"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/VehicleOverviewStatsInput"
+          },
+          "recentActivity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleOverviewActivityItemInput"
+            }
+          }
+        },
+        "required": [
+          "vehicleId",
+          "totalSpentPln",
+          "fuel",
+          "maintenance",
+          "equipment",
+          "stats",
+          "recentActivity"
+        ]
       },
       "VehicleCreateInput": {
         "type": "object",
@@ -2371,6 +2839,173 @@
         "required": [
           "acknowledged",
           "modifiedCount"
+        ]
+      },
+      "VehicleSpendingSummaryInput": {
+        "type": "object",
+        "properties": {
+          "fuelTotalPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "maintenanceTotalPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "equipmentTotalPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "lastOdometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelEntriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "maintenanceCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "equipmentCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "fuelTotalPln",
+          "maintenanceTotalPln",
+          "equipmentTotalPln",
+          "totalSpentPln",
+          "lastOdometerKm",
+          "fuelEntriesCount",
+          "maintenanceCount",
+          "equipmentCount"
+        ]
+      },
+      "VehicleWithSpendingInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "brand": {
+            "type": "string"
+          },
+          "vehicleModel": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "createdAt": {},
+          "updatedAt": {},
+          "spending": {
+            "$ref": "#/components/schemas/VehicleSpendingSummaryInput"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "slug",
+          "name",
+          "type",
+          "createdAt",
+          "updatedAt",
+          "spending"
+        ]
+      },
+      "GlobalVehiclesSummaryInput": {
+        "type": "object",
+        "properties": {
+          "totalVehicles": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalFuelSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalMaintenanceSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalEquipmentSpentPln": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "totalVehicles",
+          "totalSpentPln",
+          "totalFuelSpentPln",
+          "totalMaintenanceSpentPln",
+          "totalEquipmentSpentPln"
+        ]
+      },
+      "VehiclesSummaryResponseInput": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/GlobalVehiclesSummaryInput"
+          },
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleWithSpendingInput"
+            }
+          }
+        },
+        "required": [
+          "summary",
+          "vehicles"
         ]
       },
       "WelcomeResponseInput": {
@@ -7992,11 +8627,49 @@
         ],
         "additionalProperties": false
       },
+      "VehicleEquipmentSummary": {
+        "type": "object",
+        "properties": {
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalItems": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalCostPln",
+          "totalItems"
+        ],
+        "additionalProperties": false
+      },
       "VehicleEquipmentListResponse": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/VehicleEquipmentResponse"
         }
+      },
+      "VehicleEquipmentWithSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleEquipmentResponse"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/VehicleEquipmentSummary"
+          }
+        },
+        "required": [
+          "items",
+          "summary"
+        ],
+        "additionalProperties": false
       },
       "VehicleFuelEntryCreate": {
         "type": "object",
@@ -8347,11 +9020,78 @@
         ],
         "additionalProperties": false
       },
+      "VehicleFuelSummary": {
+        "type": "object",
+        "properties": {
+          "totalVolume": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "avgConsumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "avgUnitPricePln": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "totalCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalVolume",
+          "totalCostPln",
+          "avgConsumptionLPer100Km",
+          "avgUnitPricePln",
+          "totalCount"
+        ],
+        "additionalProperties": false
+      },
       "VehicleFuelEntryListResponse": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/VehicleFuelEntryEnrichedResponse"
         }
+      },
+      "VehicleFuelWithSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleFuelEntryEnrichedResponse"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/VehicleFuelSummary"
+          }
+        },
+        "required": [
+          "items",
+          "summary"
+        ],
+        "additionalProperties": false
       },
       "VehicleMaintenanceCreate": {
         "type": "object",
@@ -8359,8 +9099,8 @@
           "section": {
             "type": "string",
             "enum": [
-              "own_maintenance",
-              "previous_owner_services"
+              "ownMaintenance",
+              "previousOwnerServices"
             ]
           },
           "date": {
@@ -8409,8 +9149,8 @@
           "section": {
             "type": "string",
             "enum": [
-              "own_maintenance",
-              "previous_owner_services"
+              "ownMaintenance",
+              "previousOwnerServices"
             ]
           },
           "date": {
@@ -8466,8 +9206,8 @@
           "section": {
             "type": "string",
             "enum": [
-              "own_maintenance",
-              "previous_owner_services"
+              "ownMaintenance",
+              "previousOwnerServices"
             ]
           },
           "date": {
@@ -8518,11 +9258,396 @@
         ],
         "additionalProperties": false
       },
+      "VehicleMaintenanceSummary": {
+        "type": "object",
+        "properties": {
+          "ownMaintenanceCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "previousOwnerCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalRecords": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "ownMaintenanceCostPln",
+          "previousOwnerCostPln",
+          "totalRecords"
+        ],
+        "additionalProperties": false
+      },
       "VehicleMaintenanceListResponse": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/VehicleMaintenanceResponse"
         }
+      },
+      "VehicleMaintenanceWithSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleMaintenanceResponse"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/VehicleMaintenanceSummary"
+          }
+        },
+        "required": [
+          "items",
+          "summary"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleOverviewQuery": {
+        "type": "object",
+        "properties": {
+          "activityLimit": {
+            "default": 10,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "activityLimit"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleOverviewFuelStats": {
+        "type": "object",
+        "properties": {
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalLiters": {
+            "type": "number",
+            "minimum": 0
+          },
+          "avgConsumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "costPerKmPln": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "entriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalSpentPln",
+          "totalLiters",
+          "avgConsumptionLPer100Km",
+          "costPerKmPln",
+          "entriesCount"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleOverviewMaintenanceStats": {
+        "type": "object",
+        "properties": {
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "bySection": {
+            "type": "object",
+            "properties": {
+              "ownMaintenance": {
+                "type": "object",
+                "properties": {
+                  "costPln": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "costPln",
+                  "count"
+                ],
+                "additionalProperties": false
+              },
+              "previousOwnerServices": {
+                "type": "object",
+                "properties": {
+                  "costPln": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "costPln",
+                  "count"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "ownMaintenance",
+              "previousOwnerServices"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "totalSpentPln",
+          "entriesCount",
+          "bySection"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleOverviewEquipmentStats": {
+        "type": "object",
+        "properties": {
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "totalSpentPln",
+          "entriesCount"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleOverviewStats": {
+        "type": "object",
+        "properties": {
+          "currentOdometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minOdometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "totalDistanceKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "refuelingCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "maintenanceCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "equipmentCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "currentOdometerKm",
+          "minOdometerKm",
+          "totalDistanceKm",
+          "refuelingCount",
+          "maintenanceCount",
+          "equipmentCount"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleOverviewActivityItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fuel",
+              "maintenance",
+              "equipment"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "costPln": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "odometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelLiters": {
+            "type": "number"
+          },
+          "isFullTank": {
+            "type": "boolean"
+          },
+          "consumptionLPer100Km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maintenanceSection": {
+            "type": "string",
+            "enum": [
+              "ownMaintenance",
+              "previousOwnerServices"
+            ]
+          },
+          "serviceProvider": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "date",
+          "costPln",
+          "title"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleOverviewResponse": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fuel": {
+            "$ref": "#/components/schemas/VehicleOverviewFuelStats"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/VehicleOverviewMaintenanceStats"
+          },
+          "equipment": {
+            "$ref": "#/components/schemas/VehicleOverviewEquipmentStats"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/VehicleOverviewStats"
+          },
+          "recentActivity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleOverviewActivityItem"
+            }
+          }
+        },
+        "required": [
+          "vehicleId",
+          "totalSpentPln",
+          "fuel",
+          "maintenance",
+          "equipment",
+          "stats",
+          "recentActivity"
+        ],
+        "additionalProperties": false
       },
       "VehicleCreate": {
         "type": "object",
@@ -8757,6 +9882,183 @@
         "required": [
           "acknowledged",
           "modifiedCount"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleSpendingSummary": {
+        "type": "object",
+        "properties": {
+          "fuelTotalPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "maintenanceTotalPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "equipmentTotalPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "lastOdometerKm": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelEntriesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "maintenanceCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "equipmentCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "fuelTotalPln",
+          "maintenanceTotalPln",
+          "equipmentTotalPln",
+          "totalSpentPln",
+          "lastOdometerKm",
+          "fuelEntriesCount",
+          "maintenanceCount",
+          "equipmentCount"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleWithSpending": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "brand": {
+            "type": "string"
+          },
+          "vehicleModel": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "car",
+              "public_transport"
+            ]
+          },
+          "productionYear": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "spending": {
+            "$ref": "#/components/schemas/VehicleSpendingSummary"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "slug",
+          "name",
+          "type",
+          "createdAt",
+          "updatedAt",
+          "spending"
+        ],
+        "additionalProperties": false
+      },
+      "GlobalVehiclesSummary": {
+        "type": "object",
+        "properties": {
+          "totalVehicles": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "totalSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalFuelSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalMaintenanceSpentPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalEquipmentSpentPln": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "totalVehicles",
+          "totalSpentPln",
+          "totalFuelSpentPln",
+          "totalMaintenanceSpentPln",
+          "totalEquipmentSpentPln"
+        ],
+        "additionalProperties": false
+      },
+      "VehiclesSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/GlobalVehiclesSummary"
+          },
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleWithSpending"
+            }
+          }
+        },
+        "required": [
+          "summary",
+          "vehicles"
         ],
         "additionalProperties": false
       },
@@ -17390,8 +18692,8 @@
             "schema": {
               "type": "string",
               "enum": [
-                "own_maintenance",
-                "previous_owner_services"
+                "ownMaintenance",
+                "previousOwnerServices"
               ]
             },
             "in": "query",

@@ -134,7 +134,7 @@ describe('vehicle domain models', () => {
       const doc = new VehicleMaintenanceModel({
         ownerId: new Types.ObjectId(),
         vehicleId: new Types.ObjectId(),
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: new Date('2026-04-20'),
         costPln: 180,
         odometerKm: 41000,

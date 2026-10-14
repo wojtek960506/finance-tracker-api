@@ -65,7 +65,7 @@ describe('vehicle maintenance routes', async () => {
     id: recordId,
     ownerId: USER_ID_STR,
     vehicleId,
-    section: 'own_maintenance',
+    section: 'ownMaintenance',
     date: new Date('2026-03-01T00:00:00.000Z'),
     costPln: 850,
     odometerKm: 36000,
@@ -111,7 +111,7 @@ describe('vehicle maintenance routes', async () => {
       const res = await app.inject({
         method: 'GET',
         url:
-          `/${vehicleId}/maintenance?section=own_maintenance` +
+          `/${vehicleId}/maintenance?section=ownMaintenance` +
           '&startDate=2026-01-01&endDate=2026-12-31&page=2&limit=10',
       });
 
@@ -120,7 +120,7 @@ describe('vehicle maintenance routes', async () => {
         USER_ID_STR,
         vehicleId,
         expect.objectContaining({
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           startDate: new Date('2026-01-01T00:00:00.000Z'),
           endDate: new Date('2026-12-31T00:00:00.000Z'),
           page: 2,
@@ -146,7 +146,7 @@ describe('vehicle maintenance routes', async () => {
 
   describe('POST /:vehicleId/maintenance', () => {
     const validPayload: VehicleMaintenanceCreateDTO = {
-      section: 'own_maintenance',
+      section: 'ownMaintenance',
       date: new Date('2026-03-01T00:00:00.000Z'),
       costPln: 850,
       odometerKm: 36000,
@@ -172,7 +172,7 @@ describe('vehicle maintenance routes', async () => {
         USER_ID_STR,
         vehicleId,
         expect.objectContaining({
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           costPln: 850,
           odometerKm: 36000,
         }),

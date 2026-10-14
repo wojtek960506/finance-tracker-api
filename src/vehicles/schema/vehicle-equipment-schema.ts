@@ -47,7 +47,17 @@ export const VehicleEquipmentFilterQuerySchema = z.object({
     .default(DEFAULT_VEHICLES_LIMIT),
 });
 
+export const VehicleEquipmentSummarySchema = z.object({
+  totalCostPln: z.number().nonnegative(),
+  totalItems: z.number().int().nonnegative(),
+});
+
 export const VehicleEquipmentListResponseSchema = z.array(VehicleEquipmentResponseSchema);
+
+export const VehicleEquipmentWithSummaryResponseSchema = z.object({
+  items: z.array(VehicleEquipmentResponseSchema),
+  summary: VehicleEquipmentSummarySchema,
+});
 
 export const VehicleEquipmentParamsSchema = z.object({
   vehicleId: z.string().min(1, 'vehicleId is required'),
@@ -60,14 +70,22 @@ export type VehicleEquipmentResponseDTO = z.infer<typeof VehicleEquipmentRespons
 export type VehicleEquipmentFilterQuery = z.infer<
   typeof VehicleEquipmentFilterQuerySchema
 >;
+export type VehicleEquipmentSummaryDTO = z.infer<typeof VehicleEquipmentSummarySchema>;
 export type VehicleEquipmentListResponseDTO = z.infer<
   typeof VehicleEquipmentListResponseSchema
+>;
+export type VehicleEquipmentWithSummaryResponseDTO = z.infer<
+  typeof VehicleEquipmentWithSummaryResponseSchema
 >;
 export type VehicleEquipmentParamsDTO = z.infer<typeof VehicleEquipmentParamsSchema>;
 
 z.globalRegistry.add(VehicleEquipmentCreateSchema, { id: 'VehicleEquipmentCreate' });
 z.globalRegistry.add(VehicleEquipmentUpdateSchema, { id: 'VehicleEquipmentUpdate' });
 z.globalRegistry.add(VehicleEquipmentResponseSchema, { id: 'VehicleEquipmentResponse' });
+z.globalRegistry.add(VehicleEquipmentSummarySchema, { id: 'VehicleEquipmentSummary' });
 z.globalRegistry.add(VehicleEquipmentListResponseSchema, {
   id: 'VehicleEquipmentListResponse',
+});
+z.globalRegistry.add(VehicleEquipmentWithSummaryResponseSchema, {
+  id: 'VehicleEquipmentWithSummaryResponse',
 });

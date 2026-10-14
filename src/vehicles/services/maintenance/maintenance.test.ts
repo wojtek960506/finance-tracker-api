@@ -41,7 +41,7 @@ describe('Maintenance CRUD Services', () => {
       _id: new Types.ObjectId(data._id?.toString() || maintenanceId),
       ownerId: new Types.ObjectId(data.ownerId?.toString() || ownerId),
       vehicleId: new Types.ObjectId(data.vehicleId?.toString() || vehicleId),
-      section: data.section || 'own_maintenance',
+      section: data.section || 'ownMaintenance',
       date: data.date || new Date('2026-05-01'),
       costPln: data.costPln ?? 180,
       odometerKm: data.odometerKm ?? 41000,
@@ -60,7 +60,7 @@ describe('Maintenance CRUD Services', () => {
 
   describe('createMaintenance', () => {
     const createDto: VehicleMaintenanceCreateDTO = {
-      section: 'own_maintenance',
+      section: 'ownMaintenance',
       date: new Date('2026-05-01'),
       costPln: 180,
       odometerKm: 41000,
@@ -80,7 +80,7 @@ describe('Maintenance CRUD Services', () => {
         ownerId,
         vehicleId: new Types.ObjectId(vehicleId),
       });
-      expect(result.section).toBe('own_maintenance');
+      expect(result.section).toBe('ownMaintenance');
       expect(result.costPln).toBe(180);
     });
 
@@ -97,8 +97,8 @@ describe('Maintenance CRUD Services', () => {
     it('returns maintenance entries sorted newest first with pagination', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
-      const doc1 = mockMaintenanceDoc({ section: 'own_maintenance' });
-      const doc2 = mockMaintenanceDoc({ section: 'previous_owner_services' });
+      const doc1 = mockMaintenanceDoc({ section: 'ownMaintenance' });
+      const doc2 = mockMaintenanceDoc({ section: 'previousOwnerServices' });
 
       const limitMock = vi.fn().mockResolvedValue([doc1, doc2]);
       const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
@@ -114,7 +114,7 @@ describe('Maintenance CRUD Services', () => {
 
       expect(sortMock).toHaveBeenCalledWith({ date: -1, _id: -1 });
       expect(results).toHaveLength(2);
-      expect(results[0].section).toBe('own_maintenance');
+      expect(results[0].section).toBe('ownMaintenance');
     });
 
     it('filters by section and date range when provided', async () => {
@@ -133,7 +133,7 @@ describe('Maintenance CRUD Services', () => {
       await getMaintenanceList(ownerId, vehicleId, {
         page: 1,
         limit: 10,
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         startDate,
         endDate,
       });
@@ -141,7 +141,7 @@ describe('Maintenance CRUD Services', () => {
       expect(VehicleMaintenanceModel.find).toHaveBeenCalledWith({
         ownerId,
         vehicleId: new Types.ObjectId(vehicleId),
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: { $gte: startDate, $lte: endDate },
       });
     });

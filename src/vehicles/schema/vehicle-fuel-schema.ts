@@ -81,9 +81,22 @@ export const VehicleFuelFilterQuerySchema = z.object({
     .default(DEFAULT_VEHICLES_LIMIT),
 });
 
+export const VehicleFuelSummarySchema = z.object({
+  totalVolume: z.number().nonnegative(),
+  totalCostPln: z.number().nonnegative(),
+  avgConsumptionLPer100Km: z.number().nonnegative().nullable(),
+  avgUnitPricePln: z.number().nonnegative().nullable(),
+  totalCount: z.number().int().nonnegative(),
+});
+
 export const VehicleFuelEntryListResponseSchema = z.array(
   VehicleFuelEntryEnrichedResponseSchema,
 );
+
+export const VehicleFuelWithSummaryResponseSchema = z.object({
+  items: z.array(VehicleFuelEntryEnrichedResponseSchema),
+  summary: VehicleFuelSummarySchema,
+});
 
 export const VehicleFuelEntryParamsSchema = z.object({
   vehicleId: z.string().min(1, 'vehicleId is required'),
@@ -97,8 +110,12 @@ export type VehicleFuelEntryEnrichedResponseDTO = z.infer<
   typeof VehicleFuelEntryEnrichedResponseSchema
 >;
 export type VehicleFuelFilterQuery = z.infer<typeof VehicleFuelFilterQuerySchema>;
+export type VehicleFuelSummaryDTO = z.infer<typeof VehicleFuelSummarySchema>;
 export type VehicleFuelEntryListResponseDTO = z.infer<
   typeof VehicleFuelEntryListResponseSchema
+>;
+export type VehicleFuelWithSummaryResponseDTO = z.infer<
+  typeof VehicleFuelWithSummaryResponseSchema
 >;
 export type VehicleFuelEntryParamsDTO = z.infer<typeof VehicleFuelEntryParamsSchema>;
 
@@ -108,6 +125,10 @@ z.globalRegistry.add(VehicleFuelEntryResponseSchema, { id: 'VehicleFuelEntryResp
 z.globalRegistry.add(VehicleFuelEntryEnrichedResponseSchema, {
   id: 'VehicleFuelEntryEnrichedResponse',
 });
+z.globalRegistry.add(VehicleFuelSummarySchema, { id: 'VehicleFuelSummary' });
 z.globalRegistry.add(VehicleFuelEntryListResponseSchema, {
   id: 'VehicleFuelEntryListResponse',
+});
+z.globalRegistry.add(VehicleFuelWithSummaryResponseSchema, {
+  id: 'VehicleFuelWithSummaryResponse',
 });
