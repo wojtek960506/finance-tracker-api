@@ -21,11 +21,6 @@ const vehicleEquipmentSchema = new Schema<IVehicleEquipment>(
       required: true,
       index: true,
     },
-    sourceRow: {
-      type: Number,
-      required: false,
-      min: 1,
-    },
     date: {
       type: Date,
       required: true,
@@ -57,10 +52,6 @@ const vehicleEquipmentSchema = new Schema<IVehicleEquipment>(
   { timestamps: true },
 );
 
-vehicleEquipmentSchema.index(
-  { ownerId: 1, vehicleId: 1, sourceRow: 1 },
-  { unique: true, sparse: true },
-);
 vehicleEquipmentSchema.index({ ownerId: 1, vehicleId: 1, date: -1 });
 vehicleEquipmentSchema.index({ ownerId: 1, transactionId: 1 }, { sparse: true });
 

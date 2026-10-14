@@ -67,11 +67,10 @@ describe('vehicle domain models', () => {
       expect(doc.validateSync()).toBeUndefined();
     });
 
-    it('accepts fuel entry with transaction link and sourceRow', () => {
+    it('accepts fuel entry with transaction link', () => {
       const doc = new VehicleFuelEntryModel({
         ownerId: new Types.ObjectId(),
         vehicleId: new Types.ObjectId(),
-        sourceRow: 12,
         date: new Date('2026-05-01'),
         fuelLiters: 10,
         isFullTank: false,

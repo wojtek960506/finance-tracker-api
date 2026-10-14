@@ -27,7 +27,6 @@ export const VehicleFuelEntryResponseSchema = z.object({
   id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
   vehicleId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `vehicleId`'),
-  sourceRow: z.number().optional(),
   date: z.coerce.date(),
   fuelLiters: z.number(),
   isFullTank: z.boolean(),

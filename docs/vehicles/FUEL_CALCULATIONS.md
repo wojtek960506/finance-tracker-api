@@ -20,7 +20,6 @@ Rather than persisting redundant calculated fields in the database (which create
 * `stationBrand` / `stationAddress`: Gas station metadata (optional)
 * `description`: User notes (optional)
 * `transactionId`: Foreign key to financial `Transaction` (optional)
-* `sourceRow`: CSV row index for idempotent imports (optional)
 
 ### Derived Metrics (Computed On-the-Fly)
 * `distanceSincePreviousKm`: Delta odometer between consecutive entries ($O_i - O_{i-1}$).

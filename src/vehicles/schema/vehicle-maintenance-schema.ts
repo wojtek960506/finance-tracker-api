@@ -34,7 +34,6 @@ export const VehicleMaintenanceResponseSchema = z.object({
   id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
   vehicleId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `vehicleId`'),
-  sourceRow: z.number().optional(),
   section: MaintenanceSectionSchema,
   date: z.coerce.date(),
   costPln: z.number(),

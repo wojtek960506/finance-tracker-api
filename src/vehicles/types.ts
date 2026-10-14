@@ -22,7 +22,6 @@ export interface VehicleAttributes {
 export interface VehicleFuelEntryAttributes {
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   date: Date;
   fuelLiters: number;
   isFullTank: boolean;
@@ -50,7 +49,6 @@ export interface VehicleFuelEntryEnrichedMetrics {
 export interface VehicleEquipmentAttributes {
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   date: Date;
   itemName: string;
   costPln: number;
@@ -63,7 +61,6 @@ export interface VehicleEquipmentAttributes {
 export interface VehicleMaintenanceAttributes {
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   section: MaintenanceSection;
   date: Date;
   costPln: number;

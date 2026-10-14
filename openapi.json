@@ -1628,9 +1628,6 @@
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
           },
-          "sourceRow": {
-            "type": "number"
-          },
           "date": {},
           "itemName": {
             "type": "string",
@@ -1796,9 +1793,6 @@
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
           },
-          "sourceRow": {
-            "type": "number"
-          },
           "date": {},
           "fuelLiters": {
             "type": "number"
@@ -1866,9 +1860,6 @@
           "vehicleId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "sourceRow": {
-            "type": "number"
           },
           "date": {},
           "fuelLiters": {
@@ -2109,9 +2100,6 @@
           "vehicleId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "sourceRow": {
-            "type": "number"
           },
           "section": {
             "type": "string",
@@ -7960,9 +7948,6 @@
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
           },
-          "sourceRow": {
-            "type": "number"
-          },
           "date": {
             "type": "string",
             "format": "date-time"
@@ -8147,9 +8132,6 @@
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
           },
-          "sourceRow": {
-            "type": "number"
-          },
           "date": {
             "type": "string",
             "format": "date-time"
@@ -8227,9 +8209,6 @@
           "vehicleId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "sourceRow": {
-            "type": "number"
           },
           "date": {
             "type": "string",
@@ -8488,9 +8467,6 @@
           "vehicleId": {
             "type": "string",
             "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "sourceRow": {
-            "type": "number"
           },
           "section": {
             "type": "string",

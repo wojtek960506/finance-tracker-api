@@ -140,7 +140,7 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
 **Scope**: Generic or dedicated batch historical data importer (to be implemented as a unified import module or vehicle-specific batch import tool).
 - **Potential Tasks**:
   - Batch import schema definitions (`vehicle-import-schema.ts` / generic `import-schema.ts`)
-  - Bulk upsert service with idempotency tracking (`sourceRow`)
+  - Bulk upsert service with in-memory dynamic reference mapping (without persisting `sourceRow` in DB)
   - Import endpoint / CLI tool integration
 
 ---
