@@ -109,10 +109,10 @@ describe('vehicle maintenance routes integration', () => {
       const txId = new Types.ObjectId().toString();
 
       const payload = {
-        section: 'driving_licence_costs',
+        section: 'own_maintenance',
         date: '2026-04-10T09:00:00.000Z',
         costPln: 250,
-        description: 'Medical exam for driving licence',
+        description: 'Brake pad replacement',
         transactionId: txId,
       };
 
@@ -129,7 +129,7 @@ describe('vehicle maintenance routes integration', () => {
       expect(response.json()).toEqual(
         expect.objectContaining({
           transactionId: txId,
-          section: 'driving_licence_costs',
+          section: 'own_maintenance',
           costPln: 250,
         }),
       );
@@ -285,9 +285,9 @@ describe('vehicle maintenance routes integration', () => {
         buildMaintenanceDoc({
           ownerId,
           vehicleId: vehicle._id,
-          section: 'driving_licence_costs',
+          section: 'own_maintenance',
           costPln: 300,
-          description: 'Licence cost',
+          description: 'Oil change 2',
         }),
       ]);
 

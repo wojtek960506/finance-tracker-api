@@ -98,7 +98,7 @@ describe('Maintenance CRUD Services', () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const doc1 = mockMaintenanceDoc({ section: 'own_maintenance' });
-      const doc2 = mockMaintenanceDoc({ section: 'driving_licence_costs' });
+      const doc2 = mockMaintenanceDoc({ section: 'previous_owner_services' });
 
       const limitMock = vi.fn().mockResolvedValue([doc1, doc2]);
       const skipMock = vi.fn().mockReturnValue({ limit: limitMock });

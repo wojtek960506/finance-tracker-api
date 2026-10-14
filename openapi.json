@@ -2004,8 +2004,7 @@
             "type": "string",
             "enum": [
               "own_maintenance",
-              "previous_owner_services",
-              "driving_licence_costs"
+              "previous_owner_services"
             ]
           },
           "date": {},
@@ -2051,8 +2050,7 @@
             "type": "string",
             "enum": [
               "own_maintenance",
-              "previous_owner_services",
-              "driving_licence_costs"
+              "previous_owner_services"
             ]
           },
           "date": {},
@@ -2105,8 +2103,7 @@
             "type": "string",
             "enum": [
               "own_maintenance",
-              "previous_owner_services",
-              "driving_licence_costs"
+              "previous_owner_services"
             ]
           },
           "date": {},
@@ -8363,8 +8360,7 @@
             "type": "string",
             "enum": [
               "own_maintenance",
-              "previous_owner_services",
-              "driving_licence_costs"
+              "previous_owner_services"
             ]
           },
           "date": {
@@ -8414,8 +8410,7 @@
             "type": "string",
             "enum": [
               "own_maintenance",
-              "previous_owner_services",
-              "driving_licence_costs"
+              "previous_owner_services"
             ]
           },
           "date": {
@@ -8472,8 +8467,7 @@
             "type": "string",
             "enum": [
               "own_maintenance",
-              "previous_owner_services",
-              "driving_licence_costs"
+              "previous_owner_services"
             ]
           },
           "date": {
@@ -17397,8 +17391,7 @@
               "type": "string",
               "enum": [
                 "own_maintenance",
-                "previous_owner_services",
-                "driving_licence_costs"
+                "previous_owner_services"
               ]
             },
             "in": "query",
@@ -17467,7 +17460,7 @@
         "tags": [
           "Vehicles Maintenance"
         ],
-        "description": "Create a new maintenance, service, or licensing expense record for a vehicle.",
+        "description": "Create a new maintenance or service expense record for a vehicle.",
         "requestBody": {
           "required": true,
           "content": {

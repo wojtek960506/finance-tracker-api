@@ -97,7 +97,7 @@ This document outlines the remaining sub-phases for completing the Vehicles doma
 ---
 
 ### Phase 4D: Maintenance Routes & Handlers (Completed)
-**Scope**: Maintenance, service records, and licensing costs under `/api/vehicles/:vehicleId/maintenance`.
+**Scope**: Maintenance, service records, and previous owner history under `/api/vehicles/:vehicleId/maintenance`.
 - **Endpoints**:
   - `GET /api/vehicles/:vehicleId/maintenance` — List maintenance records (Query: `section`, `startDate`, `endDate`, `page`, `limit`)
   - `POST /api/vehicles/:vehicleId/maintenance` — Create maintenance record (status: 201)

@@ -115,8 +115,7 @@ export interface VehicleFuelListResponseDTO {
 // --- Maintenance Types ---
 export type MaintenanceSection =
   | 'own_maintenance'
-  | 'previous_owner_services'
-  | 'driving_licence_costs';
+  | 'previous_owner_services';
 
 export interface VehicleMaintenanceCreateDTO {
   section: MaintenanceSection;
@@ -264,12 +263,15 @@ export interface SpendingLinkResponseDTO {
 
 #### `GET /api/vehicles/:identifier/maintenance`
 - **Query Params**:
-  - `section` *(optional, `'own_maintenance' | 'previous_owner_services' | 'driving_licence_costs'`)*
+  - `section` *(optional, `'own_maintenance' | 'previous_owner_services'`)*
   - `startDate` *(optional, ISO date string)*
   - `endDate` *(optional, ISO date string)*
   - `page` *(optional, number, default: 1)*
   - `limit` *(optional, number, default: 50)*
 - **Response**: `200 OK` $\rightarrow$ `VehicleMaintenanceResponseDTO[]`
+- **Calculation & Totals Rules**:
+  - `own_maintenance`: Included in vehicle spending totals and active odometer baseline tracking.
+  - `previous_owner_services`: Purely informational historical service records. **Never include in total vehicle spending calculations or active odometer tracking**.
 
 #### `POST /api/vehicles/:identifier/maintenance`
 - **Body**: `VehicleMaintenanceCreateDTO`

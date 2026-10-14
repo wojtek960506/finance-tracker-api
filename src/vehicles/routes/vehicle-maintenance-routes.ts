@@ -67,8 +67,7 @@ export async function vehicleMaintenanceRoutes(
         tags: ['Vehicles Maintenance'],
         summary: 'Create maintenance record',
         description:
-          'Create a new maintenance, service, or licensing expense ' +
-          'record for a vehicle.',
+          'Create a new maintenance or service expense ' + 'record for a vehicle.',
         params: VehicleParamsSchema,
         body: VehicleMaintenanceCreateSchema,
         response: {

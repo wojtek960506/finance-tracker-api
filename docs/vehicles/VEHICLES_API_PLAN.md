@@ -13,7 +13,7 @@ Repository Root:
 2. **Domain Collections** – Persist raw granular records across 3 core spending/usage domains:
    - **Fuel Entries** (`fuel_entries.csv`) – individual fill-ups with raw input data (date, fuel liters, tank status, unit price, cost, odometer, station).
    - **Equipment** (`vehicle_equipment.csv`) – accessories, parts, and equipment purchases.
-   - **Maintenance** (`own_maintenance.csv`, `previous_owner_services.csv`, `driving_licence_costs.csv`) – section-based service & administrative costs.
+   - **Maintenance** (`own_maintenance.csv`, `previous_owner_services.csv`) – section-based service & historical service records.
    > **Note on Derived Fuel Metrics & Statistics**:
    > In the legacy spreadsheets, many fuel columns (e.g. `distance_since_previous_km`, `consumption_l_per_100km`, `fuel_liters_to_full`, `cost_per_km_pln`) and aggregated tables (`fuel_stats.csv`, `fuel_yearly_distance_summary.csv`) were calculated from consecutive raw records.
    > To keep the database normalized, maintainable, and resilient to edits/inserts in past dates without requiring cascade database updates, **the database stores only raw user inputs**. All delta distances, consumption rates, and statistics are calculated **dynamically on-the-fly** by domain calculation helpers when requested. See [FUEL_CALCULATIONS.md](file:///home/wojtek960506/Programming/own_projects/finance-tracker/finance-tracker-api/docs/vehicles/FUEL_CALCULATIONS.md) for full algorithmic, complexity, and pagination details.
@@ -205,8 +205,7 @@ Service records, maintenance actions, previous owner history, and licensing fees
 // src/vehicles/model/vehicle-maintenance-model.ts
 export type MaintenanceSection = 
   | 'own_maintenance' 
-  | 'previous_owner_services' 
-  | 'driving_licence_costs';
+  | 'previous_owner_services';
 
 export interface IVehicleMaintenance extends Document {
   _id: Types.ObjectId;
@@ -223,6 +222,10 @@ export interface IVehicleMaintenance extends Document {
   updatedAt: Date;
 }
 ```
+> **Calculation & Totals Rules for Maintenance**:
+> - `own_maintenance`: Work and repairs conducted under user ownership. Included in vehicle total spendings and active odometer tracking.
+> - `previous_owner_services`: Historical service log from prior owner. Purely informative: costs must **never** be included in vehicle spendings totals, and odometers must **never** count towards active vehicle mileage tracking.
+
 **Indexes**:
 - `{ ownerId: 1, vehicleId: 1, section: 1, date: -1 }`
 - `{ ownerId: 1, transactionId: 1 }` (sparse)
