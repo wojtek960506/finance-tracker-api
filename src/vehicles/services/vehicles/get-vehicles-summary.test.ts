@@ -50,6 +50,9 @@ describe('getVehiclesSummary service', () => {
         totalFuelSpentPln: 0,
         totalMaintenanceSpentPln: 0,
         totalEquipmentSpentPln: 0,
+        totalFuelEntriesCount: 0,
+        totalMaintenanceCount: 0,
+        totalEquipmentCount: 0,
         totalDistanceKm: 0,
       },
       vehicles: [],
@@ -122,6 +125,9 @@ describe('getVehiclesSummary service', () => {
       totalFuelSpentPln: 2700,
       totalMaintenanceSpentPln: 1800,
       totalEquipmentSpentPln: 550,
+      totalFuelEntriesCount: 19,
+      totalMaintenanceCount: 5,
+      totalEquipmentCount: 3,
       totalDistanceKm: 12000,
     });
 
@@ -171,6 +177,9 @@ describe('getVehiclesSummary service', () => {
       totalFuelSpentPln: 0,
       totalMaintenanceSpentPln: 0,
       totalEquipmentSpentPln: 0,
+      totalFuelEntriesCount: 0,
+      totalMaintenanceCount: 0,
+      totalEquipmentCount: 0,
       totalDistanceKm: 0,
     });
 

@@ -57,25 +57,13 @@ export const getVehiclesSummary = async (
       },
     ]),
     VehicleMaintenanceModel.aggregate<MaintenanceAggItem>([
-      { $match: { ownerId: ownerObjectId } },
+      { $match: { ownerId: ownerObjectId, section: 'ownMaintenance' } },
       {
         $group: {
           _id: '$vehicleId',
-          maintenanceTotalPln: {
-            $sum: {
-              $cond: [{ $eq: ['$section', 'ownMaintenance'] }, '$costPln', 0],
-            },
-          },
-          lastOdometerKm: {
-            $max: {
-              $cond: [{ $eq: ['$section', 'ownMaintenance'] }, '$odometerKm', null],
-            },
-          },
-          firstOdometerKm: {
-            $min: {
-              $cond: [{ $eq: ['$section', 'ownMaintenance'] }, '$odometerKm', null],
-            },
-          },
+          maintenanceTotalPln: { $sum: '$costPln' },
+          lastOdometerKm: { $max: '$odometerKm' },
+          firstOdometerKm: { $min: '$odometerKm' },
           maintenanceCount: { $sum: 1 },
         },
       },
@@ -110,6 +98,9 @@ export const getVehiclesSummary = async (
   let totalFuelSpentPln = 0;
   let totalMaintenanceSpentPln = 0;
   let totalEquipmentSpentPln = 0;
+  let totalFuelEntriesCount = 0;
+  let totalMaintenanceCount = 0;
+  let totalEquipmentCount = 0;
   let totalDistanceKm = 0;
 
   const vehiclesWithSpending: VehicleWithSpendingDTO[] = vehicles.map((vehicle) => {
@@ -167,6 +158,9 @@ export const getVehiclesSummary = async (
     totalFuelSpentPln += fuelTotalPln;
     totalMaintenanceSpentPln += maintenanceTotalPln;
     totalEquipmentSpentPln += equipmentTotalPln;
+    totalFuelEntriesCount += fuel?.fuelEntriesCount ?? 0;
+    totalMaintenanceCount += maint?.maintenanceCount ?? 0;
+    totalEquipmentCount += equip?.equipmentCount ?? 0;
     if (vehicleDistanceKm !== null) {
       totalDistanceKm += vehicleDistanceKm;
     }
@@ -188,6 +182,9 @@ export const getVehiclesSummary = async (
       totalFuelSpentPln: roundCurrency(totalFuelSpentPln),
       totalMaintenanceSpentPln: roundCurrency(totalMaintenanceSpentPln),
       totalEquipmentSpentPln: roundCurrency(totalEquipmentSpentPln),
+      totalFuelEntriesCount,
+      totalMaintenanceCount,
+      totalEquipmentCount,
       totalDistanceKm,
     },
     vehicles: vehiclesWithSpending,

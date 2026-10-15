@@ -23,6 +23,7 @@ const {
   createVehicleMock,
   getVehiclesMock,
   getVehiclesSummaryMock,
+  getVehicleOverviewMock,
   getVehicleMock,
   updateVehicleMock,
   deleteVehicleMock,
@@ -30,6 +31,7 @@ const {
   createVehicleMock: vi.fn(),
   getVehiclesMock: vi.fn(),
   getVehiclesSummaryMock: vi.fn(),
+  getVehicleOverviewMock: vi.fn(),
   getVehicleMock: vi.fn(),
   updateVehicleMock: vi.fn(),
   deleteVehicleMock: vi.fn(),
@@ -50,6 +52,7 @@ vi.mock('@vehicles/services', async (importOriginal) => {
     createVehicle: createVehicleMock,
     getVehicles: getVehiclesMock,
     getVehiclesSummary: getVehiclesSummaryMock,
+    getVehicleOverview: getVehicleOverviewMock,
     getVehicle: getVehicleMock,
     updateVehicle: updateVehicleMock,
     deleteVehicle: deleteVehicleMock,
@@ -185,6 +188,9 @@ describe('vehicle routes', async () => {
           totalFuelSpentPln: 2200,
           totalMaintenanceSpentPln: 1500,
           totalEquipmentSpentPln: 450,
+          totalFuelEntriesCount: 14,
+          totalMaintenanceCount: 3,
+          totalEquipmentCount: 2,
           totalDistanceKm: 7500,
         },
         vehicles: [
@@ -238,6 +244,83 @@ describe('vehicle routes', async () => {
       expect(vehicleServices.getVehicles).toHaveBeenCalledWith(USER_ID_STR);
       expect(response.statusCode).toBe(200);
       expect(response.json()).toEqual([serializedMockVehicle]);
+    });
+  });
+
+  describe('GET /:vehicleId/overview', () => {
+    const mockOverview = {
+      vehicleId,
+      totalSpentPln: 2500,
+      fuel: {
+        totalSpentPln: 1500,
+        totalLiters: 250,
+        avgConsumptionLPer100Km: 6.5,
+        costPerKmPln: 0.39,
+        entriesCount: 5,
+      },
+      maintenance: {
+        totalSpentPln: 700,
+        entriesCount: 1,
+      },
+      equipment: {
+        totalSpentPln: 300,
+        entriesCount: 1,
+      },
+      stats: {
+        currentOdometerKm: 120500,
+        minOdometerKm: 115000,
+        totalDistanceKm: 5500,
+        refuelingCount: 5,
+        maintenanceCount: 1,
+        equipmentCount: 1,
+      },
+      recentActivity: [
+        {
+          id: 'activity-1',
+          type: 'fuel',
+          date: '2026-02-01T00:00:00.000Z',
+          costPln: 300,
+          title: 'Shell',
+          odometerKm: 120500,
+          transactionId: null,
+          fuelLiters: 50,
+          isFullTank: true,
+          consumptionLPer100Km: 6.5,
+        },
+      ],
+    };
+
+    it('returns vehicle overview and recent activities with 200 status', async () => {
+      getVehicleOverviewMock.mockResolvedValue(mockOverview);
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/${vehicleId}/overview?activityLimit=5`,
+      });
+
+      expect(vehicleServices.getVehicleOverview).toHaveBeenCalledWith(
+        USER_ID_STR,
+        vehicleId,
+        { activityLimit: 5 },
+      );
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual(mockOverview);
+    });
+
+    it('returns 404 when vehicle is not found for overview', async () => {
+      getVehicleOverviewMock.mockRejectedValue(
+        new VehicleNotFoundError('non-existent-id'),
+      );
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/non-existent-id/overview',
+      });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.json()).toMatchObject({
+        code: 'VEHICLE_NOT_FOUND_ERROR',
+      });
     });
   });
 

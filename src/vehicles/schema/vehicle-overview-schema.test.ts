@@ -104,11 +104,7 @@ describe('vehicle overview schema', () => {
         },
         maintenance: {
           totalSpentPln: 1500,
-          entriesCount: 5,
-          bySection: {
-            ownMaintenance: { costPln: 1500, count: 3 },
-            previousOwnerServices: { costPln: 2400, count: 2 },
-          },
+          entriesCount: 3,
         },
         equipment: {
           totalSpentPln: 450,
@@ -153,10 +149,6 @@ describe('vehicle overview schema', () => {
         maintenance: {
           totalSpentPln: 0,
           entriesCount: 0,
-          bySection: {
-            ownMaintenance: { costPln: 0, count: 0 },
-            previousOwnerServices: { costPln: 0, count: 0 },
-          },
         },
         equipment: {
           totalSpentPln: 0,

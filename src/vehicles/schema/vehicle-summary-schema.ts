@@ -24,6 +24,9 @@ export const GlobalVehiclesSummarySchema = z.object({
   totalFuelSpentPln: z.number().nonnegative(),
   totalMaintenanceSpentPln: z.number().nonnegative(),
   totalEquipmentSpentPln: z.number().nonnegative(),
+  totalFuelEntriesCount: z.number().int().nonnegative(),
+  totalMaintenanceCount: z.number().int().nonnegative(),
+  totalEquipmentCount: z.number().int().nonnegative(),
   totalDistanceKm: z.number().int().nonnegative(),
 });
 

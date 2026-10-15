@@ -19,16 +19,6 @@ export const VehicleOverviewFuelStatsSchema = z.object({
 export const VehicleOverviewMaintenanceStatsSchema = z.object({
   totalSpentPln: z.number().nonnegative(),
   entriesCount: z.number().int().nonnegative(),
-  bySection: z.object({
-    ownMaintenance: z.object({
-      costPln: z.number().nonnegative(),
-      count: z.number().int().nonnegative(),
-    }),
-    previousOwnerServices: z.object({
-      costPln: z.number().nonnegative(),
-      count: z.number().int().nonnegative(),
-    }),
-  }),
 });
 
 export const VehicleOverviewEquipmentStatsSchema = z.object({
@@ -98,7 +88,6 @@ export type VehicleOverviewActivityItemDTO = z.infer<
 >;
 export type VehicleOverviewResponseDTO = z.infer<typeof VehicleOverviewResponseSchema>;
 
-z.globalRegistry.add(VehicleOverviewQuerySchema, { id: 'VehicleOverviewQuery' });
 z.globalRegistry.add(VehicleOverviewFuelStatsSchema, { id: 'VehicleOverviewFuelStats' });
 z.globalRegistry.add(VehicleOverviewMaintenanceStatsSchema, {
   id: 'VehicleOverviewMaintenanceStats',

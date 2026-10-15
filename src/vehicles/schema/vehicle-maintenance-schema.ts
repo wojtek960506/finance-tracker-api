@@ -63,8 +63,7 @@ export const VehicleMaintenanceFilterQuerySchema = z.object({
 });
 
 export const VehicleMaintenanceSummarySchema = z.object({
-  ownMaintenanceCostPln: z.number().nonnegative(),
-  previousOwnerCostPln: z.number().nonnegative(),
+  totalCostPln: z.number().nonnegative(),
   totalRecords: z.number().int().nonnegative(),
 });
 

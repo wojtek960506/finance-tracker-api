@@ -3,6 +3,10 @@ import {
   VehicleCreateSchema,
   VehicleListResponseDTO,
   VehicleListResponseSchema,
+  VehicleOverviewQueryDTO,
+  VehicleOverviewQuerySchema,
+  VehicleOverviewResponseDTO,
+  VehicleOverviewResponseSchema,
   VehicleParamsDTO,
   VehicleParamsSchema,
   VehicleResponseDTO,
@@ -22,6 +26,7 @@ import {
   createVehicleHandler,
   deleteVehicleHandler,
   getVehicleHandler,
+  getVehicleOverviewHandler,
   getVehiclesHandler,
   getVehiclesSummaryHandler,
   updateVehicleHandler,
@@ -85,6 +90,30 @@ export async function vehicleRoutes(
       },
     },
     createVehicleHandler,
+  );
+
+  app.get<{
+    Params: VehicleParamsDTO;
+    Querystring: VehicleOverviewQueryDTO;
+    Reply: VehicleOverviewResponseDTO;
+  }>(
+    '/:vehicleId/overview',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Vehicles'],
+        summary: 'Get vehicle overview and recent activity',
+        description:
+          'Return aggregated spending, fuel efficiency, maintenance breakdown, odometer stats, ' +
+          'and unified recent activity feed for a vehicle.',
+        params: VehicleParamsSchema,
+        querystring: VehicleOverviewQuerySchema,
+        response: {
+          200: VehicleOverviewResponseSchema,
+        },
+      },
+    },
+    getVehicleOverviewHandler,
   );
 
   app.get<{ Params: VehicleParamsDTO; Reply: VehicleResponseDTO }>(

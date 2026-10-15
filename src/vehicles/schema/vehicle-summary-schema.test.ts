@@ -66,6 +66,9 @@ describe('vehicle summary schema', () => {
         totalFuelSpentPln: 4200,
         totalMaintenanceSpentPln: 3100,
         totalEquipmentSpentPln: 1150,
+        totalFuelEntriesCount: 20,
+        totalMaintenanceCount: 5,
+        totalEquipmentCount: 4,
         totalDistanceKm: 15000,
       });
 
@@ -80,6 +83,9 @@ describe('vehicle summary schema', () => {
           totalFuelSpentPln: 100,
           totalMaintenanceSpentPln: 0,
           totalEquipmentSpentPln: 0,
+          totalFuelEntriesCount: 0,
+          totalMaintenanceCount: 0,
+          totalEquipmentCount: 0,
           totalDistanceKm: 0,
         }).success,
       ).toBe(false);
@@ -98,6 +104,9 @@ describe('vehicle summary schema', () => {
           totalFuelSpentPln: 2200,
           totalMaintenanceSpentPln: 1500,
           totalEquipmentSpentPln: 450,
+          totalFuelEntriesCount: 14,
+          totalMaintenanceCount: 3,
+          totalEquipmentCount: 2,
           totalDistanceKm: 7500,
         },
         vehicles: [
