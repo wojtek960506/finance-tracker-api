@@ -3,14 +3,14 @@ import {
   VehicleEquipmentCreateSchema,
   VehicleEquipmentFilterQuery,
   VehicleEquipmentFilterQuerySchema,
-  VehicleEquipmentListResponseDTO,
-  VehicleEquipmentListResponseSchema,
   VehicleEquipmentParamsDTO,
   VehicleEquipmentParamsSchema,
   VehicleEquipmentResponseDTO,
   VehicleEquipmentResponseSchema,
   VehicleEquipmentUpdateDTO,
   VehicleEquipmentUpdateSchema,
+  VehicleEquipmentWithSummaryResponseDTO,
+  VehicleEquipmentWithSummaryResponseSchema,
   VehicleParamsDTO,
   VehicleParamsSchema,
 } from '@vehicles/schema';
@@ -34,7 +34,7 @@ export async function vehicleEquipmentRoutes(
   app.get<{
     Params: VehicleParamsDTO;
     Querystring: VehicleEquipmentFilterQuery;
-    Reply: VehicleEquipmentListResponseDTO;
+    Reply: VehicleEquipmentWithSummaryResponseDTO;
   }>(
     '/:vehicleId/equipment',
     {
@@ -48,7 +48,7 @@ export async function vehicleEquipmentRoutes(
         params: VehicleParamsSchema,
         querystring: VehicleEquipmentFilterQuerySchema,
         response: {
-          200: VehicleEquipmentListResponseSchema,
+          200: VehicleEquipmentWithSummaryResponseSchema,
         },
       },
     },

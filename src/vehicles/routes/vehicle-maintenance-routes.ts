@@ -3,14 +3,14 @@ import {
   VehicleMaintenanceCreateSchema,
   VehicleMaintenanceFilterQuery,
   VehicleMaintenanceFilterQuerySchema,
-  VehicleMaintenanceListResponseDTO,
-  VehicleMaintenanceListResponseSchema,
   VehicleMaintenanceParamsDTO,
   VehicleMaintenanceParamsSchema,
   VehicleMaintenanceResponseDTO,
   VehicleMaintenanceResponseSchema,
   VehicleMaintenanceUpdateDTO,
   VehicleMaintenanceUpdateSchema,
+  VehicleMaintenanceWithSummaryResponseDTO,
+  VehicleMaintenanceWithSummaryResponseSchema,
   VehicleParamsDTO,
   VehicleParamsSchema,
 } from '@vehicles/schema';
@@ -34,7 +34,7 @@ export async function vehicleMaintenanceRoutes(
   app.get<{
     Params: VehicleParamsDTO;
     Querystring: VehicleMaintenanceFilterQuery;
-    Reply: VehicleMaintenanceListResponseDTO;
+    Reply: VehicleMaintenanceWithSummaryResponseDTO;
   }>(
     '/:vehicleId/maintenance',
     {
@@ -48,7 +48,7 @@ export async function vehicleMaintenanceRoutes(
         params: VehicleParamsSchema,
         querystring: VehicleMaintenanceFilterQuerySchema,
         response: {
-          200: VehicleMaintenanceListResponseSchema,
+          200: VehicleMaintenanceWithSummaryResponseSchema,
         },
       },
     },

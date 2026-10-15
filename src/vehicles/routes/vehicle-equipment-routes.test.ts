@@ -87,7 +87,13 @@ describe('vehicle equipment routes', async () => {
 
   describe('GET /:vehicleId/equipment', () => {
     it('should return 200 with list of equipment items', async () => {
-      getEquipmentListMock.mockResolvedValue([mockEquipmentItem]);
+      getEquipmentListMock.mockResolvedValue({
+        items: [mockEquipmentItem],
+        summary: {
+          totalCostPln: 250,
+          totalItems: 1,
+        },
+      });
 
       const res = await app.inject({
         method: 'GET',
@@ -95,7 +101,13 @@ describe('vehicle equipment routes', async () => {
       });
 
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toEqual([serializedMockEquipment]);
+      expect(res.json()).toEqual({
+        items: [serializedMockEquipment],
+        summary: {
+          totalCostPln: 250,
+          totalItems: 1,
+        },
+      });
       expect(getEquipmentListMock).toHaveBeenCalledWith(
         USER_ID_STR,
         vehicleId,
@@ -104,7 +116,13 @@ describe('vehicle equipment routes', async () => {
     });
 
     it('should pass query parameters to getEquipmentList service', async () => {
-      getEquipmentListMock.mockResolvedValue([]);
+      getEquipmentListMock.mockResolvedValue({
+        items: [],
+        summary: {
+          totalCostPln: 0,
+          totalItems: 0,
+        },
+      });
 
       const res = await app.inject({
         method: 'GET',

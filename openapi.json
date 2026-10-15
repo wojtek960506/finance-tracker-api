@@ -18289,7 +18289,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleFuelEntryListResponse"
+                  "$ref": "#/components/schemas/VehicleFuelWithSummaryResponse"
                 }
               }
             }
@@ -18517,7 +18517,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleEquipmentListResponse"
+                  "$ref": "#/components/schemas/VehicleEquipmentWithSummaryResponse"
                 }
               }
             }
@@ -18757,7 +18757,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleMaintenanceListResponse"
+                  "$ref": "#/components/schemas/VehicleMaintenanceWithSummaryResponse"
                 }
               }
             }

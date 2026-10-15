@@ -85,11 +85,11 @@ describe('Equipment CRUD Services', () => {
   });
 
   describe('getEquipmentList', () => {
-    it('returns equipment entries sorted newest first with pagination', async () => {
+    it('returns equipment entries sorted newest first with pagination and summary', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
-      const doc1 = mockEquipmentDoc({ itemName: 'Item 1' });
-      const doc2 = mockEquipmentDoc({ itemName: 'Item 2' });
+      const doc1 = mockEquipmentDoc({ itemName: 'Item 1', costPln: 100 });
+      const doc2 = mockEquipmentDoc({ itemName: 'Item 2', costPln: 150 });
 
       const limitMock = vi.fn().mockResolvedValue([doc1, doc2]);
       const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
@@ -97,6 +97,9 @@ describe('Equipment CRUD Services', () => {
       vi.spyOn(VehicleEquipmentModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleEquipmentModel, 'aggregate').mockResolvedValue([
+        { totalCostPln: 250, totalItems: 2 },
+      ]);
 
       const results = await getEquipmentList(ownerId, vehicleId, {
         page: 1,
@@ -104,8 +107,12 @@ describe('Equipment CRUD Services', () => {
       });
 
       expect(sortMock).toHaveBeenCalledWith({ date: -1, _id: -1 });
-      expect(results).toHaveLength(2);
-      expect(results[0].itemName).toBe('Item 1');
+      expect(results.items).toHaveLength(2);
+      expect(results.items[0].itemName).toBe('Item 1');
+      expect(results.summary).toEqual({
+        totalCostPln: 250,
+        totalItems: 2,
+      });
     });
 
     it('applies date range filters when provided', async () => {
@@ -117,11 +124,12 @@ describe('Equipment CRUD Services', () => {
       vi.spyOn(VehicleEquipmentModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleEquipmentModel, 'aggregate').mockResolvedValue([]);
 
       const startDate = new Date('2026-01-01');
       const endDate = new Date('2026-06-30');
 
-      await getEquipmentList(ownerId, vehicleId, {
+      const results = await getEquipmentList(ownerId, vehicleId, {
         page: 1,
         limit: 10,
         startDate,
@@ -129,9 +137,13 @@ describe('Equipment CRUD Services', () => {
       });
 
       expect(VehicleEquipmentModel.find).toHaveBeenCalledWith({
-        ownerId,
+        ownerId: new Types.ObjectId(ownerId),
         vehicleId: new Types.ObjectId(vehicleId),
         date: { $gte: startDate, $lte: endDate },
+      });
+      expect(results.summary).toEqual({
+        totalCostPln: 0,
+        totalItems: 0,
       });
     });
   });

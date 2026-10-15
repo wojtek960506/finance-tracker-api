@@ -89,7 +89,13 @@ describe('vehicle maintenance routes', async () => {
 
   describe('GET /:vehicleId/maintenance', () => {
     it('should return 200 with list of maintenance records', async () => {
-      getMaintenanceListMock.mockResolvedValue([mockMaintenanceRecord]);
+      getMaintenanceListMock.mockResolvedValue({
+        items: [mockMaintenanceRecord],
+        summary: {
+          totalCostPln: 180,
+          totalRecords: 1,
+        },
+      });
 
       const res = await app.inject({
         method: 'GET',
@@ -97,7 +103,13 @@ describe('vehicle maintenance routes', async () => {
       });
 
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toEqual([serializedMockMaintenance]);
+      expect(res.json()).toEqual({
+        items: [serializedMockMaintenance],
+        summary: {
+          totalCostPln: 180,
+          totalRecords: 1,
+        },
+      });
       expect(getMaintenanceListMock).toHaveBeenCalledWith(
         USER_ID_STR,
         vehicleId,
@@ -106,7 +118,13 @@ describe('vehicle maintenance routes', async () => {
     });
 
     it('should pass query parameters to getMaintenanceList service', async () => {
-      getMaintenanceListMock.mockResolvedValue([]);
+      getMaintenanceListMock.mockResolvedValue({
+        items: [],
+        summary: {
+          totalCostPln: 0,
+          totalRecords: 0,
+        },
+      });
 
       const res = await app.inject({
         method: 'GET',

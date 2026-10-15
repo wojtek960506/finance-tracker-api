@@ -145,7 +145,7 @@ describe('Fuel CRUD Services', () => {
   });
 
   describe('getFuelEntries', () => {
-    it('returns enriched fuel entries sorted newest first with pagination', async () => {
+    it('returns enriched fuel entries sorted newest first with summary', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const doc1 = mockFuelDoc({
@@ -169,19 +169,26 @@ describe('Fuel CRUD Services', () => {
         sort: vi.fn().mockResolvedValue([doc1, doc2]),
       } as any);
 
-      const results = (await getFuelEntries(ownerId, vehicleId, {
+      const results = await getFuelEntries(ownerId, vehicleId, {
         page: 1,
         limit: 10,
         enriched: true,
-      })) as any[];
+      });
 
-      expect(results).toHaveLength(2);
+      expect(results.items).toHaveLength(2);
       // Newest first -> doc2 is first
-      expect(results[0].odometerKm).toBe(40300);
-      expect(results[0].distanceSincePreviousKm).toBe(300);
-      expect(results[0].consumptionLPer100Km).toBe(5); // 15L / 300km * 100
-      expect(results[1].odometerKm).toBe(40000);
-      expect(results[1].distanceSincePreviousKm).toBeNull();
+      expect(results.items[0].odometerKm).toBe(40300);
+      expect(results.items[0].distanceSincePreviousKm).toBe(300);
+      expect(results.items[0].consumptionLPer100Km).toBe(5); // 15L / 300km * 100
+      expect(results.items[1].odometerKm).toBe(40000);
+      expect(results.items[1].distanceSincePreviousKm).toBeNull();
+      expect(results.summary).toEqual({
+        totalVolume: 29,
+        totalCostPln: 188.5,
+        avgConsumptionLPer100Km: 5,
+        avgUnitPricePln: 6.5,
+        totalCount: 2,
+      });
     });
 
     it('filters entries by date range and isFullTank', async () => {
@@ -211,31 +218,28 @@ describe('Fuel CRUD Services', () => {
         enriched: true,
       });
 
-      expect(results).toHaveLength(1);
-      expect(results[0].id).toBe(doc1._id.toString());
+      expect(results.items).toHaveLength(1);
+      expect(results.items[0].id).toBe(doc1._id.toString());
+      expect(results.summary.totalCount).toBe(1);
     });
 
-    it('retrieves raw fuel entries directly when enriched is false', async () => {
+    it('retrieves fuel entries with null derived metrics when enriched is false', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const doc = mockFuelDoc();
-      const limitMock = vi.fn().mockResolvedValue([doc]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
       vi.spyOn(VehicleFuelEntryModel, 'find').mockReturnValue({
-        sort: sortMock,
+        sort: vi.fn().mockResolvedValue([doc]),
       } as any);
 
       const results = await getFuelEntries(ownerId, vehicleId, {
-        page: 2,
+        page: 1,
         limit: 5,
         enriched: false,
       });
 
-      expect(skipMock).toHaveBeenCalledWith(5);
-      expect(limitMock).toHaveBeenCalledWith(5);
-      expect(results).toHaveLength(1);
-      expect((results[0] as any).distanceSincePreviousKm).toBeUndefined();
+      expect(results.items).toHaveLength(1);
+      expect(results.items[0].distanceSincePreviousKm).toBeNull();
+      expect(results.summary.totalCount).toBe(1);
     });
   });
 
