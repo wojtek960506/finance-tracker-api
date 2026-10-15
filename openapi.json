@@ -1548,6 +1548,34 @@
           "excludedCategories"
         ]
       },
+      "VehiclePaginationInput": {
+        "type": "object",
+        "properties": {
+          "nextCursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "nextCursor",
+          "hasMore",
+          "total"
+        ]
+      },
       "VehicleEquipmentCreateInput": {
         "type": "object",
         "properties": {
@@ -1700,11 +1728,15 @@
           },
           "summary": {
             "$ref": "#/components/schemas/VehicleEquipmentSummaryInput"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/VehiclePaginationInput"
           }
         },
         "required": [
           "items",
-          "summary"
+          "summary",
+          "pagination"
         ]
       },
       "VehicleFuelEntryCreateInput": {
@@ -2091,11 +2123,15 @@
           },
           "summary": {
             "$ref": "#/components/schemas/VehicleFuelSummaryInput"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/VehiclePaginationInput"
           }
         },
         "required": [
           "items",
-          "summary"
+          "summary",
+          "pagination"
         ]
       },
       "VehicleMaintenanceCreateInput": {
@@ -2280,11 +2316,15 @@
           },
           "summary": {
             "$ref": "#/components/schemas/VehicleMaintenanceSummaryInput"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/VehiclePaginationInput"
           }
         },
         "required": [
           "items",
-          "summary"
+          "summary",
+          "pagination"
         ]
       },
       "VehicleOverviewFuelStatsInput": {
@@ -8467,6 +8507,35 @@
         ],
         "additionalProperties": false
       },
+      "VehiclePagination": {
+        "type": "object",
+        "properties": {
+          "nextCursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "nextCursor",
+          "hasMore",
+          "total"
+        ],
+        "additionalProperties": false
+      },
       "VehicleEquipmentCreate": {
         "type": "object",
         "properties": {
@@ -8638,11 +8707,15 @@
           },
           "summary": {
             "$ref": "#/components/schemas/VehicleEquipmentSummary"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/VehiclePagination"
           }
         },
         "required": [
           "items",
-          "summary"
+          "summary",
+          "pagination"
         ],
         "additionalProperties": false
       },
@@ -9060,11 +9133,15 @@
           },
           "summary": {
             "$ref": "#/components/schemas/VehicleFuelSummary"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/VehiclePagination"
           }
         },
         "required": [
           "items",
-          "summary"
+          "summary",
+          "pagination"
         ],
         "additionalProperties": false
       },
@@ -9269,11 +9346,15 @@
           },
           "summary": {
             "$ref": "#/components/schemas/VehicleMaintenanceSummary"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/VehiclePagination"
           }
         },
         "required": [
           "items",
-          "summary"
+          "summary",
+          "pagination"
         ],
         "additionalProperties": false
       },
@@ -18253,13 +18334,10 @@
           },
           {
             "schema": {
-              "default": 1,
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 9007199254740991
+              "type": "string"
             },
             "in": "query",
-            "name": "page",
+            "name": "cursor",
             "required": false
           },
           {
@@ -18481,13 +18559,10 @@
           },
           {
             "schema": {
-              "default": 1,
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 9007199254740991
+              "type": "string"
             },
             "in": "query",
-            "name": "page",
+            "name": "cursor",
             "required": false
           },
           {
@@ -18697,6 +18772,7 @@
         "parameters": [
           {
             "schema": {
+              "default": "ownMaintenance",
               "type": "string",
               "enum": [
                 "ownMaintenance",
@@ -18721,13 +18797,10 @@
           },
           {
             "schema": {
-              "default": 1,
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 9007199254740991
+              "type": "string"
             },
             "in": "query",
-            "name": "page",
+            "name": "cursor",
             "required": false
           },
           {

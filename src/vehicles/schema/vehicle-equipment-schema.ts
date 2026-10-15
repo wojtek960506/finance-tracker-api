@@ -4,6 +4,8 @@ import { OBJECT_ID_REGEX } from '@utils/consts';
 
 import { DEFAULT_VEHICLES_LIMIT, MAX_VEHICLES_LIMIT } from '../consts';
 
+import { VehiclePaginationSchema } from './vehicle-pagination-schema';
+
 export const VehicleEquipmentCreateSchema = z.object({
   date: z.coerce.date(),
   itemName: z.string().trim().min(1, 'Item name is required').max(200),
@@ -38,7 +40,7 @@ export const VehicleEquipmentResponseSchema = z.object({
 export const VehicleEquipmentFilterQuerySchema = z.object({
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  page: z.coerce.number().int().min(1).default(1),
+  cursor: z.string().optional(),
   limit: z.coerce
     .number()
     .int()
@@ -57,6 +59,7 @@ export const VehicleEquipmentListResponseSchema = z.array(VehicleEquipmentRespon
 export const VehicleEquipmentWithSummaryResponseSchema = z.object({
   items: z.array(VehicleEquipmentResponseSchema),
   summary: VehicleEquipmentSummarySchema,
+  pagination: VehiclePaginationSchema,
 });
 
 export const VehicleEquipmentParamsSchema = z.object({

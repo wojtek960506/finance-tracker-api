@@ -4,6 +4,8 @@ import { OBJECT_ID_REGEX } from '@utils/consts';
 
 import { DEFAULT_VEHICLES_LIMIT, MAX_VEHICLES_LIMIT } from '../consts';
 
+import { VehiclePaginationSchema } from './vehicle-pagination-schema';
+
 export const VehicleFuelEntryCreateSchema = z.object({
   date: z.coerce.date(),
   fuelLiters: z.number().positive('Fuel liters must be positive'),
@@ -72,7 +74,7 @@ export const VehicleFuelFilterQuerySchema = z.object({
       return true;
     }, z.boolean().default(true))
     .default(true),
-  page: z.coerce.number().int().min(1).default(1),
+  cursor: z.string().optional(),
   limit: z.coerce
     .number()
     .int()
@@ -96,6 +98,7 @@ export const VehicleFuelEntryListResponseSchema = z.array(
 export const VehicleFuelWithSummaryResponseSchema = z.object({
   items: z.array(VehicleFuelEntryEnrichedResponseSchema),
   summary: VehicleFuelSummarySchema,
+  pagination: VehiclePaginationSchema,
 });
 
 export const VehicleFuelEntryParamsSchema = z.object({

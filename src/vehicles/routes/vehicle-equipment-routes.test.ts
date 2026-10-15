@@ -93,6 +93,11 @@ describe('vehicle equipment routes', async () => {
           totalCostPln: 250,
           totalItems: 1,
         },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
+        },
       });
 
       const res = await app.inject({
@@ -107,11 +112,16 @@ describe('vehicle equipment routes', async () => {
           totalCostPln: 250,
           totalItems: 1,
         },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
+        },
       });
       expect(getEquipmentListMock).toHaveBeenCalledWith(
         USER_ID_STR,
         vehicleId,
-        expect.objectContaining({ page: 1, limit: 50 }),
+        expect.objectContaining({ limit: 50 }),
       );
     });
 
@@ -122,11 +132,17 @@ describe('vehicle equipment routes', async () => {
           totalCostPln: 0,
           totalItems: 0,
         },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 0,
+        },
       });
 
+      const query = 'startDate=2026-01-01&endDate=2026-12-31&cursor=test-cursor&limit=10';
       const res = await app.inject({
         method: 'GET',
-        url: `/${vehicleId}/equipment?startDate=2026-01-01&endDate=2026-12-31&page=2&limit=10`,
+        url: `/${vehicleId}/equipment?${query}`,
       });
 
       expect(res.statusCode).toBe(200);
@@ -136,7 +152,7 @@ describe('vehicle equipment routes', async () => {
         expect.objectContaining({
           startDate: new Date('2026-01-01T00:00:00.000Z'),
           endDate: new Date('2026-12-31T00:00:00.000Z'),
-          page: 2,
+          cursor: 'test-cursor',
           limit: 10,
         }),
       );

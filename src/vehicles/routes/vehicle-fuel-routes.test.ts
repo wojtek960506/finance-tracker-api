@@ -123,18 +123,23 @@ describe('vehicle fuel routes', async () => {
           avgUnitPricePln: 6.5,
           totalCount: 1,
         },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
+        },
       });
 
       const response = await app.inject({
         method: 'GET',
-        url: `/${vehicleId}/fuel?page=1&limit=20&enriched=true`,
+        url: `/${vehicleId}/fuel?limit=20&enriched=true&cursor=test-cursor`,
       });
 
       expect(vehicleServices.getFuelEntries).toHaveBeenCalledWith(
         USER_ID_STR,
         vehicleId,
         expect.objectContaining({
-          page: 1,
+          cursor: 'test-cursor',
           limit: 20,
           enriched: true,
         }),
@@ -148,6 +153,11 @@ describe('vehicle fuel routes', async () => {
           avgConsumptionLPer100Km: 5.0,
           avgUnitPricePln: 6.5,
           totalCount: 1,
+        },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
         },
       });
     });

@@ -251,10 +251,11 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(3);
-      expect(json[0].description).toBe('Newer record');
-      expect(json[1].description).toBe('Middle record');
-      expect(json[2].description).toBe('Older record');
+      expect(json.items).toHaveLength(3);
+      expect(json.items[0].description).toBe('Newer record');
+      expect(json.items[1].description).toBe('Middle record');
+      expect(json.items[2].description).toBe('Older record');
+      expect(json.pagination.total).toBe(3);
     });
 
     it('filters maintenance records by section', async () => {
@@ -301,9 +302,12 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('Prev owner service');
-      expect(json[0].section).toBe('previousOwnerServices');
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].description).toBe('Prev owner service');
+      expect(json.items[0].section).toBe('previousOwnerServices');
+      expect(json.summary.totalCostPln).toBe(0);
+      expect(json.summary.totalRecords).toBe(0);
+      expect(json.pagination.total).toBe(1);
     });
 
     it('filters maintenance records by date range', async () => {
@@ -349,11 +353,11 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('Feb maint');
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].description).toBe('Feb maint');
     });
 
-    it('respects page and limit query parameters', async () => {
+    it('respects cursor and limit query parameters', async () => {
       const ownerId = await createIntegrationUser({
         email: 'maint-pagination@example.com',
       });
@@ -384,18 +388,38 @@ describe('vehicle maintenance routes integration', () => {
         }),
       ]);
 
-      const response = await getApp().inject({
+      const firstPageResponse = await getApp().inject({
         method: 'GET',
-        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?page=2&limit=1`,
+        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?limit=1`,
         headers: {
           authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
         },
       });
 
-      expect(response.statusCode).toBe(200);
-      const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('Entry 2');
+      expect(firstPageResponse.statusCode).toBe(200);
+      const firstPage = firstPageResponse.json();
+      expect(firstPage.items).toHaveLength(1);
+      expect(firstPage.items[0].description).toBe('Entry 3');
+      expect(firstPage.pagination.hasMore).toBe(true);
+      expect(firstPage.pagination.nextCursor).toBeTruthy();
+      expect(firstPage.pagination.total).toBe(3);
+
+      const vehicleId = vehicle._id.toString();
+      const nextCursor = firstPage.pagination.nextCursor;
+      const secondPageResponse = await getApp().inject({
+        method: 'GET',
+        url: `/api/vehicles/${vehicleId}/maintenance?cursor=${nextCursor}&limit=1`,
+        headers: {
+          authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
+        },
+      });
+
+      expect(secondPageResponse.statusCode).toBe(200);
+      const secondPage = secondPageResponse.json();
+      expect(secondPage.items).toHaveLength(1);
+      expect(secondPage.items[0].description).toBe('Entry 2');
+      expect(secondPage.pagination.hasMore).toBe(true);
+      expect(secondPage.pagination.nextCursor).toBeTruthy();
     });
 
     it('does not return records belonging to other users', async () => {
@@ -436,8 +460,8 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('User A maint');
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].description).toBe('User A maint');
     });
 
     it('returns 404 when vehicle not found or belongs to another user', async () => {

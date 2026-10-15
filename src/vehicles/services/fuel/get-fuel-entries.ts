@@ -1,3 +1,4 @@
+import { DEFAULT_VEHICLES_LIMIT } from '@vehicles/consts';
 import { VehicleFuelEntryModel } from '@vehicles/model';
 import {
   VehicleFuelFilterQuery,
@@ -5,17 +6,14 @@ import {
   VehicleFuelWithSummaryResponseDTO,
 } from '@vehicles/schema';
 import { findVehicleByIdOrSlug } from '@vehicles/services/vehicles/find-vehicle-by-id-or-slug';
+import { decodeCursor, encodeCursor } from '@vehicles/utils/cursor';
 
 import { enrichFuelEntries } from './enrich-fuel-entries';
 
 export const getFuelEntries = async (
   ownerId: string,
   vehicleIdentifier: string,
-  query: VehicleFuelFilterQuery = {
-    page: 1,
-    limit: 20,
-    enriched: true,
-  },
+  query: Partial<VehicleFuelFilterQuery> = {},
 ): Promise<VehicleFuelWithSummaryResponseDTO> => {
   const vehicle = await findVehicleByIdOrSlug(ownerId, vehicleIdentifier);
 
@@ -77,7 +75,8 @@ export const getFuelEntries = async (
   // Sort newest first
   let reversed = [...filtered].reverse();
 
-  if (!query.enriched) {
+  const isEnriched = query.enriched ?? true;
+  if (!isEnriched) {
     reversed = reversed.map((item) => ({
       ...item,
       distanceSincePreviousKm: null,
@@ -90,11 +89,42 @@ export const getFuelEntries = async (
     }));
   }
 
-  const offset = (query.page - 1) * query.limit;
-  const items = reversed.slice(offset, offset + query.limit);
+  let startIndex = 0;
+  if (query.cursor) {
+    const decoded = decodeCursor(query.cursor);
+    if (decoded) {
+      const exactIdx = reversed.findIndex((e) => e.id === decoded.id);
+      if (exactIdx !== -1) {
+        startIndex = exactIdx + 1;
+      } else {
+        const olderIdx = reversed.findIndex(
+          (e) =>
+            new Date(e.date) < decoded.date ||
+            (new Date(e.date).getTime() === decoded.date.getTime() && e.id < decoded.id),
+        );
+        if (olderIdx !== -1) {
+          startIndex = olderIdx;
+        } else {
+          startIndex = reversed.length;
+        }
+      }
+    }
+  }
+
+  const limit = query.limit ?? DEFAULT_VEHICLES_LIMIT;
+  const items = reversed.slice(startIndex, startIndex + limit);
+  const hasMore = startIndex + limit < reversed.length;
+  const lastItem = items[items.length - 1];
+  const nextCursor =
+    hasMore && lastItem ? encodeCursor(lastItem.date, lastItem.id) : null;
 
   return {
     items,
     summary,
+    pagination: {
+      nextCursor,
+      hasMore,
+      total: reversed.length,
+    },
   };
 };

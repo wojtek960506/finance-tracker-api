@@ -98,29 +98,35 @@ describe('Maintenance CRUD Services', () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const doc1 = mockMaintenanceDoc({ section: 'ownMaintenance', costPln: 200 });
-      const doc2 = mockMaintenanceDoc({ section: 'previousOwnerServices', costPln: 500 });
+      const doc2 = mockMaintenanceDoc({ section: 'ownMaintenance', costPln: 500 });
 
       const limitMock = vi.fn().mockResolvedValue([doc1, doc2]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleMaintenanceModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleMaintenanceModel, 'countDocuments').mockResolvedValue(2);
       vi.spyOn(VehicleMaintenanceModel, 'aggregate').mockResolvedValue([
-        { totalCostPln: 200, totalRecords: 1 },
+        { totalCostPln: 700, totalRecords: 2 },
       ]);
 
       const results = await getMaintenanceList(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
+        section: 'ownMaintenance',
       });
 
       expect(sortMock).toHaveBeenCalledWith({ date: -1, _id: -1 });
+      expect(limitMock).toHaveBeenCalledWith(11);
       expect(results.items).toHaveLength(2);
       expect(results.items[0].section).toBe('ownMaintenance');
       expect(results.summary).toEqual({
-        totalCostPln: 200,
-        totalRecords: 1,
+        totalCostPln: 700,
+        totalRecords: 2,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 2,
       });
     });
 
@@ -128,18 +134,17 @@ describe('Maintenance CRUD Services', () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const limitMock = vi.fn().mockResolvedValue([]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleMaintenanceModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleMaintenanceModel, 'countDocuments').mockResolvedValue(0);
       vi.spyOn(VehicleMaintenanceModel, 'aggregate').mockResolvedValue([]);
 
       const startDate = new Date('2026-01-01');
       const endDate = new Date('2026-06-30');
 
       const results = await getMaintenanceList(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
         section: 'ownMaintenance',
         startDate,
@@ -155,6 +160,11 @@ describe('Maintenance CRUD Services', () => {
       expect(results.summary).toEqual({
         totalCostPln: 0,
         totalRecords: 0,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 0,
       });
     });
   });

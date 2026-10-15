@@ -8,6 +8,8 @@ import {
   MAX_VEHICLES_LIMIT,
 } from '../consts';
 
+import { VehiclePaginationSchema } from './vehicle-pagination-schema';
+
 export const MaintenanceSectionSchema = z.enum([...MAINTENANCE_SECTIONS]);
 
 export const VehicleMaintenanceCreateSchema = z.object({
@@ -50,10 +52,10 @@ export const VehicleMaintenanceResponseSchema = z.object({
 });
 
 export const VehicleMaintenanceFilterQuerySchema = z.object({
-  section: MaintenanceSectionSchema.optional(),
+  section: MaintenanceSectionSchema.default('ownMaintenance'),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  page: z.coerce.number().int().min(1).default(1),
+  cursor: z.string().optional(),
   limit: z.coerce
     .number()
     .int()
@@ -74,6 +76,7 @@ export const VehicleMaintenanceListResponseSchema = z.array(
 export const VehicleMaintenanceWithSummaryResponseSchema = z.object({
   items: z.array(VehicleMaintenanceResponseSchema),
   summary: VehicleMaintenanceSummarySchema,
+  pagination: VehiclePaginationSchema,
 });
 
 export const VehicleMaintenanceParamsSchema = z.object({

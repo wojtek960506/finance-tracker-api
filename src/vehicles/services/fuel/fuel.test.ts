@@ -145,7 +145,7 @@ describe('Fuel CRUD Services', () => {
   });
 
   describe('getFuelEntries', () => {
-    it('returns enriched fuel entries sorted newest first with summary', async () => {
+    it('returns enriched fuel entries sorted newest first with summary and cursor', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const doc1 = mockFuelDoc({
@@ -170,7 +170,6 @@ describe('Fuel CRUD Services', () => {
       } as any);
 
       const results = await getFuelEntries(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
         enriched: true,
       });
@@ -189,6 +188,45 @@ describe('Fuel CRUD Services', () => {
         avgUnitPricePln: 6.5,
         totalCount: 2,
       });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 2,
+      });
+    });
+
+    it('supports cursor pagination across pages', async () => {
+      vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
+
+      const doc1 = mockFuelDoc({
+        _id: new Types.ObjectId(),
+        date: new Date('2026-05-01'),
+        odometerKm: 40000,
+      });
+      const doc2 = mockFuelDoc({
+        _id: new Types.ObjectId(),
+        date: new Date('2026-05-15'),
+        odometerKm: 40300,
+      });
+
+      vi.spyOn(VehicleFuelEntryModel, 'find').mockReturnValue({
+        sort: vi.fn().mockResolvedValue([doc1, doc2]),
+      } as any);
+
+      const page1 = await getFuelEntries(ownerId, vehicleId, { limit: 1 });
+      expect(page1.items).toHaveLength(1);
+      expect(page1.items[0].odometerKm).toBe(40300);
+      expect(page1.pagination.hasMore).toBe(true);
+      expect(page1.pagination.nextCursor).not.toBeNull();
+
+      const page2 = await getFuelEntries(ownerId, vehicleId, {
+        limit: 1,
+        cursor: page1.pagination.nextCursor!,
+      });
+      expect(page2.items).toHaveLength(1);
+      expect(page2.items[0].odometerKm).toBe(40000);
+      expect(page2.pagination.hasMore).toBe(false);
+      expect(page2.pagination.nextCursor).toBeNull();
     });
 
     it('filters entries by date range and isFullTank', async () => {
@@ -210,7 +248,6 @@ describe('Fuel CRUD Services', () => {
       } as any);
 
       const results = await getFuelEntries(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
         isFullTank: true,
         startDate: new Date('2026-04-30'),
@@ -221,6 +258,7 @@ describe('Fuel CRUD Services', () => {
       expect(results.items).toHaveLength(1);
       expect(results.items[0].id).toBe(doc1._id.toString());
       expect(results.summary.totalCount).toBe(1);
+      expect(results.pagination.total).toBe(1);
     });
 
     it('retrieves fuel entries with null derived metrics when enriched is false', async () => {
@@ -232,7 +270,6 @@ describe('Fuel CRUD Services', () => {
       } as any);
 
       const results = await getFuelEntries(ownerId, vehicleId, {
-        page: 1,
         limit: 5,
         enriched: false,
       });
@@ -240,6 +277,7 @@ describe('Fuel CRUD Services', () => {
       expect(results.items).toHaveLength(1);
       expect(results.items[0].distanceSincePreviousKm).toBeNull();
       expect(results.summary.totalCount).toBe(1);
+      expect(results.pagination.total).toBe(1);
     });
   });
 

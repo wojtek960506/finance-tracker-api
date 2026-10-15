@@ -1,3 +1,4 @@
+import { DEFAULT_VEHICLES_LIMIT } from '@vehicles/consts';
 import { IVehicleEquipment, VehicleEquipmentModel } from '@vehicles/model';
 import {
   VehicleEquipmentFilterQuery,
@@ -7,6 +8,7 @@ import {
 } from '@vehicles/schema';
 import { serializeEquipment } from '@vehicles/serializers';
 import { findVehicleByIdOrSlug } from '@vehicles/services/vehicles/find-vehicle-by-id-or-slug';
+import { decodeCursor, encodeCursor } from '@vehicles/utils/cursor';
 import { FilterQuery, Types } from 'mongoose';
 
 import { VehicleEquipmentNotFoundError } from '@utils/errors';
@@ -14,37 +16,50 @@ import { VehicleEquipmentNotFoundError } from '@utils/errors';
 export const getEquipmentList = async (
   ownerId: string,
   vehicleIdentifier: string,
-  query: VehicleEquipmentFilterQuery = {
-    page: 1,
-    limit: 20,
-  },
+  query: Partial<VehicleEquipmentFilterQuery> = {},
 ): Promise<VehicleEquipmentWithSummaryResponseDTO> => {
   const vehicle = await findVehicleByIdOrSlug(ownerId, vehicleIdentifier);
   const ownerObjectId = new Types.ObjectId(ownerId);
   const vehicleObjectId = new Types.ObjectId(vehicle._id);
 
-  const filter: FilterQuery<IVehicleEquipment> = {
+  const baseFilter: FilterQuery<IVehicleEquipment> = {
     ownerId: ownerObjectId,
     vehicleId: vehicleObjectId,
   };
 
   if (query.startDate || query.endDate) {
-    filter.date = {};
-    if (query.startDate) filter.date.$gte = query.startDate;
-    if (query.endDate) filter.date.$lte = query.endDate;
+    baseFilter.date = {};
+    if (query.startDate) baseFilter.date.$gte = query.startDate;
+    if (query.endDate) baseFilter.date.$lte = query.endDate;
   }
 
-  const [items, summaryAgg] = await Promise.all([
-    VehicleEquipmentModel.find(filter)
+  const queryFilter: FilterQuery<IVehicleEquipment> = { ...baseFilter };
+
+  if (query.cursor) {
+    const decoded = decodeCursor(query.cursor);
+    if (decoded) {
+      const cursorObjectId = Types.ObjectId.isValid(decoded.id)
+        ? new Types.ObjectId(decoded.id)
+        : null;
+      queryFilter.$or = [
+        { date: { $lt: decoded.date } },
+        ...(cursorObjectId ? [{ date: decoded.date, _id: { $lt: cursorObjectId } }] : []),
+      ];
+    }
+  }
+
+  const limit = query.limit ?? DEFAULT_VEHICLES_LIMIT;
+
+  const [rawItems, summaryAgg] = await Promise.all([
+    VehicleEquipmentModel.find(queryFilter)
       .sort({ date: -1, _id: -1 })
-      .skip((query.page - 1) * query.limit)
-      .limit(query.limit),
+      .limit(limit + 1),
     VehicleEquipmentModel.aggregate<{ totalCostPln: number; totalItems: number }>([
       {
         $match: {
           ownerId: ownerObjectId,
           vehicleId: vehicleObjectId,
-          ...(filter.date ? { date: filter.date } : {}),
+          ...(baseFilter.date ? { date: baseFilter.date } : {}),
         },
       },
       {
@@ -57,6 +72,12 @@ export const getEquipmentList = async (
     ]),
   ]);
 
+  const hasMore = rawItems.length > limit;
+  const items = hasMore ? rawItems.slice(0, limit) : rawItems;
+  const lastItem = items[items.length - 1];
+  const nextCursor =
+    hasMore && lastItem ? encodeCursor(lastItem.date, lastItem._id.toString()) : null;
+
   const summary: VehicleEquipmentSummaryDTO = {
     totalCostPln:
       summaryAgg.length > 0
@@ -68,6 +89,11 @@ export const getEquipmentList = async (
   return {
     items: items.map(serializeEquipment),
     summary,
+    pagination: {
+      nextCursor,
+      hasMore,
+      total: summary.totalItems,
+    },
   };
 };
 

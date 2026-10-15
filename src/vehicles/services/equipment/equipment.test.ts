@@ -92,8 +92,7 @@ describe('Equipment CRUD Services', () => {
       const doc2 = mockEquipmentDoc({ itemName: 'Item 2', costPln: 150 });
 
       const limitMock = vi.fn().mockResolvedValue([doc1, doc2]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleEquipmentModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
@@ -102,16 +101,21 @@ describe('Equipment CRUD Services', () => {
       ]);
 
       const results = await getEquipmentList(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
       });
 
       expect(sortMock).toHaveBeenCalledWith({ date: -1, _id: -1 });
+      expect(limitMock).toHaveBeenCalledWith(11);
       expect(results.items).toHaveLength(2);
       expect(results.items[0].itemName).toBe('Item 1');
       expect(results.summary).toEqual({
         totalCostPln: 250,
         totalItems: 2,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 2,
       });
     });
 
@@ -119,8 +123,7 @@ describe('Equipment CRUD Services', () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const limitMock = vi.fn().mockResolvedValue([]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleEquipmentModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
@@ -130,7 +133,6 @@ describe('Equipment CRUD Services', () => {
       const endDate = new Date('2026-06-30');
 
       const results = await getEquipmentList(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
         startDate,
         endDate,
@@ -144,6 +146,11 @@ describe('Equipment CRUD Services', () => {
       expect(results.summary).toEqual({
         totalCostPln: 0,
         totalItems: 0,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 0,
       });
     });
   });
