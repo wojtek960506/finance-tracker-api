@@ -65,12 +65,13 @@ describe('vehicle maintenance routes', async () => {
     id: recordId,
     ownerId: USER_ID_STR,
     vehicleId,
-    section: 'own_maintenance',
+    section: 'ownMaintenance',
     date: new Date('2026-03-01T00:00:00.000Z'),
     costPln: 850,
     odometerKm: 36000,
     description: 'Oil and filter change',
     serviceProvider: 'AutoService Warsaw',
+    serviceAddress: 'Warsaw, Main St 1',
     transactionId: null,
     createdAt: new Date('2026-03-01T00:00:00.000Z'),
     updatedAt: new Date('2026-03-01T00:00:00.000Z'),
@@ -89,7 +90,18 @@ describe('vehicle maintenance routes', async () => {
 
   describe('GET /:vehicleId/maintenance', () => {
     it('should return 200 with list of maintenance records', async () => {
-      getMaintenanceListMock.mockResolvedValue([mockMaintenanceRecord]);
+      getMaintenanceListMock.mockResolvedValue({
+        items: [mockMaintenanceRecord],
+        summary: {
+          totalCostPln: 180,
+          totalRecords: 1,
+        },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
+        },
+      });
 
       const res = await app.inject({
         method: 'GET',
@@ -97,22 +109,44 @@ describe('vehicle maintenance routes', async () => {
       });
 
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toEqual([serializedMockMaintenance]);
+      expect(res.json()).toEqual({
+        items: [serializedMockMaintenance],
+        summary: {
+          totalCostPln: 180,
+          totalRecords: 1,
+        },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
+        },
+      });
       expect(getMaintenanceListMock).toHaveBeenCalledWith(
         USER_ID_STR,
         vehicleId,
-        expect.objectContaining({ page: 1, limit: 50 }),
+        expect.objectContaining({ limit: 50, section: 'ownMaintenance' }),
       );
     });
 
     it('should pass query parameters to getMaintenanceList service', async () => {
-      getMaintenanceListMock.mockResolvedValue([]);
+      getMaintenanceListMock.mockResolvedValue({
+        items: [],
+        summary: {
+          totalCostPln: 0,
+          totalRecords: 0,
+        },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 0,
+        },
+      });
 
       const res = await app.inject({
         method: 'GET',
         url:
-          `/${vehicleId}/maintenance?section=own_maintenance` +
-          '&startDate=2026-01-01&endDate=2026-12-31&page=2&limit=10',
+          `/${vehicleId}/maintenance?section=ownMaintenance` +
+          '&startDate=2026-01-01&endDate=2026-12-31&cursor=test-cursor&limit=10',
       });
 
       expect(res.statusCode).toBe(200);
@@ -120,10 +154,10 @@ describe('vehicle maintenance routes', async () => {
         USER_ID_STR,
         vehicleId,
         expect.objectContaining({
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           startDate: new Date('2026-01-01T00:00:00.000Z'),
           endDate: new Date('2026-12-31T00:00:00.000Z'),
-          page: 2,
+          cursor: 'test-cursor',
           limit: 10,
         }),
       );
@@ -146,12 +180,13 @@ describe('vehicle maintenance routes', async () => {
 
   describe('POST /:vehicleId/maintenance', () => {
     const validPayload: VehicleMaintenanceCreateDTO = {
-      section: 'own_maintenance',
+      section: 'ownMaintenance',
       date: new Date('2026-03-01T00:00:00.000Z'),
       costPln: 850,
       odometerKm: 36000,
       description: 'Oil and filter change',
       serviceProvider: 'AutoService Warsaw',
+      serviceAddress: 'Warsaw, Main St 1',
     };
 
     it('should return 201 with created maintenance record', async () => {
@@ -172,7 +207,7 @@ describe('vehicle maintenance routes', async () => {
         USER_ID_STR,
         vehicleId,
         expect.objectContaining({
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           costPln: 850,
           odometerKm: 36000,
         }),

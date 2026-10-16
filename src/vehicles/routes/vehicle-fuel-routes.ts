@@ -1,8 +1,6 @@
 import {
   VehicleFuelEntryCreateDTO,
   VehicleFuelEntryCreateSchema,
-  VehicleFuelEntryListResponseDTO,
-  VehicleFuelEntryListResponseSchema,
   VehicleFuelEntryParamsDTO,
   VehicleFuelEntryParamsSchema,
   VehicleFuelEntryResponseDTO,
@@ -11,6 +9,8 @@ import {
   VehicleFuelEntryUpdateSchema,
   VehicleFuelFilterQuery,
   VehicleFuelFilterQuerySchema,
+  VehicleFuelWithSummaryResponseDTO,
+  VehicleFuelWithSummaryResponseSchema,
   VehicleParamsDTO,
   VehicleParamsSchema,
 } from '@vehicles/schema';
@@ -34,7 +34,7 @@ export async function vehicleFuelRoutes(
   app.get<{
     Params: VehicleParamsDTO;
     Querystring: VehicleFuelFilterQuery;
-    Reply: VehicleFuelEntryListResponseDTO;
+    Reply: VehicleFuelWithSummaryResponseDTO;
   }>(
     '/:vehicleId/fuel',
     {
@@ -48,7 +48,7 @@ export async function vehicleFuelRoutes(
         params: VehicleParamsSchema,
         querystring: VehicleFuelFilterQuerySchema,
         response: {
-          200: VehicleFuelEntryListResponseSchema,
+          200: VehicleFuelWithSummaryResponseSchema,
         },
       },
     },

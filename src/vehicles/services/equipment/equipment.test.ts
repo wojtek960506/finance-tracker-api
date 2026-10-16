@@ -85,53 +85,72 @@ describe('Equipment CRUD Services', () => {
   });
 
   describe('getEquipmentList', () => {
-    it('returns equipment entries sorted newest first with pagination', async () => {
+    it('returns equipment entries sorted newest first with pagination and summary', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
-      const doc1 = mockEquipmentDoc({ itemName: 'Item 1' });
-      const doc2 = mockEquipmentDoc({ itemName: 'Item 2' });
+      const doc1 = mockEquipmentDoc({ itemName: 'Item 1', costPln: 100 });
+      const doc2 = mockEquipmentDoc({ itemName: 'Item 2', costPln: 150 });
 
       const limitMock = vi.fn().mockResolvedValue([doc1, doc2]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleEquipmentModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleEquipmentModel, 'aggregate').mockResolvedValue([
+        { totalCostPln: 250, totalItems: 2 },
+      ]);
 
       const results = await getEquipmentList(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
       });
 
       expect(sortMock).toHaveBeenCalledWith({ date: -1, _id: -1 });
-      expect(results).toHaveLength(2);
-      expect(results[0].itemName).toBe('Item 1');
+      expect(limitMock).toHaveBeenCalledWith(11);
+      expect(results.items).toHaveLength(2);
+      expect(results.items[0].itemName).toBe('Item 1');
+      expect(results.summary).toEqual({
+        totalCostPln: 250,
+        totalItems: 2,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 2,
+      });
     });
 
     it('applies date range filters when provided', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const limitMock = vi.fn().mockResolvedValue([]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleEquipmentModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleEquipmentModel, 'aggregate').mockResolvedValue([]);
 
       const startDate = new Date('2026-01-01');
       const endDate = new Date('2026-06-30');
 
-      await getEquipmentList(ownerId, vehicleId, {
-        page: 1,
+      const results = await getEquipmentList(ownerId, vehicleId, {
         limit: 10,
         startDate,
         endDate,
       });
 
       expect(VehicleEquipmentModel.find).toHaveBeenCalledWith({
-        ownerId,
+        ownerId: new Types.ObjectId(ownerId),
         vehicleId: new Types.ObjectId(vehicleId),
         date: { $gte: startDate, $lte: endDate },
+      });
+      expect(results.summary).toEqual({
+        totalCostPln: 0,
+        totalItems: 0,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 0,
       });
     });
   });

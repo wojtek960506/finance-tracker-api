@@ -22,16 +22,15 @@ export interface VehicleAttributes {
 export interface VehicleFuelEntryAttributes {
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   date: Date;
   fuelLiters: number;
   isFullTank: boolean;
   unitPricePln: number;
   costPln: number;
   odometerKm: number;
-  stationBrand?: string;
-  stationAddress?: string;
-  description?: string;
+  stationBrand?: string | null;
+  stationAddress?: string | null;
+  description?: string | null;
   transactionId?: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
@@ -50,11 +49,10 @@ export interface VehicleFuelEntryEnrichedMetrics {
 export interface VehicleEquipmentAttributes {
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   date: Date;
   itemName: string;
   costPln: number;
-  description?: string;
+  description?: string | null;
   transactionId?: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
@@ -63,13 +61,13 @@ export interface VehicleEquipmentAttributes {
 export interface VehicleMaintenanceAttributes {
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   section: MaintenanceSection;
   date: Date;
   costPln: number;
-  odometerKm?: number;
-  description?: string;
-  serviceProvider?: string;
+  odometerKm?: number | null;
+  description?: string | null;
+  serviceProvider?: string | null;
+  serviceAddress?: string | null;
   transactionId?: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;

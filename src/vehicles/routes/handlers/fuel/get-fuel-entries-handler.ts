@@ -1,6 +1,6 @@
 import {
-  VehicleFuelEntryListResponseDTO,
   VehicleFuelFilterQuery,
+  VehicleFuelWithSummaryResponseDTO,
   VehicleParamsDTO,
 } from '@vehicles/schema';
 import { getFuelEntries } from '@vehicles/services';
@@ -16,10 +16,10 @@ export const getFuelEntriesHandler = async (
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result: VehicleFuelEntryListResponseDTO = (await getFuelEntries(
+  const result: VehicleFuelWithSummaryResponseDTO = await getFuelEntries(
     userId,
     req.params.vehicleId,
     req.query,
-  )) as VehicleFuelEntryListResponseDTO;
+  );
   return res.code(200).send(result);
 };

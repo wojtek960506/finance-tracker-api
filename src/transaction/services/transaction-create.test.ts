@@ -19,6 +19,7 @@ import {
   getOtherCategoryResultSerialized,
   getTransferCategoryResultJSON,
   getTransferCategoryResultSerialized,
+  getTransportCategoryResultSerialized,
   getUserCategoryResultSerialized,
   TRANSFER_CATEGORY_NAME,
 } from '@testing/factories/category';
@@ -113,6 +114,7 @@ describe('transaction-create services', () => {
   const accountExpense = getSystemExpenseAccountResultSerialized();
   const accountIncome = getSystemIncomeAccountResultSerialized();
   const otherCategory = getOtherCategoryResultSerialized();
+  const transportCategory = getTransportCategoryResultSerialized();
   const otherPaymentMethod = getOtherPaymentMethodResultSerialized();
   const otherAccount = getOtherAccountResultSerialized();
 
@@ -211,6 +213,29 @@ describe('transaction-create services', () => {
 
       vi.spyOn(namedResourceDb, 'findNamedResourceById')
         .mockResolvedValueOnce(otherCategory as any)
+        .mockResolvedValueOnce(paymentMethod as any)
+        .mockResolvedValueOnce(accountExpense as any);
+      vi.spyOn(dbTransactions, 'persistTransaction').mockResolvedValue(
+        transaction as any,
+      );
+      (getNextSourceIndex as Mock).mockResolvedValue(STANDARD_TXN_SRC_IDX);
+
+      await createStandardTransaction(dto, USER_ID_STR);
+
+      expect(dbTransactions.persistTransaction).toHaveBeenCalledWith({
+        ...dto,
+        kind: 'standard',
+        ownerId: USER_ID_STR,
+        sourceIndex: STANDARD_TXN_SRC_IDX,
+      });
+    });
+
+    it('allows explicit transport category for standard transaction', async () => {
+      const transaction = getStandardTransactionResultSerialized();
+      const dto = { ...standardDTO, categoryId: transportCategory.id };
+
+      vi.spyOn(namedResourceDb, 'findNamedResourceById')
+        .mockResolvedValueOnce(transportCategory as any)
         .mockResolvedValueOnce(paymentMethod as any)
         .mockResolvedValueOnce(accountExpense as any);
       vi.spyOn(dbTransactions, 'persistTransaction').mockResolvedValue(

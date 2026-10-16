@@ -3,10 +3,16 @@ import {
   VehicleCreateSchema,
   VehicleListResponseDTO,
   VehicleListResponseSchema,
+  VehicleOverviewQueryDTO,
+  VehicleOverviewQuerySchema,
+  VehicleOverviewResponseDTO,
+  VehicleOverviewResponseSchema,
   VehicleParamsDTO,
   VehicleParamsSchema,
   VehicleResponseDTO,
   VehicleResponseSchema,
+  VehiclesSummaryResponseDTO,
+  VehiclesSummaryResponseSchema,
   VehicleUpdateDTO,
   VehicleUpdateSchema,
 } from '@vehicles/schema';
@@ -20,7 +26,9 @@ import {
   createVehicleHandler,
   deleteVehicleHandler,
   getVehicleHandler,
+  getVehicleOverviewHandler,
   getVehiclesHandler,
+  getVehiclesSummaryHandler,
   updateVehicleHandler,
 } from './handlers';
 import { vehicleEquipmentRoutes } from './vehicle-equipment-routes';
@@ -32,6 +40,24 @@ export async function vehicleRoutes(
   app: FastifyInstance & { withTypeProvider: <_T>() => any },
 ) {
   // --- Core Vehicles Endpoints ---
+
+  app.get<{ Reply: VehiclesSummaryResponseDTO }>(
+    '/summary',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Vehicles'],
+        summary: 'Get fleet summary and vehicles spending aggregations',
+        description:
+          'Return aggregated fleet totals and each vehicle with calculated spending ' +
+          'totals, counts, and last odometer.',
+        response: {
+          200: VehiclesSummaryResponseSchema,
+        },
+      },
+    },
+    getVehiclesSummaryHandler,
+  );
 
   app.get<{ Reply: VehicleListResponseDTO }>(
     '/',
@@ -64,6 +90,30 @@ export async function vehicleRoutes(
       },
     },
     createVehicleHandler,
+  );
+
+  app.get<{
+    Params: VehicleParamsDTO;
+    Querystring: VehicleOverviewQueryDTO;
+    Reply: VehicleOverviewResponseDTO;
+  }>(
+    '/:vehicleId/overview',
+    {
+      preHandler: authorizeAccessToken(),
+      schema: {
+        tags: ['Vehicles'],
+        summary: 'Get vehicle overview and recent activity',
+        description:
+          'Return aggregated spending, fuel efficiency, maintenance breakdown, odometer stats, ' +
+          'and unified recent activity feed for a vehicle.',
+        params: VehicleParamsSchema,
+        querystring: VehicleOverviewQuerySchema,
+        response: {
+          200: VehicleOverviewResponseSchema,
+        },
+      },
+    },
+    getVehicleOverviewHandler,
   );
 
   app.get<{ Params: VehicleParamsDTO; Reply: VehicleResponseDTO }>(

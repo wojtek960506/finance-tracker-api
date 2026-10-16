@@ -4,11 +4,13 @@ import { OBJECT_ID_REGEX } from '@utils/consts';
 
 import { DEFAULT_VEHICLES_LIMIT, MAX_VEHICLES_LIMIT } from '../consts';
 
+import { VehiclePaginationSchema } from './vehicle-pagination-schema';
+
 export const VehicleEquipmentCreateSchema = z.object({
   date: z.coerce.date(),
   itemName: z.string().trim().min(1, 'Item name is required').max(200),
   costPln: z.number().min(0, 'Cost must be non-negative'),
-  description: z.string().max(500).optional(),
+  description: z.string().max(500).nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -22,11 +24,10 @@ export const VehicleEquipmentResponseSchema = z.object({
   id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
   vehicleId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `vehicleId`'),
-  sourceRow: z.number().optional(),
   date: z.coerce.date(),
   itemName: z.string().min(1).max(200),
   costPln: z.number(),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -39,7 +40,7 @@ export const VehicleEquipmentResponseSchema = z.object({
 export const VehicleEquipmentFilterQuerySchema = z.object({
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  page: z.coerce.number().int().min(1).default(1),
+  cursor: z.string().optional(),
   limit: z.coerce
     .number()
     .int()
@@ -48,7 +49,18 @@ export const VehicleEquipmentFilterQuerySchema = z.object({
     .default(DEFAULT_VEHICLES_LIMIT),
 });
 
+export const VehicleEquipmentSummarySchema = z.object({
+  totalCostPln: z.number().nonnegative(),
+  totalItems: z.number().int().nonnegative(),
+});
+
 export const VehicleEquipmentListResponseSchema = z.array(VehicleEquipmentResponseSchema);
+
+export const VehicleEquipmentWithSummaryResponseSchema = z.object({
+  items: z.array(VehicleEquipmentResponseSchema),
+  summary: VehicleEquipmentSummarySchema,
+  pagination: VehiclePaginationSchema,
+});
 
 export const VehicleEquipmentParamsSchema = z.object({
   vehicleId: z.string().min(1, 'vehicleId is required'),
@@ -61,14 +73,22 @@ export type VehicleEquipmentResponseDTO = z.infer<typeof VehicleEquipmentRespons
 export type VehicleEquipmentFilterQuery = z.infer<
   typeof VehicleEquipmentFilterQuerySchema
 >;
+export type VehicleEquipmentSummaryDTO = z.infer<typeof VehicleEquipmentSummarySchema>;
 export type VehicleEquipmentListResponseDTO = z.infer<
   typeof VehicleEquipmentListResponseSchema
+>;
+export type VehicleEquipmentWithSummaryResponseDTO = z.infer<
+  typeof VehicleEquipmentWithSummaryResponseSchema
 >;
 export type VehicleEquipmentParamsDTO = z.infer<typeof VehicleEquipmentParamsSchema>;
 
 z.globalRegistry.add(VehicleEquipmentCreateSchema, { id: 'VehicleEquipmentCreate' });
 z.globalRegistry.add(VehicleEquipmentUpdateSchema, { id: 'VehicleEquipmentUpdate' });
 z.globalRegistry.add(VehicleEquipmentResponseSchema, { id: 'VehicleEquipmentResponse' });
+z.globalRegistry.add(VehicleEquipmentSummarySchema, { id: 'VehicleEquipmentSummary' });
 z.globalRegistry.add(VehicleEquipmentListResponseSchema, {
   id: 'VehicleEquipmentListResponse',
+});
+z.globalRegistry.add(VehicleEquipmentWithSummaryResponseSchema, {
+  id: 'VehicleEquipmentWithSummaryResponse',
 });

@@ -8,6 +8,8 @@ import {
   MAX_VEHICLES_LIMIT,
 } from '../consts';
 
+import { VehiclePaginationSchema } from './vehicle-pagination-schema';
+
 export const MaintenanceSectionSchema = z.enum([...MAINTENANCE_SECTIONS]);
 
 export const VehicleMaintenanceCreateSchema = z.object({
@@ -18,9 +20,11 @@ export const VehicleMaintenanceCreateSchema = z.object({
     .number()
     .int()
     .nonnegative('Odometer reading must be non-negative')
+    .nullable()
     .optional(),
-  description: z.string().max(1000).optional(),
-  serviceProvider: z.string().trim().max(200).optional(),
+  description: z.string().max(1000).nullable().optional(),
+  serviceProvider: z.string().trim().max(200).nullable().optional(),
+  serviceAddress: z.string().trim().max(200).nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -34,13 +38,13 @@ export const VehicleMaintenanceResponseSchema = z.object({
   id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
   vehicleId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `vehicleId`'),
-  sourceRow: z.number().optional(),
   section: MaintenanceSectionSchema,
   date: z.coerce.date(),
   costPln: z.number(),
-  odometerKm: z.number().optional(),
-  description: z.string().optional(),
-  serviceProvider: z.string().optional(),
+  odometerKm: z.number().nullable().optional(),
+  description: z.string().nullable().optional(),
+  serviceProvider: z.string().nullable().optional(),
+  serviceAddress: z.string().nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -51,10 +55,10 @@ export const VehicleMaintenanceResponseSchema = z.object({
 });
 
 export const VehicleMaintenanceFilterQuerySchema = z.object({
-  section: MaintenanceSectionSchema.optional(),
+  section: MaintenanceSectionSchema.default('ownMaintenance'),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  page: z.coerce.number().int().min(1).default(1),
+  cursor: z.string().optional(),
   limit: z.coerce
     .number()
     .int()
@@ -63,9 +67,20 @@ export const VehicleMaintenanceFilterQuerySchema = z.object({
     .default(DEFAULT_VEHICLES_LIMIT),
 });
 
+export const VehicleMaintenanceSummarySchema = z.object({
+  totalCostPln: z.number().nonnegative(),
+  totalRecords: z.number().int().nonnegative(),
+});
+
 export const VehicleMaintenanceListResponseSchema = z.array(
   VehicleMaintenanceResponseSchema,
 );
+
+export const VehicleMaintenanceWithSummaryResponseSchema = z.object({
+  items: z.array(VehicleMaintenanceResponseSchema),
+  summary: VehicleMaintenanceSummarySchema,
+  pagination: VehiclePaginationSchema,
+});
 
 export const VehicleMaintenanceParamsSchema = z.object({
   vehicleId: z.string().min(1, 'vehicleId is required'),
@@ -80,8 +95,14 @@ export type VehicleMaintenanceResponseDTO = z.infer<
 export type VehicleMaintenanceFilterQuery = z.infer<
   typeof VehicleMaintenanceFilterQuerySchema
 >;
+export type VehicleMaintenanceSummaryDTO = z.infer<
+  typeof VehicleMaintenanceSummarySchema
+>;
 export type VehicleMaintenanceListResponseDTO = z.infer<
   typeof VehicleMaintenanceListResponseSchema
+>;
+export type VehicleMaintenanceWithSummaryResponseDTO = z.infer<
+  typeof VehicleMaintenanceWithSummaryResponseSchema
 >;
 export type VehicleMaintenanceParamsDTO = z.infer<typeof VehicleMaintenanceParamsSchema>;
 
@@ -94,6 +115,12 @@ z.globalRegistry.add(VehicleMaintenanceUpdateSchema, {
 z.globalRegistry.add(VehicleMaintenanceResponseSchema, {
   id: 'VehicleMaintenanceResponse',
 });
+z.globalRegistry.add(VehicleMaintenanceSummarySchema, {
+  id: 'VehicleMaintenanceSummary',
+});
 z.globalRegistry.add(VehicleMaintenanceListResponseSchema, {
   id: 'VehicleMaintenanceListResponse',
+});
+z.globalRegistry.add(VehicleMaintenanceWithSummaryResponseSchema, {
+  id: 'VehicleMaintenanceWithSummaryResponse',
 });

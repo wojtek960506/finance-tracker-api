@@ -25,12 +25,13 @@ describe('vehicle maintenance routes integration', () => {
       });
 
       const payload = {
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: '2026-05-01T10:00:00.000Z',
         costPln: 650,
         odometerKm: 55000,
         description: 'Oil, filters and brake fluid',
         serviceProvider: 'Garage Warsaw',
+        serviceAddress: 'Warszawa, ul. Serwisowa 5',
       };
 
       const response = await getApp().inject({
@@ -48,12 +49,13 @@ describe('vehicle maintenance routes integration', () => {
         id: expect.any(String),
         ownerId: ownerId.toString(),
         vehicleId: vehicle._id.toString(),
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: '2026-05-01T10:00:00.000Z',
         costPln: 650,
         odometerKm: 55000,
         description: 'Oil, filters and brake fluid',
         serviceProvider: 'Garage Warsaw',
+        serviceAddress: 'Warszawa, ul. Serwisowa 5',
         transactionId: null,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
@@ -71,7 +73,7 @@ describe('vehicle maintenance routes integration', () => {
       });
 
       const payload = {
-        section: 'previous_owner_services',
+        section: 'previousOwnerServices',
         date: '2026-01-10T12:00:00.000Z',
         costPln: 1200,
         description: 'Timing belt replacement by previous owner',
@@ -90,7 +92,7 @@ describe('vehicle maintenance routes integration', () => {
       expect(response.json()).toEqual(
         expect.objectContaining({
           vehicleId: vehicle._id.toString(),
-          section: 'previous_owner_services',
+          section: 'previousOwnerServices',
           costPln: 1200,
           description: 'Timing belt replacement by previous owner',
         }),
@@ -109,10 +111,10 @@ describe('vehicle maintenance routes integration', () => {
       const txId = new Types.ObjectId().toString();
 
       const payload = {
-        section: 'driving_licence_costs',
+        section: 'ownMaintenance',
         date: '2026-04-10T09:00:00.000Z',
         costPln: 250,
-        description: 'Medical exam for driving licence',
+        description: 'Brake pad replacement',
         transactionId: txId,
       };
 
@@ -129,7 +131,7 @@ describe('vehicle maintenance routes integration', () => {
       expect(response.json()).toEqual(
         expect.objectContaining({
           transactionId: txId,
-          section: 'driving_licence_costs',
+          section: 'ownMaintenance',
           costPln: 250,
         }),
       );
@@ -151,7 +153,7 @@ describe('vehicle maintenance routes integration', () => {
           authorization: `Bearer ${createIntegrationAccessToken(userB.toString())}`,
         },
         payload: {
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           date: '2026-05-01T10:00:00.000Z',
           costPln: 300,
         },
@@ -196,7 +198,7 @@ describe('vehicle maintenance routes integration', () => {
         method: 'POST',
         url: '/api/vehicles/any-id/maintenance',
         payload: {
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           date: '2026-05-01T10:00:00.000Z',
           costPln: 300,
         },
@@ -251,10 +253,11 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(3);
-      expect(json[0].description).toBe('Newer record');
-      expect(json[1].description).toBe('Middle record');
-      expect(json[2].description).toBe('Older record');
+      expect(json.items).toHaveLength(3);
+      expect(json.items[0].description).toBe('Newer record');
+      expect(json.items[1].description).toBe('Middle record');
+      expect(json.items[2].description).toBe('Older record');
+      expect(json.pagination.total).toBe(3);
     });
 
     it('filters maintenance records by section', async () => {
@@ -271,29 +274,29 @@ describe('vehicle maintenance routes integration', () => {
         buildMaintenanceDoc({
           ownerId,
           vehicleId: vehicle._id,
-          section: 'own_maintenance',
+          section: 'ownMaintenance',
           costPln: 100,
           description: 'Own maint',
         }),
         buildMaintenanceDoc({
           ownerId,
           vehicleId: vehicle._id,
-          section: 'previous_owner_services',
+          section: 'previousOwnerServices',
           costPln: 200,
           description: 'Prev owner service',
         }),
         buildMaintenanceDoc({
           ownerId,
           vehicleId: vehicle._id,
-          section: 'driving_licence_costs',
+          section: 'ownMaintenance',
           costPln: 300,
-          description: 'Licence cost',
+          description: 'Oil change 2',
         }),
       ]);
 
       const response = await getApp().inject({
         method: 'GET',
-        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?section=previous_owner_services`,
+        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?section=previousOwnerServices`,
         headers: {
           authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
         },
@@ -301,9 +304,12 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('Prev owner service');
-      expect(json[0].section).toBe('previous_owner_services');
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].description).toBe('Prev owner service');
+      expect(json.items[0].section).toBe('previousOwnerServices');
+      expect(json.summary.totalCostPln).toBe(0);
+      expect(json.summary.totalRecords).toBe(0);
+      expect(json.pagination.total).toBe(1);
     });
 
     it('filters maintenance records by date range', async () => {
@@ -349,11 +355,11 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('Feb maint');
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].description).toBe('Feb maint');
     });
 
-    it('respects page and limit query parameters', async () => {
+    it('respects cursor and limit query parameters', async () => {
       const ownerId = await createIntegrationUser({
         email: 'maint-pagination@example.com',
       });
@@ -384,18 +390,38 @@ describe('vehicle maintenance routes integration', () => {
         }),
       ]);
 
-      const response = await getApp().inject({
+      const firstPageResponse = await getApp().inject({
         method: 'GET',
-        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?page=2&limit=1`,
+        url: `/api/vehicles/${vehicle._id.toString()}/maintenance?limit=1`,
         headers: {
           authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
         },
       });
 
-      expect(response.statusCode).toBe(200);
-      const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('Entry 2');
+      expect(firstPageResponse.statusCode).toBe(200);
+      const firstPage = firstPageResponse.json();
+      expect(firstPage.items).toHaveLength(1);
+      expect(firstPage.items[0].description).toBe('Entry 3');
+      expect(firstPage.pagination.hasMore).toBe(true);
+      expect(firstPage.pagination.nextCursor).toBeTruthy();
+      expect(firstPage.pagination.total).toBe(3);
+
+      const vehicleId = vehicle._id.toString();
+      const nextCursor = firstPage.pagination.nextCursor;
+      const secondPageResponse = await getApp().inject({
+        method: 'GET',
+        url: `/api/vehicles/${vehicleId}/maintenance?cursor=${nextCursor}&limit=1`,
+        headers: {
+          authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
+        },
+      });
+
+      expect(secondPageResponse.statusCode).toBe(200);
+      const secondPage = secondPageResponse.json();
+      expect(secondPage.items).toHaveLength(1);
+      expect(secondPage.items[0].description).toBe('Entry 2');
+      expect(secondPage.pagination.hasMore).toBe(true);
+      expect(secondPage.pagination.nextCursor).toBeTruthy();
     });
 
     it('does not return records belonging to other users', async () => {
@@ -436,8 +462,8 @@ describe('vehicle maintenance routes integration', () => {
 
       expect(response.statusCode).toBe(200);
       const json = response.json();
-      expect(json).toHaveLength(1);
-      expect(json[0].description).toBe('User A maint');
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].description).toBe('User A maint');
     });
 
     it('returns 404 when vehicle not found or belongs to another user', async () => {
@@ -477,7 +503,7 @@ describe('vehicle maintenance routes integration', () => {
       const recordDoc = buildMaintenanceDoc({
         ownerId,
         vehicleId: vehicle._id,
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         costPln: 450,
         odometerKm: 42000,
         description: 'Brake pads replacement',
@@ -614,7 +640,7 @@ describe('vehicle maintenance routes integration', () => {
       const recordDoc = buildMaintenanceDoc({
         ownerId,
         vehicleId: vehicle._id,
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         costPln: 300,
         description: 'Original description',
         serviceProvider: 'Original Service',

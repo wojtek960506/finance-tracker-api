@@ -41,12 +41,13 @@ describe('Maintenance CRUD Services', () => {
       _id: new Types.ObjectId(data._id?.toString() || maintenanceId),
       ownerId: new Types.ObjectId(data.ownerId?.toString() || ownerId),
       vehicleId: new Types.ObjectId(data.vehicleId?.toString() || vehicleId),
-      section: data.section || 'own_maintenance',
+      section: data.section || 'ownMaintenance',
       date: data.date || new Date('2026-05-01'),
       costPln: data.costPln ?? 180,
       odometerKm: data.odometerKm ?? 41000,
       description: data.description || 'Oil + filter change',
       serviceProvider: data.serviceProvider || 'Self',
+      serviceAddress: data.serviceAddress || 'Warszawa, Opolska 1',
       createdAt: data.createdAt || new Date('2026-05-01'),
       updatedAt: data.updatedAt || new Date('2026-05-01'),
       save: vi.fn().mockResolvedValue(this),
@@ -60,12 +61,13 @@ describe('Maintenance CRUD Services', () => {
 
   describe('createMaintenance', () => {
     const createDto: VehicleMaintenanceCreateDTO = {
-      section: 'own_maintenance',
+      section: 'ownMaintenance',
       date: new Date('2026-05-01'),
       costPln: 180,
       odometerKm: 41000,
       description: 'Oil + filter change',
       serviceProvider: 'Self',
+      serviceAddress: 'Warszawa, Opolska 1',
     };
 
     it('creates maintenance associated with resolved vehicle', async () => {
@@ -80,7 +82,7 @@ describe('Maintenance CRUD Services', () => {
         ownerId,
         vehicleId: new Types.ObjectId(vehicleId),
       });
-      expect(result.section).toBe('own_maintenance');
+      expect(result.section).toBe('ownMaintenance');
       expect(result.costPln).toBe(180);
     });
 
@@ -94,55 +96,77 @@ describe('Maintenance CRUD Services', () => {
   });
 
   describe('getMaintenanceList', () => {
-    it('returns maintenance entries sorted newest first with pagination', async () => {
+    it('returns maintenance entries sorted newest first with pagination and summary', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
-      const doc1 = mockMaintenanceDoc({ section: 'own_maintenance' });
-      const doc2 = mockMaintenanceDoc({ section: 'driving_licence_costs' });
+      const doc1 = mockMaintenanceDoc({ section: 'ownMaintenance', costPln: 200 });
+      const doc2 = mockMaintenanceDoc({ section: 'ownMaintenance', costPln: 500 });
 
       const limitMock = vi.fn().mockResolvedValue([doc1, doc2]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleMaintenanceModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleMaintenanceModel, 'countDocuments').mockResolvedValue(2);
+      vi.spyOn(VehicleMaintenanceModel, 'aggregate').mockResolvedValue([
+        { totalCostPln: 700, totalRecords: 2 },
+      ]);
 
       const results = await getMaintenanceList(ownerId, vehicleId, {
-        page: 1,
         limit: 10,
+        section: 'ownMaintenance',
       });
 
       expect(sortMock).toHaveBeenCalledWith({ date: -1, _id: -1 });
-      expect(results).toHaveLength(2);
-      expect(results[0].section).toBe('own_maintenance');
+      expect(limitMock).toHaveBeenCalledWith(11);
+      expect(results.items).toHaveLength(2);
+      expect(results.items[0].section).toBe('ownMaintenance');
+      expect(results.summary).toEqual({
+        totalCostPln: 700,
+        totalRecords: 2,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 2,
+      });
     });
 
     it('filters by section and date range when provided', async () => {
       vi.spyOn(VehicleModel, 'findOne').mockResolvedValue(mockVehicleDoc());
 
       const limitMock = vi.fn().mockResolvedValue([]);
-      const skipMock = vi.fn().mockReturnValue({ limit: limitMock });
-      const sortMock = vi.fn().mockReturnValue({ skip: skipMock });
+      const sortMock = vi.fn().mockReturnValue({ limit: limitMock });
       vi.spyOn(VehicleMaintenanceModel, 'find').mockReturnValue({
         sort: sortMock,
       } as any);
+      vi.spyOn(VehicleMaintenanceModel, 'countDocuments').mockResolvedValue(0);
+      vi.spyOn(VehicleMaintenanceModel, 'aggregate').mockResolvedValue([]);
 
       const startDate = new Date('2026-01-01');
       const endDate = new Date('2026-06-30');
 
-      await getMaintenanceList(ownerId, vehicleId, {
-        page: 1,
+      const results = await getMaintenanceList(ownerId, vehicleId, {
         limit: 10,
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         startDate,
         endDate,
       });
 
       expect(VehicleMaintenanceModel.find).toHaveBeenCalledWith({
-        ownerId,
+        ownerId: new Types.ObjectId(ownerId),
         vehicleId: new Types.ObjectId(vehicleId),
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: { $gte: startDate, $lte: endDate },
+      });
+      expect(results.summary).toEqual({
+        totalCostPln: 0,
+        totalRecords: 0,
+      });
+      expect(results.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 0,
       });
     });
   });
@@ -178,6 +202,7 @@ describe('Maintenance CRUD Services', () => {
       const updateDto: VehicleMaintenanceUpdateDTO = {
         costPln: 220,
         serviceProvider: 'Garage XYZ',
+        serviceAddress: 'Kraków, Armii Krajowej 5',
       };
 
       const result = await updateMaintenance(
@@ -190,6 +215,7 @@ describe('Maintenance CRUD Services', () => {
       expect(doc.save).toHaveBeenCalled();
       expect(result.costPln).toBe(220);
       expect(result.serviceProvider).toBe('Garage XYZ');
+      expect(result.serviceAddress).toBe('Kraków, Armii Krajowej 5');
     });
 
     it('throws VehicleMaintenanceNotFoundError when maintenance to update is missing', async () => {

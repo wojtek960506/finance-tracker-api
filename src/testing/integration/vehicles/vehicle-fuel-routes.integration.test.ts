@@ -275,8 +275,22 @@ describe('vehicle fuel routes integration', () => {
       });
 
       expect(response.statusCode).toBe(200);
-      const items = response.json();
-      expect(items).toHaveLength(2);
+      const json = response.json();
+      expect(json.items).toHaveLength(2);
+      expect(json.summary).toEqual(
+        expect.objectContaining({
+          totalCostPln: 420,
+          totalVolume: 70,
+          totalCount: 2,
+        }),
+      );
+      expect(json.pagination).toEqual({
+        nextCursor: null,
+        hasMore: false,
+        total: 2,
+      });
+
+      const items = json.items;
 
       // Newest entry first (entry2)
       expect(items[0]).toEqual(
@@ -350,12 +364,13 @@ describe('vehicle fuel routes integration', () => {
       });
 
       expect(response.statusCode).toBe(200);
-      const items = response.json();
-      expect(items).toHaveLength(1);
-      expect(items[0].id).toBe(fullTankEntry._id.toString());
+      const json = response.json();
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].id).toBe(fullTankEntry._id.toString());
+      expect(json.pagination.total).toBe(1);
     });
 
-    it('applies pagination when page and limit query params are provided', async () => {
+    it('applies pagination when cursor and limit query params are provided', async () => {
       const ownerId = await createIntegrationUser({
         email: 'fuel-pagination@example.com',
       });
@@ -380,19 +395,38 @@ describe('vehicle fuel routes integration', () => {
 
       await insertFuelEntries([entry1, entry2]);
 
-      const response = await getApp().inject({
+      const firstPageResponse = await getApp().inject({
         method: 'GET',
-        url: `/api/vehicles/${vehicle._id.toString()}/fuel?page=2&limit=1`,
+        url: `/api/vehicles/${vehicle._id.toString()}/fuel?limit=1`,
         headers: {
           authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
         },
       });
 
-      expect(response.statusCode).toBe(200);
-      const items = response.json();
-      expect(items).toHaveLength(1);
-      // Page 2 with limit 1 should return older entry1
-      expect(items[0].id).toBe(entry1._id.toString());
+      expect(firstPageResponse.statusCode).toBe(200);
+      const firstPage = firstPageResponse.json();
+      expect(firstPage.items).toHaveLength(1);
+      expect(firstPage.items[0].id).toBe(entry2._id.toString());
+      expect(firstPage.pagination.hasMore).toBe(true);
+      expect(firstPage.pagination.nextCursor).toBeTruthy();
+      expect(firstPage.pagination.total).toBe(2);
+
+      const vehicleId = vehicle._id.toString();
+      const nextCursor = firstPage.pagination.nextCursor;
+      const secondPageResponse = await getApp().inject({
+        method: 'GET',
+        url: `/api/vehicles/${vehicleId}/fuel?cursor=${nextCursor}&limit=1`,
+        headers: {
+          authorization: `Bearer ${createIntegrationAccessToken(ownerId.toString())}`,
+        },
+      });
+
+      expect(secondPageResponse.statusCode).toBe(200);
+      const secondPage = secondPageResponse.json();
+      expect(secondPage.items).toHaveLength(1);
+      expect(secondPage.items[0].id).toBe(entry1._id.toString());
+      expect(secondPage.pagination.hasMore).toBe(false);
+      expect(secondPage.pagination.nextCursor).toBeNull();
     });
 
     it('excludes fuel entries from other vehicles and users', async () => {
@@ -432,9 +466,9 @@ describe('vehicle fuel routes integration', () => {
       });
 
       expect(response.statusCode).toBe(200);
-      const items = response.json();
-      expect(items).toHaveLength(1);
-      expect(items[0].vehicleId).toBe(vehicleA._id.toString());
+      const json = response.json();
+      expect(json.items).toHaveLength(1);
+      expect(json.items[0].vehicleId).toBe(vehicleA._id.toString());
     });
   });
 

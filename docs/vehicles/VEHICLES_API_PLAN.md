@@ -13,12 +13,12 @@ Repository Root:
 2. **Domain Collections** – Persist raw granular records across 3 core spending/usage domains:
    - **Fuel Entries** (`fuel_entries.csv`) – individual fill-ups with raw input data (date, fuel liters, tank status, unit price, cost, odometer, station).
    - **Equipment** (`vehicle_equipment.csv`) – accessories, parts, and equipment purchases.
-   - **Maintenance** (`own_maintenance.csv`, `previous_owner_services.csv`, `driving_licence_costs.csv`) – section-based service & administrative costs.
+   - **Maintenance** (`own_maintenance.csv`, `previous_owner_services.csv`) – section-based service & historical service records.
    > **Note on Derived Fuel Metrics & Statistics**:
    > In the legacy spreadsheets, many fuel columns (e.g. `distance_since_previous_km`, `consumption_l_per_100km`, `fuel_liters_to_full`, `cost_per_km_pln`) and aggregated tables (`fuel_stats.csv`, `fuel_yearly_distance_summary.csv`) were calculated from consecutive raw records.
    > To keep the database normalized, maintainable, and resilient to edits/inserts in past dates without requiring cascade database updates, **the database stores only raw user inputs**. All delta distances, consumption rates, and statistics are calculated **dynamically on-the-fly** by domain calculation helpers when requested. See [FUEL_CALCULATIONS.md](file:///home/wojtek960506/Programming/own_projects/finance-tracker/finance-tracker-api/docs/vehicles/FUEL_CALCULATIONS.md) for full algorithmic, complexity, and pagination details.
 3. **Transaction Linking (1:N)** – Vehicle spendings (Fuel Entries, Equipment, Maintenance) optionally reference a `transactionId` (foreign key to `Transaction`). One financial transaction can be linked to multiple vehicle spending records (e.g. single receipt covering multiple services/items).
-4. **Idempotent Imports** – Data rows track `sourceRow` (1-based index from CSV), ensuring imports can be safely re-run without creating duplicates.
+4. **Export / Import Mapping** – Relational linkages during CSV import/export are mapped dynamically in-memory without persisting `sourceRow` in MongoDB (see [EXPORT_IMPORT_AND_SOURCE_INDEX_REFACTOR_PLAN.md](file:///home/wojtek960506/Programming/own_projects/finance-tracker/finance-tracker-api/docs/EXPORT_IMPORT_AND_SOURCE_INDEX_REFACTOR_PLAN.md)).
 5. **Full Multi-Tenancy** – Every record is strictly scoped by `ownerId` (JWT Bearer authentication).
 
 ---
@@ -140,7 +140,6 @@ Stores the raw user-specified refueling events.
 | | `stationAddress` | Station location / address |
 | | `description` | Optional notes |
 | | `transactionId` | Optional FK linking to financial `Transaction` |
-| | `sourceRow` | 1-based CSV row number (for idempotent import) |
 | **Derived Metrics (Computed Dynamically)** | `fuelLitersToFull` | Total liters accumulated between previous and current full tank |
 | | `costToFullPln` | Total cost accumulated between previous and current full tank |
 | | `distanceSincePreviousKm` | `odometerKm - previous.odometerKm` |
@@ -155,7 +154,6 @@ export interface IVehicleFuelEntry extends Document {
   _id: Types.ObjectId;
   ownerId: Types.ObjectId;                        // ref: 'User'
   vehicleId: Types.ObjectId;                      // ref: 'Vehicle'
-  sourceRow?: number;                             // 1-based data row index from CSV
   date: Date;
   fuelLiters: number;
   isFullTank: boolean;
@@ -171,7 +169,6 @@ export interface IVehicleFuelEntry extends Document {
 }
 ```
 **Indexes**:
-- `{ ownerId: 1, vehicleId: 1, sourceRow: 1 }` (unique, sparse when sourceRow present)
 - `{ ownerId: 1, vehicleId: 1, date: -1, odometerKm: -1 }`
 - `{ ownerId: 1, transactionId: 1 }` (sparse index for transaction lookups)
 
@@ -186,7 +183,6 @@ export interface IVehicleEquipment extends Document {
   _id: Types.ObjectId;
   ownerId: Types.ObjectId;                        // ref: 'User'
   vehicleId: Types.ObjectId;                      // ref: 'Vehicle'
-  sourceRow?: number;
   date: Date;
   itemName: string;
   costPln: number;
@@ -197,7 +193,6 @@ export interface IVehicleEquipment extends Document {
 }
 ```
 **Indexes**:
-- `{ ownerId: 1, vehicleId: 1, sourceRow: 1 }` (unique, sparse)
 - `{ ownerId: 1, vehicleId: 1, date: -1 }`
 - `{ ownerId: 1, transactionId: 1 }` (sparse)
 
@@ -210,27 +205,29 @@ Service records, maintenance actions, previous owner history, and licensing fees
 // src/vehicles/model/vehicle-maintenance-model.ts
 export type MaintenanceSection = 
   | 'own_maintenance' 
-  | 'previous_owner_services' 
-  | 'driving_licence_costs';
+  | 'previous_owner_services';
 
 export interface IVehicleMaintenance extends Document {
   _id: Types.ObjectId;
   ownerId: Types.ObjectId;                        // ref: 'User'
   vehicleId: Types.ObjectId;                      // ref: 'Vehicle'
-  sourceRow?: number;
   section: MaintenanceSection;
   date: Date;
   costPln: number;
   odometerKm?: number;
   description?: string;
   serviceProvider?: string;
+  serviceAddress?: string;
   transactionId?: Types.ObjectId | null;          // ref: 'Transaction'
   createdAt: Date;
   updatedAt: Date;
 }
 ```
+> **Calculation & Totals Rules for Maintenance**:
+> - `own_maintenance`: Work and repairs conducted under user ownership. Included in vehicle total spendings and active odometer tracking.
+> - `previous_owner_services`: Historical service log from prior owner. Purely informative: costs must **never** be included in vehicle spendings totals, and odometers must **never** count towards active vehicle mileage tracking.
+
 **Indexes**:
-- `{ ownerId: 1, vehicleId: 1, section: 1, sourceRow: 1 }` (unique, sparse)
 - `{ ownerId: 1, vehicleId: 1, section: 1, date: -1 }`
 - `{ ownerId: 1, transactionId: 1 }` (sparse)
 
@@ -352,7 +349,7 @@ z.globalRegistry.add(VehicleMaintenanceResponseSchema, { id: 'VehicleMaintenance
 ### 6. `VehicleBatchImporterService` (`src/vehicles/services/importer/`)
 - `importVehicleData(ownerId, vehicleSlug, payload)`:
   - Finds or creates the `Vehicle` entity.
-  - Performs bulk `bulkWrite` upserts for raw `fuelEntries`, `equipment`, and `maintenance` matched on `(ownerId, vehicleId, sourceRow)`.
+  - Performs bulk `bulkWrite` inserts/upserts for raw `fuelEntries`, `equipment`, and `maintenance` using dynamic in-memory mapping without storing `sourceRow` in MongoDB.
   - Guarantees complete idempotency for re-running imports.
 
 ---

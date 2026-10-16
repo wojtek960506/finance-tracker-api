@@ -74,8 +74,8 @@ Changes will need to be coordinated across three repositories in the project:
    - [ ] Update `persistTransactions` to keep `sourceIndex` in memory only for resolving `refId`.
 
 2. **`finance-tracker-api` - Vehicle Domain**:
-   - [ ] Remove `sourceRow` from `vehicleFuelEntrySchema`, `vehicleEquipmentSchema`, and `vehicleMaintenanceSchema`.
-   - [ ] Remove compound indexes containing `sourceRow`.
+   - [x] Remove `sourceRow` from `vehicleFuelEntrySchema`, `vehicleEquipmentSchema`, and `vehicleMaintenanceSchema`.
+   - [x] Remove compound indexes containing `sourceRow`.
    - [ ] Vehicle batch importer uses in-memory matching or domain keys for upserts.
 
 3. **`finance-tracker-api` - CSV Export / Import Module**:

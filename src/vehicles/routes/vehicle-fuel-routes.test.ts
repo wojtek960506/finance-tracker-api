@@ -114,24 +114,52 @@ describe('vehicle fuel routes', async () => {
 
   describe('GET /:vehicleId/fuel', () => {
     it('lists enriched fuel entries for a vehicle with 200 status', async () => {
-      getFuelEntriesMock.mockResolvedValue([mockEnrichedFuelEntry]);
+      getFuelEntriesMock.mockResolvedValue({
+        items: [mockEnrichedFuelEntry],
+        summary: {
+          totalVolume: 14.5,
+          totalCostPln: 94.25,
+          avgConsumptionLPer100Km: 5.0,
+          avgUnitPricePln: 6.5,
+          totalCount: 1,
+        },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
+        },
+      });
 
       const response = await app.inject({
         method: 'GET',
-        url: `/${vehicleId}/fuel?page=1&limit=20&enriched=true`,
+        url: `/${vehicleId}/fuel?limit=20&enriched=true&cursor=test-cursor`,
       });
 
       expect(vehicleServices.getFuelEntries).toHaveBeenCalledWith(
         USER_ID_STR,
         vehicleId,
         expect.objectContaining({
-          page: 1,
+          cursor: 'test-cursor',
           limit: 20,
           enriched: true,
         }),
       );
       expect(response.statusCode).toBe(200);
-      expect(response.json()).toEqual([serializedMockEnrichedFuelEntry]);
+      expect(response.json()).toEqual({
+        items: [serializedMockEnrichedFuelEntry],
+        summary: {
+          totalVolume: 14.5,
+          totalCostPln: 94.25,
+          avgConsumptionLPer100Km: 5.0,
+          avgUnitPricePln: 6.5,
+          totalCount: 1,
+        },
+        pagination: {
+          nextCursor: null,
+          hasMore: false,
+          total: 1,
+        },
+      });
     });
 
     it('returns 404 when vehicle is not found for listing fuel entries', async () => {

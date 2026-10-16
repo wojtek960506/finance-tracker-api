@@ -22,11 +22,6 @@ const vehicleMaintenanceSchema = new Schema<IVehicleMaintenance>(
       required: true,
       index: true,
     },
-    sourceRow: {
-      type: Number,
-      required: false,
-      min: 1,
-    },
     section: {
       type: String,
       required: true,
@@ -57,6 +52,12 @@ const vehicleMaintenanceSchema = new Schema<IVehicleMaintenance>(
       trim: true,
       maxlength: 200,
     },
+    serviceAddress: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 200,
+    },
     transactionId: {
       type: Schema.Types.ObjectId,
       ref: 'Transaction',
@@ -67,10 +68,6 @@ const vehicleMaintenanceSchema = new Schema<IVehicleMaintenance>(
   { timestamps: true },
 );
 
-vehicleMaintenanceSchema.index(
-  { ownerId: 1, vehicleId: 1, section: 1, sourceRow: 1 },
-  { unique: true, sparse: true },
-);
 vehicleMaintenanceSchema.index({ ownerId: 1, vehicleId: 1, section: 1, date: -1 });
 vehicleMaintenanceSchema.index({ ownerId: 1, transactionId: 1 }, { sparse: true });
 

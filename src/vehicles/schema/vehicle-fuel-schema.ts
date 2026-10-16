@@ -4,6 +4,8 @@ import { OBJECT_ID_REGEX } from '@utils/consts';
 
 import { DEFAULT_VEHICLES_LIMIT, MAX_VEHICLES_LIMIT } from '../consts';
 
+import { VehiclePaginationSchema } from './vehicle-pagination-schema';
+
 export const VehicleFuelEntryCreateSchema = z.object({
   date: z.coerce.date(),
   fuelLiters: z.number().positive('Fuel liters must be positive'),
@@ -11,9 +13,9 @@ export const VehicleFuelEntryCreateSchema = z.object({
   unitPricePln: z.number().positive('Unit price must be positive'),
   costPln: z.number().positive('Cost must be positive'),
   odometerKm: z.number().int().nonnegative('Odometer reading must be non-negative'),
-  stationBrand: z.string().trim().max(100).optional(),
-  stationAddress: z.string().trim().max(200).optional(),
-  description: z.string().max(500).optional(),
+  stationBrand: z.string().trim().max(100).nullable().optional(),
+  stationAddress: z.string().trim().max(200).nullable().optional(),
+  description: z.string().max(500).nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -27,16 +29,15 @@ export const VehicleFuelEntryResponseSchema = z.object({
   id: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `id`'),
   ownerId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `ownerId`'),
   vehicleId: z.string().regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `vehicleId`'),
-  sourceRow: z.number().optional(),
   date: z.coerce.date(),
   fuelLiters: z.number(),
   isFullTank: z.boolean(),
   unitPricePln: z.number(),
   costPln: z.number(),
   odometerKm: z.number(),
-  stationBrand: z.string().optional(),
-  stationAddress: z.string().optional(),
-  description: z.string().optional(),
+  stationBrand: z.string().nullable().optional(),
+  stationAddress: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -73,7 +74,7 @@ export const VehicleFuelFilterQuerySchema = z.object({
       return true;
     }, z.boolean().default(true))
     .default(true),
-  page: z.coerce.number().int().min(1).default(1),
+  cursor: z.string().optional(),
   limit: z.coerce
     .number()
     .int()
@@ -82,9 +83,23 @@ export const VehicleFuelFilterQuerySchema = z.object({
     .default(DEFAULT_VEHICLES_LIMIT),
 });
 
+export const VehicleFuelSummarySchema = z.object({
+  totalVolume: z.number().nonnegative(),
+  totalCostPln: z.number().nonnegative(),
+  avgConsumptionLPer100Km: z.number().nonnegative().nullable(),
+  avgUnitPricePln: z.number().nonnegative().nullable(),
+  totalCount: z.number().int().nonnegative(),
+});
+
 export const VehicleFuelEntryListResponseSchema = z.array(
   VehicleFuelEntryEnrichedResponseSchema,
 );
+
+export const VehicleFuelWithSummaryResponseSchema = z.object({
+  items: z.array(VehicleFuelEntryEnrichedResponseSchema),
+  summary: VehicleFuelSummarySchema,
+  pagination: VehiclePaginationSchema,
+});
 
 export const VehicleFuelEntryParamsSchema = z.object({
   vehicleId: z.string().min(1, 'vehicleId is required'),
@@ -98,8 +113,12 @@ export type VehicleFuelEntryEnrichedResponseDTO = z.infer<
   typeof VehicleFuelEntryEnrichedResponseSchema
 >;
 export type VehicleFuelFilterQuery = z.infer<typeof VehicleFuelFilterQuerySchema>;
+export type VehicleFuelSummaryDTO = z.infer<typeof VehicleFuelSummarySchema>;
 export type VehicleFuelEntryListResponseDTO = z.infer<
   typeof VehicleFuelEntryListResponseSchema
+>;
+export type VehicleFuelWithSummaryResponseDTO = z.infer<
+  typeof VehicleFuelWithSummaryResponseSchema
 >;
 export type VehicleFuelEntryParamsDTO = z.infer<typeof VehicleFuelEntryParamsSchema>;
 
@@ -109,6 +128,10 @@ z.globalRegistry.add(VehicleFuelEntryResponseSchema, { id: 'VehicleFuelEntryResp
 z.globalRegistry.add(VehicleFuelEntryEnrichedResponseSchema, {
   id: 'VehicleFuelEntryEnrichedResponse',
 });
+z.globalRegistry.add(VehicleFuelSummarySchema, { id: 'VehicleFuelSummary' });
 z.globalRegistry.add(VehicleFuelEntryListResponseSchema, {
   id: 'VehicleFuelEntryListResponse',
+});
+z.globalRegistry.add(VehicleFuelWithSummaryResponseSchema, {
+  id: 'VehicleFuelWithSummaryResponse',
 });

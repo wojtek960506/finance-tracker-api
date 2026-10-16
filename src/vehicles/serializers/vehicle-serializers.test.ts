@@ -103,11 +103,12 @@ describe('vehicle serializers', () => {
       _id: new Types.ObjectId('507f1f77bcf86cd799439011'),
       ownerId: new Types.ObjectId('507f1f77bcf86cd799439012'),
       vehicleId: new Types.ObjectId('507f1f77bcf86cd799439014'),
-      section: 'own_maintenance',
+      section: 'ownMaintenance',
       date: new Date('2026-04-15'),
       costPln: 250,
       odometerKm: 41000,
       serviceProvider: 'Self',
+      serviceAddress: 'Warszawa, Krakowska 15',
       transactionId: null,
       createdAt: new Date('2026-04-15'),
       updatedAt: new Date('2026-04-15'),
@@ -115,7 +116,8 @@ describe('vehicle serializers', () => {
 
     const result = serializeMaintenance(doc);
     expect(result.id).toBe('507f1f77bcf86cd799439011');
-    expect(result.section).toBe('own_maintenance');
+    expect(result.section).toBe('ownMaintenance');
     expect(result.odometerKm).toBe(41000);
+    expect(result.serviceAddress).toBe('Warszawa, Krakowska 15');
   });
 });

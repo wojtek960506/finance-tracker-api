@@ -67,7 +67,6 @@ export interface FuelEntryDocInput {
   _id?: Types.ObjectId;
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   date?: Date;
   fuelLiters?: number;
   isFullTank?: boolean;
@@ -82,15 +81,10 @@ export interface FuelEntryDocInput {
   updatedAt?: Date;
 }
 
-let fuelSourceRowSeq = 1;
-let maintenanceSourceRowSeq = 1;
-let equipmentSourceRowSeq = 1;
-
 export const buildFuelEntryDoc = ({
   _id = new Types.ObjectId(),
   ownerId,
   vehicleId,
-  sourceRow = fuelSourceRowSeq++,
   date = new Date('2026-01-15T00:00:00.000Z'),
   fuelLiters = 14.5,
   isFullTank = true,
@@ -107,7 +101,6 @@ export const buildFuelEntryDoc = ({
   _id,
   ownerId,
   vehicleId,
-  sourceRow,
   date,
   fuelLiters,
   isFullTank,
@@ -130,13 +123,13 @@ export interface MaintenanceDocInput {
   _id?: Types.ObjectId;
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   section?: MaintenanceSection;
   date?: Date;
   costPln?: number;
   odometerKm?: number;
   description?: string;
   serviceProvider?: string;
+  serviceAddress?: string;
   transactionId?: Types.ObjectId | null;
   createdAt?: Date;
   updatedAt?: Date;
@@ -146,13 +139,13 @@ export const buildMaintenanceDoc = ({
   _id = new Types.ObjectId(),
   ownerId,
   vehicleId,
-  sourceRow = maintenanceSourceRowSeq++,
-  section = 'own_maintenance',
+  section = 'ownMaintenance',
   date = new Date('2026-02-01T00:00:00.000Z'),
   costPln = 350,
   odometerKm = 16000,
   description = 'Oil and filter replacement',
   serviceProvider = 'Moto Workshop',
+  serviceAddress = 'Warszawa, ul. Serwisowa 5',
   transactionId = null,
   createdAt = new Date('2026-02-01T00:00:00.000Z'),
   updatedAt = new Date('2026-02-01T00:00:00.000Z'),
@@ -160,13 +153,13 @@ export const buildMaintenanceDoc = ({
   _id,
   ownerId,
   vehicleId,
-  sourceRow,
   section,
   date,
   costPln,
   odometerKm,
   description,
   serviceProvider,
+  serviceAddress,
   transactionId,
   createdAt,
   updatedAt,
@@ -180,7 +173,6 @@ export interface EquipmentDocInput {
   _id?: Types.ObjectId;
   ownerId: Types.ObjectId;
   vehicleId: Types.ObjectId;
-  sourceRow?: number;
   date?: Date;
   itemName?: string;
   costPln?: number;
@@ -194,7 +186,6 @@ export const buildEquipmentDoc = ({
   _id = new Types.ObjectId(),
   ownerId,
   vehicleId,
-  sourceRow = equipmentSourceRowSeq++,
   date = new Date('2026-02-05T00:00:00.000Z'),
   itemName = 'Crash bars',
   costPln = 450,
@@ -206,7 +197,6 @@ export const buildEquipmentDoc = ({
   _id,
   ownerId,
   vehicleId,
-  sourceRow,
   date,
   itemName,
   costPln,

@@ -67,11 +67,10 @@ describe('vehicle domain models', () => {
       expect(doc.validateSync()).toBeUndefined();
     });
 
-    it('accepts fuel entry with transaction link and sourceRow', () => {
+    it('accepts fuel entry with transaction link', () => {
       const doc = new VehicleFuelEntryModel({
         ownerId: new Types.ObjectId(),
         vehicleId: new Types.ObjectId(),
-        sourceRow: 12,
         date: new Date('2026-05-01'),
         fuelLiters: 10,
         isFullTank: false,
@@ -135,12 +134,13 @@ describe('vehicle domain models', () => {
       const doc = new VehicleMaintenanceModel({
         ownerId: new Types.ObjectId(),
         vehicleId: new Types.ObjectId(),
-        section: 'own_maintenance',
+        section: 'ownMaintenance',
         date: new Date('2026-04-20'),
         costPln: 180,
         odometerKm: 41000,
         description: 'Motul 7100 10W40 + Hiflo filter',
         serviceProvider: 'Self',
+        serviceAddress: 'Warszawa, Krakowska 15',
       });
 
       expect(doc.validateSync()).toBeUndefined();

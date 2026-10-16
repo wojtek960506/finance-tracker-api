@@ -1,6 +1,6 @@
 import {
   VehicleMaintenanceFilterQuery,
-  VehicleMaintenanceListResponseDTO,
+  VehicleMaintenanceWithSummaryResponseDTO,
   VehicleParamsDTO,
 } from '@vehicles/schema';
 import { getMaintenanceList } from '@vehicles/services';
@@ -16,7 +16,7 @@ export const getMaintenanceListHandler = async (
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result: VehicleMaintenanceListResponseDTO = await getMaintenanceList(
+  const result: VehicleMaintenanceWithSummaryResponseDTO = await getMaintenanceList(
     userId,
     req.params.vehicleId,
     req.query,

@@ -52,7 +52,7 @@ describe('vehicle fuel schema', () => {
       const result = VehicleFuelFilterQuerySchema.safeParse({
         isFullTank: 'true',
         enriched: 'true',
-        page: '2',
+        cursor: 'some-cursor-token',
         limit: '25',
       });
 
@@ -60,7 +60,7 @@ describe('vehicle fuel schema', () => {
       if (result.success) {
         expect(result.data.isFullTank).toBe(true);
         expect(result.data.enriched).toBe(true);
-        expect(result.data.page).toBe(2);
+        expect(result.data.cursor).toBe('some-cursor-token');
         expect(result.data.limit).toBe(25);
       }
     });

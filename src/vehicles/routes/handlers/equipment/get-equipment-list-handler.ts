@@ -1,6 +1,6 @@
 import {
   VehicleEquipmentFilterQuery,
-  VehicleEquipmentListResponseDTO,
+  VehicleEquipmentWithSummaryResponseDTO,
   VehicleParamsDTO,
 } from '@vehicles/schema';
 import { getEquipmentList } from '@vehicles/services';
@@ -16,7 +16,7 @@ export const getEquipmentListHandler = async (
   res: FastifyReply,
 ) => {
   const userId = (req as AuthenticatedRequest).userId;
-  const result: VehicleEquipmentListResponseDTO = await getEquipmentList(
+  const result: VehicleEquipmentWithSummaryResponseDTO = await getEquipmentList(
     userId,
     req.params.vehicleId,
     req.query,
