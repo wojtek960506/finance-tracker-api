@@ -67,6 +67,7 @@ export interface VehicleMaintenanceAttributes {
   odometerKm?: number;
   description?: string;
   serviceProvider?: string;
+  serviceAddress?: string;
   transactionId?: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;

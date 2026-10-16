@@ -124,6 +124,7 @@ export interface VehicleMaintenanceCreateDTO {
   odometerKm?: number;
   description?: string;
   serviceProvider?: string;
+  serviceAddress?: string;
   transactionId?: string | null;
 }
 
@@ -139,6 +140,7 @@ export interface VehicleMaintenanceResponseDTO {
   odometerKm?: number;
   description?: string;
   serviceProvider?: string;
+  serviceAddress?: string;
   transactionId?: string | null;
   createdAt: string;
   updatedAt: string;

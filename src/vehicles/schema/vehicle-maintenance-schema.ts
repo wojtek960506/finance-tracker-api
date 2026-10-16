@@ -23,6 +23,7 @@ export const VehicleMaintenanceCreateSchema = z.object({
     .optional(),
   description: z.string().max(1000).optional(),
   serviceProvider: z.string().trim().max(200).optional(),
+  serviceAddress: z.string().trim().max(200).optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -42,6 +43,7 @@ export const VehicleMaintenanceResponseSchema = z.object({
   odometerKm: z.number().optional(),
   description: z.string().optional(),
   serviceProvider: z.string().optional(),
+  serviceAddress: z.string().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')

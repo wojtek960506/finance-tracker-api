@@ -52,6 +52,12 @@ const vehicleMaintenanceSchema = new Schema<IVehicleMaintenance>(
       trim: true,
       maxlength: 200,
     },
+    serviceAddress: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 200,
+    },
     transactionId: {
       type: Schema.Types.ObjectId,
       ref: 'Transaction',

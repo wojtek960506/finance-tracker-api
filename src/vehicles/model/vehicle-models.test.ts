@@ -140,6 +140,7 @@ describe('vehicle domain models', () => {
         odometerKm: 41000,
         description: 'Motul 7100 10W40 + Hiflo filter',
         serviceProvider: 'Self',
+        serviceAddress: 'Warszawa, Krakowska 15',
       });
 
       expect(doc.validateSync()).toBeUndefined();

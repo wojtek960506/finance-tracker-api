@@ -108,6 +108,7 @@ describe('vehicle serializers', () => {
       costPln: 250,
       odometerKm: 41000,
       serviceProvider: 'Self',
+      serviceAddress: 'Warszawa, Krakowska 15',
       transactionId: null,
       createdAt: new Date('2026-04-15'),
       updatedAt: new Date('2026-04-15'),
@@ -117,5 +118,6 @@ describe('vehicle serializers', () => {
     expect(result.id).toBe('507f1f77bcf86cd799439011');
     expect(result.section).toBe('ownMaintenance');
     expect(result.odometerKm).toBe(41000);
+    expect(result.serviceAddress).toBe('Warszawa, Krakowska 15');
   });
 });

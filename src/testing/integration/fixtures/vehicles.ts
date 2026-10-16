@@ -129,6 +129,7 @@ export interface MaintenanceDocInput {
   odometerKm?: number;
   description?: string;
   serviceProvider?: string;
+  serviceAddress?: string;
   transactionId?: Types.ObjectId | null;
   createdAt?: Date;
   updatedAt?: Date;
@@ -144,6 +145,7 @@ export const buildMaintenanceDoc = ({
   odometerKm = 16000,
   description = 'Oil and filter replacement',
   serviceProvider = 'Moto Workshop',
+  serviceAddress = 'Warszawa, ul. Serwisowa 5',
   transactionId = null,
   createdAt = new Date('2026-02-01T00:00:00.000Z'),
   updatedAt = new Date('2026-02-01T00:00:00.000Z'),
@@ -157,6 +159,7 @@ export const buildMaintenanceDoc = ({
   odometerKm,
   description,
   serviceProvider,
+  serviceAddress,
   transactionId,
   createdAt,
   updatedAt,

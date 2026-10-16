@@ -2162,6 +2162,10 @@
             "type": "string",
             "maxLength": 200
           },
+          "serviceAddress": {
+            "type": "string",
+            "maxLength": 200
+          },
           "transactionId": {
             "anyOf": [
               {
@@ -2205,6 +2209,10 @@
             "maxLength": 1000
           },
           "serviceProvider": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "serviceAddress": {
             "type": "string",
             "maxLength": 200
           },
@@ -2254,6 +2262,9 @@
             "type": "string"
           },
           "serviceProvider": {
+            "type": "string"
+          },
+          "serviceAddress": {
             "type": "string"
           },
           "transactionId": {
@@ -9176,6 +9187,10 @@
             "type": "string",
             "maxLength": 200
           },
+          "serviceAddress": {
+            "type": "string",
+            "maxLength": 200
+          },
           "transactionId": {
             "anyOf": [
               {
@@ -9223,6 +9238,10 @@
             "maxLength": 1000
           },
           "serviceProvider": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "serviceAddress": {
             "type": "string",
             "maxLength": 200
           },
@@ -9276,6 +9295,9 @@
             "type": "string"
           },
           "serviceProvider": {
+            "type": "string"
+          },
+          "serviceAddress": {
             "type": "string"
           },
           "transactionId": {

@@ -82,6 +82,7 @@ export const serializeMaintenance = (
   odometerKm: maintenance.odometerKm,
   description: maintenance.description,
   serviceProvider: maintenance.serviceProvider,
+  serviceAddress: maintenance.serviceAddress,
   transactionId: maintenance.transactionId ? maintenance.transactionId.toString() : null,
   createdAt: maintenance.createdAt,
   updatedAt: maintenance.updatedAt,

@@ -71,6 +71,7 @@ describe('vehicle maintenance routes', async () => {
     odometerKm: 36000,
     description: 'Oil and filter change',
     serviceProvider: 'AutoService Warsaw',
+    serviceAddress: 'Warsaw, Main St 1',
     transactionId: null,
     createdAt: new Date('2026-03-01T00:00:00.000Z'),
     updatedAt: new Date('2026-03-01T00:00:00.000Z'),
@@ -185,6 +186,7 @@ describe('vehicle maintenance routes', async () => {
       odometerKm: 36000,
       description: 'Oil and filter change',
       serviceProvider: 'AutoService Warsaw',
+      serviceAddress: 'Warsaw, Main St 1',
     };
 
     it('should return 201 with created maintenance record', async () => {

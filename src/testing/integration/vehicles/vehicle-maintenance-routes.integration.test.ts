@@ -31,6 +31,7 @@ describe('vehicle maintenance routes integration', () => {
         odometerKm: 55000,
         description: 'Oil, filters and brake fluid',
         serviceProvider: 'Garage Warsaw',
+        serviceAddress: 'Warszawa, ul. Serwisowa 5',
       };
 
       const response = await getApp().inject({
@@ -54,6 +55,7 @@ describe('vehicle maintenance routes integration', () => {
         odometerKm: 55000,
         description: 'Oil, filters and brake fluid',
         serviceProvider: 'Garage Warsaw',
+        serviceAddress: 'Warszawa, ul. Serwisowa 5',
         transactionId: null,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),

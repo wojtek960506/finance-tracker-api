@@ -217,6 +217,7 @@ export interface IVehicleMaintenance extends Document {
   odometerKm?: number;
   description?: string;
   serviceProvider?: string;
+  serviceAddress?: string;
   transactionId?: Types.ObjectId | null;          // ref: 'Transaction'
   createdAt: Date;
   updatedAt: Date;

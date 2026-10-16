@@ -47,6 +47,7 @@ describe('Maintenance CRUD Services', () => {
       odometerKm: data.odometerKm ?? 41000,
       description: data.description || 'Oil + filter change',
       serviceProvider: data.serviceProvider || 'Self',
+      serviceAddress: data.serviceAddress || 'Warszawa, Opolska 1',
       createdAt: data.createdAt || new Date('2026-05-01'),
       updatedAt: data.updatedAt || new Date('2026-05-01'),
       save: vi.fn().mockResolvedValue(this),
@@ -66,6 +67,7 @@ describe('Maintenance CRUD Services', () => {
       odometerKm: 41000,
       description: 'Oil + filter change',
       serviceProvider: 'Self',
+      serviceAddress: 'Warszawa, Opolska 1',
     };
 
     it('creates maintenance associated with resolved vehicle', async () => {
@@ -200,6 +202,7 @@ describe('Maintenance CRUD Services', () => {
       const updateDto: VehicleMaintenanceUpdateDTO = {
         costPln: 220,
         serviceProvider: 'Garage XYZ',
+        serviceAddress: 'Kraków, Armii Krajowej 5',
       };
 
       const result = await updateMaintenance(
@@ -212,6 +215,7 @@ describe('Maintenance CRUD Services', () => {
       expect(doc.save).toHaveBeenCalled();
       expect(result.costPln).toBe(220);
       expect(result.serviceProvider).toBe('Garage XYZ');
+      expect(result.serviceAddress).toBe('Kraków, Armii Krajowej 5');
     });
 
     it('throws VehicleMaintenanceNotFoundError when maintenance to update is missing', async () => {
