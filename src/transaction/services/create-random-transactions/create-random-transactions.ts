@@ -31,7 +31,6 @@ export async function createRandomTransactions(
     ...SYSTEM_CATEGORY_NAMES,
     'Food',
     'Sport',
-    'Transport',
     'Accomodation',
     'Entertainment',
   ];

@@ -1,6 +1,7 @@
 import { findNamedResourceById, findNamedResourceByName } from '@named-resource/db';
 import { checkOwner } from '@shared/services';
 import {
+  ALLOWED_STANDARD_SYSTEM_CATEGORY_NAMES,
   OTHER_ACCOUNT_NAME,
   OTHER_CATEGORY_NAME,
   OTHER_PAYMENT_METHOD_NAME,
@@ -28,7 +29,10 @@ export const resolveCategoryId = async (
     ? await findNamedResourceById('category', categoryId)
     : await findRequiredSystemResource('category', OTHER_CATEGORY_NAME);
 
-  if (category.type === 'system' && category.name !== OTHER_CATEGORY_NAME)
+  if (
+    category.type === 'system' &&
+    !ALLOWED_STANDARD_SYSTEM_CATEGORY_NAMES.has(category.name)
+  )
     throw new SystemCategoryNotAllowed(category.id);
   if (category.type !== 'system')
     checkOwner(ownerId, category.id, category.ownerId!, 'category');

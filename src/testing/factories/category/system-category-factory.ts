@@ -11,6 +11,9 @@ import {
   TRANSFER_CATEGORY_ID_OBJ,
   TRANSFER_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_NAME,
+  TRANSPORT_CATEGORY_ID_OBJ,
+  TRANSPORT_CATEGORY_ID_STR,
+  TRANSPORT_CATEGORY_NAME,
 } from './category-consts';
 
 const commonProps = {
@@ -28,6 +31,10 @@ const propsExchange = {
 const propsOther = {
   name: OTHER_CATEGORY_NAME,
   nameNormalized: OTHER_CATEGORY_NAME.toLowerCase(),
+};
+const propsTransport = {
+  name: TRANSPORT_CATEGORY_NAME,
+  nameNormalized: TRANSPORT_CATEGORY_NAME.toLowerCase(),
 };
 
 export const getExchangeCategoryResultJSON = () => ({
@@ -66,5 +73,18 @@ export const getOtherCategoryResultSerialized = () => ({
   ...commonProps,
   ...propsOther,
   id: OTHER_CATEGORY_ID_STR,
+  isFavorite: false,
+});
+
+export const getTransportCategoryResultJSON = () => ({
+  ...commonProps,
+  ...propsTransport,
+  _id: TRANSPORT_CATEGORY_ID_OBJ,
+});
+
+export const getTransportCategoryResultSerialized = () => ({
+  ...commonProps,
+  ...propsTransport,
+  id: TRANSPORT_CATEGORY_ID_STR,
   isFavorite: false,
 });

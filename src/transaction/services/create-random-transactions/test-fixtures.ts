@@ -10,7 +10,7 @@ export const TEST_CATEGORIES = [
   { id: 'cat-other', name: 'otherCategory' },
   { id: 'cat-food', name: 'Food' },
   { id: 'cat-sport', name: 'Sport' },
-  { id: 'cat-transport', name: 'Transport' },
+  { id: 'cat-transport', name: 'transport' },
   { id: 'cat-accomodation', name: 'Accomodation' },
   { id: 'cat-entertainment', name: 'Entertainment' },
 ];
