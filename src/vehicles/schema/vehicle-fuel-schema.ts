@@ -13,9 +13,9 @@ export const VehicleFuelEntryCreateSchema = z.object({
   unitPricePln: z.number().positive('Unit price must be positive'),
   costPln: z.number().positive('Cost must be positive'),
   odometerKm: z.number().int().nonnegative('Odometer reading must be non-negative'),
-  stationBrand: z.string().trim().max(100).optional(),
-  stationAddress: z.string().trim().max(200).optional(),
-  description: z.string().max(500).optional(),
+  stationBrand: z.string().trim().max(100).nullable().optional(),
+  stationAddress: z.string().trim().max(200).nullable().optional(),
+  description: z.string().max(500).nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -35,9 +35,9 @@ export const VehicleFuelEntryResponseSchema = z.object({
   unitPricePln: z.number(),
   costPln: z.number(),
   odometerKm: z.number(),
-  stationBrand: z.string().optional(),
-  stationAddress: z.string().optional(),
-  description: z.string().optional(),
+  stationBrand: z.string().nullable().optional(),
+  stationAddress: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')

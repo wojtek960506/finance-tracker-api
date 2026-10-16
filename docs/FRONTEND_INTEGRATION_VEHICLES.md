@@ -121,10 +121,10 @@ export interface VehicleMaintenanceCreateDTO {
   section: MaintenanceSection;
   date: string; // ISO date string
   costPln: number;
-  odometerKm?: number;
-  description?: string;
-  serviceProvider?: string;
-  serviceAddress?: string;
+  odometerKm?: number | null;
+  description?: string | null;
+  serviceProvider?: string | null;
+  serviceAddress?: string | null;
   transactionId?: string | null;
 }
 
@@ -137,10 +137,10 @@ export interface VehicleMaintenanceResponseDTO {
   section: MaintenanceSection;
   date: string;
   costPln: number;
-  odometerKm?: number;
-  description?: string;
-  serviceProvider?: string;
-  serviceAddress?: string;
+  odometerKm?: number | null;
+  description?: string | null;
+  serviceProvider?: string | null;
+  serviceAddress?: string | null;
   transactionId?: string | null;
   createdAt: string;
   updatedAt: string;

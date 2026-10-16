@@ -47,7 +47,7 @@ export const VehicleOverviewActivityItemSchema = z.object({
   date: z.coerce.date(),
   costPln: z.number(),
   title: z.string(),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   odometerKm: z.number().int().nonnegative().nullable().optional(),
   transactionId: z
     .string()
@@ -58,7 +58,7 @@ export const VehicleOverviewActivityItemSchema = z.object({
   isFullTank: z.boolean().optional(),
   consumptionLPer100Km: z.number().nullable().optional(),
   maintenanceSection: MaintenanceSectionSchema.optional(),
-  serviceProvider: z.string().optional(),
+  serviceProvider: z.string().nullable().optional(),
 });
 
 export const VehicleOverviewResponseSchema = z.object({

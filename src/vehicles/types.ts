@@ -28,9 +28,9 @@ export interface VehicleFuelEntryAttributes {
   unitPricePln: number;
   costPln: number;
   odometerKm: number;
-  stationBrand?: string;
-  stationAddress?: string;
-  description?: string;
+  stationBrand?: string | null;
+  stationAddress?: string | null;
+  description?: string | null;
   transactionId?: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
@@ -52,7 +52,7 @@ export interface VehicleEquipmentAttributes {
   date: Date;
   itemName: string;
   costPln: number;
-  description?: string;
+  description?: string | null;
   transactionId?: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
@@ -64,10 +64,10 @@ export interface VehicleMaintenanceAttributes {
   section: MaintenanceSection;
   date: Date;
   costPln: number;
-  odometerKm?: number;
-  description?: string;
-  serviceProvider?: string;
-  serviceAddress?: string;
+  odometerKm?: number | null;
+  description?: string | null;
+  serviceProvider?: string | null;
+  serviceAddress?: string | null;
   transactionId?: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;

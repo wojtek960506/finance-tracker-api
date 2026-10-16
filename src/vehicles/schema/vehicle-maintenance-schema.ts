@@ -20,10 +20,11 @@ export const VehicleMaintenanceCreateSchema = z.object({
     .number()
     .int()
     .nonnegative('Odometer reading must be non-negative')
+    .nullable()
     .optional(),
-  description: z.string().max(1000).optional(),
-  serviceProvider: z.string().trim().max(200).optional(),
-  serviceAddress: z.string().trim().max(200).optional(),
+  description: z.string().max(1000).nullable().optional(),
+  serviceProvider: z.string().trim().max(200).nullable().optional(),
+  serviceAddress: z.string().trim().max(200).nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -40,10 +41,10 @@ export const VehicleMaintenanceResponseSchema = z.object({
   section: MaintenanceSectionSchema,
   date: z.coerce.date(),
   costPln: z.number(),
-  odometerKm: z.number().optional(),
-  description: z.string().optional(),
-  serviceProvider: z.string().optional(),
-  serviceAddress: z.string().optional(),
+  odometerKm: z.number().nullable().optional(),
+  description: z.string().nullable().optional(),
+  serviceProvider: z.string().nullable().optional(),
+  serviceAddress: z.string().nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')

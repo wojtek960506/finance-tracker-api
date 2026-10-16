@@ -10,7 +10,7 @@ export const VehicleEquipmentCreateSchema = z.object({
   date: z.coerce.date(),
   itemName: z.string().trim().min(1, 'Item name is required').max(200),
   costPln: z.number().min(0, 'Cost must be non-negative'),
-  description: z.string().max(500).optional(),
+  description: z.string().max(500).nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')
@@ -27,7 +27,7 @@ export const VehicleEquipmentResponseSchema = z.object({
   date: z.coerce.date(),
   itemName: z.string().min(1).max(200),
   costPln: z.number(),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   transactionId: z
     .string()
     .regex(OBJECT_ID_REGEX, 'Invalid ObjectId format for `transactionId`')

@@ -1590,8 +1590,15 @@
             "minimum": 0
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -1625,8 +1632,15 @@
             "minimum": 0
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -1666,7 +1680,14 @@
             "type": "number"
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -1765,16 +1786,37 @@
             "maximum": 9007199254740991
           },
           "stationBrand": {
-            "type": "string",
-            "maxLength": 100
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -1822,16 +1864,37 @@
             "maximum": 9007199254740991
           },
           "stationBrand": {
-            "type": "string",
-            "maxLength": 100
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -1878,13 +1941,34 @@
             "type": "number"
           },
           "stationBrand": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -1946,13 +2030,34 @@
             "type": "number"
           },
           "stationBrand": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -2150,21 +2255,49 @@
             "minimum": 0
           },
           "odometerKm": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 9007199254740991
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 1000
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceProvider": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -2200,21 +2333,49 @@
             "minimum": 0
           },
           "odometerKm": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 9007199254740991
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 1000
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceProvider": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -2256,16 +2417,44 @@
             "type": "number"
           },
           "odometerKm": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceProvider": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceAddress": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -2507,7 +2696,14 @@
             "type": "string"
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "odometerKm": {
             "anyOf": [
@@ -2556,7 +2752,14 @@
             ]
           },
           "serviceProvider": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -8564,8 +8767,15 @@
             "minimum": 0
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -8603,8 +8813,15 @@
             "minimum": 0
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -8648,7 +8865,14 @@
             "type": "number"
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -8759,16 +8983,37 @@
             "maximum": 9007199254740991
           },
           "stationBrand": {
-            "type": "string",
-            "maxLength": 100
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -8821,16 +9066,37 @@
             "maximum": 9007199254740991
           },
           "stationBrand": {
-            "type": "string",
-            "maxLength": 100
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 500
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -8881,13 +9147,34 @@
             "type": "number"
           },
           "stationBrand": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -8959,13 +9246,34 @@
             "type": "number"
           },
           "stationBrand": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "stationAddress": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -9175,21 +9483,49 @@
             "minimum": 0
           },
           "odometerKm": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 9007199254740991
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 1000
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceProvider": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -9229,21 +9565,49 @@
             "minimum": 0
           },
           "odometerKm": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 9007199254740991
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string",
-            "maxLength": 1000
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceProvider": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceAddress": {
-            "type": "string",
-            "maxLength": 200
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -9289,16 +9653,44 @@
             "type": "number"
           },
           "odometerKm": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceProvider": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "serviceAddress": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "transactionId": {
             "anyOf": [
@@ -9556,7 +9948,14 @@
             "type": "string"
           },
           "description": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "odometerKm": {
             "anyOf": [
@@ -9605,7 +10004,14 @@
             ]
           },
           "serviceProvider": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
