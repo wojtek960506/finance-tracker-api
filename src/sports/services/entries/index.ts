@@ -1,4 +1,3 @@
-export * from './assert-sport-category-access';
 export * from './create-sport-entry';
 export * from './delete-sport-entry';
 export * from './get-sport-entry';
