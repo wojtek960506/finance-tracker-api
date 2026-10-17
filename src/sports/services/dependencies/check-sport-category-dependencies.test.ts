@@ -1,4 +1,5 @@
-import mongoose, { Types } from 'mongoose';
+import { SportEntryModel } from '@sports/model';
+import { Types } from 'mongoose';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { SportCategoryDependencyError } from '@utils/errors';
@@ -12,25 +13,19 @@ describe('checkSportCategoryDependencies', () => {
 
   it('does nothing when no sport entries reference categoryId', async () => {
     const categoryId = new Types.ObjectId().toString();
-    const countDocumentsMock = vi.fn().mockResolvedValue(0);
-
-    vi.spyOn(mongoose.connection, 'collection').mockReturnValue({
-      countDocuments: countDocumentsMock,
-    } as any);
+    const countDocumentsSpy = vi
+      .spyOn(SportEntryModel, 'countDocuments')
+      .mockResolvedValue(0 as any);
 
     await expect(checkSportCategoryDependencies(categoryId)).resolves.toBeUndefined();
-    expect(countDocumentsMock).toHaveBeenCalledWith({
+    expect(countDocumentsSpy).toHaveBeenCalledWith({
       categoryId: new Types.ObjectId(categoryId),
     });
   });
 
   it('throws SportCategoryDependencyError when sport entries reference categoryId', async () => {
     const categoryId = new Types.ObjectId().toString();
-    const countDocumentsMock = vi.fn().mockResolvedValue(3);
-
-    vi.spyOn(mongoose.connection, 'collection').mockReturnValue({
-      countDocuments: countDocumentsMock,
-    } as any);
+    vi.spyOn(SportEntryModel, 'countDocuments').mockResolvedValue(3 as any);
 
     await expect(checkSportCategoryDependencies(categoryId)).rejects.toBeInstanceOf(
       SportCategoryDependencyError,
