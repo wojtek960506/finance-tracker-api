@@ -1,0 +1,22 @@
+import Fastify from 'fastify';
+import { describe, expect, it, vi } from 'vitest';
+
+import { sportCategoryRoutes } from './sport-category-routes';
+import { sportRoutes } from './sport-routes';
+
+vi.mock('./sport-category-routes', () => ({
+  sportCategoryRoutes: vi.fn(),
+}));
+
+describe('sportRoutes', () => {
+  it('registers sportCategoryRoutes under /categories prefix', async () => {
+    const app = Fastify();
+    const registerSpy = vi.spyOn(app, 'register');
+
+    await sportRoutes(app as any);
+
+    expect(registerSpy).toHaveBeenCalledWith(sportCategoryRoutes, {
+      prefix: '/categories',
+    });
+  });
+});

@@ -1,3 +1,5 @@
+import { checkSportCategoryDependencies } from '@sports/services';
+
 import { CheckOwnerType } from '@shared/services';
 import { checkTransactionDependencies } from '@transaction/services';
 import {
@@ -10,15 +12,21 @@ import {
   PaymentMethodAlreadyExistsError,
   PaymentMethodNotFoundError,
   PaymentMethodSystemNameConflictError,
+  SportCategoryAlreadyExistsError,
+  SportCategoryNotFoundError,
+  SportCategorySystemNameConflictError,
   SystemAccountDeletionNotAllowed,
   SystemAccountUpdateNotAllowed,
   SystemCategoryDeletionNotAllowed,
   SystemCategoryUpdateNotAllowed,
   SystemPaymentMethodDeletionNotAllowed,
   SystemPaymentMethodUpdateNotAllowed,
+  SystemSportCategoryDeletionNotAllowed,
+  SystemSportCategoryUpdateNotAllowed,
   UserAccountMissingOwner,
   UserCategoryMissingOwner,
   UserPaymentMethodMissingOwner,
+  UserSportCategoryMissingOwner,
 } from '@utils/errors';
 
 import { getNamedResourceModel, INamedResource } from './model';
@@ -93,6 +101,20 @@ const namedResourceConfigs: Record<NamedResourceKind, NamedResourceKindConfig> =
     systemResourceDeleteErrorFactory: (id) =>
       new SystemPaymentMethodDeletionNotAllowed(id),
     checkOccurrences: (id) => checkTransactionDependencies('paymentMethodId', id),
+  },
+  sportCategory: {
+    model: getNamedResourceModel('sportCategory'),
+    serialize,
+    checkOwnerType: 'sportCategory',
+    notFoundErrorFactory: (id) => new SportCategoryNotFoundError(id),
+    alreadyExistsErrorFactory: (name) => new SportCategoryAlreadyExistsError(name),
+    systemNameConflictErrorFactory: (name) =>
+      new SportCategorySystemNameConflictError(name),
+    systemUpdateNotAllowedFactory: (id) => new SystemSportCategoryUpdateNotAllowed(id),
+    userMissingOwnerFactory: (id) => new UserSportCategoryMissingOwner(id),
+    systemResourceDeleteErrorFactory: (id) =>
+      new SystemSportCategoryDeletionNotAllowed(id),
+    checkOccurrences: (id) => checkSportCategoryDependencies(id),
   },
 };
 

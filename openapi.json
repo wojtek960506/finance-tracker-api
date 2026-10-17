@@ -1548,6 +1548,65 @@
           "excludedCategories"
         ]
       },
+      "NamedResourceInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "NamedResourceResponseInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "type",
+          "nameNormalized",
+          "isFavorite"
+        ]
+      },
+      "NamedResourcesResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NamedResourceResponseInput"
+        }
+      },
       "VehiclePaginationInput": {
         "type": "object",
         "properties": {
@@ -3247,65 +3306,6 @@
         "required": [
           "message"
         ]
-      },
-      "NamedResourceInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "NamedResourceResponseInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "id": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "ownerId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "user",
-              "system"
-            ]
-          },
-          "nameNormalized": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "isFavorite": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "name",
-          "id",
-          "type",
-          "nameNormalized",
-          "isFavorite"
-        ]
-      },
-      "NamedResourcesResponseInput": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/NamedResourceResponseInput"
-        }
       },
       "LoginInput": {
         "type": "object",
@@ -8721,6 +8721,67 @@
         ],
         "additionalProperties": false
       },
+      "NamedResource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "NamedResourceResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "type",
+          "nameNormalized",
+          "isFavorite"
+        ],
+        "additionalProperties": false
+      },
+      "NamedResourcesResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NamedResourceResponse"
+        }
+      },
       "VehiclePagination": {
         "type": "object",
         "properties": {
@@ -10525,67 +10586,6 @@
           "message"
         ],
         "additionalProperties": false
-      },
-      "NamedResource": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          }
-        },
-        "required": [
-          "name"
-        ],
-        "additionalProperties": false
-      },
-      "NamedResourceResponse": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "id": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "ownerId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "user",
-              "system"
-            ]
-          },
-          "nameNormalized": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "isFavorite": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "name",
-          "id",
-          "type",
-          "nameNormalized",
-          "isFavorite"
-        ],
-        "additionalProperties": false
-      },
-      "NamedResourcesResponse": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/NamedResourceResponse"
-        }
       },
       "Login": {
         "type": "object",
@@ -19483,6 +19483,307 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SpendingLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/": {
+      "get": {
+        "summary": "List sport categories",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Return all sport categories for the authenticated user, including system categories.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Create a new custom sport category for the authenticated user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/favorites": {
+      "get": {
+        "summary": "List favorite sport categories",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Return all favorite sport categories for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/{id}": {
+      "get": {
+        "summary": "Get sport category by id",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Return a single sport category by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update sport category (PUT)",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Update a custom sport category by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update sport category (PATCH)",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Update a custom sport category by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Delete a custom sport category by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/{id}/favorite": {
+      "post": {
+        "summary": "Favorite sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Mark sport category as favorite for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unfavorite sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Remove sport category from favorites for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
                 }
               }
             }

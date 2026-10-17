@@ -28,6 +28,8 @@
       "@named-resource-favorite": ["named-resource-favorite/index.ts"],
       "@named-resource-favorite/*": ["named-resource-favorite/*"],
       "@shared/*": ["shared/*"],
+      "@sports": ["sports/index.ts"],
+      "@sports/*": ["sports/*"],
       "@testing/*": ["testing/*"],
       "@transaction/*": ["transaction/*"],
       "@user/*": ["user/*"],

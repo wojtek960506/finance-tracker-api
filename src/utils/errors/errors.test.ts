@@ -34,6 +34,18 @@ import {
   SnapshotOperationOnlyError,
 } from './investment-errors';
 import {
+  SportCategoryAlreadyExistsError,
+  SportCategoryDependencyError,
+  SportCategoryNotFoundError,
+  SportCategoryOwnershipError,
+  SportCategorySystemNameConflictError,
+  SportEntryNotFoundError,
+  SportEntryOwnershipError,
+  SystemSportCategoryDeletionNotAllowed,
+  SystemSportCategoryUpdateNotAllowed,
+  UserSportCategoryMissingOwner,
+} from './sport-errors';
+import {
   VehicleDependencyError,
   VehicleEquipmentNotFoundError,
   VehicleFuelEntryNotFoundError,
@@ -383,6 +395,68 @@ describe('domain errors', () => {
         'Odometer reading (42000 km) cannot be higher than the next refuel on ' +
           '2026-05-15 (41000 km)',
       );
+    });
+  });
+
+  describe('sport errors', () => {
+    it('instantiates SportCategoryNotFoundError with status 404', () => {
+      const error = new SportCategoryNotFoundError('cat-1');
+      expect(error.statusCode).toBe(404);
+      expect(error.code).toBe('SPORT_CATEGORY_NOT_FOUND');
+    });
+
+    it('instantiates SportCategoryOwnershipError with status 403', () => {
+      const error = new SportCategoryOwnershipError('u1', 'c1', 'u2');
+      expect(error.statusCode).toBe(403);
+      expect(error.code).toBe('SPORT_CATEGORY_OWNERSHIP_VIOLATION');
+    });
+
+    it('instantiates SportCategoryDependencyError with status 403', () => {
+      const error = new SportCategoryDependencyError('c1');
+      expect(error.statusCode).toBe(403);
+      expect(error.code).toBe('SPORT_CATEGORY_DEPENDENCY_ERROR');
+    });
+
+    it('instantiates SportCategoryAlreadyExistsError with status 409', () => {
+      const error = new SportCategoryAlreadyExistsError('bike');
+      expect(error.statusCode).toBe(409);
+      expect(error.code).toBe('SPORT_CATEGORY_ALREADY_EXISTS');
+    });
+
+    it('instantiates SportCategorySystemNameConflictError with status 409', () => {
+      const error = new SportCategorySystemNameConflictError('otherCategory');
+      expect(error.statusCode).toBe(409);
+      expect(error.code).toBe('SPORT_CATEGORY_SYSTEM_NAME_CONFLICT');
+    });
+
+    it('instantiates SystemSportCategoryUpdateNotAllowed with status 403', () => {
+      const error = new SystemSportCategoryUpdateNotAllowed('c1');
+      expect(error.statusCode).toBe(403);
+      expect(error.code).toBe('SYSTEM_SPORT_CATEGORY_UPDATE_NOT_ALLOWED');
+    });
+
+    it('instantiates SystemSportCategoryDeletionNotAllowed with status 403', () => {
+      const error = new SystemSportCategoryDeletionNotAllowed('c1');
+      expect(error.statusCode).toBe(403);
+      expect(error.code).toBe('SYSTEM_SPORT_CATEGORY_DELETION_NOT_ALLOWED');
+    });
+
+    it('instantiates UserSportCategoryMissingOwner with status 500', () => {
+      const error = new UserSportCategoryMissingOwner('c1');
+      expect(error.statusCode).toBe(500);
+      expect(error.code).toBe('USER_SPORT_CATEGORY_MISSING_OWNER');
+    });
+
+    it('instantiates SportEntryNotFoundError with status 404', () => {
+      const error = new SportEntryNotFoundError('e1');
+      expect(error.statusCode).toBe(404);
+      expect(error.code).toBe('SPORT_ENTRY_NOT_FOUND');
+    });
+
+    it('instantiates SportEntryOwnershipError with status 403', () => {
+      const error = new SportEntryOwnershipError('u1', 'e1', 'u2');
+      expect(error.statusCode).toBe(403);
+      expect(error.code).toBe('SPORT_ENTRY_OWNERSHIP_VIOLATION');
     });
   });
 });

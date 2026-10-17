@@ -1,15 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { accountModel, categoryModel, paymentMethodModel } = vi.hoisted(() => ({
-  accountModel: { modelName: 'account-model' },
-  categoryModel: { modelName: 'category-model' },
-  paymentMethodModel: { modelName: 'payment-method-model' },
-}));
+const { accountModel, categoryModel, paymentMethodModel, sportCategoryModel } =
+  vi.hoisted(() => ({
+    accountModel: { modelName: 'account-model' },
+    categoryModel: { modelName: 'category-model' },
+    paymentMethodModel: { modelName: 'payment-method-model' },
+    sportCategoryModel: { modelName: 'sport-category-model' },
+  }));
 
 vi.mock('./model', () => ({
   getNamedResourceModel: vi.fn((kind: string) => {
     if (kind === 'account') return accountModel;
     if (kind === 'category') return categoryModel;
+    if (kind === 'sportCategory') return sportCategoryModel;
     return paymentMethodModel;
   }),
 }));
@@ -27,6 +30,11 @@ vi.mock('./serializers', () => ({
 vi.mock('@transaction/services', () => ({
   checkTransactionDependencies: vi.fn(),
 }));
+vi.mock('@sports/services', () => ({
+  checkSportCategoryDependencies: vi.fn(),
+}));
+
+import { checkSportCategoryDependencies } from '@sports/services';
 
 import { checkTransactionDependencies } from '@transaction/services';
 import {
@@ -39,15 +47,21 @@ import {
   PaymentMethodAlreadyExistsError,
   PaymentMethodNotFoundError,
   PaymentMethodSystemNameConflictError,
+  SportCategoryAlreadyExistsError,
+  SportCategoryNotFoundError,
+  SportCategorySystemNameConflictError,
   SystemAccountDeletionNotAllowed,
   SystemAccountUpdateNotAllowed,
   SystemCategoryDeletionNotAllowed,
   SystemCategoryUpdateNotAllowed,
   SystemPaymentMethodDeletionNotAllowed,
   SystemPaymentMethodUpdateNotAllowed,
+  SystemSportCategoryDeletionNotAllowed,
+  SystemSportCategoryUpdateNotAllowed,
   UserAccountMissingOwner,
   UserCategoryMissingOwner,
   UserPaymentMethodMissingOwner,
+  UserSportCategoryMissingOwner,
 } from '@utils/errors';
 
 import { getNamedResourceKindConfig } from './kind-config';
@@ -131,6 +145,32 @@ describe('getNamedResourceKindConfig', () => {
 
     await config.checkOccurrences('id3');
     expect(checkTransactionDependencies).toHaveBeenCalledWith('paymentMethodId', 'id3');
+  });
+
+  it('returns sportCategory config with expected model and factories', async () => {
+    const config = getNamedResourceKindConfig('sportCategory');
+
+    expect(config.model).toBe(sportCategoryModel);
+    expect(config.checkOwnerType).toBe('sportCategory');
+    expect(config.notFoundErrorFactory('id4')).toBeInstanceOf(SportCategoryNotFoundError);
+    expect(config.alreadyExistsErrorFactory('Bike')).toBeInstanceOf(
+      SportCategoryAlreadyExistsError,
+    );
+    expect(config.systemNameConflictErrorFactory('Bike')).toBeInstanceOf(
+      SportCategorySystemNameConflictError,
+    );
+    expect(config.systemUpdateNotAllowedFactory('id4')).toBeInstanceOf(
+      SystemSportCategoryUpdateNotAllowed,
+    );
+    expect(config.userMissingOwnerFactory('id4')).toBeInstanceOf(
+      UserSportCategoryMissingOwner,
+    );
+    expect(config.systemResourceDeleteErrorFactory('id4')).toBeInstanceOf(
+      SystemSportCategoryDeletionNotAllowed,
+    );
+
+    await config.checkOccurrences('id4');
+    expect(checkSportCategoryDependencies).toHaveBeenCalledWith('id4');
   });
 
   it('serializes through shared named resource serializer', () => {

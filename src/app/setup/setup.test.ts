@@ -8,6 +8,7 @@ import {
   SYSTEM_ACCOUNT_NAMES,
   SYSTEM_CATEGORY_NAMES,
   SYSTEM_PAYMENT_METHOD_NAMES,
+  SYSTEM_SPORT_CATEGORY_NAMES,
 } from '@utils/consts';
 import { withSession } from '@utils/with-session';
 
@@ -16,6 +17,7 @@ import { upsertSystemAccounts } from './upsert-system-accounts';
 import { upsertSystemCategories } from './upsert-system-categories';
 import { upsertSystemNamedResources } from './upsert-system-named-resources';
 import { upsertSystemPaymentMethods } from './upsert-system-payment-methods';
+import { upsertSystemSportCategories } from './upsert-system-sport-categories';
 
 const sessionMock = {} as any;
 
@@ -129,6 +131,18 @@ describe('app setup', () => {
 
       expect(withSession).toHaveBeenCalledOnce();
       expect(updateOneSpy).toHaveBeenCalledTimes(SYSTEM_PAYMENT_METHOD_NAMES.size);
+    });
+  });
+
+  describe('upsertSystemSportCategories', () => {
+    it('upserts system sport categories through withSession', async () => {
+      const model = getNamedResourceModel('sportCategory');
+      const updateOneSpy = vi.spyOn(model, 'updateOne').mockResolvedValue({} as any);
+
+      await upsertSystemSportCategories();
+
+      expect(withSession).toHaveBeenCalledOnce();
+      expect(updateOneSpy).toHaveBeenCalledTimes(SYSTEM_SPORT_CATEGORY_NAMES.size);
     });
   });
 });

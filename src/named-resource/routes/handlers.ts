@@ -21,12 +21,14 @@ type NamedResourceBodyByKind = {
   account: NamedResourceDTO;
   category: NamedResourceDTO;
   paymentMethod: NamedResourceDTO;
+  sportCategory: NamedResourceDTO;
 };
 
 type NamedResourceResponseByKind = {
   account: NamedResourceResponseDTO;
   category: NamedResourceResponseDTO;
   paymentMethod: NamedResourceResponseDTO;
+  sportCategory: NamedResourceResponseDTO;
 };
 
 export const getNamedResourcesHandler =
