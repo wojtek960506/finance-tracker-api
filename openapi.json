@@ -1833,6 +1833,150 @@
           "pagination"
         ]
       },
+      "SportStatsCategoryInput": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "categoryName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "categoryKey": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "categoryId",
+          "categoryName",
+          "type",
+          "totalCostPln",
+          "entryCount",
+          "percentage"
+        ]
+      },
+      "SportStatsYearInput": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "totalCostPln",
+          "entryCount"
+        ]
+      },
+      "SportStatsMonthInput": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "month",
+          "totalCostPln",
+          "entryCount"
+        ]
+      },
+      "SportStatsResponseInput": {
+        "type": "object",
+        "properties": {
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalEntries": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "byCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsCategoryInput"
+            }
+          },
+          "byYear": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsYearInput"
+            }
+          },
+          "byMonth": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsMonthInput"
+            }
+          }
+        },
+        "required": [
+          "totalCostPln",
+          "totalEntries",
+          "byCategory",
+          "byYear"
+        ]
+      },
       "VehiclePaginationInput": {
         "type": "object",
         "properties": {
@@ -9252,6 +9396,154 @@
         "required": [
           "items",
           "pagination"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsCategory": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "categoryName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "categoryKey": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "categoryId",
+          "categoryName",
+          "type",
+          "totalCostPln",
+          "entryCount",
+          "percentage"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsYear": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "totalCostPln",
+          "entryCount"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsMonth": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "month",
+          "totalCostPln",
+          "entryCount"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsResponse": {
+        "type": "object",
+        "properties": {
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalEntries": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "byCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsCategory"
+            }
+          },
+          "byYear": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsYear"
+            }
+          },
+          "byMonth": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsMonth"
+            }
+          }
+        },
+        "required": [
+          "totalCostPln",
+          "totalEntries",
+          "byCategory",
+          "byYear"
         ],
         "additionalProperties": false
       },
@@ -20257,6 +20549,38 @@
                     "deletedCount"
                   ],
                   "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/stats/": {
+      "get": {
+        "tags": [
+          "Sport Stats"
+        ],
+        "description": "Return aggregate sport expenditure statistics with category breakdown, yearly trends, and monthly distribution.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1970,
+              "maximum": 2100
+            },
+            "in": "query",
+            "name": "year",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportStatsResponse"
                 }
               }
             }
