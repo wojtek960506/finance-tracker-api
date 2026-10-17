@@ -1833,6 +1833,54 @@
           "pagination"
         ]
       },
+      "LinkSportSpendingsToTransactionInput": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "entryIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            }
+          }
+        },
+        "required": [
+          "transactionId",
+          "entryIds"
+        ]
+      },
+      "UnlinkSportSpendingFromTransactionInput": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "entryId"
+        ]
+      },
+      "SportSpendingLinkResponseInput": {
+        "type": "object",
+        "properties": {
+          "acknowledged": {
+            "type": "boolean"
+          },
+          "modifiedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "acknowledged",
+          "modifiedCount"
+        ]
+      },
       "SportStatsCategoryInput": {
         "type": "object",
         "properties": {
@@ -9396,6 +9444,57 @@
         "required": [
           "items",
           "pagination"
+        ],
+        "additionalProperties": false
+      },
+      "LinkSportSpendingsToTransaction": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "entryIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            }
+          }
+        },
+        "required": [
+          "transactionId",
+          "entryIds"
+        ],
+        "additionalProperties": false
+      },
+      "UnlinkSportSpendingFromTransaction": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "entryId"
+        ],
+        "additionalProperties": false
+      },
+      "SportSpendingLinkResponse": {
+        "type": "object",
+        "properties": {
+          "acknowledged": {
+            "type": "boolean"
+          },
+          "modifiedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "acknowledged",
+          "modifiedCount"
         ],
         "additionalProperties": false
       },
@@ -20581,6 +20680,68 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SportStatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/spendings/link": {
+      "post": {
+        "summary": "Link sport spendings to transaction",
+        "tags": [
+          "Sport Spendings"
+        ],
+        "description": "Associate one or more sport entries with a financial transaction.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkSportSpendingsToTransactionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportSpendingLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/spendings/unlink": {
+      "post": {
+        "summary": "Unlink sport spending from transaction",
+        "tags": [
+          "Sport Spendings"
+        ],
+        "description": "Remove transaction association from a sport entry record.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnlinkSportSpendingFromTransactionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportSpendingLinkResponse"
                 }
               }
             }
