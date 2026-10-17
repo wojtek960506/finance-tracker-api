@@ -103,4 +103,3 @@ z.globalRegistry.add(SportPaginationSchema, { id: 'SportPagination' });
 z.globalRegistry.add(SportEntryListResponseSchema, {
   id: 'SportEntryListResponse',
 });
-z.globalRegistry.add(SportEntryParamsSchema, { id: 'SportEntryParams' });
