@@ -1,4 +1,8 @@
-export type NamedResourceKind = 'account' | 'category' | 'paymentMethod';
+export type NamedResourceKind =
+  | 'account'
+  | 'category'
+  | 'paymentMethod'
+  | 'sportCategory';
 
 export type NamedResourceType = 'user' | 'system';
 

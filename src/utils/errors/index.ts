@@ -4,6 +4,7 @@ export * from './category-errors';
 export * from './general-errors';
 export * from './investment-errors';
 export * from './payment-method-errors';
+export * from './sport-errors';
 export * from './transaction-errors';
 export * from './user-errors';
 export * from './vehicle-errors';

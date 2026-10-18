@@ -1548,6 +1548,483 @@
           "excludedCategories"
         ]
       },
+      "NamedResourceInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "NamedResourceResponseInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "type",
+          "nameNormalized",
+          "isFavorite"
+        ]
+      },
+      "NamedResourcesResponseInput": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NamedResourceResponseInput"
+        }
+      },
+      "SportEntryCategoryResponseInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ]
+      },
+      "SportEntryCreateInput": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "date": {},
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "categoryId",
+          "date",
+          "itemName",
+          "costPln"
+        ]
+      },
+      "SportEntryUpdateInput": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "date": {},
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "SportEntryResponseInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "category": {
+            "$ref": "#/components/schemas/SportEntryCategoryResponseInput"
+          },
+          "date": {},
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {},
+          "updatedAt": {}
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "categoryId",
+          "category",
+          "date",
+          "itemName",
+          "costPln",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "SportPaginationInput": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "page": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "limit": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "totalPages": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ]
+      },
+      "SportEntryListResponseInput": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportEntryResponseInput"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/SportPaginationInput"
+          }
+        },
+        "required": [
+          "items",
+          "pagination"
+        ]
+      },
+      "LinkSportSpendingsToTransactionInput": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "entryIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            }
+          }
+        },
+        "required": [
+          "transactionId",
+          "entryIds"
+        ]
+      },
+      "UnlinkSportSpendingFromTransactionInput": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "entryId"
+        ]
+      },
+      "SportSpendingLinkResponseInput": {
+        "type": "object",
+        "properties": {
+          "acknowledged": {
+            "type": "boolean"
+          },
+          "modifiedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "acknowledged",
+          "modifiedCount"
+        ]
+      },
+      "SportStatsCategoryInput": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "categoryName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "categoryKey": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "categoryId",
+          "categoryName",
+          "type",
+          "totalCostPln",
+          "entryCount",
+          "percentage"
+        ]
+      },
+      "SportStatsYearInput": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "totalCostPln",
+          "entryCount"
+        ]
+      },
+      "SportStatsMonthInput": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "month",
+          "totalCostPln",
+          "entryCount"
+        ]
+      },
+      "SportStatsResponseInput": {
+        "type": "object",
+        "properties": {
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalEntries": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "byCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsCategoryInput"
+            }
+          },
+          "byYear": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsYearInput"
+            }
+          },
+          "byMonth": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsMonthInput"
+            }
+          }
+        },
+        "required": [
+          "totalCostPln",
+          "totalEntries",
+          "byCategory",
+          "byYear"
+        ]
+      },
       "VehiclePaginationInput": {
         "type": "object",
         "properties": {
@@ -3247,65 +3724,6 @@
         "required": [
           "message"
         ]
-      },
-      "NamedResourceInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "NamedResourceResponseInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "id": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "ownerId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "user",
-              "system"
-            ]
-          },
-          "nameNormalized": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "isFavorite": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "name",
-          "id",
-          "type",
-          "nameNormalized",
-          "isFavorite"
-        ]
-      },
-      "NamedResourcesResponseInput": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/NamedResourceResponseInput"
-        }
       },
       "LoginInput": {
         "type": "object",
@@ -8721,6 +9139,513 @@
         ],
         "additionalProperties": false
       },
+      "NamedResource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "NamedResourceResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "nameNormalized": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "type",
+          "nameNormalized",
+          "isFavorite"
+        ],
+        "additionalProperties": false
+      },
+      "NamedResourcesResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NamedResourceResponse"
+        }
+      },
+      "SportEntryCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "SportEntryCreate": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "categoryId",
+          "date",
+          "itemName",
+          "costPln"
+        ],
+        "additionalProperties": false
+      },
+      "SportEntryUpdate": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "SportEntryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "category": {
+            "$ref": "#/components/schemas/SportEntryCategoryResponse"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "itemName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "costPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{24}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "categoryId",
+          "category",
+          "date",
+          "itemName",
+          "costPln",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "SportPagination": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "page": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "limit": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "totalPages": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ],
+        "additionalProperties": false
+      },
+      "SportEntryListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportEntryResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/SportPagination"
+          }
+        },
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "additionalProperties": false
+      },
+      "LinkSportSpendingsToTransaction": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "entryIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            }
+          }
+        },
+        "required": [
+          "transactionId",
+          "entryIds"
+        ],
+        "additionalProperties": false
+      },
+      "UnlinkSportSpendingFromTransaction": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        "required": [
+          "entryId"
+        ],
+        "additionalProperties": false
+      },
+      "SportSpendingLinkResponse": {
+        "type": "object",
+        "properties": {
+          "acknowledged": {
+            "type": "boolean"
+          },
+          "modifiedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "acknowledged",
+          "modifiedCount"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsCategory": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "categoryName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "categoryKey": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "system"
+            ]
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "categoryId",
+          "categoryName",
+          "type",
+          "totalCostPln",
+          "entryCount",
+          "percentage"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsYear": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "totalCostPln",
+          "entryCount"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsMonth": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "entryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "year",
+          "month",
+          "totalCostPln",
+          "entryCount"
+        ],
+        "additionalProperties": false
+      },
+      "SportStatsResponse": {
+        "type": "object",
+        "properties": {
+          "totalCostPln": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalEntries": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "byCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsCategory"
+            }
+          },
+          "byYear": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsYear"
+            }
+          },
+          "byMonth": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SportStatsMonth"
+            }
+          }
+        },
+        "required": [
+          "totalCostPln",
+          "totalEntries",
+          "byCategory",
+          "byYear"
+        ],
+        "additionalProperties": false
+      },
       "VehiclePagination": {
         "type": "object",
         "properties": {
@@ -10525,67 +11450,6 @@
           "message"
         ],
         "additionalProperties": false
-      },
-      "NamedResource": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          }
-        },
-        "required": [
-          "name"
-        ],
-        "additionalProperties": false
-      },
-      "NamedResourceResponse": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "id": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "ownerId": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{24}$"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "user",
-              "system"
-            ]
-          },
-          "nameNormalized": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-          },
-          "isFavorite": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "name",
-          "id",
-          "type",
-          "nameNormalized",
-          "isFavorite"
-        ],
-        "additionalProperties": false
-      },
-      "NamedResourcesResponse": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/NamedResourceResponse"
-        }
       },
       "Login": {
         "type": "object",
@@ -19486,6 +20350,614 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/": {
+      "get": {
+        "summary": "List sport categories",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Return all sport categories for the authenticated user, including system categories.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Create a new custom sport category for the authenticated user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/favorites": {
+      "get": {
+        "summary": "List favorite sport categories",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Return all favorite sport categories for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/{id}": {
+      "get": {
+        "summary": "Get sport category by id",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Return a single sport category by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update sport category (PUT)",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Update a custom sport category by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update sport category (PATCH)",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Update a custom sport category by id.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NamedResourceInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Delete a custom sport category by id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/categories/{id}/favorite": {
+      "post": {
+        "summary": "Favorite sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Mark sport category as favorite for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NamedResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unfavorite sport category",
+        "tags": [
+          "Sport Categories"
+        ],
+        "description": "Remove sport category from favorites for the authenticated user.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Resource id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acknowledged": {
+                      "type": "boolean"
+                    },
+                    "deletedCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "acknowledged",
+                    "deletedCount"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/stats/": {
+      "get": {
+        "tags": [
+          "Sport Stats"
+        ],
+        "description": "Return aggregate sport expenditure statistics with category breakdown, yearly trends, and monthly distribution.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1970,
+              "maximum": 2100
+            },
+            "in": "query",
+            "name": "year",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportStatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/spendings/link": {
+      "post": {
+        "summary": "Link sport spendings to transaction",
+        "tags": [
+          "Sport Spendings"
+        ],
+        "description": "Associate one or more sport entries with a financial transaction.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkSportSpendingsToTransactionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportSpendingLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/spendings/unlink": {
+      "post": {
+        "summary": "Unlink sport spending from transaction",
+        "tags": [
+          "Sport Spendings"
+        ],
+        "description": "Remove transaction association from a sport entry record.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnlinkSportSpendingFromTransactionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportSpendingLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/": {
+      "get": {
+        "summary": "List sport entries",
+        "tags": [
+          "Sport Entries"
+        ],
+        "description": "Return paginated sport expenditure entries with optional filtering by category, date range, search query, and sorting.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "query",
+            "name": "categoryId",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "search",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": "date_desc",
+              "type": "string",
+              "enum": [
+                "date_desc",
+                "date_asc",
+                "cost_desc",
+                "cost_asc"
+              ]
+            },
+            "in": "query",
+            "name": "sort",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "exclusiveMinimum": true,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportEntryListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create sport entry",
+        "tags": [
+          "Sport Entries"
+        ],
+        "description": "Create a new sport expenditure record.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SportEntryCreateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportEntryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports/{id}": {
+      "get": {
+        "summary": "Get sport entry by id",
+        "tags": [
+          "Sport Entries"
+        ],
+        "description": "Return a single sport entry record by its id.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportEntryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update sport entry",
+        "tags": [
+          "Sport Entries"
+        ],
+        "description": "Partially update an existing sport expenditure record.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SportEntryUpdateInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportEntryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete sport entry",
+        "tags": [
+          "Sport Entries"
+        ],
+        "description": "Delete a single sport entry record.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
           }
         }
       }

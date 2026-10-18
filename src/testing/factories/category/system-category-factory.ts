@@ -8,6 +8,9 @@ import {
   OTHER_CATEGORY_ID_OBJ,
   OTHER_CATEGORY_ID_STR,
   OTHER_CATEGORY_NAME,
+  SPORT_CATEGORY_ID_OBJ,
+  SPORT_CATEGORY_ID_STR,
+  SPORT_CATEGORY_NAME,
   TRANSFER_CATEGORY_ID_OBJ,
   TRANSFER_CATEGORY_ID_STR,
   TRANSFER_CATEGORY_NAME,
@@ -35,6 +38,10 @@ const propsOther = {
 const propsTransport = {
   name: TRANSPORT_CATEGORY_NAME,
   nameNormalized: TRANSPORT_CATEGORY_NAME.toLowerCase(),
+};
+const propsSport = {
+  name: SPORT_CATEGORY_NAME,
+  nameNormalized: SPORT_CATEGORY_NAME.toLowerCase(),
 };
 
 export const getExchangeCategoryResultJSON = () => ({
@@ -86,5 +93,18 @@ export const getTransportCategoryResultSerialized = () => ({
   ...commonProps,
   ...propsTransport,
   id: TRANSPORT_CATEGORY_ID_STR,
+  isFavorite: false,
+});
+
+export const getSportCategoryResultJSON = () => ({
+  ...commonProps,
+  ...propsSport,
+  _id: SPORT_CATEGORY_ID_OBJ,
+});
+
+export const getSportCategoryResultSerialized = () => ({
+  ...commonProps,
+  ...propsSport,
+  id: SPORT_CATEGORY_ID_STR,
   isFavorite: false,
 });

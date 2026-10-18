@@ -70,5 +70,10 @@ describe('getNamedResourceModel', () => {
       expect(error?.errors.ownerId).toBeDefined();
       expect(error?.errors.ownerId?.message).toContain('Invalid ownerId');
     });
+
+    it('returns SportCategory model for sportCategory kind', () => {
+      const model = getNamedResourceModel('sportCategory');
+      expect(model.modelName).toBe('SportCategory');
+    });
   });
 });

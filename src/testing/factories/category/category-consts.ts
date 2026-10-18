@@ -12,11 +12,14 @@ export const OTHER_CATEGORY_ID_STR = randomObjectIdString();
 export const OTHER_CATEGORY_ID_OBJ = new Types.ObjectId(OTHER_CATEGORY_ID_STR);
 export const TRANSPORT_CATEGORY_ID_STR = randomObjectIdString();
 export const TRANSPORT_CATEGORY_ID_OBJ = new Types.ObjectId(TRANSPORT_CATEGORY_ID_STR);
+export const SPORT_CATEGORY_ID_STR = randomObjectIdString();
+export const SPORT_CATEGORY_ID_OBJ = new Types.ObjectId(SPORT_CATEGORY_ID_STR);
 
 export const TRANSFER_CATEGORY_NAME = 'myAccount';
 export const EXCHANGE_CATEGORY_NAME = 'exchange';
 export const OTHER_CATEGORY_NAME = 'otherCategory';
 export const TRANSPORT_CATEGORY_NAME = 'transport';
+export const SPORT_CATEGORY_NAME = 'sport';
 export const FOOD_CATEGORY_NAME = 'Food';
 
 export const CATEGORY_TYPE_SYSTEM = 'system';

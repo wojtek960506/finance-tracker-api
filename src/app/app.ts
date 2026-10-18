@@ -5,6 +5,7 @@ import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 import { investmentRoutes } from '@investment/routes';
 import { netWorthRoutes } from '@net-worth/routes';
+import { sportRoutes } from '@sports/routes';
 import { vehicleRoutes } from '@vehicles/routes';
 import Fastify from 'fastify';
 import {
@@ -22,6 +23,7 @@ import {
   upsertSystemAccounts,
   upsertSystemCategories,
   upsertSystemPaymentMethods,
+  upsertSystemSportCategories,
 } from '@app/setup';
 import { authRoutes } from '@auth/routes';
 import { currencyRoutes } from '@currency/routes';
@@ -61,6 +63,7 @@ export const buildApp = async (
     await upsertSystemAccounts();
     await upsertSystemCategories();
     await upsertSystemPaymentMethods();
+    await upsertSystemSportCategories();
   }
 
   // register cookie
@@ -137,6 +140,7 @@ export const buildApp = async (
   await app.register(investmentRoutes, { prefix: '/api/investments' });
   await app.register(netWorthRoutes, { prefix: '/api/net-worth' });
   await app.register(vehicleRoutes, { prefix: '/api/vehicles' });
+  await app.register(sportRoutes, { prefix: '/api/sports' });
 
   // register error handler
   await registerErrorHandler(app);

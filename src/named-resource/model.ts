@@ -65,6 +65,7 @@ const namedResourceModels: Record<NamedResourceKind, Model<INamedResource>> = {
   account: createNamedResourceModel<INamedResource>('Account'),
   category: createNamedResourceModel<INamedResource>('Category'),
   paymentMethod: createNamedResourceModel<INamedResource>('PaymentMethod'),
+  sportCategory: createNamedResourceModel<INamedResource>('SportCategory'),
 };
 
 export const getNamedResourceModel = (kind: NamedResourceKind) => {

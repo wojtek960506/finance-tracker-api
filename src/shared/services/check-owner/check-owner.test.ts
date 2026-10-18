@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   CategoryOwnershipError,
   PaymentMethodOwnershipError,
+  SportCategoryOwnershipError,
+  SportEntryOwnershipError,
   TransactionOwnershipError,
 } from '@utils/errors';
 import { AccountOwnershipError } from '@utils/errors/account-errors';
@@ -20,6 +22,8 @@ describe('checkOwner', () => {
     ['category', CategoryOwnershipError],
     ['paymentMethod', PaymentMethodOwnershipError],
     ['account', AccountOwnershipError],
+    ['sportCategory', SportCategoryOwnershipError],
+    ['sportEntry', SportEntryOwnershipError],
   ])('throws error when owner is different than in %s', (type, error) => {
     expect(() => checkOwner('1', '2', '3', type as CheckOwnerType)).toThrow(error);
   });

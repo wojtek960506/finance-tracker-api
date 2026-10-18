@@ -17,6 +17,7 @@ import {
   getExchangeCategoryResultJSON,
   getExchangeCategoryResultSerialized,
   getOtherCategoryResultSerialized,
+  getSportCategoryResultSerialized,
   getTransferCategoryResultJSON,
   getTransferCategoryResultSerialized,
   getTransportCategoryResultSerialized,
@@ -115,6 +116,7 @@ describe('transaction-create services', () => {
   const accountIncome = getSystemIncomeAccountResultSerialized();
   const otherCategory = getOtherCategoryResultSerialized();
   const transportCategory = getTransportCategoryResultSerialized();
+  const sportCategory = getSportCategoryResultSerialized();
   const otherPaymentMethod = getOtherPaymentMethodResultSerialized();
   const otherAccount = getOtherAccountResultSerialized();
 
@@ -236,6 +238,29 @@ describe('transaction-create services', () => {
 
       vi.spyOn(namedResourceDb, 'findNamedResourceById')
         .mockResolvedValueOnce(transportCategory as any)
+        .mockResolvedValueOnce(paymentMethod as any)
+        .mockResolvedValueOnce(accountExpense as any);
+      vi.spyOn(dbTransactions, 'persistTransaction').mockResolvedValue(
+        transaction as any,
+      );
+      (getNextSourceIndex as Mock).mockResolvedValue(STANDARD_TXN_SRC_IDX);
+
+      await createStandardTransaction(dto, USER_ID_STR);
+
+      expect(dbTransactions.persistTransaction).toHaveBeenCalledWith({
+        ...dto,
+        kind: 'standard',
+        ownerId: USER_ID_STR,
+        sourceIndex: STANDARD_TXN_SRC_IDX,
+      });
+    });
+
+    it('allows explicit sport category for standard transaction', async () => {
+      const transaction = getStandardTransactionResultSerialized();
+      const dto = { ...standardDTO, categoryId: sportCategory.id };
+
+      vi.spyOn(namedResourceDb, 'findNamedResourceById')
+        .mockResolvedValueOnce(sportCategory as any)
         .mockResolvedValueOnce(paymentMethod as any)
         .mockResolvedValueOnce(accountExpense as any);
       vi.spyOn(dbTransactions, 'persistTransaction').mockResolvedValue(

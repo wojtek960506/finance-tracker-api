@@ -26,10 +26,12 @@ const {
   investmentRoutesMock,
   netWorthRoutesMock,
   vehicleRoutesMock,
+  sportRoutesMock,
   currencyRoutesMock,
   paymentMethodRoutesMock,
   registerErrorHandlerMock,
   upsertSystemCategoriesMock,
+  upsertSystemSportCategoriesMock,
   upsertSystemPaymentMethodsMock,
   upsertSystemAccountsMock,
 } = vi.hoisted(() => {
@@ -47,6 +49,7 @@ const {
     appMock: app,
     fastifyMock: vi.fn(() => app),
     upsertSystemCategoriesMock: vi.fn(),
+    upsertSystemSportCategoriesMock: vi.fn(),
     connectDBMock: vi.fn(),
     upsertSystemPaymentMethodsMock: vi.fn(),
     upsertSystemAccountsMock: vi.fn(),
@@ -62,6 +65,7 @@ const {
     investmentRoutesMock: vi.fn(),
     netWorthRoutesMock: vi.fn(),
     vehicleRoutesMock: vi.fn(),
+    sportRoutesMock: vi.fn(),
     cookiePluginMock: vi.fn(),
     jwtPluginMock: vi.fn(),
     corsPluginMock: vi.fn(),
@@ -74,6 +78,7 @@ vi.mock('@fastify/jwt', () => ({ default: jwtPluginMock }));
 vi.mock('@fastify/cors', () => ({ default: corsPluginMock }));
 vi.mock('@app/setup', () => ({
   upsertSystemCategories: upsertSystemCategoriesMock,
+  upsertSystemSportCategories: upsertSystemSportCategoriesMock,
   upsertSystemPaymentMethods: upsertSystemPaymentMethodsMock,
   upsertSystemAccounts: upsertSystemAccountsMock,
   connectDB: connectDBMock,
@@ -97,6 +102,7 @@ vi.mock('@transaction/routes', () => ({ transactionRoutes: transactionRoutesMock
 vi.mock('@investment/routes', () => ({ investmentRoutes: investmentRoutesMock }));
 vi.mock('@net-worth/routes', () => ({ netWorthRoutes: netWorthRoutesMock }));
 vi.mock('@vehicles/routes', () => ({ vehicleRoutes: vehicleRoutesMock }));
+vi.mock('@sports/routes', () => ({ sportRoutes: sportRoutesMock }));
 
 vi.mock('@app/config', () => ({ getEnv: () => ({ ...ENV_TEST_VALUES }) }));
 
@@ -123,6 +129,7 @@ describe('app bootstrap', () => {
     expect(appMock.withTypeProvider).toHaveBeenCalledOnce();
     expect(upsertSystemCategoriesMock).toHaveBeenCalledOnce();
     expect(upsertSystemPaymentMethodsMock).toHaveBeenCalledOnce();
+    expect(upsertSystemSportCategoriesMock).toHaveBeenCalledOnce();
     expect(appMock.register).toHaveBeenCalledWith(cookiePluginMock, {
       secret: COOKIE_SECRET_TEST,
       parseOptions: {},
@@ -154,6 +161,9 @@ describe('app bootstrap', () => {
     });
     expect(appMock.register).toHaveBeenCalledWith(vehicleRoutesMock, {
       prefix: '/api/vehicles',
+    });
+    expect(appMock.register).toHaveBeenCalledWith(sportRoutesMock, {
+      prefix: '/api/sports',
     });
     expect(registerErrorHandlerMock).toHaveBeenCalledOnce();
     expect(registerErrorHandlerMock).toHaveBeenCalledWith(appMock);
