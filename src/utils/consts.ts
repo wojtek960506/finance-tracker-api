@@ -2,6 +2,7 @@ export const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
 
 export const OTHER_CATEGORY_NAME = 'otherCategory';
 export const TRANSPORT_CATEGORY_NAME = 'transport';
+export const SPORT_CATEGORY_NAME = 'sport';
 export const OTHER_PAYMENT_METHOD_NAME = 'otherPaymentMethod';
 export const OTHER_ACCOUNT_NAME = 'otherAccount';
 
@@ -11,6 +12,7 @@ export const SYSTEM_CATEGORY_NAMES = new Set([
   'investment',
   OTHER_CATEGORY_NAME,
   TRANSPORT_CATEGORY_NAME,
+  SPORT_CATEGORY_NAME,
 ]);
 
 export const SYSTEM_SPORT_CATEGORY_NAMES = new Set([OTHER_CATEGORY_NAME]);
@@ -18,6 +20,7 @@ export const SYSTEM_SPORT_CATEGORY_NAMES = new Set([OTHER_CATEGORY_NAME]);
 export const ALLOWED_STANDARD_SYSTEM_CATEGORY_NAMES = new Set([
   OTHER_CATEGORY_NAME,
   TRANSPORT_CATEGORY_NAME,
+  SPORT_CATEGORY_NAME,
 ]);
 
 export const SYSTEM_PAYMENT_METHOD_NAMES = new Set([

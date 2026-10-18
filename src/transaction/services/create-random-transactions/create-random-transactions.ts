@@ -30,7 +30,6 @@ export async function createRandomTransactions(
   const testCategoryNames = [
     ...SYSTEM_CATEGORY_NAMES,
     'Food',
-    'Sport',
     'Accomodation',
     'Entertainment',
   ];
