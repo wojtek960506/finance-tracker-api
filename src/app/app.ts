@@ -1,3 +1,4 @@
+import { dashboardRoutes } from '@dashboard/routes';
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
@@ -139,6 +140,7 @@ export const buildApp = async (
   await app.register(transactionRoutes, { prefix: '/api/transactions' });
   await app.register(investmentRoutes, { prefix: '/api/investments' });
   await app.register(netWorthRoutes, { prefix: '/api/net-worth' });
+  await app.register(dashboardRoutes, { prefix: '/api/dashboard' });
   await app.register(vehicleRoutes, { prefix: '/api/vehicles' });
   await app.register(sportRoutes, { prefix: '/api/sports' });
 

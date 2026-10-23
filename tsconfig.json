@@ -19,6 +19,8 @@
       "@auth/*": ["auth/*"],
       "@currency": ["currency/index.ts"],
       "@currency/*": ["currency/*"],
+      "@dashboard": ["dashboard/index.ts"],
+      "@dashboard/*": ["dashboard/*"],
       "@investment": ["investment/index.ts"],
       "@investment/*": ["investment/*"],
       "@net-worth": ["net-worth/index.ts"],
